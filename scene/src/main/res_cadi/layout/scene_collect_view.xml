@@ -51,6 +51,7 @@
                     android:orientation="horizontal">
 
                     <com.sgm.navi.ui.view.SkinRadioButton
+                        style="@style/style_mfc_config_no_bg"
                         android:id="@+id/navi_broadcast_standard"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -58,13 +59,13 @@
                         android:button="@null"
                         android:checked="true"
                         android:gravity="center"
-                        android:focusable="true"
                         android:textSize="@dimen/sp_34"
-                        android:background="@drawable/bg_setting_checkbox_selector"
+                        android:background="@drawable/bg_setting_checkbox_selector_mfc"
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:text="@string/favorite_switch_common" />
 
                     <com.sgm.navi.ui.view.SkinRadioButton
+                        style="@style/style_mfc_config_no_bg"
                         android:id="@+id/navi_broadcast_large"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -72,8 +73,7 @@
                         android:button="@null"
                         android:gravity="center"
                         android:textSize="@dimen/sp_34"
-                        android:focusable="true"
-                        android:background="@drawable/bg_setting_checkbox_selector"
+                        android:background="@drawable/bg_setting_checkbox_selector_mfc"
                         android:textColor="@drawable/color_setting_checkbox_selector"
                         android:text="@string/favorite_switch_charge" />
                 </com.sgm.navi.ui.view.SkinRadioGroup>
@@ -141,16 +141,16 @@
                     android:layout_marginTop="@dimen/dp_10" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/sll_no_login"
                     android:layout_width="@dimen/dp_264"
                     android:layout_height="@dimen/dp_80"
                     android:gravity="center"
-                    android:focusable="true"
                     android:text="@string/account_login"
                     android:textSize="@dimen/sp_30"
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
-                    android:background="@drawable/bg_setting_preference_select"/>
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"/>
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinLinearLayout
@@ -198,16 +198,16 @@
 
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/sll_no_refresh"
                     android:layout_width="@dimen/dp_250"
                     android:layout_height="@dimen/dp_83"
                     android:gravity="center"
-                    android:focusable="true"
                     android:text="@string/navi_refresh"
                     android:textSize="@dimen/sp_30"
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/dp_28"
-                    android:background="@drawable/bg_setting_preference_select"/>
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"/>
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinLinearLayout

@@ -26,11 +26,10 @@
             tools:text="周边城市" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             android:id="@+id/iv_contract"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             android:src="@drawable/img_limit_up"
             app:layout_constraintBottom_toBottomOf="@id/tv_title"
             app:layout_constraintEnd_toEndOf="parent"

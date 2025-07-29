@@ -84,11 +84,10 @@
                 android:background="@color/setting_bg_to_login">
 
                 <com.sgm.navi.ui.view.SkinView
+                    style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mToLogin}"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_94"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:layout_marginStart="@dimen/dp_16"
                     app:layout_constraintLeft_toRightOf="@+id/driving_record_login_tip"
                     app:layout_constraintTop_toTopOf="parent"

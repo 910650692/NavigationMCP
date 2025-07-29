@@ -75,14 +75,14 @@
                     android:focusable="false">
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config_no_bg"
+                        android:clickable="true"
                         android:id="@+id/current_voice_broadcast_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_168"
                         android:layout_marginStart="@dimen/dp_52"
                         android:layout_marginEnd="@dimen/dp_52"
-                        android:focusable="true"
-                        android:focusedByDefault="true"
-                        android:background="@drawable/bg_setting_others_selector"
+                        android:background="@drawable/bg_setting_others_selector_mfc"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent">
@@ -140,6 +140,7 @@
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchDefaultVoice}"
                         android:id="@+id/default_voice_broadcast_layout"
                         android:layout_width="match_parent"
@@ -147,7 +148,6 @@
                         android:layout_marginStart="@dimen/dp_52"
                         android:layout_marginEnd="@dimen/dp_52"
                         android:layout_marginTop="@dimen/dp_24"
-                        android:focusable="true"
                         android:background="@drawable/bg_setting_others_selector"
                         app:layout_constraintTop_toBottomOf="@+id/current_voice_broadcast_default_name"
                         app:layout_constraintStart_toStartOf="parent"

@@ -12,10 +12,11 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config_no_bg"
+        clickCommand="@{()->naviSapa.onClick(1)}"
         android:layout_width="@dimen/dp_820"
         android:layout_height="@dimen/dp_200"
-        android:focusable="false"
-        android:background="@drawable/bg_navi_toll_station_first">
+        android:background="@drawable/bg_navi_toll_station_first_mfc">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:layout_width="@dimen/dp_54"
@@ -109,17 +110,5 @@
             android:background="@{naviSapa.mOnlyTollTagBgColor}"
             android:gravity="center"
             tools:text="经" />
-
-        <com.sgm.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
-            android:focusable="true"
-            clickCommand="@{()->naviSapa.onClick(1)}"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

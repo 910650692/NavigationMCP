@@ -30,19 +30,19 @@ public class ButtonLinearLayout extends SkinLinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(final MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            setAlpha(0.6f);
-            return true;
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            // 手指松开反馈点击事件并恢复控件原有的透明度
-            setAlpha(1.0f);
-            this.playSoundEffect(SoundEffectConstants.CLICK);
-            callOnClick();
-            return true;
-        }
-        return super.onTouchEvent(event);
-    }
+//    @SuppressLint("ClickableViewAccessibility")
+//    @Override
+//    public boolean onTouchEvent(final MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            setAlpha(0.6f);
+//            return true;
+//        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//            // 手指松开反馈点击事件并恢复控件原有的透明度
+//            setAlpha(1.0f);
+//            this.playSoundEffect(SoundEffectConstants.CLICK);
+//            callOnClick();
+//            return true;
+//        }
+//        return super.onTouchEvent(event);
+//    }
 }

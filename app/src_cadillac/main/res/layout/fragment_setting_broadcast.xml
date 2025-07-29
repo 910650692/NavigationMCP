@@ -41,14 +41,13 @@
                 android:orientation="vertical">
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mOpenBroadcastVoiceListPage}"
                     android:id="@+id/broadcast_entry"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_168"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:focusedByDefault="true"
-                    android:focusable="true"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/navi_broadcast_voice_current"
@@ -147,13 +146,13 @@
                     android:layout_marginTop="@dimen/dp_20">
 
                     <com.sgm.navi.ui.view.SkinRadioButton
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchNaviBroadcastDetailClick}"
                         android:id="@+id/navi_broadcast_detailed"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/setting_broadcast_navi_detail"
-                        android:focusable="true"
                         android:textSize="@dimen/sp_46"
                         android:checked="@{viewModel.mIsNaviBroadcastDetail}"
                         android:background="@drawable/bg_setting_checkbox_selector"
@@ -162,13 +161,13 @@
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                     <com.sgm.navi.ui.view.SkinRadioButton
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchNaviBroadcastConciseClick}"
                         android:id="@+id/navi_broadcast_concise"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/setting_broadcast_navi_concise"
-                        android:focusable="true"
                         android:textSize="@dimen/sp_46"
                         android:checked="@{viewModel.mIsNaviBroadcastConcise}"
                         android:background="@drawable/bg_setting_checkbox_selector"
@@ -177,13 +176,13 @@
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                     <com.sgm.navi.ui.view.SkinRadioButton
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchNaviBroadcastSimpleClick}"
                         android:id="@+id/navi_broadcast_simple"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="@string/setting_broadcast_navi_clear"
-                        android:focusable="true"
                         android:textSize="@dimen/sp_46"
                         android:checked="@{viewModel.mIsNaviBroadcastSimple}"
                         android:background="@drawable/bg_setting_checkbox_selector"
@@ -231,6 +230,7 @@
                     android:gravity="center_horizontal">
 
                     <com.sgm.navi.ui.view.SkinCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchCruiseBroadcastRoadConditionClick}"
                         android:id="@+id/cruise_broadcast_road_condition"
                         android:layout_width="0dp"
@@ -241,18 +241,17 @@
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
                         android:text="@string/setting_broadcast_cruise_road_condition"
-                        android:focusable="true"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_46" />
 
                     <com.sgm.navi.ui.view.SkinCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchCruiseBroadcastCameraClick}"
                         android:id="@+id/cruise_broadcast_camera"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:button="@null"
-                        android:focusable="true"
                         android:checked="@{viewModel.mIsCruiseBroadcastCamera}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
@@ -262,13 +261,13 @@
                         android:textSize="@dimen/sp_46" />
 
                     <com.sgm.navi.ui.view.SkinCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mSwitchCruiseBroadcastSafeClick}"
                         android:id="@+id/cruise_broadcast_safe"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:button="@null"
-                        android:focusable="true"
                         android:checked="@{viewModel.mIsCruiseBroadcastSafe}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"

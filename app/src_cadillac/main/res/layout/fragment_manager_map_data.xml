@@ -38,13 +38,13 @@
                 android:layout_height="wrap_content">
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     android:id="@+id/iv_offline_map_back"
                     clickCommand="@{ViewModel.mBackMapDataView}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginStart="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_48"
-                    android:focusable="true"
                     android:src="@drawable/img_setting_back"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -70,13 +70,13 @@
                         android:orientation="horizontal">
 
                         <com.sgm.navi.ui.view.SkinLinearLayout
+                            style="@style/style_mfc_config"
                             android:id="@+id/all_map_data_tab"
                             clickCommand="@{ViewModel.mDownloadingDataClickView}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:focusable="true"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/rl_offline_top">
 
@@ -118,6 +118,7 @@
 
                     <!--已下载-->
                     <com.sgm.navi.ui.view.SkinLinearLayout
+                        style="@style/style_mfc_config"
                         android:id="@+id/manage_data_tab"
                         clickCommand="@{ViewModel.mDownloadedClickView}"
                         android:layout_width="0dp"
@@ -126,7 +127,6 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:focusable="true"
                         app:layout_constraintLeft_toRightOf="@+id/all_map_data_tab"
                         app:layout_constraintTop_toBottomOf="@+id/rl_offline_top">
 
@@ -210,9 +210,9 @@
                                 android:orientation="horizontal">
 
                                 <com.sgm.navi.ui.view.SkinLinearLayout
+                                    style="@style/style_mfc_config"
                                     android:id="@+id/all_data_download"
                                     clickCommand="@{ViewModel.mAllDataDownload}"
-                                    android:focusable="true"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
@@ -238,9 +238,9 @@
                                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                                 <com.sgm.navi.ui.view.SkinLinearLayout
+                                    style="@style/style_mfc_config"
                                     android:id="@+id/all_data_suspend"
                                     clickCommand="@{ViewModel.mAllDataSuspend}"
-                                    android:focusable="true"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"

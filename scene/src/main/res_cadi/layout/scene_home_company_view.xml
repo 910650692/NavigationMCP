@@ -29,26 +29,24 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/iv_close"
                 clickCommand="@{SceneHomeCompanyView.closeSearch}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
-                android:focusable="true"
-                android:focusedByDefault="true"
                 android:src="@drawable/img_basic_ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinEditText
+                style="@style/style_mfc_config"
                 clickCommand="@{SceneHomeCompanyView.onClickEditText}"
                 android:id="@+id/search_bar_text_view"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:background="@null"
-                android:clickable="true"
-                android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:hint="@string/frequent_search_hint"
                 android:imeOptions="actionSearch"
@@ -64,12 +62,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/iv_edit_clear"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@drawable/img_poi_edit_delete"
-                android:focusable="true"
                 android:visibility="gone"
                 tools:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -95,12 +93,12 @@
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(0)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_153"
-                android:focusable="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/scl_pull_up">
 
@@ -128,11 +126,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_pull_up"
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(1)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gas_station"
                 app:layout_constraintEnd_toStartOf="@id/scl_gourmet">
@@ -161,11 +159,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_gourmet"
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(2)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_pull_up"
                 app:layout_constraintEnd_toStartOf="@id/scl_car_washing">
@@ -194,11 +192,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_car_washing"
                 clickCommand="@{() -> SceneHomeCompanyView.onClickQuickSearch(3)}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:focusable="true"
                 android:minWidth="@dimen/dp_153"
                 app:layout_constraintStart_toEndOf="@id/scl_gourmet"
                 app:layout_constraintEnd_toEndOf="parent">

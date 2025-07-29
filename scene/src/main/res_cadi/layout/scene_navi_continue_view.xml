@@ -11,9 +11,10 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config_no_bg"
         android:id="@+id/scl_navi_continue"
-        android:focusable="false"
-        android:background="@drawable/bg_navi_continue"
+        clickCommand="@{() -> naviContinue.naviContinueClick()}"
+        android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
         app:click_color_change="true"
         android:layout_width="@dimen/dp_410"
         android:layout_height="@dimen/dp_120">
@@ -40,16 +41,5 @@
             app:layout_constraintStart_toEndOf="@+id/siv_navi_continue_icon"
             android:text="@string/navi_continue_navi"
             android:layout_marginStart="@dimen/dp_16"/>
-
-        <com.sgm.navi.ui.view.SkinView
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
-            android:focusable="true"
-            clickCommand="@{() -> naviContinue.naviContinueClick()}"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

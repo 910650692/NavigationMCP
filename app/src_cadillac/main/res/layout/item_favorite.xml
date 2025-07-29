@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+<!--            TODO  需要确认点击事件添加的位置 是否能重改-->
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/content_layout"
                 android:layout_width="match_parent"
@@ -135,13 +136,12 @@
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinLinearLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/item_favorite_navi"
                 android:layout_width="@dimen/dp_220"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" >

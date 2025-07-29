@@ -16,7 +16,7 @@ import com.sgm.navi.service.define.mapdata.CityDownLoadInfo;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
 import com.sgm.navi.ui.view.SkinLinearLayout;
 
-public class DownloadBtnView extends ConstraintLayout {
+public class DownloadBtnView extends SkinConstraintLayout {
 
     private SkinLinearLayout mLinearLayout;
     private ImageView mDownloadViewIcon;

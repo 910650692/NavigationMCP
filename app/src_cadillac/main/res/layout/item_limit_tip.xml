@@ -60,11 +60,10 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_desc"
+            style="@style/style_mfc_config"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{ViewModel.limitDriverTitle}"
-            android:focusable="true"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_32"
             app:layout_constraintBottom_toBottomOf="parent"

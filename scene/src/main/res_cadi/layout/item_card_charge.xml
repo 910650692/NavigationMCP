@@ -207,43 +207,45 @@
                 android:textSize="@dimen/sp_32" />
         </LinearLayout>
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/iv_navi_icon"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:focusable="false"
-            android:src="@drawable/img_navigation_black_58"
-            app:layout_constraintBottom_toTopOf="@id/tv_distance"
-            app:layout_constraintEnd_toEndOf="@id/tv_distance"
-            app:layout_constraintStart_toStartOf="@id/tv_distance"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/tv_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginEnd="@dimen/dp_31"
-            android:minWidth="@dimen/dp_131"
-            android:gravity="center_horizontal"
-            android:textColor="@color/common_title_color"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
-            tools:text="7.2公里" />
 
-        <View
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/view_navi_now"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_distance"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_navi_icon"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:focusable="false"
+                android:src="@drawable/img_navigation_black_58"
+                app:layout_constraintBottom_toTopOf="@id/tv_distance"
+                app:layout_constraintEnd_toEndOf="@id/tv_distance"
+                app:layout_constraintStart_toStartOf="@id/tv_distance"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginEnd="@dimen/dp_31"
+                android:minWidth="@dimen/dp_131"
+                android:gravity="center_horizontal"
+                android:textColor="@color/common_title_color"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_navi_icon"
+                tools:text="7.2公里" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

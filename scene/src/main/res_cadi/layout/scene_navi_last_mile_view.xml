@@ -13,6 +13,7 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:focusable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_51"
@@ -29,11 +30,11 @@
             tools:visibility="visible">
 
             <com.sgm.navi.scene.ui.navi.view.ButtonText
+                style="@style/style_mfc_config"
                 android:id="@+id/stv_send_phone"
                 clickCommand="@{naviLastMile.onSend}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true"
                 android:padding="@dimen/dp_52"
                 android:text="@string/navi_send"
                 android:textColor="@color/navi_color_000000_100"
@@ -54,12 +55,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.scene.ui.navi.view.ButtonImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/siv_close"
                 clickCommand="@{naviLastMile.onClose}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_40"
-                android:focusable="false"
                 android:background="@drawable/img_off58"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

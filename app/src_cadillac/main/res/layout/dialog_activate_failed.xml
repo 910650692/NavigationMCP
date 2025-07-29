@@ -4,10 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:focusable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:focusable="false"
             android:layout_width="@dimen/dp_1300"
             android:layout_height="@dimen/dp_475"
             android:background="@drawable/bg_setting_dialog"
@@ -87,17 +89,32 @@
                     app:layout_constraintTop_toTopOf="@id/activate_line">
 
                     <com.sgm.navi.ui.view.SkinTextView
+                        style="@style/style_mfc_config"
                         android:id="@+id/activate_dialog_confirm"
                         android:layout_width="@dimen/dp_0"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:focusable="true"
-                        android:focusedByDefault="true"
                         android:gravity="center"
                         android:text="@string/activation_failed_retry"
                         android:textColor="#3377FF"
                         android:textSize="@dimen/sp_36" />
 
+                    <View
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="match_parent"
+                        android:background="#4D818199"
+                        android:focusable="false" />
+
+                    <com.sgm.navi.ui.view.SkinTextView
+                        style="@style/style_mfc_config"
+                        android:id="@+id/activate_dialog_cancel"
+                        android:layout_width="@dimen/dp_0"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/activation_finish"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_36" />
                 </com.sgm.navi.ui.view.SkinLinearLayout>
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 

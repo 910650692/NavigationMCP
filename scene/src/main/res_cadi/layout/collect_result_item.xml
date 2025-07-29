@@ -193,11 +193,11 @@
 
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/poi_to_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_40"
-                android:focusable="true"
                 android:minWidth="@dimen/dp_90"
                 app:layout_constraintBottom_toBottomOf="@+id/crl_poi_item"
                 app:layout_constraintEnd_toEndOf="parent"

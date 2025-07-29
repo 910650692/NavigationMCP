@@ -9,11 +9,11 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config_no_bg"
         android:layout_width="@dimen/dp_222"
         android:layout_height="@dimen/dp_96"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/bg_limit_city_button_selector"
-        android:focusable="true">
+        android:background="@drawable/bg_limit_city_button_mfc">
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_title"

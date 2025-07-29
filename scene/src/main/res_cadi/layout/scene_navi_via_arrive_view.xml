@@ -74,11 +74,11 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/stv_confirm"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
-                    android:focusable="true"
-                    android:background="@drawable/bg_navi_continue"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
                     clickCommand="@{naviArrive.onUpdateViaPass}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -90,10 +90,10 @@
                     android:text="@string/confirm"/>
 
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/stv_cancel"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
-                    android:focusable="true"
                     clickCommand="@{()-> naviArrive.updateSceneVisible(Boolean.FALSE)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -101,7 +101,7 @@
                     android:layout_marginEnd="@dimen/dp_596"
                     android:textSize="@dimen/sp_38"
                     android:gravity="center"
-                    android:background="@drawable/bg_navi_cancel"
+                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
                     android:text="@string/cancel"
                     android:textColor="@color/navi_color_000000_70"/>
 

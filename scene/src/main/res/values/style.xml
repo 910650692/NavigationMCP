@@ -95,4 +95,14 @@
         <item name="android:textColor">@color/common_title_color</item>
         <item name="android:textSize">@dimen/sp_26</item>
     </style>
+
+    <style name="style_mfc_config_no_bg" >
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="click_color_change">true</item>
+    </style>
+
+    <style name="style_mfc_config" parent="style_mfc_config_no_bg" >
+        <item name="android:background">@drawable/bg_base_mfc_cadillac_bg_selector</item>
+    </style>
 </resources>

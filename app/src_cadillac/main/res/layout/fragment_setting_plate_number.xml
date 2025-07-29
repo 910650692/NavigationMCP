@@ -61,14 +61,14 @@
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/setting_plate_number_finish"
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mPlateNumberInputFinish}"
                         android:layout_width="@dimen/dp_240"
                         android:layout_height="@dimen/dp_96"
                         android:layout_marginStart="@dimen/dp_393"
-                        android:background="@drawable/bg_setting_dialog_confirm_selector"
+                        android:background="@drawable/bg_setting_dialog_confirm_selector_mfc"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:focusable="true"
                         android:text="@string/setting_guide_plate_number_finish"
                         android:textColor="@color/setting_white"
                         android:textSize="@dimen/sp_46" />
@@ -89,14 +89,14 @@
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/setting_plate_number_province"
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mShowProvinceKeyboard}"
                     android:layout_width="@dimen/dp_252"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_setting_dialog_cancel_selector"
+                    android:background="@drawable/bg_setting_dialog_cancel_selector_mfc"
                     android:drawableEnd="@drawable/img_setting_down"
                     android:gravity="center"
-                    android:focusable="true"
                     android:paddingHorizontal="@dimen/dp_59"
                     android:text="@string/setting_guide_plate_number_default"
                     android:textSize="@dimen/sp_46"
@@ -106,6 +106,8 @@
 
                 <com.sgm.navi.ui.view.SkinEditText
                     android:id="@+id/setting_plate_number_number"
+                    clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
+                    style="@style/style_mfc_config"
                     android:layout_width="@dimen/dp_974"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
@@ -113,20 +115,10 @@
                     android:hint="@string/setting_guide_plate_number_input"
                     android:paddingLeft="@dimen/dp_30"
                     android:textSize="@dimen/sp_46"
-                    android:focusable="true"
                     android:textColor="@color/setting_bg_tab_text_select"
                     app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
                     app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province" />
 
-                <com.sgm.navi.ui.view.SkinView
-                    clickCommand="@{viewModel.mShowPlateNumberKeyboard}"
-                    android:layout_width="@dimen/dp_974"
-                    android:layout_height="@dimen/dp_120"
-                    android:focusable="true"
-                    android:layout_marginStart="@dimen/dp_32"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    app:layout_constraintStart_toEndOf="@+id/setting_plate_number_province"
-                    app:layout_constraintTop_toTopOf="@+id/setting_plate_number_province"/>
 
                 <com.sgm.navi.ui.view.SkinImageView
                     style="@style/style_mfc_config"

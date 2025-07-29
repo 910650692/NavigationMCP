@@ -25,10 +25,9 @@
             android:orientation="horizontal">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/item_view"
                 android:clickable="true"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_204">
 

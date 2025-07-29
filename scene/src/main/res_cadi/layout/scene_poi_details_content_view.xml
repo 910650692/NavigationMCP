@@ -170,6 +170,7 @@
                 tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/poi_type_icon"
                 clickCommand="@{ScenePoiDetailContentView.closeFragment}"
                 android:layout_width="@dimen/dp_74"

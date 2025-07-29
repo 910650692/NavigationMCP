@@ -59,10 +59,10 @@
             tools:background="@android:color/darker_gray" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             android:id="@+id/iv_toggle"
             android:layout_width="@dimen/dp_168"
             android:layout_height="@dimen/dp_30"
-            android:focusable="true"
             android:paddingHorizontal="@dimen/dp_50"
             android:layout_marginBottom="@dimen/dp_44"
             android:src="@drawable/bg_hanging_toggle"

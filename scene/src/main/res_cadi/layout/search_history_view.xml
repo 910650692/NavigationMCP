@@ -72,11 +72,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/search_history_middle_view" />
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config"
                     android:id="@+id/scl_delete_record"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_0"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
                     android:padding="@dimen/dp_16"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -44,21 +44,21 @@
                 android:gravity="center_vertical">
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     android:id="@+id/iv_offline_map_back"
                     clickCommand="@{ViewModel.mFinishMapDataView}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/dp_20"
-                    android:focusable="true"
                     android:src="@drawable/img_setting_back" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mSearchMapDataView}"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
                     android:layout_marginStart="@dimen/dp_10"
-                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:text="@string/offline_search_tip"
                     android:textColor="@color/offline_hint_text"
@@ -90,6 +90,7 @@
 
                     <!--下载管理入口-->
                     <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config_no_bg"
                         android:id="@+id/manager_data_view"
                         clickCommand="@{ViewModel.mToManagerMapDataView}"
                         android:layout_width="match_parent"
@@ -97,8 +98,7 @@
                         android:layout_marginStart="@dimen/dp_52"
                         android:layout_marginEnd="@dimen/dp_52"
                         android:layout_marginBottom="@dimen/dp_32"
-                        android:background="@drawable/shape_bg_map_data"
-                        android:focusable="true"
+                        android:background="@drawable/shape_bg_map_data_mfc"
                         android:visibility="@{ViewModel.mManagerDownloadVisibility ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -221,6 +221,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/manager_data_view">
 
                         <com.sgm.navi.ui.view.SkinTextView
+                            style="@style/style_mfc_config"
                             android:id="@+id/tv_near_offline_data"
                             clickCommand="@{ViewModel.mToNearMapDataView}"
                             android:layout_width="wrap_content"
@@ -228,7 +229,6 @@
                             android:layout_marginStart="@dimen/dp_40"
                             android:layout_marginTop="@dimen/dp_39"
                             android:drawableRight="@drawable/img_right"
-                            android:focusable="true"
                             android:gravity="center_vertical"
                             android:text="@string/offline_near_offline_data"
                             android:textColor="@color/setting_bg_tab_text_select"
@@ -251,17 +251,17 @@
                             app:layout_constraintTop_toBottomOf="@+id/tv_near_offline_data" />
 
                         <com.sgm.navi.ui.view.SkinTextView
+                            style="@style/style_mfc_config_no_bg"
                             android:id="@+id/btn_download_near_data"
                             clickCommand="@{ViewModel.mToDownloadNearData}"
                             android:layout_width="@dimen/dp_240"
                             android:layout_height="@dimen/dp_96"
                             android:layout_marginEnd="@dimen/dp_40"
-                            android:background="@drawable/shape_bg_download_data"
+                            android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
                             android:gravity="center"
                             android:text="@string/offline_all_net_city_start_download"
                             android:textColor="@color/setting_white"
                             android:textSize="@dimen/sp_38"
-                            android:focusable="true"
                             android:visibility="@{ViewModel.mNearDownloadBtnVisibility ? View.VISIBLE : View.GONE}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -354,8 +354,10 @@
                                     app:layout_constraintTop_toBottomOf="@+id/country_city_name" />
 
                                 <com.sgm.navi.scene.ui.setting.DownloadBtnView
+                                    style="@style/style_mfc_config_no_bg"
                                     android:id="@+id/country_download_view"
                                     clickCommand="@{ViewModel.mStartDownload}"
+                                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
                                     android:layout_width="@dimen/dp_240"
                                     android:layout_height="@dimen/dp_96"
                                     android:layout_marginEnd="@dimen/dp_40"
@@ -393,11 +395,12 @@
                             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                             <com.sgm.navi.ui.view.SkinTextView
+                                style="@style/style_mfc_config_no_bg"
                                 android:id="@+id/country_delete"
                                 clickCommand="@{ViewModel.mToDeleteCountryCity}"
                                 android:layout_width="@dimen/dp_220"
                                 android:layout_height="@dimen/dp_204"
-                                android:background="@drawable/bg_driving_item_delete"
+                                android:background="@drawable/bg_driving_item_delete_mfc"
                                 android:drawableTop="@drawable/img_delete_58"
                                 android:gravity="center"
                                 android:text="@string/driving_item_delete"

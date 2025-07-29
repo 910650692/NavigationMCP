@@ -161,14 +161,13 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     android:id="@+id/route_charge_list_info_info_img_close"
                     clickCommand="@{ViewModel.getCloseChargelistClick()}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginStart="@dimen/dp_71"
                     android:layout_marginTop="@dimen/dp_90"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
                     android:src="@drawable/img_route_back"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/route_charge_list_info_info_bg_title" />
@@ -235,13 +234,13 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/route_charge_list_along_way_suer"
                     clickCommand="@{ViewModel.getChargeSureClick()}"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_52"
                     android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
-                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/route_search_keyword_charge_sure"
                     android:textColor="@color/text_route_button_title"
@@ -252,12 +251,12 @@
                     app:layout_constraintTop_toTopOf="@+id/route_charge_list_along_way_btn" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{ViewModel.getChargeCancelClick()}"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_32"
                     android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
-                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/route_search_keyword_charge_cancel"
                     android:textColor="@color/text_route_defult"

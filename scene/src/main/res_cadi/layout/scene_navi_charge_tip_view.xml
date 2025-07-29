@@ -55,12 +55,12 @@
             tools:text="xxxxxxxx" />
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/tv_action"
             android:layout_width="@dimen/dp_192"
             android:layout_height="@dimen/dp_96"
-            android:focusable="true"
             android:layout_marginEnd="@dimen/dp_40"
-            android:background="@drawable/bg_navi_go_charge"
+            android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp_38"

@@ -21,11 +21,10 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config"
         android:id="@+id/crl_poi_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:focusable="true"
-        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
         android:minHeight="@dimen/dp_158">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -160,12 +159,11 @@
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/poi_to_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_40"
-            android:focusable="true"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             android:minWidth="@dimen/dp_90"
             app:layout_constraintTop_toTopOf="@+id/crl_poi_des"
             app:layout_constraintEnd_toEndOf="parent">

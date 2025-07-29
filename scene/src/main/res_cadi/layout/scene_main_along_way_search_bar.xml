@@ -28,24 +28,24 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/iv_close"
                 clickCommand="@{MainSearchView.closeSearch}"
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:src="@drawable/img_basic_ic_back"
-                android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView
+                style="@style/style_mfc_config"
                 android:id="@+id/search_bar_text_view"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_14"
                 android:background="@null"
-                android:focusable="true"
                 android:hint="@string/main_search_hint"
                 android:maxLines="1"
                 android:textColor="@color/search_deep_text_day"
@@ -57,12 +57,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/iv_search"
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_96"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_search40"
-                android:focusable="true"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -88,11 +88,10 @@
             app:layout_constraintTop_toBottomOf="@+id/sub_line_view">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
                 android:layout_width="@dimen/dp_0"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:layout_height="wrap_content"
                 app:layout_constraintWidth_percent="0.25">
 
@@ -121,12 +120,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_pull_up"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(1)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gas_station"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">
@@ -156,12 +154,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_gourmet"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(2)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_pull_up"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">
@@ -191,12 +188,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/scl_car_washing"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(3)}"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintLeft_toRightOf="@+id/scl_gourmet"
                 app:layout_constraintTop_toBottomOf="@+id/sub_line_view"
                 app:layout_constraintWidth_percent="0.25">

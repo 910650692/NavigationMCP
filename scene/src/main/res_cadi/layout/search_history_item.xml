@@ -85,11 +85,10 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinLinearLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/crl_poi_des"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:orientation="vertical"
                 android:layout_marginVertical="@dimen/dp_22"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -156,14 +155,13 @@
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
             <com.sgm.navi.ui.view.SkinLinearLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/poi_to_navi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:focusable="true"
                 android:minWidth="@dimen/dp_90"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">

@@ -16,83 +16,83 @@
         android:layout_width="@dimen/dp_200"
         android:layout_height="wrap_content">
 
-        <com.sgm.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/route_right_tab_list_service"
             clickCommand="@{Scene.clickService}"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" >
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_right_tab_list_tv_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_28"
+                android:focusable="false"
+                android:text="@string/route_along_service"
+                android:textColor="@color/tab_list_route_tab_list_unselect"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_service"
+                app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
+                app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service"
+                app:select_text_color="@color/tab_list_route_tab_list_select" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/route_right_tab_list_tv_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_28"
-            android:focusable="false"
-            android:text="@string/route_along_service"
-            android:textColor="@color/tab_list_route_tab_list_unselect"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_service"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service"
-            app:select_text_color="@color/tab_list_route_tab_list_select" />
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_right_tab_list_iv_service"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:focusable="false"
+                android:src="@drawable/selector_route_tab_list_service"
+                app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_service"
+                app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
+                app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/route_right_tab_list_iv_service"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:focusable="false"
-            android:src="@drawable/selector_route_tab_list_service"
-            app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_service"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_service" />
 
-        <com.sgm.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/route_right_tab_list_weather"
             clickCommand="@{Scene.clickWeather}"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_service"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" >
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_right_tab_list_tv_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_28"
+                android:focusable="false"
+                android:text="@string/route_weather"
+                android:textColor="@color/tab_list_route_tab_list_unselect"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_weather"
+                app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
+                app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather"
+                app:select_text_color="@color/tab_list_route_tab_list_select" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/route_right_tab_list_tv_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_28"
-            android:focusable="false"
-            android:text="@string/route_weather"
-            android:textColor="@color/tab_list_route_tab_list_unselect"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintBottom_toBottomOf="@id/route_right_tab_list_weather"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather"
-            app:select_text_color="@color/tab_list_route_tab_list_select" />
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/route_right_tab_list_iv_weather"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:focusable="false"
+                android:src="@drawable/selector_route_tab_list_weather"
+                app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_weather"
+                app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
+                app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/route_right_tab_list_iv_weather"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:focusable="false"
-            android:src="@drawable/selector_route_tab_list_weather"
-            app:layout_constraintBottom_toTopOf="@id/route_right_tab_list_tv_weather"
-            app:layout_constraintEnd_toEndOf="@id/route_right_tab_list_weather"
-            app:layout_constraintStart_toStartOf="@id/route_right_tab_list_weather" />
+
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/route_right_tab_list_charging_station"
             clickCommand="@{Scene.clickChargingStation}"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintTop_toBottomOf="@+id/route_right_tab_list_gas_station"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_weather"
@@ -127,12 +127,11 @@
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/route_right_tab_list_gas_station"
             clickCommand="@{Scene.clickGasStation}"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_200"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_charging_station"
             app:layout_constraintStart_toStartOf="parent">

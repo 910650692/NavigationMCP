@@ -12,7 +12,6 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
-        android:clickable="true"
         android:focusable="false"
         android:padding="@dimen/dp_51"
         android:background="@drawable/bg_shadow_navi_cadillac">
@@ -31,14 +30,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
 
-            <com.sgm.navi.ui.view.SkinImageView
-                style="@style/style_mfc_config"
-                clickCommand="@{viewModel.mFinishAbout}"
+            <com.android.car.ui.FocusArea
+                android:id="@+id/focus_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_32"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:contentDescription="@string/app_currency_back"
-                android:src="@drawable/img_setting_back" />
+                app:nudgeDown="@+id/setting_others_about_focus"
+                app:nudgeUp="@+id/setting_others_about_focus">
+
+                <com.sgm.navi.ui.view.SkinImageView
+		    android:contentDescription="@string/app_currency_back"
+                    style="@style/style_mfc_config"
+                    clickCommand="@{viewModel.mFinishAbout}"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/img_setting_back" />
+            </com.android.car.ui.FocusArea>
+
+
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:layout_width="wrap_content"
@@ -167,116 +176,124 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout" />
 
-        <com.sgm.navi.ui.view.SkinConstraintLayout
-            style="@style/style_mfc_config_no_bg"
-            android:background="@drawable/bg_setting_about_mfc_selector"
-            android:id="@+id/setting_others_about_protocol_center"
-            android:layout_width="@dimen/dp_706"
-            android:layout_height="@dimen/dp_144"
-            android:focusable="true"
+        <com.android.car.ui.FocusArea
+            android:id="@+id/setting_others_about_focus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:nudgeDown="@+id/focus_close"
+            app:nudgeUp="@+id/focus_close"
             app:layout_constraintStart_toEndOf="@id/line_view_vertical"
             app:layout_constraintTop_toBottomOf="@id/setting_others_about_layout">
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_protocol_center_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_privacy_protocol_center"
-                android:layout_marginStart="@dimen/dp_44"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:gravity="center"
-                android:focusable="false"
-                app:layout_constraintStart_toStartOf="parent"/>
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.mOpenProtocolCenter}"
+                style="@style/style_mfc_config_no_bg"
+                android:background="@drawable/bg_setting_about_mfc_selector"
+                android:id="@+id/setting_others_about_protocol_center"
+                android:layout_width="@dimen/dp_706"
+                android:layout_height="@dimen/dp_144"
+                app:layout_constraintStart_toEndOf="@id/line_view_vertical"
+                app:layout_constraintTop_toBottomOf="@id/setting_others_about_layout">
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:focusable="false"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_protocol_center_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/setting_others_privacy_protocol_center"
+                    android:layout_marginStart="@dimen/dp_44"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:gravity="center"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
-        </com.sgm.navi.ui.view.SkinConstraintLayout>
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/img_setting_corner"
+                    android:gravity="center"
+                    android:focusable="false"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.mOpenLicensesInfo}"
+                style="@style/style_mfc_config_no_bg"
+                android:background="@drawable/bg_setting_about_mfc_selector"
+                android:id="@+id/setting_others_about_licenses_info"
+                android:layout_width="@dimen/dp_706"
+                android:layout_height="@dimen/dp_144"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintStart_toEndOf="@id/line_view_vertical"
+                app:layout_constraintTop_toBottomOf="@id/setting_others_about_protocol_center">
 
-        <com.sgm.navi.ui.view.SkinConstraintLayout
-            style="@style/style_mfc_config_no_bg"
-            android:background="@drawable/bg_setting_about_mfc_selector"
-            android:id="@+id/setting_others_about_licenses_info"
-            android:layout_width="@dimen/dp_706"
-            android:layout_height="@dimen/dp_144"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_protocol_center">
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_licenses_info_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/setting_others_about_licenses_info"
+                    android:layout_marginStart="@dimen/dp_44"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:gravity="center"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_licenses_info_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_about_licenses_info"
-                android:layout_marginStart="@dimen/dp_44"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:gravity="center"
-                android:focusable="false"
-                app:layout_constraintStart_toStartOf="parent"/>
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/img_setting_corner"
+                    android:gravity="center"
+                    android:focusable="false"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:focusable="false"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                clickCommand="@{viewModel.mOpenHelp}"
+                style="@style/style_mfc_config_no_bg"
+                android:background="@drawable/bg_setting_about_mfc_selector"
+                android:id="@+id/setting_others_about_help"
+                android:layout_width="@dimen/dp_706"
+                android:layout_height="@dimen/dp_144"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintStart_toEndOf="@id/line_view_vertical"
+                app:layout_constraintTop_toBottomOf="@id/setting_others_about_licenses_info">
 
-        </com.sgm.navi.ui.view.SkinConstraintLayout>
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/setting_others_about_help_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/setting_others_about_help"
+                    android:layout_marginStart="@dimen/dp_44"
+                    android:textSize="@dimen/sp_46"
+                    android:textColor="@color/setting_bg_tab_text_select"
+                    android:gravity="center"
+                    android:focusable="false"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:src="@drawable/img_setting_corner"
+                    android:gravity="center"
+                    android:focusable="false"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.sgm.navi.ui.view.SkinConstraintLayout
-            style="@style/style_mfc_config_no_bg"
-            android:background="@drawable/bg_setting_about_mfc_selector"
-            android:id="@+id/setting_others_about_help"
-            android:layout_width="@dimen/dp_706"
-            android:layout_height="@dimen/dp_144"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_licenses_info">
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_help_title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/setting_others_about_help"
-                android:layout_marginStart="@dimen/dp_44"
-                android:textSize="@dimen/sp_46"
-                android:textColor="@color/setting_bg_tab_text_select"
-                android:gravity="center"
-                android:focusable="false"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:src="@drawable/img_setting_corner"
-                android:gravity="center"
-                android:focusable="false"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
-        </com.sgm.navi.ui.view.SkinConstraintLayout>
-
+        </com.android.car.ui.FocusArea>
 
         <com.sgm.navi.ui.view.SkinTextView
-
             android:id="@+id/setting_others_about_contact_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -286,7 +303,7 @@
             android:focusable="false"
             android:textColor="@color/setting_bg_tab_text_unselect"
             app:layout_constraintStart_toEndOf="@id/line_view_vertical"
-            app:layout_constraintTop_toBottomOf="@id/setting_others_about_help"/>
+            app:layout_constraintTop_toBottomOf="@id/setting_others_about_focus"/>
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/setting_others_about_web"

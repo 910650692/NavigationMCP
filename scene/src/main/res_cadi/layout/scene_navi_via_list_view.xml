@@ -49,15 +49,15 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.scene.ui.navi.view.ButtonLinearLayout
+                style="@style/style_mfc_config_no_bg"
                 android:id="@+id/sll_add_via"
                 clickCommand="@{naviViaList.skipAlongWayFragment}"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_120"
-                android:background="@drawable/bg_navi_btn_add_via"
+                android:background="@drawable/bg_navi_btn_add_via_mfc"
                 android:layout_marginTop="@dimen/dp_32"
                 android:layout_marginHorizontal="@dimen/dp_40"
                 android:gravity="center"
-                android:focusable="true"
                 android:orientation="horizontal">
 
                 <com.sgm.navi.ui.view.SkinImageView

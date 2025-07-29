@@ -17,10 +17,10 @@
         android:layout_height="@dimen/dp_700">
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config"
             android:id="@+id/stv_total_mileage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:focusable="true"
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="@dimen/sp_50"
             android:text="@{naviDriveReport.mTotalMiles}"

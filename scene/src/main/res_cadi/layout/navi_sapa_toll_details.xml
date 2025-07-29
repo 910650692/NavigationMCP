@@ -124,10 +124,10 @@
                 android:layout_marginEnd="@dimen/dp_8" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/siv_toll_exit"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
-                android:focusable="false"
                 android:background="@drawable/img_off_74"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -237,6 +237,7 @@
                     tools:text="电        话：00:00—24:00" />
 
                 <com.sgm.navi.scene.ui.navi.view.ButtonText
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/bt_toll_details_add_via"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_120"
@@ -245,7 +246,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     clickCommand="@{() -> sapaDetail.onAddRemoveViaClick()}"
-                    android:background="@drawable/sapa_add_via_bg"
+                    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
                     android:layout_margin="@dimen/dp_52"
                     android:textSize="@dimen/sp_34"
                     android:gravity="center"

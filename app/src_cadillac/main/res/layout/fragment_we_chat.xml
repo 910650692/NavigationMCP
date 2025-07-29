@@ -42,14 +42,12 @@
                 app:layout_constraintTop_toTopOf="parent" >
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mChatConnectBack}"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginStart="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_48"
-                    android:focusable="true"
-                    android:focusedByDefault="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:src="@drawable/img_setting_back" />
             </com.android.car.ui.FocusArea>
 
@@ -143,15 +141,15 @@
                             android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                         <com.sgm.navi.ui.view.SkinButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{ViewModel.mRetry}"
                             android:layout_width="@dimen/dp_320"
                             android:layout_height="@dimen/dp_96"
                             android:layout_marginTop="@dimen/dp_40"
                             android:text="@string/setting_qr_code_load_retry"
                             android:textSize="@dimen/sp_38"
-                            android:focusable="true"
                             android:textColor="@color/setting_white"
-                            android:background="@drawable/bg_setting_dialog_confirm_selector"/>
+                            android:background="@drawable/bg_setting_dialog_confirm_selector_mfc"/>
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
                     <com.sgm.navi.ui.view.SkinTextView
@@ -255,12 +253,11 @@
                     </com.sgm.navi.ui.view.SkinLinearLayout>
 
                     <com.sgm.navi.ui.view.SkinTextView
+                        style="@style/style_mfc_config"
                         clickCommand="@{ViewModel.mHowToBind}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/sp_38"
-                        android:focusable="true"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:layout_marginTop="@dimen/dp_8"
                         android:layout_marginStart="@dimen/dp_167"

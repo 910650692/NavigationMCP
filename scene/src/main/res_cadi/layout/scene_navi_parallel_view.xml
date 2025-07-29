@@ -38,43 +38,44 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/navi_color_FF595F_100" />
 
-        <com.sgm.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/sv_bridge_up_down_focus"
             clickCommand="@{naviParallel.mClickBridgeUpDown}"
             android:layout_width="@dimen/dp_251"
             android:layout_height="@dimen/dp_251"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/navi_color_FF595F_100" />
+            tools:background="@color/navi_color_FF595F_100" >
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_bridge_up_down"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginTop="@dimen/dp_56"
+                android:focusable="false"
+                android:background="@drawable/img_parallel_bridge_down"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/siv_bridge_up_down"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginTop="@dimen/dp_81"
-            android:focusable="false"
-            android:background="@drawable/img_parallel_bridge_down"
-            app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
-            app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
-            app:layout_constraintTop_toTopOf="@id/sv_bridge_up_down" />
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_bridge_up_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_6"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="@string/navi_bridge_down"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_bridge_up_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_6"
-            android:focusable="false"
-            android:gravity="center"
-            android:text="@string/navi_bridge_down"
-            android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
-            app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
-            app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
+
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_main_auxiliary"
@@ -97,45 +98,46 @@
             app:layout_goneMarginStart="@dimen/dp_0"
             tools:background="@color/navi_color_FF595F_100" />
 
-        <com.sgm.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/sv_main_auxiliary_focus"
             clickCommand="@{naviParallel.mClickMainAuxiliary}"
             android:layout_width="@dimen/dp_251"
             android:layout_height="@dimen/dp_251"
             android:layout_marginStart="@dimen/dp_m_82"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_goneMarginStart="@dimen/dp_0"
-            tools:background="@color/navi_color_FF595F_100" />
+            tools:background="@color/navi_color_FF595F_100" >
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_main_auxiliary"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginTop="@dimen/dp_56"
+                android:focusable="false"
+                android:background="@drawable/img_parallel_road_auxiliary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/siv_main_auxiliary"
-            android:layout_width="@dimen/dp_74"
-            android:layout_height="@dimen/dp_74"
-            android:layout_marginTop="@dimen/dp_81"
-            android:focusable="false"
-            android:background="@drawable/img_parallel_road_auxiliary"
-            app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
-            app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
-            app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary" />
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_main_auxiliary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_6"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="@string/navi_road_auxiliary"
+                android:textColor="@color/navi_color_000000_70"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_main_auxiliary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_6"
-            android:focusable="false"
-            android:gravity="center"
-            android:text="@string/navi_road_auxiliary"
-            android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
-            app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
-            app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
+
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

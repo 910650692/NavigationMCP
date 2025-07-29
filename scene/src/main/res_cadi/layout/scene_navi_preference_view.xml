@@ -45,10 +45,10 @@
                     tools:text="不走高速+躲避拥堵"/>
 
                 <com.sgm.navi.ui.view.SkinImageView
+                    style="@style/style_mfc_config"
                     android:id="@+id/siv_preference_close"
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
-                    android:focusable="true"
                     app:layout_constraintTop_toTopOf="@+id/stv_route_preference_selected"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_route_preference_selected"
                     app:layout_constraintStart_toEndOf="@+id/stv_route_preference_selected"
@@ -57,13 +57,13 @@
                     android:background="@drawable/img_up_42"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_recommend"
                     clickCommand="@{() -> Scene.preferenceRecommend(1)}"
                     android:layout_width="@dimen/dp_740"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginTop="@dimen/dp_94"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_recommend"
                     android:textColor="@color/navi_color_000000_70"
@@ -75,13 +75,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_avoid_congestion"
                     clickCommand="@{() -> Scene.preferenceAvoidCongestion(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_avoiding_congestion"
                     android:textColor="@color/navi_color_000000_70"
@@ -92,13 +92,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_first_main_road"
                     clickCommand="@{() -> Scene.preferenceFirstMainRoad(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_first_main_road"
                     android:textColor="@color/navi_color_000000_70"
@@ -110,13 +110,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_first_highway"
                     clickCommand="@{() -> Scene.preferenceFirstHighway(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_first_highway"
                     android:textColor="@color/navi_color_000000_70"
@@ -127,13 +127,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_not_highway"
                     clickCommand="@{() -> Scene.preferenceNotHighway(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_not_highway"
                     android:textColor="@color/navi_color_000000_70"
@@ -145,13 +145,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_less_charge"
                     clickCommand="@{() -> Scene.preferenceLessCharge(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginTop="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_less_charge"
                     android:textColor="@color/navi_color_000000_70"
@@ -162,13 +162,13 @@
                     app:select_text_color="@color/navi_color_FFFFFF_100" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/preference_fastest_speed"
                     clickCommand="@{() -> Scene.preferenceFastestSpeed(1)}"
                     android:layout_width="@dimen/dp_358"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_24"
-                    android:focusable="true"
-                    android:background="@drawable/navi_selector_preference_nol"
+                    android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_fastest_speed"
                     android:textColor="@color/navi_color_000000_70"

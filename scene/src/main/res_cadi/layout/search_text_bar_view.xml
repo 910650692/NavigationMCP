@@ -12,12 +12,11 @@
         android:background="@drawable/bg_shadow_navi_cadillac">
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             android:id="@+id/iv_close"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_20"
-            android:focusable="true"
-            android:focusedByDefault="true"
             android:src="@drawable/img_basic_ic_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,11 +54,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/cs_filter"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible">

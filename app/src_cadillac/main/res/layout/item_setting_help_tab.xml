@@ -2,6 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    style="@style/style_mfc_config"
     android:gravity="center">
 
     <com.sgm.navi.ui.view.SkinTextView
@@ -10,6 +11,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/setting_tab_guide"
+        android:focusable="false"
         android:paddingHorizontal="@dimen/dp_26"
         android:paddingVertical="@dimen/dp_36"
         android:textSize="@dimen/sp_46"

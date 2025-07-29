@@ -164,14 +164,14 @@
         </com.sgm.navi.ui.view.SkinScrollView>
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/search_filter_confirm"
             android:layout_width="@dimen/dp_342"
             android:layout_height="@dimen/dp_120"
             android:layout_marginBottom="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_52"
             android:layout_marginLeft="@dimen/dp_25"
-            android:background="@drawable/bg_confirm"
-            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
             android:gravity="center"
             android:text="@string/dsc_confirm"
             android:textSize="@dimen/sp_46"
@@ -181,14 +181,14 @@
             app:layout_constraintTop_toBottomOf="@+id/skinScrollView" />
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/search_filter_cancel"
             android:layout_width="@dimen/dp_342"
             android:layout_height="@dimen/dp_120"
             android:layout_marginBottom="@dimen/dp_52"
             android:layout_marginTop="@dimen/dp_52"
             android:layout_marginRight="@dimen/dp_25"
-            android:background="@drawable/bg_cancel"
-            android:focusable="true"
+            android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
             android:gravity="center"
             android:text="@string/dsc_reset"
             android:textSize="@dimen/sp_46"

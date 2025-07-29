@@ -18,16 +18,16 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/stl_start_route"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_120"
-            android:focusable="true"
             app:layout_constraintHorizontal_weight="1"
             android:minWidth="@dimen/dp_285"
             android:maxWidth="@dimen/dp_716"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             android:layout_marginTop="@dimen/dp_5"
-            android:background="@drawable/bg_details_bottom_go_hear_selector"
+            android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
             app:layout_constraintEnd_toStartOf="@+id/stl_go_first"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -62,14 +62,14 @@
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/stl_go_first"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_120"
             android:layout_marginStart="@dimen/dp_24"
-            android:focusable="true"
             app:layout_constraintHorizontal_weight="1"
             android:minWidth="@dimen/dp_285"
-            android:background="@drawable/bg_cancel"
+            android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="@string/go_first"
@@ -92,13 +92,12 @@
             app:layout_constraintHorizontal_weight="1">
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/stl_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_114"
-                android:focusable="true"
                 tools:visibility="gone"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,12 +128,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/stl_around_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_114"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
                 app:layout_constraintStart_toEndOf="@+id/stl_phone"
@@ -166,11 +164,11 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/stl_poi_favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_114"
-                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/stl_around_search"

@@ -36,14 +36,11 @@
                 tools:visibility="gone">
 
                 <com.sgm.navi.ui.view.SkinImageView
-                    clickCommand="@{ViewModel.mToClose}"
+                    style="@style/style_mfc_config"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginEnd="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_48"
-                    android:focusable="true"
-                    android:focusedByDefault="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                     android:src="@drawable/img_setting_close"
                     android:layout_gravity="right" />
                 <!--登录二维码-->
@@ -107,15 +104,15 @@
                         android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                     <com.sgm.navi.ui.view.SkinButton
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{ViewModel.mRetry}"
                         android:layout_width="@dimen/dp_200"
                         android:layout_height="@dimen/dp_76"
                         android:layout_marginTop="@dimen/dp_24"
                         android:text="@string/setting_qr_code_load_retry"
-                        android:focusable="true"
                         android:textSize="@dimen/sp_32"
                         android:textColor="@color/setting_white"
-                        android:background="@drawable/bg_setting_dialog_confirm_selector"/>
+                        android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinTextView
@@ -261,16 +258,15 @@
                                 android:textColor="@color/setting_bg_tab_text_unselect"/>
 
                             <com.sgm.navi.ui.view.SkinButton
+                                style="@style/style_mfc_config_no_bg"
                                 clickCommand="@{ViewModel.mRetry}"
                                 android:layout_width="@dimen/dp_200"
                                 android:layout_height="@dimen/dp_76"
                                 android:layout_marginTop="@dimen/dp_24"
                                 android:text="@string/setting_qr_code_load_retry"
-                                android:focusable="true"
-                                android:focusableInTouchMode="false"
                                 android:textSize="@dimen/sp_32"
                                 android:textColor="@color/setting_white"
-                                android:background="@drawable/bg_setting_dialog_confirm_selector"/>
+                                android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"/>
                         </com.sgm.navi.ui.view.SkinLinearLayout>
 
                         <com.sgm.navi.ui.view.SkinTextView

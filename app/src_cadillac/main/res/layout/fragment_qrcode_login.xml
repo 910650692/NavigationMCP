@@ -143,15 +143,15 @@
                         android:layout_height="wrap_content">
 
                         <com.sgm.navi.ui.view.SkinButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{ViewModel.mRetry}"
                             android:layout_width="@dimen/dp_340"
                             android:layout_height="@dimen/dp_96"
                             android:layout_marginTop="@dimen/dp_40"
                             android:text="@string/setting_qr_code_load_retry"
                             android:textSize="@dimen/sp_38"
-                            android:focusable="true"
                             android:textColor="@color/setting_white"
-                            android:background="@drawable/bg_setting_dialog_confirm_selector"/>
+                            android:background="@drawable/bg_setting_dialog_confirm_selector_mfc"/>
 
                     </com.android.car.ui.FocusArea>
 

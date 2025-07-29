@@ -25,6 +25,7 @@
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/setting_others"
                 android:focusable="false"
+                app:click_color_change="false"
                 android:layout_width="@dimen/dp_1104"
                 android:layout_height="wrap_content">
 
@@ -80,8 +81,8 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
-                    clickCommand="@{viewModel.mOpenWeChat}"
                     style="@style/style_mfc_config_no_bg"
+                    clickCommand="@{viewModel.mOpenWeChat}"
                     android:id="@+id/setting_others_wechat"
                     android:layout_width="@dimen/dp_168"
                     android:layout_height="@dimen/dp_168"
@@ -110,15 +111,7 @@
                         android:textSize="@dimen/sp_32"
                         android:layout_marginTop="@dimen/dp_10"/>
                 </com.sgm.navi.ui.view.SkinLinearLayout>
-
-                <com.sgm.navi.ui.view.SkinView
-                    android:layout_width="@dimen/dp_168"
-                    android:layout_height="@dimen/dp_168"
-                    android:focusable="true"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
-
+                
                 <com.sgm.navi.ui.view.SkinLinearLayout
                     clickCommand="@{viewModel.mOpenCarConnect}"
                     style="@style/style_mfc_config_no_bg"
@@ -150,17 +143,17 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mOpenDivingRecord}"
                     android:id="@+id/setting_others_track_history"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:focusable="true"
                     android:layout_marginTop="@dimen/dp_92"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/setting_others_account"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
@@ -181,17 +174,17 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mOpenPrivacy}"
                     android:id="@+id/setting_others_privacy_permission"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:focusable="true"
                     android:layout_marginStart="@dimen/dp_32"
                     app:layout_constraintStart_toEndOf="@+id/setting_others_track_history"
                     app:layout_constraintTop_toTopOf="@id/setting_others_track_history"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
@@ -231,6 +224,7 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinLinearLayout
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mResetSetting}"
                     android:id="@+id/setting_others_reset_setting"
                     android:layout_width="@dimen/dp_536"
@@ -238,10 +232,9 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:focusable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/setting_others_track_history"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:layout_width="wrap_content"
@@ -262,16 +255,16 @@
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mOpenAbout}"
                     android:id="@+id/setting_others_about"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
                     android:orientation="horizontal"
                     android:layout_marginStart="@dimen/dp_32"
-                    android:focusable="true"
                     app:layout_constraintStart_toEndOf="@+id/setting_others_reset_setting"
                     app:layout_constraintTop_toTopOf="@id/setting_others_reset_setting"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
@@ -322,15 +315,15 @@
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     clickCommand="@{viewModel.mClearMemory}"
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/setting_others_clear_memory"
                     android:layout_width="@dimen/dp_536"
                     android:layout_height="@dimen/dp_192"
                     android:orientation="horizontal"
                     android:layout_marginTop="@dimen/dp_32"
-                    android:focusable="true"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/setting_others_reset_setting"
-                    android:background="@drawable/bg_setting_others_selector">
+                    android:background="@drawable/bg_setting_others_selector_mfc">
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"

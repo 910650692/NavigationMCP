@@ -38,6 +38,7 @@
                 app:nudgeUp="@+id/focus_content">
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 clickCommand="@{viewModel.mFinishPrivacy}"
                 android:layout_width="@dimen/dp_74"
                 android:layout_height="@dimen/dp_74"
@@ -113,13 +114,13 @@
                 android:orientation="horizontal">
 
                 <com.sgm.navi.ui.view.SkinRadioButton
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mOneYearPrivacy}"
                     android:id="@+id/setting_others_privacy_one_year"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:focusable="true"
                     android:checked="@{viewModel.mIsOneYearPrivacy}"
                     android:background="@drawable/bg_setting_checkbox_selector"
                     android:gravity="center"
@@ -128,11 +129,11 @@
                     android:text="@string/setting_others_privacy_one_year" />
 
                 <com.sgm.navi.ui.view.SkinRadioButton
+                    style="@style/style_mfc_config_no_bg"
                     clickCommand="@{viewModel.mNeverPrivacy}"
                     android:id="@+id/setting_others_privacy_never"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:focusable="true"
                     android:layout_weight="1"
                     android:button="@null"
                     android:checked="@{viewModel.mIsNeverPrivacy}"

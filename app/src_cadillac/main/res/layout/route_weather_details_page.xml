@@ -63,13 +63,12 @@
             tools:text="孝感市" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             clickCommand="@{ViewModel.getCloseWeatherDetailsClick()}"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginTop="@dimen/dp_48"
             android:layout_marginEnd="@dimen/dp_36"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             android:src="@drawable/icon_poi_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

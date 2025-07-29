@@ -13,10 +13,9 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_196"
-        android:focusable="true"
-        android:background="@drawable/recycler_item_selector">
+        android:layout_height="@dimen/dp_196">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -126,13 +125,12 @@
             tools:text="当前终点" />
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/poi_to_navi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_32"
             android:minWidth="@dimen/dp_90"
-            android:focusable="true"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">

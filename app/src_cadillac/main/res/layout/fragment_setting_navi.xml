@@ -282,6 +282,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/map_display_des">
 
                     <com.sgm.navi.scene.ui.setting.DynamicCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mChargingStationClick}"
                         android:id="@+id/charging_station"
                         android:layout_width="@dimen/dp_344"
@@ -291,13 +292,13 @@
                         android:visibility="@{viewModel.mIsEVCar || viewModel.mIsPHEVCar ? View.VISIBLE : View.GONE}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
-                        android:focusable="true"
                         android:layout_marginEnd="@dimen/dp_36"
                         android:text="@string/setting_guide_charging_station"
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
                     <com.sgm.navi.scene.ui.setting.DynamicCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mRoadConditionClick}"
                         android:id="@+id/road_condition"
                         android:layout_width="@dimen/dp_344"
@@ -306,12 +307,12 @@
                         android:checked="@{viewModel.mIsRoadCondition}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
-                        android:focusable="true"
                         android:text="@string/setting_guide_road_condition"
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
                         android:textSize="@dimen/sp_46" />
 
                     <com.sgm.navi.scene.ui.setting.DynamicCheckBox
+                        style="@style/style_mfc_config_no_bg"
                         clickCommand="@{viewModel.mFavoritePointClick}"
                         android:id="@+id/favorite_point"
                         android:layout_width="@dimen/dp_344"
@@ -320,7 +321,6 @@
                         android:checked="@{viewModel.mIsFavoritePoint}"
                         android:background="@drawable/bg_setting_broadcast"
                         android:gravity="center"
-                        android:focusable="true"
                         android:layout_marginStart="@dimen/dp_36"
                         android:text="@string/setting_guide_favorite_point"
                         android:textColor="@drawable/setting_checkbox_text_color_selector"
@@ -371,6 +371,7 @@
                         android:orientation="horizontal">
 
                         <com.sgm.navi.ui.view.SkinRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mNaviTextSizeStandardClick}"
                             android:id="@+id/font_size_standard"
                             android:layout_width="0dp"
@@ -380,12 +381,12 @@
                             android:checked="@{viewModel.mIsMapTextSizeStandard}"
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_font_size_standard" />
 
                         <com.sgm.navi.ui.view.SkinRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mNaviTextSizeLargeClick}"
                             android:id="@+id/font_size_large"
                             android:layout_width="0dp"
@@ -395,7 +396,6 @@
                             android:checked="@{viewModel.mIsMapTextSizeLarge}"
                             android:background="@drawable/bg_setting_checkbox_selector"
                             android:gravity="center"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_font_size_large" />
@@ -444,6 +444,7 @@
                         android:orientation="horizontal">
 
                         <com.sgm.navi.ui.view.SkinRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapModel2DUpClick}"
                             android:id="@+id/navi_HeadUp"
                             android:layout_width="0dp"
@@ -453,12 +454,12 @@
                             android:checked="@{viewModel.mIsMapModel2DUp}"
                             android:background="@drawable/bg_setting_logo_selector"
                             android:gravity="center"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_HeadUp" />
 
                         <com.sgm.navi.ui.view.SkinRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapModel2DNorthClick}"
                             android:id="@+id/navi_NorthUp"
                             android:layout_width="0dp"
@@ -469,12 +470,12 @@
                             android:checked="@{viewModel.mIsMapModelNorthUp}"
                             android:background="@drawable/bg_setting_logo_selector"
                             android:gravity="center"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_NorthUp" />
 
                         <com.sgm.navi.ui.view.SkinRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapModel3DUpClick}"
                             android:id="@+id/navi_3D_HeadUp"
                             android:layout_width="0dp"
@@ -485,7 +486,6 @@
                             android:checked="@{viewModel.mIsMapModel3DUp}"
                             android:background="@drawable/bg_setting_logo_selector"
                             android:gravity="center"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             android:textColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_mode_3D_HeadUp" />
@@ -533,6 +533,7 @@
                         android:orientation="horizontal">
 
                         <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapLogoDefaultClick}"
                             android:id="@+id/setting_guide_car_logo_default"
                             android:layout_width="0dp"
@@ -546,7 +547,6 @@
                             app:drawableWidth="120"
                             app:drawableHeight="120"
                             android:background="@drawable/bg_car_logo_selector"
-                            android:focusable="true"
                             android:gravity="center_vertical"
                             android:text="@string/setting_guide_car_logo_default"
                             android:textSize="@dimen/sp_46"
@@ -554,6 +554,7 @@
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"/>
 
                         <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapLogoBrandClick}"
                             android:id="@+id/setting_guide_car_logo_brand"
                             android:layout_width="0dp"
@@ -569,13 +570,13 @@
                             android:paddingStart="@dimen/dp_40"
                             android:background="@drawable/bg_car_logo_selector"
                             android:gravity="center_vertical"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             app:normalTextColor="@color/setting_car_logo_text_gray"
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"
                             android:text="@string/setting_guide_car_logo_brand" />
 
                         <com.sgm.navi.scene.ui.setting.DrawableCenterRadioButton
+                            style="@style/style_mfc_config_no_bg"
                             clickCommand="@{viewModel.mSwitchMapLogoSpeedClick}"
                             android:id="@+id/setting_guide_car_logo_speed"
                             android:layout_width="0dp"
@@ -592,7 +593,6 @@
                             android:visibility="gone"
                             android:background="@drawable/bg_car_logo_selector"
                             android:gravity="center_vertical"
-                            android:focusable="true"
                             android:textSize="@dimen/sp_46"
                             app:normalTextColor="@color/setting_car_logo_text_gray"
                             app:selectedTextColor="@color/setting_bg_tab_text_unselect"

@@ -31,27 +31,25 @@
             tools:visibility="visible" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             android:id="@+id/route_detail_info_img_close"
             clickCommand="@{ViewModel.getCloseDetailsRouteClick()}"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_71"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
-            android:focusedByDefault="true"
             android:src="@drawable/img_route_back"
             app:layout_constraintBottom_toBottomOf="@+id/route_detail_info_bg_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/route_detail_info_bg_title" />
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/route_detail_info_tv_sim_navi"
             clickCommand="@{ViewModel.getStartSimNaviClick()}"
             android:layout_width="@dimen/dp_240"
             android:layout_height="@dimen/dp_96"
             android:layout_marginEnd="@dimen/dp_81"
             android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
-            android:focusable="true"
             android:gravity="center"
             android:text="@string/route_sim_navi"
             android:textColor="@color/text_route_defult"
@@ -63,6 +61,7 @@
             tools:visibility="visible" />
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/route_detail_info_tv_avoid"
             clickCommand="@{ViewModel.getAvoidClick()}"
             android:layout_width="@dimen/dp_240"
@@ -70,7 +69,6 @@
             android:layout_marginEnd="@dimen/dp_81"
             android:background="@{ViewModel.getAvoidBackground() ? @drawable/bg_base_mfc_cadillac_blue_bg_selector : @drawable/bg_base_mfc_cadillac_gery_bg_selector}"
             android:clickable="@{ViewModel.getAvoidClickable()}"
-            android:focusable="true"
             android:gravity="center"
             android:text="@string/route_avoid"
             android:textColor="@{ViewModel.getAvoidTestColor()}"
@@ -82,13 +80,13 @@
             tools:visibility="gone" />
 
         <com.sgm.navi.ui.view.SkinTextView
+            style="@style/style_mfc_config_no_bg"
             android:id="@+id/route_detail_info_tv_avoid_road"
             clickCommand="@{ViewModel.getAvoidRoadClick()}"
             android:layout_width="@dimen/dp_240"
             android:layout_height="@dimen/dp_96"
             android:layout_marginEnd="@dimen/dp_30"
             android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
-            android:focusable="true"
             android:gravity="center"
             android:text="@string/route_avoid_road"
             android:textColor="@color/route_white"

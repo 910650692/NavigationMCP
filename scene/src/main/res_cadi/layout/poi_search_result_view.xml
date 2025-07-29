@@ -224,13 +224,13 @@
                 </com.sgm.navi.ui.view.PullToRefreshLayout>
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/route_charge_list_along_way_sure"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
-                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/dsc_confirm"
                     android:textColor="@color/text_route_button_title"
@@ -240,13 +240,13 @@
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config_no_bg"
                     android:id="@+id/route_charge_list_along_way_cancel"
                     android:layout_width="@dimen/dp_342"
                     android:layout_height="@dimen/dp_120"
                     android:layout_marginEnd="@dimen/dp_20"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
-                    android:focusable="true"
                     android:gravity="center"
                     android:text="@string/dsc_cancel"
                     android:textColor="@color/text_route_defult"

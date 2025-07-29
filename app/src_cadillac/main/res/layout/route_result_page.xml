@@ -11,6 +11,7 @@
             name="ViewModel"
             type="com.sgm.navi.hmi.route.RouteViewModel" />
     </data>
+<!--    TODO  布局较为复杂 需要MFC 验证-->
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,6 +31,7 @@
             android:paddingVertical="@dimen/dp_51">
 
             <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
                 android:id="@+id/route_line_info_img_close"
                 clickCommand="@{ViewModel.getCloseRouteClick()}"
                 android:layout_width="@dimen/dp_74"
@@ -44,41 +46,44 @@
                 android:src="@drawable/img_route_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <com.sgm.navi.ui.view.SkinView
+            
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/route_line_info_tv_search_waypoint_bg"
                 clickCommand="@{ViewModel.getAlongWaySearchClick()}"
                 android:layout_width="@dimen/dp_220"
                 android:layout_height="@dimen/dp_74"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="@id/route_line_tv_title"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/route_line_tv_title" />
+                app:layout_constraintTop_toTopOf="@id/route_line_tv_title">
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/route_line_info_tv_search_waypoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:focusable="false"
-                android:text="@string/route_along_search"
-                android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintBottom_toBottomOf="@id/route_line_tv_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/route_line_tv_title" />
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_line_info_tv_search_waypoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:focusable="false"
+                    android:text="@string/route_along_search"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/route_line_info_img_search_waypoint"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:focusable="false"
-                android:src="@drawable/img_route_add_point"
-                app:layout_constraintBottom_toBottomOf="@id/route_line_tv_title"
-                app:layout_constraintEnd_toStartOf="@id/route_line_info_tv_search_waypoint"
-                app:layout_constraintTop_toTopOf="@id/route_line_tv_title" />
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/route_line_info_img_search_waypoint"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:focusable="false"
+                    android:src="@drawable/img_route_add_point"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/route_line_info_tv_search_waypoint"
+                    app:layout_constraintTop_toTopOf="parent" />
+                
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+     
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_cicle_start_bg"
@@ -256,14 +261,13 @@
                 tools:text="终点" />
 
             <com.sgm.navi.ui.view.SkinView
+                style="@style/style_mfc_config"
                 android:id="@+id/route_line_via_open_close"
                 clickCommand="@{ViewModel.getOpenCloseViaClick()}"
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_84"
                 android:layout_marginStart="@dimen/dp_310"
                 android:layout_marginTop="@dimen/dp_n_32"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:focusable="true"
                 android:visibility="@{ViewModel.getViaPoiListVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/route_line_info_via_end_name" />
@@ -334,96 +338,88 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_118">
 
-                    <com.sgm.navi.ui.view.SkinView
-                        android:id="@+id/route_line_info_bg_prefer"
-                        android:layout_width="@dimen/dp_820"
-                        android:layout_height="match_parent"
-                        android:focusable="false"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.sgm.navi.ui.view.SkinView
+                    <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config"
                         android:id="@+id/route_line_info_tv_prefer_bg"
                         clickCommand="@{ViewModel.getPreferenceClick()}"
                         android:layout_width="@dimen/dp_420"
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_20"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
                         android:nextFocusForward="@id/route_line_info_switch_energy_bg"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer" />
+                        app:layout_constraintTop_toTopOf="parent" >
+                        <com.sgm.navi.ui.view.SkinTextView
+                            android:id="@+id/route_line_info_tv_prefer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_40"
+                            android:ellipsize="end"
+                            android:maxWidth="@dimen/dp_398"
+                            android:maxLines="1"
+                            android:text="@{ViewModel.getPreferText()}"
+                            android:textColor="@color/text_route_defult"
+                            android:textSize="@dimen/sp_38"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="高德推荐" />
 
-                    <com.sgm.navi.ui.view.SkinTextView
-                        android:id="@+id/route_line_info_tv_prefer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_40"
-                        android:ellipsize="end"
-                        android:maxWidth="@dimen/dp_398"
-                        android:maxLines="1"
-                        android:text="@{ViewModel.getPreferText()}"
-                        android:textColor="@color/text_route_defult"
-                        android:textSize="@dimen/sp_38"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer"
-                        tools:text="高德推荐" />
+                        <com.sgm.navi.ui.view.SkinImageView
+                            android:id="@+id/route_line_info_img_prefer"
+                            android:layout_width="@dimen/dp_54"
+                            android:layout_height="@dimen/dp_54"
+                            android:layout_marginStart="@dimen/dp_8"
+                            android:src="@{ViewModel.getRoutePreferenceDrawableVisibility()}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/route_line_info_tv_prefer"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@drawable/img_route_down" />
+                    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                    <com.sgm.navi.ui.view.SkinImageView
-                        android:id="@+id/route_line_info_img_prefer"
-                        android:layout_width="@dimen/dp_54"
-                        android:layout_height="@dimen/dp_54"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:src="@{ViewModel.getRoutePreferenceDrawableVisibility()}"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintStart_toEndOf="@id/route_line_info_tv_prefer"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer"
-                        tools:src="@drawable/img_route_down" />
-
-                    <com.sgm.navi.ui.view.SkinView
+                    <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config"
                         android:id="@+id/route_line_info_switch_energy_bg"
                         clickCommand="@{ViewModel.getRouteEnergyClick()}"
                         android:layout_width="@dimen/dp_300"
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginEnd="@dimen/dp_20"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
                         android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" >
+                        <com.sgm.navi.ui.view.SkinSwitch
+                            android:id="@+id/route_line_info_switch_energy"
+                            android:layout_width="@dimen/dp_120"
+                            android:layout_height="@dimen/dp_50"
+                            android:layout_marginTop="@dimen/dp_18"
+                            android:button="@drawable/switch_route_button"
+                            android:checked="false"
+                            android:focusable="false"
+                            android:thumb="@null"
+                            android:track="@null"
+                            android:background="@android:color/transparent"
+                            android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.sgm.navi.ui.view.SkinSwitch
-                        android:id="@+id/route_line_info_switch_energy"
-                        android:layout_width="@dimen/dp_120"
-                        android:layout_height="@dimen/dp_50"
-                        android:layout_marginTop="@dimen/dp_18"
-                        android:layout_marginEnd="@dimen/dp_40"
-                        android:button="@drawable/switch_route_button"
-                        android:checked="false"
-                        android:focusable="false"
-                        android:thumb="@null"
-                        android:track="@null"
-                        android:background="@android:color/transparent"
-                        android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer" />
+                        <com.sgm.navi.ui.view.SkinTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_48"
+                            android:layout_marginEnd="@dimen/dp_10"
+                            android:focusable="false"
+                            android:text="@string/route_energy_replenishment_planning"
+                            android:textColor="@color/text_route_defult"
+                            android:textSize="@dimen/sp_38"
+                            android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/route_line_info_switch_energy"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-                    <com.sgm.navi.ui.view.SkinTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_48"
-                        android:layout_marginEnd="@dimen/dp_10"
-                        android:focusable="false"
-                        android:text="@string/route_energy_replenishment_planning"
-                        android:textColor="@color/text_route_defult"
-                        android:textSize="@dimen/sp_38"
-                        android:visibility="@{ViewModel.getBatterCheckBoxVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_prefer"
-                        app:layout_constraintEnd_toStartOf="@+id/route_line_info_switch_energy"
-                        app:layout_constraintTop_toTopOf="@id/route_line_info_bg_prefer" />
+
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <com.sgm.navi.ui.view.SkinView
@@ -436,62 +432,63 @@
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_100"
+                    android:focusable="false"
                     android:background="@{ViewModel.getRestrictionBackground()}"
                     android:visibility="@{ViewModel.getRestrictionVisibility() ? View.VISIBLE : View.GONE}">
 
-                    <com.sgm.navi.ui.view.SkinView
+                    <com.sgm.navi.ui.view.SkinConstraintLayout
+                        style="@style/style_mfc_config"
                         android:id="@+id/route_line_info_scene_route_restriction"
                         clickCommand="@{ViewModel.getRestrictionClick()}"
                         android:layout_width="@dimen/dp_820"
                         android:layout_height="@dimen/dp_100"
-                        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
                         android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
                         app:layout_constraintTop_toBottomOf="@+id/route_line_info_prefer_line"
-                        tools:background="#22FF0000" />
+                         >
+                        <com.sgm.navi.ui.view.SkinView
+                            android:id="@+id/route_line_info_scene_route_restriction_bg"
+                            android:layout_width="@dimen/dp_40"
+                            android:layout_height="match_parent"
+                            android:focusable="false" />
 
-                    <com.sgm.navi.ui.view.SkinView
-                        android:id="@+id/route_line_info_scene_route_restriction_bg"
-                        android:layout_width="@dimen/dp_40"
-                        android:layout_height="match_parent"
-                        android:focusable="false" />
+                        <com.sgm.navi.ui.view.SkinImageView
+                            android:id="@+id/route_line_info_scene_route_restriction_left_img"
+                            android:layout_width="@dimen/dp_65"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_marginEnd="@dimen/dp_15"
+                            android:focusable="false"
+                            android:src="@drawable/img_basic_car"
+                            android:visibility="@{ViewModel.getRestrictionCarVisibility() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
+                            app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_bg"
+                            app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
 
-                    <com.sgm.navi.ui.view.SkinImageView
-                        android:id="@+id/route_line_info_scene_route_restriction_left_img"
-                        android:layout_width="@dimen/dp_65"
-                        android:layout_height="@dimen/dp_35"
-                        android:layout_marginEnd="@dimen/dp_15"
-                        android:focusable="false"
-                        android:src="@drawable/img_basic_car"
-                        android:visibility="@{ViewModel.getRestrictionCarVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
-                        app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_bg"
-                        app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
+                        <com.sgm.navi.ui.view.SkinTextView
+                            android:id="@+id/route_line_info_scene_route_restriction_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:text="@{ViewModel.getRestriction()}"
+                            android:textColor="@{ViewModel.getRestrictionTextColor()}"
+                            android:textSize="@dimen/sp_30"
+                            android:visibility="@{ViewModel.getRestrictionVisibility() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
+                            app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_left_img"
+                            app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction"
+                            tools:text="设置车牌，避开限行"
+                            tools:textColor="#DDFF0000" />
 
-                    <com.sgm.navi.ui.view.SkinTextView
-                        android:id="@+id/route_line_info_scene_route_restriction_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:text="@{ViewModel.getRestriction()}"
-                        android:textColor="@{ViewModel.getRestrictionTextColor()}"
-                        android:textSize="@dimen/sp_30"
-                        android:visibility="@{ViewModel.getRestrictionVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
-                        app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_left_img"
-                        app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction"
-                        tools:text="设置车牌，避开限行"
-                        tools:textColor="#DDFF0000" />
+                        <com.sgm.navi.ui.view.SkinImageView
+                            android:layout_width="@dimen/dp_45"
+                            android:layout_height="@dimen/dp_45"
+                            android:focusable="false"
+                            android:src="@drawable/img_right_back"
+                            android:visibility="@{ViewModel.getRestrictionRightBackVisibility() ? View.VISIBLE : View.GONE}"
+                            app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
+                            app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_text"
+                            app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
 
-                    <com.sgm.navi.ui.view.SkinImageView
-                        android:layout_width="@dimen/dp_45"
-                        android:layout_height="@dimen/dp_45"
-                        android:focusable="false"
-                        android:src="@drawable/img_right_back"
-                        android:visibility="@{ViewModel.getRestrictionRightBackVisibility() ? View.VISIBLE : View.GONE}"
-                        app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
-                        app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_text"
-                        app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
+                    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
@@ -515,7 +512,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.sgm.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config_no_bg"
                 android:id="@+id/route_line_info_bg_route_start_navi"
                 clickCommand="@{ViewModel.getStartNaviClick()}"
                 android:layout_width="@dimen/dp_432"
@@ -523,30 +521,31 @@
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginBottom="@dimen/dp_30"
                 android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
-                android:focusable="true"
-                android:focusedByDefault="true"
                 android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" >
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/icon_details_bottom_go_here"
+                    android:drawablePadding="@dimen/dp_14"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="@{ViewModel.getCountDownHint()}"
+                    android:textColor="@color/text_route_button_title"
+                    android:textSize="@dimen/sp_46"
+                    android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_route_start_navi"
+                    app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_route_start_navi"
+                    app:layout_constraintStart_toStartOf="@id/route_line_info_bg_route_start_navi"
+                    app:layout_constraintTop_toTopOf="@id/route_line_info_bg_route_start_navi"
+                    tools:text="开始导航" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/icon_details_bottom_go_here"
-                android:drawablePadding="@dimen/dp_14"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="@{ViewModel.getCountDownHint()}"
-                android:textColor="@color/text_route_button_title"
-                android:textSize="@dimen/sp_46"
-                android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
-                app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_route_start_navi"
-                app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_route_start_navi"
-                app:layout_constraintStart_toStartOf="@id/route_line_info_bg_route_start_navi"
-                app:layout_constraintTop_toTopOf="@id/route_line_info_bg_route_start_navi"
-                tools:text="开始导航" />
 
-            <com.sgm.navi.ui.view.SkinView
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config_no_bg"
                 android:id="@+id/route_line_info_bg_route_refresh"
                 clickCommand="@{ViewModel.getRefreshRouteClick()}"
                 android:layout_width="@dimen/dp_262"
@@ -554,26 +553,27 @@
                 android:layout_marginStart="@dimen/dp_46"
                 android:layout_marginBottom="@dimen/dp_30"
                 android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
-                android:focusable="true"
                 android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/route_line_info_bg_route_start_navi" />
+                app:layout_constraintStart_toEndOf="@+id/route_line_info_bg_route_start_navi" >
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/img_route_refresh"
+                    android:drawablePadding="@dimen/dp_8"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="@string/route_refresh"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_46"
+                    android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_route_refresh"
+                    app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_route_refresh"
+                    app:layout_constraintStart_toStartOf="@id/route_line_info_bg_route_refresh"
+                    app:layout_constraintTop_toTopOf="@id/route_line_info_bg_route_refresh" />
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/img_route_refresh"
-                android:drawablePadding="@dimen/dp_8"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="@string/route_refresh"
-                android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_46"
-                android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.GONE : View.VISIBLE}"
-                app:layout_constraintBottom_toBottomOf="@id/route_line_info_bg_route_refresh"
-                app:layout_constraintEnd_toEndOf="@id/route_line_info_bg_route_refresh"
-                app:layout_constraintStart_toStartOf="@id/route_line_info_bg_route_refresh"
-                app:layout_constraintTop_toTopOf="@id/route_line_info_bg_route_refresh" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
 
             <!--算路偏好-->
             <com.sgm.navi.scene.ui.route.SceneRoutePreferenceView

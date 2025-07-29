@@ -59,13 +59,12 @@
             tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             clickCommand="@{ViewModel.getCloseRouteSearchDetailClick()}"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginTop="@dimen/dp_33"
             android:layout_marginEnd="@dimen/dp_36"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             android:src="@drawable/icon_poi_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -85,12 +84,12 @@
                 android:layout_marginEnd="@dimen/dp_52">
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config"
                     android:id="@+id/poi_second_address"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_10"
                     android:ellipsize="end"
-                    android:focusable="true"
                     android:maxLines="2"
                     android:text="@{ViewModel.getRouteSearchAddress()}"
                     android:textColor="@color/text_route_defult"
@@ -100,13 +99,13 @@
                     tools:text="世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config"
                     android:id="@+id/poi_distance_time"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
                     android:layout_marginEnd="@dimen/dp_10"
-                    android:maxLines="1"
-                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="@{ViewModel.getRouteSearchTimeAndDistance()}"
                     android:textColor="@color/text_route_detail_title"
                     android:textSize="@dimen/sp_46"
@@ -126,12 +125,12 @@
                     app:layout_constraintTop_toTopOf="@+id/poi_arrival_capacity" />
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config"
                     android:id="@+id/poi_arrival_capacity"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_20"
                     android:layout_marginEnd="@dimen/dp_10"
-                    android:focusable="true"
                     android:maxLines="1"
                     android:text="@{ViewModel.getRouteSearchElec()}"
                     android:textColor="@color/text_route_detail_title"
@@ -196,6 +195,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView
+                style="@style/style_mfc_config_no_bg"
                 android:id="@+id/stv_start_route"
                 clickCommand="@{ViewModel.getRouteSearchDetailsAddRemoveClick()}"
                 android:layout_width="@dimen/dp_0"
@@ -203,7 +203,6 @@
                 android:layout_marginEnd="@dimen/dp_40"
                 android:layout_marginBottom="@dimen/dp_2"
                 android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
-                android:focusable="true"
                 android:gravity="center"
                 android:text="@{ViewModel.getRouteSearchDeailsAddRemoveVia()}"
                 android:textColor="@color/route_white"
@@ -223,12 +222,11 @@
                 app:layout_constraintStart_toEndOf="@+id/stv_start_route">
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config"
                     android:id="@+id/stl_phone"
                     clickCommand="@{ViewModel.getRouteSearchPhoneClick()}"
                     android:layout_width="@dimen/dp_114"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
                     app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent">
@@ -258,13 +256,12 @@
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config"
                     android:id="@+id/stl_around_search"
                     clickCommand="@{ViewModel.getRouteSearchAroundClick}"
                     android:layout_width="@dimen/dp_114"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_20"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
                     android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/stl_poi_favorites"
                     app:layout_constraintStart_toEndOf="@+id/stl_phone">
@@ -293,13 +290,12 @@
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
+                    style="@style/style_mfc_config"
                     android:id="@+id/stl_poi_favorites"
                     clickCommand="@{ViewModel.getRouteSearchFavoriteClick()}"
                     android:layout_width="@dimen/dp_114"
                     android:layout_height="match_parent"
                     android:layout_marginStart="@dimen/dp_20"
-                    android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                    android:focusable="true"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/stl_around_search">

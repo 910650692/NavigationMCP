@@ -14,9 +14,8 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config"
         android:layout_width="match_parent"
-        android:focusable="true"
-        android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_52">
 

@@ -70,8 +70,8 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 clickCommand="@{viewModel.mOpenProtocolCenterTerm}"
-                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_152">
 
@@ -108,9 +108,9 @@
                 android:background="@color/setting_line"/>
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 clickCommand="@{viewModel.mOpenProtocolCenterPrivacy}"
                 android:layout_width="match_parent"
-                android:focusable="true"
                 android:layout_height="@dimen/dp_152"
                 android:layout_marginTop="@dimen/dp_24">
 
@@ -164,45 +164,39 @@
                 android:layout_height="@dimen/dp_178">
 
                 <com.android.car.ui.FocusArea
+                    android:id="@+id/focusArea"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <com.sgm.navi.ui.view.SkinView
-                        clickCommand="@{viewModel.mCloseProtocolCenter}"
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/protocol_center_back"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
-                        android:clickable="true"
                         android:layout_marginStart="@dimen/dp_81"
-                        android:layout_marginTop="@dimen/dp_74"/>
-
+                        android:layout_marginTop="@dimen/dp_74"
+                        android:focusable="false"
+                        android:src="@drawable/img_back"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </com.android.car.ui.FocusArea>
 
-                <com.sgm.navi.ui.view.SkinImageView
-                    android:id="@+id/protocol_center_back"
-                    android:layout_width="@dimen/dp_80"
-                    android:layout_height="@dimen/dp_80"
-                    android:src="@drawable/img_back"
-                    android:focusable="false"
-                    android:layout_marginStart="@dimen/dp_81"
-                    android:layout_marginTop="@dimen/dp_74"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/protocol_center_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/reminder_page_service_title"
-                    android:textSize="@dimen/sp_52"
-                    android:focusable="false"
-                    android:textColor="@color/color_black_90"
                     android:layout_marginStart="@dimen/dp_201"
-                    app:layout_constraintTop_toTopOf="@+id/protocol_center_back"
-                    app:layout_constraintBottom_toBottomOf="@+id/protocol_center_back"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    android:focusable="false"
+                    android:text="@string/reminder_page_service_title"
+                    android:textColor="@color/color_black_90"
+                    android:textSize="@dimen/sp_52"
+                    app:layout_constraintBottom_toBottomOf="@+id/focusArea"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/protocol_center_back" />
+
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 

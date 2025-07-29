@@ -21,11 +21,10 @@
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:id="@+id/item_root_view_service"
             android:layout_width="@dimen/dp_820"
             android:layout_height="@dimen/dp_168"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            android:focusable="true"
             android:paddingStart="@dimen/dp_20"
             tools:visibility="visible">
 
@@ -70,39 +69,40 @@
                 app:layout_constraintStart_toStartOf="@+id/route_item_service_name"
                 tools:text="198km | 临港服务区临港服务区临港服务区临港服务区临港服务区" />
 
-            <com.sgm.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config"
                 android:id="@+id/route_item_service_add_bg"
                 android:layout_width="@dimen/dp_146"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" >
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/route_item_service_add_img"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginEnd="@dimen/dp_46"
+                    android:src="@drawable/img_route_search_add"
+                    app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
+                    app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
+                    app:layout_constraintTop_toTopOf="@+id/route_item_service_add_bg" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/route_item_service_add_img"
-                android:layout_width="@dimen/dp_74"
-                android:layout_height="@dimen/dp_74"
-                android:layout_marginTop="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_46"
-                android:src="@drawable/img_route_search_add"
-                app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
-                app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
-                app:layout_constraintTop_toTopOf="@+id/route_item_service_add_bg" />
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_item_service_add_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_46"
+                    android:layout_marginBottom="@dimen/dp_18"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_38"
+                    app:layout_constraintBottom_toBottomOf="@+id/route_item_service_add_bg"
+                    app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
+                    app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
+                    tools:text="已添加" />
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/route_item_service_add_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_46"
-                android:layout_marginBottom="@dimen/dp_18"
-                android:textColor="@color/text_route_defult"
-                android:textSize="@dimen/sp_38"
-                app:layout_constraintBottom_toBottomOf="@+id/route_item_service_add_bg"
-                app:layout_constraintEnd_toEndOf="@+id/route_item_service_add_bg"
-                app:layout_constraintStart_toStartOf="@+id/route_item_service_add_bg"
-                tools:text="已添加" />
+
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 

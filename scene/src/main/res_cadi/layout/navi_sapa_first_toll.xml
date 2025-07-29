@@ -28,249 +28,246 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinView
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             android:layout_width="@dimen/dp_332"
             android:layout_height="@dimen/dp_200"
-            android:focusable="true"
             clickCommand="@{() -> naviSapa.onClick(0)}"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.sgm.navi.ui.view.SkinView
+            <com.sgm.navi.ui.view.SkinLinearLayout
+                android:id="@+id/first_toll_services"
+                android:layout_width="@dimen/dp_174"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_32"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_only_service_service_gas_station"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_refuel_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_only_service_service_canteen"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_gourmet_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_only_toll_service_maintenance"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_maintenance_white_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_toll_service_charge_station"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_lightning_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceChargeStationVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_toll_service_lavatory"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_lavatory_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_toll_service_buy"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_buy_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceBuyVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_toll_service_hotel"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:focusable="false"
+                    android:background="@drawable/img_groggery_42"
+                    android:visibility="@{naviSapa.mFirstTollServiceHotelVisible ? View.VISIBLE : View.GONE}" />
+
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_first_toll_service_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_36"
+                android:focusable="false"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_210"
+                android:maxLines="1"
+                android:text="@{naviSapa.mFirstTollServiceDistance}"
+                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="5.0公里" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/siv_first_toll_service_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:focusable="false"
+                android:background="@{naviSapa.mFirstTollServiceTagBgColor}"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxWidth="@dimen/dp_120"
+                android:maxLines="1"
+                android:maxLength="3"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:paddingVertical="@dimen/dp_1"
+                android:text="@{naviSapa.mFirstTollServiceTag}"
+                android:textColor="@{naviSapa.mFirstTollServiceTagTextColor}"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="经" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_first_toll_service_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_32"
+                android:layout_marginBottom="@dimen/dp_32"
+                android:focusable="false"
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_95"
+                android:maxLines="1"
+                android:text="@{naviSapa.mFirstTollServiceName}"
+                android:textColor="@color/navi_color_FFFFFF_80"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="项城" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
             clickCommand="@{() -> naviSapa.onClick(1)}"
             android:layout_width="@dimen/dp_488"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.sgm.navi.ui.view.SkinImageView
-            android:layout_width="@dimen/dp_54"
-            android:layout_height="@dimen/dp_54"
-            android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_32"
-            android:focusable="false"
-            android:background="@drawable/img_toll_station_42"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_first_toll_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_96"
-            android:layout_marginTop="@dimen/dp_24"
-            android:focusable="false"
-            android:ellipsize="end"
-            android:maxWidth="@dimen/dp_260"
-            android:maxLines="1"
-            android:text="@{naviSapa.mFirstTollName}"
-            android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_46"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="名字有点长的收费站" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_first_service_toll_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginBottom="@dimen/dp_36"
-            android:text="@{naviSapa.mFirstTollDistance}"
-            android:textColor="@color/navi_color_FFFFFF_80"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="28.8公里" />
-
-        <com.sgm.navi.ui.view.SkinLinearLayout
-            android:id="@+id/sll_first_toll_services"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:layout_marginStart="@dimen/dp_2"
-            app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_toll_distance"
-            app:layout_constraintStart_toEndOf="@+id/stv_first_service_toll_distance"
-            app:layout_constraintTop_toTopOf="@+id/stv_first_service_toll_distance">
-
+            app:layout_constraintStart_toStartOf="parent" >
             <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_service_toll_etc"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_2"
+                android:layout_marginStart="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_32"
                 android:focusable="false"
-                android:background="@drawable/img_etc_42"
-                android:visibility="@{naviSapa.mFirstTollEtcVisible ? View.VISIBLE : View.GONE}" />
+                android:background="@drawable/img_toll_station_42"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_toll_alipay"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_2"
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_first_toll_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_96"
+                android:layout_marginTop="@dimen/dp_24"
                 android:focusable="false"
-                android:background="@drawable/img_zf_42"
-                android:visibility="@{naviSapa.mFirstTollAlipayVisible ? View.VISIBLE : View.GONE}" />
+                android:ellipsize="end"
+                android:maxWidth="@dimen/dp_260"
+                android:maxLines="1"
+                android:text="@{naviSapa.mFirstTollName}"
+                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textSize="@dimen/sp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="名字有点长的收费站" />
 
-        </com.sgm.navi.ui.view.SkinLinearLayout>
-
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/siv_first_toll_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_32"
-            android:focusable="false"
-            android:background="@{naviSapa.mFirstTollTagBgColor}"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxWidth="@dimen/dp_120"
-            android:maxLines="1"
-            android:maxLength="3"
-            android:paddingHorizontal="@dimen/dp_5"
-            android:paddingVertical="@dimen/dp_1"
-            android:text="@{naviSapa.mFirstTollTag}"
-            android:textColor="@{naviSapa.mFirstTollTagTextColor}"
-            android:textSize="@dimen/sp_32"
-            app:layout_constraintEnd_toEndOf="@+id/sapa_first_toll_service_bg"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="经" />
-
-        <com.sgm.navi.ui.view.SkinLinearLayout
-            android:id="@+id/first_toll_services"
-            android:layout_width="@dimen/dp_174"
-            android:layout_height="wrap_content"
-            android:focusable="false"
-            android:layout_marginStart="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_32"
-            app:layout_constraintStart_toEndOf="@+id/sapa_first_toll_service_bg"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_only_service_service_gas_station"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_first_service_toll_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:focusable="false"
-                android:background="@drawable/img_refuel_42"
-                android:visibility="@{naviSapa.mFirstTollServiceGasStationVisible ? View.VISIBLE : View.GONE}" />
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_36"
+                android:text="@{naviSapa.mFirstTollDistance}"
+                android:textColor="@color/navi_color_FFFFFF_80"
+                android:textSize="@dimen/sp_38"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="28.8公里" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_only_service_service_canteen"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
+            <com.sgm.navi.ui.view.SkinLinearLayout
+                android:id="@+id/sll_first_toll_services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:focusable="false"
-                android:background="@drawable/img_gourmet_42"
-                android:visibility="@{naviSapa.mFirstTollServiceCanteenVisible ? View.VISIBLE : View.GONE}" />
+                android:layout_marginStart="@dimen/dp_2"
+                app:layout_constraintBottom_toBottomOf="@+id/stv_first_service_toll_distance"
+                app:layout_constraintStart_toEndOf="@+id/stv_first_service_toll_distance"
+                app:layout_constraintTop_toTopOf="@+id/stv_first_service_toll_distance">
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_only_toll_service_maintenance"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_service_toll_etc"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_2"
+                    android:focusable="false"
+                    android:background="@drawable/img_etc_42"
+                    android:visibility="@{naviSapa.mFirstTollEtcVisible ? View.VISIBLE : View.GONE}" />
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/siv_first_toll_alipay"
+                    android:layout_width="@dimen/dp_54"
+                    android:layout_height="@dimen/dp_54"
+                    android:layout_marginEnd="@dimen/dp_2"
+                    android:focusable="false"
+                    android:background="@drawable/img_zf_42"
+                    android:visibility="@{naviSapa.mFirstTollAlipayVisible ? View.VISIBLE : View.GONE}" />
+
+            </com.sgm.navi.ui.view.SkinLinearLayout>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/siv_first_toll_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginEnd="@dimen/dp_32"
                 android:focusable="false"
-                android:background="@drawable/img_maintenance_white_42"
-                android:visibility="@{naviSapa.mFirstTollServiceMaintenanceVisible ? View.VISIBLE : View.GONE}" />
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_toll_service_charge_station"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:focusable="false"
-                android:background="@drawable/img_lightning_42"
-                android:visibility="@{naviSapa.mFirstTollServiceChargeStationVisible ? View.VISIBLE : View.GONE}" />
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_toll_service_lavatory"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:focusable="false"
-                android:background="@drawable/img_lavatory_42"
-                android:visibility="@{naviSapa.mFirstTollServiceLavatoryVisible ? View.VISIBLE : View.GONE}" />
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_toll_service_buy"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:focusable="false"
-                android:background="@drawable/img_buy_42"
-                android:visibility="@{naviSapa.mFirstTollServiceBuyVisible ? View.VISIBLE : View.GONE}" />
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/siv_first_toll_service_hotel"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:focusable="false"
-                android:background="@drawable/img_groggery_42"
-                android:visibility="@{naviSapa.mFirstTollServiceHotelVisible ? View.VISIBLE : View.GONE}" />
-
-        </com.sgm.navi.ui.view.SkinLinearLayout>
-
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_first_toll_service_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginBottom="@dimen/dp_36"
-            android:focusable="false"
-            android:ellipsize="end"
-            android:maxWidth="@dimen/dp_210"
-            android:maxLines="1"
-            android:text="@{naviSapa.mFirstTollServiceDistance}"
-            android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_38"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/sapa_first_toll_service_bg"
-            tools:text="5.0公里" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/siv_first_toll_service_tag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_32"
-            android:focusable="false"
-            android:background="@{naviSapa.mFirstTollServiceTagBgColor}"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxWidth="@dimen/dp_120"
-            android:maxLines="1"
-            android:maxLength="3"
-            android:paddingHorizontal="@dimen/dp_5"
-            android:paddingVertical="@dimen/dp_1"
-            android:text="@{naviSapa.mFirstTollServiceTag}"
-            android:textColor="@{naviSapa.mFirstTollServiceTagTextColor}"
-            android:textSize="@dimen/sp_32"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="经" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_first_toll_service_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_32"
-            android:layout_marginBottom="@dimen/dp_32"
-            android:focusable="false"
-            android:ellipsize="end"
-            android:maxWidth="@dimen/dp_95"
-            android:maxLines="1"
-            android:text="@{naviSapa.mFirstTollServiceName}"
-            android:textColor="@color/navi_color_FFFFFF_80"
-            android:textSize="@dimen/sp_46"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="项城" />
+                android:background="@{naviSapa.mFirstTollTagBgColor}"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxWidth="@dimen/dp_120"
+                android:maxLines="1"
+                android:maxLength="3"
+                android:paddingHorizontal="@dimen/dp_5"
+                android:paddingVertical="@dimen/dp_1"
+                android:text="@{naviSapa.mFirstTollTag}"
+                android:textColor="@{naviSapa.mFirstTollTagTextColor}"
+                android:textSize="@dimen/sp_32"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="经" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

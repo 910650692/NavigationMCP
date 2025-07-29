@@ -13,12 +13,12 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.sgm.navi.ui.view.SkinConstraintLayout
+        style="@style/style_mfc_config_no_bg"
         android:id="@+id/recommend_voice_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_168"
-        android:focusable="true"
-        android:background="@drawable/bg_setting_others_selector"
+        android:background="@drawable/bg_setting_others_selector_mfc"
         android:layout_marginTop="@dimen/dp_24">
 
         <com.sgm.navi.ui.view.SkinImageView
@@ -128,6 +128,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

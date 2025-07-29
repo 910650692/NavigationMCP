@@ -32,6 +32,7 @@
             android:focusable="false">
 
             <com.sgm.navi.ui.view.SkinTextView
+                style="@style/style_mfc_config"
                 android:id="@+id/base_map_message_center_operate"
                 clickCommand="@{ViewModel.messageCenterOperateClick}"
                 android:layout_width="wrap_content"
@@ -39,8 +40,6 @@
                 android:includeFontPadding="false"
                 android:text="@{ViewModel.messageCenterOperate}"
                 android:textColor="@color/message_center_operate"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
                 android:textSize="@dimen/sp_52" />
 
             <com.sgm.navi.ui.view.SkinImageView
@@ -113,15 +112,14 @@
         </com.sgm.navi.ui.view.SkinLinearLayout>
 
         <com.sgm.navi.ui.view.SkinImageView
+            style="@style/style_mfc_config"
             android:id="@+id/message_center_close"
             clickCommand="@{ViewModel.messageCenterGone}"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_65"
             android:src="@drawable/img__message_center_close"
-            android:focusable="true"
             android:visibility="@{ViewModel.messageCloseVisibility ? View.VISIBLE : View.GONE}"
-            android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
             />
 
     </com.sgm.navi.ui.view.SkinLinearLayout>

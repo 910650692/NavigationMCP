@@ -102,8 +102,8 @@
 
                     <!--按钮下载状态-->
                     <com.sgm.navi.scene.ui.setting.DownloadBtnView
+                        style="@style/style_mfc_config"
                         android:id="@+id/item_download_status"
-                        android:focusable="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 

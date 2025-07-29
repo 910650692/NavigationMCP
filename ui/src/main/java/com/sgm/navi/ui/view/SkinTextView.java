@@ -141,7 +141,7 @@ public class SkinTextView extends AppCompatTextView {
         } else if (isPressed && mIsClickChangeColor) {
             // 触屏按压态
             setAlpha(0.6f);
-        } else {
+        } else if (mIsClickChangeColor){
             // 恢复默认透明度
             setAlpha(1.0f);
         }

@@ -103,21 +103,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路" />
 
-            <com.sgm.navi.ui.view.SkinView
-                android:id="@+id/route_item_via_delete_img"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
-                android:focusable="true"
-                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                android:layout_marginEnd="@dimen/dp_24"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/route_via_close"
-                android:layout_width="@dimen/dp_54"
-                android:layout_height="@dimen/dp_54"
+                style="@style/style_mfc_config"
+                android:id="@+id/route_item_via_delete_img"
+                android:paddingHorizontal="@dimen/dp_7"
+                android:paddingVertical="@dimen/dp_7"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="@dimen/dp_68"
                 android:layout_marginEnd="@dimen/dp_30"
-                android:focusable="false"
                 android:src="@drawable/img_route_via_remove_via"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
