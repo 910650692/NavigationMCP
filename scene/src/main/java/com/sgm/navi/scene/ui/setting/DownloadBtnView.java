@@ -89,7 +89,6 @@ public class DownloadBtnView extends ConstraintLayout {
      * @param data OfflineDatas
      */
     public void parseDownloadStatusInfo(final CityDownLoadInfo data) {
-        mLinearLayout.setGravity(Gravity.CENTER);
         switch (data.getTaskState()) {
             case UserDataCode.TASK_STATUS_CODE_READY:
                 if (data.isUpdate()) {
