@@ -246,6 +246,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     @Override
                     public void run() {
                         mViewModel.showActivatingView(true);
+                        mViewModel.dismissActivateFailedDialog();
                     }
                 });
             }

@@ -52,13 +52,6 @@ public class ActivateFailedDialog extends BaseFullScreenDialog<DialogActivateFai
             }
         });
 
-        mViewBinding.activateDialogCancel.setOnClickListener(v -> {
-            dismiss();
-            if (mDialogClickListener != null) {
-                mDialogClickListener.onCancelClick();
-            }
-        });
-
         mViewBinding.activateDialogTitle.setOnClickListener(v -> {
             final long now = System.currentTimeMillis();
             if (now - mLastClickTime < 500) {

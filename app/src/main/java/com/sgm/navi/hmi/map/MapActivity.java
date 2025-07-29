@@ -426,17 +426,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 Logger.e(TAG, "重试激活");
                 StartService.getInstance().startActivation();
             }
-
-            @Override
-            public void onCancelClick() {
-                Logger.e(TAG, "激活失败,手动退出应用");
-                ThreadManager.getInstance().asyncDelay(new Runnable() {
-                    @Override
-                    public void run() {
-                        StackManager.getInstance().exitApp();
-                    }
-                }, 1, TimeUnit.MINUTES);
-            }
         });
         mFailedDialog.changeDialogContent(errCode, msg);
         mFailedDialog.show();
