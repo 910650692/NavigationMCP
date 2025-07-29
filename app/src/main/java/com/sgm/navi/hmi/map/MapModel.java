@@ -237,8 +237,49 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private PhoneAddressDialog phoneAddressDialog;
 
-    private final ActivateUiStateManager.LoadingViewCallBack mActivateViewCallBack =
-            isShow -> ThreadManager.getInstance().postUi(() -> mViewModel.showActivatingView(isShow));
+    private final ActivateUiStateManager.LoadingViewCallBack mActivateStateCallBack = new ActivateUiStateManager.LoadingViewCallBack() {
+        @Override
+        public void onActivating() {
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "onActivating in map...");
+            if (mViewModel != null) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.showActivatingView(true);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onActivated() {
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "onActivated in map...");
+            if (mViewModel != null) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.showActivatingView(false);
+                        mViewModel.dismissActivateFailedDialog();
+                    }
+                });
+            }
+            ActivateUiStateManager.getInstance().removeActivateStateCallBack();
+        }
+
+        @Override
+        public void onActivateFailed(int errCode, String msg) {
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "onActivateFailed in map...");
+            if (mViewModel != null) {
+                ThreadManager.getInstance().postUi(new Runnable() {
+                    @Override
+                    public void run() {
+                        mViewModel.showActivatingView(false);
+                        mViewModel.showActivateFailedDialog(errCode, msg);
+                    }
+                });
+            }
+        }
+    };
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -334,6 +375,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         });
         LayerPackage.getInstance().registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
+        if (ActivateUiStateManager.getInstance().isSafeToRegister()) {
+            ActivateUiStateManager.getInstance().setActivateStateCallBack(mActivateStateCallBack);
+        }
 
         // 注册媒体悬浮窗广播
         FloatWindowReceiver.registerCallback(TAG, this);
@@ -379,7 +423,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         clearDialog();
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
-        ActivateUiStateManager.getInstance().removeLoadingViewCallBack();
+        ActivateUiStateManager.getInstance().removeActivateStateCallBack();
     }
 
     public void clearDialog() {
@@ -422,7 +466,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onSdkBaseLibInitSuccess() {
-        ActivateUiStateManager.getInstance().setLoadingViewCallBack(mActivateViewCallBack);
+        ActivateUiStateManager.getInstance().setActivateStateCallBack(mActivateStateCallBack);
     }
 
     @Override

@@ -22,6 +22,7 @@ public interface AutoMapConstant {
     int PLUG_TYPE_FAST = 9;
 
     int DELAY_MINUTE = 1;
+    int DELAY_SECOND = 70;
 
     int CANCEL_AUTO_PROTOCOL = 1;
     int CANCEL_LOCATION_PROTOCOL = 2;
@@ -427,5 +428,29 @@ public interface AutoMapConstant {
         int SearchRestAreaDetail = 3;// 服务区详情loading
         int SearchRouteDetail = 4;// 服务区详情loading
     }
+    @IntDef({ProtectState.NONE,
+            ProtectState.CANCEL_SGM_PROTOCOL,
+            ProtectState.CANCEL_AUTO_PROTOCOL,
+            ProtectState.CANCEL_LOCATION_PROTOCOL,
+            ProtectState.CANCEL_NET_EXCEPTION_DIALOG,
+            ProtectState.ACTIVATION_EXCEPTION})
+    @interface ProtectState {
+        int NONE = 0;
+        int CANCEL_SGM_PROTOCOL = 1;
+        int CANCEL_AUTO_PROTOCOL = 2;
+        int CANCEL_LOCATION_PROTOCOL = 3;
+        int CANCEL_NET_EXCEPTION_DIALOG = 4;
+        int ACTIVATION_EXCEPTION = 5;
+    }
 
+    @IntDef({ActivateState.NONE,
+            ActivateState.ACTIVATING,
+            ActivateState.ACTIVATED,
+            ActivateState.ACTIVATE_FAILED})
+    @interface ActivateState {
+        int NONE = 0;
+        int ACTIVATING = 1;
+        int ACTIVATED = 2;
+        int ACTIVATE_FAILED = 3;
+    }
 }

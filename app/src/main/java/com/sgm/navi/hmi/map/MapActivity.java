@@ -30,6 +30,7 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
+import com.sgm.navi.hmi.activate.ActivateFailedDialog;
 import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -41,6 +42,7 @@ import com.sgm.navi.scene.dialog.MsgTopDialog;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
@@ -63,6 +65,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -82,6 +85,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     private Runnable timerRunnable = null;
     private int mCurrentUiMode;
+    private ActivateFailedDialog mFailedDialog;
 
     @Override
     public void onCreateBefore() {
@@ -265,7 +269,18 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
             setChargeGasImage();
         }
-        showActivatingView(ActivateUiStateManager.getInstance().ismIsActivating());
+        if (ActivateUiStateManager.getInstance().isActivating()) {
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "展示加载动画");
+            showActivatingView(ActivateUiStateManager.getInstance().isActivating());
+        } else if (ActivateUiStateManager.getInstance().isActivateFailed()) {
+            int errCode = ActivateUiStateManager.getInstance().getErrorCodeSave();
+            String msg = ActivateUiStateManager.getInstance().getErrorMsgSave();
+            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "展示失败弹窗:", errCode, msg);
+            if (!ConvertUtils.equals(errCode, 0) && !ConvertUtils.isEmpty(msg)) {
+                showActivateFailedDialog(errCode, msg);
+            }
+        }
+
         //check Home键广播
         if (!HomeActionBroadcastReceiver.isRegister) {
             Logger.d(TAG, "registerHomeActionReceiver");
@@ -296,6 +311,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mViewModel.saveLastLocationInfo();
             ThreadManager.getInstance().removeHandleTask(mOpenGuideRunnable);
         }
+        dismissActivateFailedDialog();
 
         if (mMsgTopDialog != null && mMsgTopDialog.isShowing()) {
             mMsgTopDialog.dismiss();
@@ -394,6 +410,49 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
     }
 
+    /**
+     * 显示激活失败弹窗
+     *
+     * @param msg 错误信息
+     */
+    public void showActivateFailedDialog(final int errCode, final String msg) {
+        if (mFailedDialog != null && mFailedDialog.isShowing()) {
+            Logger.e(TAG, "dialog showing");
+            return;
+        }
+        mFailedDialog = new ActivateFailedDialog(this, new IBaseDialogClickListener() {
+            @Override
+            public void onCommitClick() {
+                Logger.e(TAG, "重试激活");
+                StartService.getInstance().startActivation();
+            }
+
+            @Override
+            public void onCancelClick() {
+                Logger.e(TAG, "激活失败,手动退出应用");
+                ThreadManager.getInstance().asyncDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        StackManager.getInstance().exitApp();
+                    }
+                }, 1, TimeUnit.MINUTES);
+            }
+        });
+        mFailedDialog.changeDialogContent(errCode, msg);
+        mFailedDialog.show();
+    }
+
+    /**
+     * 关闭弹窗
+     */
+    public void dismissActivateFailedDialog() {
+        if (mFailedDialog != null && mFailedDialog.isShowing()) {
+            mFailedDialog.dismiss();
+            mFailedDialog.unInitContext();
+            mFailedDialog = null;
+        }
+    }
+
 
     @Override
     protected void onMoveMapCenter() {
@@ -445,6 +504,18 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onConfigurationChanged(newConfig);
         if (null == mViewModel || null == mBinding) {
             Logger.e(TAG, "error");
+            return;
+        }
+        if (ConvertUtils.equals(ActivateUiStateManager.getInstance().getActivateState(), AutoMapConstant.ActivateState.ACTIVATING)
+                || ConvertUtils.equals(ActivateUiStateManager.getInstance().getActivateState(), AutoMapConstant.ActivateState.ACTIVATE_FAILED)) {
+            Logger.e(TAG, "onConfigurationChanged: 激活中package还没初始化");
+            dismissActivateFailedDialog();
+            int errCode = ActivateUiStateManager.getInstance().getErrorCodeSave();
+            String msg = ActivateUiStateManager.getInstance().getErrorMsgSave();
+            if (!ConvertUtils.equals(errCode, 0) && !ConvertUtils.isEmpty(msg)) {
+                showActivateFailedDialog(errCode, msg);
+            }
+            mBinding.mainImg.setImageResource(R.drawable.logo_startup);
             return;
         }
         mViewModel.reminderDialogReCreate();

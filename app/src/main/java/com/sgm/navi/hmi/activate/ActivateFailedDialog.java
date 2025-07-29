@@ -1,69 +1,45 @@
 package com.sgm.navi.hmi.activate;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.android.utils.ConvertUtils;
-import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogActivateFailedBinding;
 import com.sgm.navi.mapservice.util.Logger;
-import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.activate.bls.ActivationManager;
+import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
+import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
-public class ActivateFailedDialog {
-    private final Context mContext;
-    private final WindowManager mWindowManager;
-    private DialogActivateFailedBinding mViewBinding;
-    private View mDialogView;
-    private IDialogClickListener mDialogClickListener;
+public class ActivateFailedDialog extends BaseFullScreenDialog<DialogActivateFailedBinding> {
+    private Context mContext;
 
     private long mLastClickTime = 0;
     private int mTestClickNum = 0;
 
-    public interface IDialogClickListener {
-        void onCommitClick();
-
-        void onCancelClick();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setCancelable(false);
+        initListener();
     }
 
-    public ActivateFailedDialog(final Context context) {
+    public ActivateFailedDialog(final Context context, IBaseDialogClickListener baseDialogClickListener) {
+        super(context);
         mContext = context;
-        mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-        mViewBinding = DialogActivateFailedBinding.inflate(LayoutInflater.from(mContext));
+        setDialogClickListener(baseDialogClickListener);
     }
 
-    public void show() {
-        if (mDialogView != null) {
-            return;
+    public void unInitContext() {
+        if (mContext != null) {
+            mContext = null;
         }
-        createAndShowDialog();
     }
 
-    private void createAndShowDialog() {
-        mDialogView = mViewBinding.getRoot();
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD,
-                PixelFormat.TRANSLUCENT
-        );
-
-        params.gravity = Gravity.CENTER;
-        params.width = (int) (mContext.getResources().getDisplayMetrics().widthPixels * 0.8);
-
-        try {
-            mWindowManager.addView(mDialogView, params);
-            initListener();
-        } catch (Exception e) {
-            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "Failed to add dialog view: " + e.getMessage());
-        }
+    @Override
+    protected DialogActivateFailedBinding initLayout() {
+        return DialogActivateFailedBinding.inflate(getLayoutInflater());
     }
 
     private void initListener() {
@@ -151,40 +127,15 @@ public class ActivateFailedDialog {
 //        });
     }
 
-    public void dismiss() {
-        if (mDialogView != null && mWindowManager != null) {
-            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "Dismissing dialog view");
-            try {
-                mWindowManager.removeView(mDialogView);
-            } catch (Exception e) {
-                Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "Failed to remove dialog view: " + e.getMessage());
-            }
-            mDialogView = null;
-            mViewBinding = null;
-        }
-    }
-
     /**
      * 更改弹窗文本
      *
-     * @param isNetError 是否是网络有问题导致的
+     * @param errCode 错误码
      */
-    public void changeDialogContent(final int errCode, final boolean isNetError) {
-        if (isNetError) {
-            mViewBinding.activateDialogContent.setText(R.string.activation_net_error_hint);
-        } else {
-            StringBuilder errMsg = new StringBuilder();
-            errMsg.append("错误码: ").append(errCode).append(",").append(mContext.getString(R.string.activation_hint));
-            mViewBinding.activateDialogContent.setText(errMsg);
-        }
-    }
-
-    public void setDialogClickListener(IDialogClickListener listener) {
-        mDialogClickListener = listener;
-    }
-
-    public boolean isShowing() {
-        return mDialogView != null;
+    public void changeDialogContent(final int errCode, final String msg) {
+        StringBuilder errMsg = new StringBuilder();
+        errMsg.append("错误码: ").append(errCode).append(",").append(msg);
+        mViewBinding.activateDialogContent.setText(errMsg);
     }
 
 }

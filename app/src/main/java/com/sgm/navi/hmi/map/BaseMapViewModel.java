@@ -354,7 +354,30 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * @param show 是否显示
      */
     public void showActivatingView(final boolean show) {
-        mView.showActivatingView(show);
+        if (mView != null) {
+            mView.showActivatingView(show);
+        }
+    }
+
+    /**
+     * 显示激活失败弹窗
+     *
+     * @param errCode errCode
+     * @param msg msg
+     */
+    public void showActivateFailedDialog(final int errCode, final String msg) {
+        if (mView != null) {
+            mView.showActivateFailedDialog(errCode, msg);
+        }
+    }
+
+    /**
+     * 关闭激活失败弹窗
+     */
+    public void dismissActivateFailedDialog() {
+        if (mView != null) {
+            mView.dismissActivateFailedDialog();
+        }
     }
 
     public void hideStartIcon() {

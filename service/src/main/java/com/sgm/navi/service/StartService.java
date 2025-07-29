@@ -161,7 +161,7 @@ public class StartService {
         try {
             Logger.i(TAG, "parse doWork");
             ErrorCode errorCode = CodeManager.getInstance().getErrorCode();
-            if (!ConvertUtils.isNull(errorCode)) return true;
+            if (ConvertUtils.isNull(errorCode)) return true;
             String errCodePath = BuildConfig.MAP_SDK;
             String jsonPath = errCodePath + "/engine_code.json";
             String json = ParseJsonUtils.parseJsonFile(jsonPath);

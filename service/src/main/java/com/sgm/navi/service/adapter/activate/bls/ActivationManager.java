@@ -143,7 +143,7 @@ public final class ActivationManager {
             @Override
             public void onFailed(final String errorCode) {
                 Logger.e(TAG, "AppKey请求失败");
-                mActivateListener.onNetFailed();
+                mActivateListener.onAppKeyGetFailed();
             }
         });
     }
@@ -177,7 +177,7 @@ public final class ActivationManager {
                     processAppKeyInvalid();
                     return;
                 }
-                mActivateListener.onNetFailed();
+                mActivateListener.onUuidGetFailed();
             }
         });
     }
@@ -270,7 +270,7 @@ public final class ActivationManager {
                     processAppKeyInvalid();
                     return;
                 }
-                mActivateListener.onNetFailed();
+                mActivateListener.onOrderCreated(false);
             }
         });
 
@@ -288,9 +288,9 @@ public final class ActivationManager {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
-                AutoMapConstant.DELAY_MINUTE,
-                AutoMapConstant.DELAY_MINUTE * 2,
-                AutoMapConstant.DELAY_MINUTE * 2
+                AutoMapConstant.DELAY_SECOND,
+                AutoMapConstant.DELAY_SECOND,
+                AutoMapConstant.DELAY_SECOND
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
 
@@ -318,7 +318,7 @@ public final class ActivationManager {
                                     executor.shutdownNow();
                                 } else {
                                     final int delayIndex = Math.min(currentCount - 1, delays.length - 1);
-                                    executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.MINUTES);
+                                    executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.SECONDS);
                                 }
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                                 Logger.e(TAG, "下单失败");
@@ -342,10 +342,10 @@ public final class ActivationManager {
                             if (currentCount > maxRetries) {
                                 future.complete(false);
                                 executor.shutdownNow();
-                                mActivateListener.onNetFailed();
+                                mActivateListener.onOrderCreated(false);
                             } else {
                                 final int delayIndex = Math.min(currentCount - 1, delays.length - 1);
-                                executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.MINUTES);
+                                executor.schedule(taskRef.get(), delays[delayIndex], TimeUnit.SECONDS);
                             }
                         }
                     };
@@ -358,12 +358,12 @@ public final class ActivationManager {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, 8, TimeUnit.SECONDS);
+        executor.schedule(task, 5, TimeUnit.SECONDS);
 
         try {
-            // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 1+2+2 +1=6分钟
-            return future.get(totalTimeout, TimeUnit.MINUTES);
+            // 总超时
+            final long totalTimeout = Arrays.stream(delays).sum() + 30; // 70 * 3 + 30 = 240 seconds
+            return future.get(totalTimeout, TimeUnit.SECONDS);
         } catch (CancellationException e) {
             executor.shutdownNow();
             Logger.e(TAG, "CancellationException");
@@ -472,6 +472,16 @@ public final class ActivationManager {
     public interface IActivateHelper {
 
         /**
+         * appKey获取失败回调
+         */
+        void onAppKeyGetFailed();
+
+        /**
+         * uuid获取失败
+         */
+        void onUuidGetFailed();
+
+        /**
          * uuid获取后回调
          *
          * @param uuid uuid
@@ -491,10 +501,5 @@ public final class ActivationManager {
          * @param isSuccess 是否成功
          */
         void onOrderCreated(final boolean isSuccess);
-
-        /**
-         * 网络请求失败
-         */
-        void onNetFailed();
     }
 }
