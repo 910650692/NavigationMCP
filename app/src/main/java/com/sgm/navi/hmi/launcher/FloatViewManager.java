@@ -388,6 +388,8 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      * @return
      */
     public boolean isNaviDeskBg() {
+        currentDeskMode = Settings.Global.getInt(mContentResolver, DESKTOP_MODE_KEY, DesktopMode.KANZI_MODE.getValue());
+        Logger.d(TAG,"isNaviDeskBg = " + currentDeskMode);
         return currentDeskMode == DesktopMode.NAVIGATION_MODE.getValue();
     }
 
