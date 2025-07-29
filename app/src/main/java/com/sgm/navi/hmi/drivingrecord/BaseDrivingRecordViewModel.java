@@ -134,6 +134,7 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
         if (dataList == null || dataList.isEmpty()) {
             mRecordListViewVisibility.setValue(false);
             mEmptyViewVisibility.setValue(true);
+            mView.updateDrivingRecordView(new ArrayList<>());
         } else {
             mRecordListViewVisibility.setValue(true);
             mEmptyViewVisibility.setValue(false);

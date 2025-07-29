@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
     <data>
         <import type="android.view.View" />
         <variable
@@ -85,58 +87,18 @@
                 android:textColor="@color/setting_bg_to_login_text"
                 android:textSize="@dimen/sp_25" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
-        <!--导航tab切换-->
-        <com.sgm.navi.ui.view.SkinRadioGroup
-            android:id="@+id/driving_record_tab_group"
+        <com.sgm.navi.ui.view.PullToRefreshLayout
+            android:id="@+id/pull_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_90"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:background="@drawable/bg_setting_checkbox"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_38"
-            android:layout_marginEnd="@dimen/dp_38"
-            android:padding="@dimen/dp_7">
-            <com.sgm.navi.ui.view.SkinRadioButton
-                android:id="@+id/driving_record_tab_1"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:background="@drawable/rb_bg_selector"
-                android:gravity="center"
-                android:checked="true"
-                android:text="@string/driving_record_tab_1"
-                android:textColor="@color/setting_white"
-                android:textSize="@dimen/sp_29" />
-            <com.sgm.navi.ui.view.SkinRadioButton
-                android:id="@+id/driving_record_tab_2"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:button="@null"
-                android:background="@drawable/rb_bg_selector"
-                android:gravity="center"
-                android:text="@string/driving_record_tab_2"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_29" />
-        </com.sgm.navi.ui.view.SkinRadioGroup>
+            android:layout_height="match_parent"
+            tools:background="#0000FF">
         <!--数据列表-->
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_driving_record_list"
-            android:visibility="@{ViewModel.mRecordListViewVisibility ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_40" />
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/empty_view"
-            android:visibility="@{ViewModel.mEmptyViewVisibility ? View.VISIBLE : View.GONE}"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:text="@string/driving_record_no_history"
-            android:textColor="@color/setting_bg_tab_text_select"
-            android:textSize="@dimen/sp_29" />
+        </com.sgm.navi.ui.view.PullToRefreshLayout>
     </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

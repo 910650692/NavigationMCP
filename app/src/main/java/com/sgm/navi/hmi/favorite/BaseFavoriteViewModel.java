@@ -59,7 +59,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public ObservableField<Boolean> mIsHomeCompanyDisplayed;
     public ObservableField<Boolean> mIsEVCar;
     public ObservableField<String> mSyncTime;
-    public ObservableField<Boolean> mFavoriteListChecked = new ObservableField<>(true);
+    public ObservableField<Boolean> mFavoriteListChecked;
     private final ArrayList<PoiInfoEntity> mStationList = new ArrayList<>();
     private PoiInfoEntity mHome;
     private PoiInfoEntity mCompany;
@@ -75,6 +75,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mChargingRequestFailedVisibility = new ObservableField<>(false);
         mChargingOfflineVisibility = new ObservableField<>(false);
         mIsHomeCompanyDisplayed = new ObservableField<>(true);
+        mFavoriteListChecked = new ObservableField<>(true);
         mIsEVCar = new ObservableField<>(false);
         mSyncTime = new ObservableField<>();
     }

@@ -331,6 +331,7 @@
     <string name="driving_record_title">行程历史</string>
     <string name="driving_record_tab_1">导航历史</string>
     <string name="driving_record_tab_2">巡航历史</string>
+    <string name="driving_record_refresh_pull_tips">下拉刷新</string>
     <string name="driving_record_no_history">暂无行程记录</string>
     <string name="driving_record_login_tip">登录高德账号，可同步更多行程历史</string>
     <string name="driving_record_login_details_tip">扫码登录，同步里程数据</string>
