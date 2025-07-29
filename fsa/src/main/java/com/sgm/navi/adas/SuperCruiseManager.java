@@ -59,7 +59,6 @@ public final class SuperCruiseManager {
     private int mZoneSpeedLimit = 0;
     private int mCruiseSpeedLimit = 0;
     private String mNaviStatus = "";
-    private ScSegmentInfo mScSegmentInfo;
 
     private RouteInfo.RouteProto.Builder mRouteProtoBuilder;
     private RouteInfo.Route.Builder mRouteBuilder;
@@ -71,6 +70,7 @@ public final class SuperCruiseManager {
     private long mRate = 5;
     private boolean mReRouting;
     private long mPathId = -1;
+    private NaviEtaInfo mNaviEtaInfo;
 
     //region 单例
     public static SuperCruiseManager getInstance() {
@@ -177,6 +177,10 @@ public final class SuperCruiseManager {
         @Override
         public void onNaviStatusChange(String naviStatus) {
             mNaviStatus = naviStatus;
+            if (!NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
+                mNaviEtaInfo = null;
+                mPathId = -1;
+            }
         }
     };
 
@@ -215,6 +219,7 @@ public final class SuperCruiseManager {
         //导航信息
         @Override
         public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
+            mNaviEtaInfo = naviETAInfo;
             if (naviETAInfo == null) {
                 Logger.w(TAG, "onNaviInfo: null");
                 mRoadInfoBuilder.setRoadCategory(NaviLinkProto.RoadInfo.RoadCategoryEnum.UNRECOGNIZED);
@@ -258,8 +263,6 @@ public final class SuperCruiseManager {
                 default:
                     mRoadInfoBuilder.setControlledAccess(false);
             }
-
-            updateSegmentData();
 
             GeoPoint scGeoPoint = L2Package.getInstance().getScGeoPoint(naviETAInfo.curSegIdx, naviETAInfo.curLinkIdx, naviETAInfo.curPointIdx);
             if (scGeoPoint != null) {
@@ -378,6 +381,8 @@ public final class SuperCruiseManager {
         public void onRouteResult(RequestRouteResult requestRouteResult) {
             Logger.d(TAG, "SuperCruise路线变更");
             mReRouting = false;
+            updateSegmentData();
+            sendRouteData();
         }
 
         @Override
@@ -733,6 +738,7 @@ public final class SuperCruiseManager {
         mRouteBuilder.clearDestinations();
         mRouteBuilder.addAllDestinations(mDestinations);
         //add segments
+        updateSegmentData();
         mRouteBuilder.clearSegments();
         mRouteBuilder.addAllSegments(mSegments);
 
@@ -766,17 +772,22 @@ public final class SuperCruiseManager {
     }
 
     private void updateSegmentData() {
-        long pathId = 0;
-        if (mScSegmentInfo != null) {
-            pathId = mScSegmentInfo.getPathId();
-            mPathId = pathId;
+        int curSegIdx = 0;
+        int curLinkIdx = 0;
+        if (mNaviEtaInfo != null) {
+            curSegIdx = mNaviEtaInfo.getCurSegIdx();
+            curLinkIdx = mNaviEtaInfo.getCurLinkIdx();
         }
-        ScSegmentInfo scSegmentInfo = L2Package.getInstance().getScSegmentInfo(pathId, mRouteLength);
+        ScSegmentInfo scSegmentInfo = L2Package.getInstance().getScSegmentInfo(mRouteLength, curSegIdx, curLinkIdx);
         if (scSegmentInfo == null) {
-            Logger.d(TAG, "SuperCruise路线变更: scSegmentInfo null");
+            Logger.d(TAG, "scSegmentInfo null");
             return;
         }
-        mScSegmentInfo = scSegmentInfo;
+        long pathId = scSegmentInfo.getPathId();
+        if (pathId != mPathId) {
+            mAdasManager.removeRouteInfo(String.valueOf(mPathId));
+            mPathId = pathId;
+        }
 
         mSegments.clear();
         for (ScSegmentInfo.ScSegment scSegment : scSegmentInfo.getScSegments()) {
@@ -804,19 +815,20 @@ public final class SuperCruiseManager {
             });
             builder.addAllSpdlmt(spdlmtList);
 
-//            List<RouteInfo.Point> pointList = new ArrayList<>();
-//            scSegment.getScPoints().forEach(scPoint -> {
-//                RouteInfo.Point.Builder pointBuilder = RouteInfo.Point.newBuilder();
-//                pointBuilder.setLat(scPoint.getLat());
-//                pointBuilder.setLon(scPoint.getLon());
-//                pointList.add(pointBuilder.build());
-//            });
-//            builder.addAllPoints(pointList);
+            List<RouteInfo.Point> pointList = new ArrayList<>();
+            scSegment.getScPoints().forEach(scPoint -> {
+                RouteInfo.Point.Builder pointBuilder = RouteInfo.Point.newBuilder();
+                pointBuilder.setLat(scPoint.getLat());
+                pointBuilder.setLon(scPoint.getLon());
+                pointList.add(pointBuilder.build());
+            });
+            builder.addAllPoints(pointList);
 
             List<RouteInfo.Livespd> livespdList = new ArrayList<>();
             scSegment.getScRealTimeSpds().forEach(scRealTimeSpd -> {
                 RouteInfo.Livespd.Builder livespdBuilder = RouteInfo.Livespd.newBuilder();
                 livespdBuilder.setSpeed(scRealTimeSpd);
+                livespdBuilder.setDist(0);
                 livespdList.add(livespdBuilder.build());
             });
             builder.addAllLivespd(livespdList);
@@ -824,7 +836,5 @@ public final class SuperCruiseManager {
             builder.setLength(scSegment.getLength());
             mSegments.add(builder.build());
         }
-        mAdasManager.removeRouteInfo(String.valueOf(mPathId));
-        sendRouteData();
     }
 }

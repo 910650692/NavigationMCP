@@ -94,8 +94,8 @@ public class L2Package {
         return mL2Adapter.getLinkLastGeoPoint(curSegIdx, curLinkIdx);
     }
 
-    public ScSegmentInfo getScSegmentInfo(long curPathId, long maxLength) {
-        return mL2Adapter.getScSegmentList(curPathId, maxLength);
+    public ScSegmentInfo getScSegmentInfo(long maxLength, int curSegIdx, int curLinkIdx) {
+        return mL2Adapter.getScSegmentList(maxLength, curSegIdx, curLinkIdx);
     }
 
     public GeoPoint getScGeoPoint(int curSegIdx, int curLinkIdx, int curPointIdx) {

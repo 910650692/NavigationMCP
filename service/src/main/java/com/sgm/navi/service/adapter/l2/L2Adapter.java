@@ -1042,13 +1042,10 @@ public class L2Adapter {
         return new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
     }
 
-    public ScSegmentInfo getScSegmentList(long curPathId, long maxLength) {
+    public ScSegmentInfo getScSegmentList(long maxLength, int curSegIdx, int curLinkIdx) {
         ScSegmentInfo scSegmentInfo = new ScSegmentInfo();
         PathInfo pathInfo = getPathInfo();
         if (pathInfo == null) {
-            return null;
-        }
-        if (curPathId == pathInfo.getPathID()) {
             return null;
         }
         scSegmentInfo.setPathId(pathInfo.getPathID());
@@ -1056,10 +1053,14 @@ public class L2Adapter {
         long segmentCount = pathInfo.getSegmentCount();
         int index = 0;
         END:
-        for (long i = 0; i < segmentCount; i++) {
+        for (long i = curSegIdx; i < segmentCount; i++) {
             SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
             long linkCount = segmentInfo.getLinkCount();
-            for (long j = 0; j < linkCount; j++) {
+            int startLinkIdx = 0;
+            if (curSegIdx == i) {
+                startLinkIdx = curLinkIdx;
+            }
+            for (long j = startLinkIdx; j < linkCount; j++) {
                 LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
                 if (allLength > maxLength) {
                     break END;
@@ -1072,8 +1073,12 @@ public class L2Adapter {
 
                 ArrayList<Coord2DInt32> points = linkInfo.getPoints();
                 if (points != null) {
-                    for (Coord2DInt32 coord2DInt32 : points) {
+                    for (int k = 0; k < points.size(); k++) {
+                        Coord2DInt32 coord2DInt32 = points.get(k);
                         if (coord2DInt32 == null) {
+                            continue;
+                        }
+                        if ((curSegIdx != i || curLinkIdx != j) && k == 0) {
                             continue;
                         }
                         GeoPoint geoPoint = new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
