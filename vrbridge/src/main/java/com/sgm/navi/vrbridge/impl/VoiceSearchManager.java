@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.StringUtils;
 import com.android.utils.log.Logger;
@@ -1574,9 +1575,16 @@ public final class VoiceSearchManager {
      * @param type    类型  1:家  2:公司.
      */
     private void saveHomeCompany(final PoiInfoEntity poiInfo, final int type) {
+        if (null == poiInfo || null == poiInfo.getPoint()) {
+            return;
+        }
+
         final FavoriteInfo favoriteInfo = new FavoriteInfo();
         favoriteInfo.setCommonName(type);
         poiInfo.setFavoriteInfo(favoriteInfo);
+        if (ConvertUtils.isEmpty(poiInfo.getPid())) {
+            poiInfo.setPid(poiInfo.getPoint().getLon() + "_" + poiInfo.getPoint().getLat());
+        }
         BehaviorPackage.getInstance().addFavorite(poiInfo, type);
 
         if (mRespCallback != null) {
