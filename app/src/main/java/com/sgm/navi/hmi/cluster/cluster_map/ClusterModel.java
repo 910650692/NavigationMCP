@@ -116,9 +116,9 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
             LayerAdapter.getInstance().setStartPointVisible(MapType.CLUSTER_MAP,false);
             if (SettingPackage.getInstance().getMapViewTextSize()) {
-                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
+                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.3f);
             } else {
-                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.7f);
             }
             showRouteLine();
             LayerPackage.getInstance().setStartPointVisible(MapType.CLUSTER_MAP, false);
@@ -211,7 +211,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         // 处理地图文字大小设置
         if (KEY_SETTING_TEXT_SIZE.equals(key)) {
             boolean mapViewTextSize = SettingPackage.getInstance().getMapViewTextSize();
-            float textSize = mapViewTextSize ? 1.0f : 1.8f;
+            float textSize = mapViewTextSize ? 1.3f : 1.7f;
             MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, textSize);
         }else if (KEY_SETTING_CAR_LOGO.equals(key)) {// 处理车标样式设置
             CarModeType carMode;
