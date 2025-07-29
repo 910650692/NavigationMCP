@@ -2,17 +2,24 @@ package com.sgm.navi.hmi.splitscreen;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
+import androidx.annotation.StringRes;
+
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.map.SpeedMonitor;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -21,6 +28,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
+import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -290,9 +298,25 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
             mViewModel.mSlStationVisibility.set(false);
             mViewModel.mTopNaviBarVisibility.set(false);
+
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_into_cruise));
+            mNaviPackage.onPlayTTS(soundInfo);
+            showToast(R.string.step_into_cruise);
             mViewModel.setCruiseMuteOrUnMute(
                     Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
             );
+        }
+    }
+
+    public void showToast(@StringRes int res) {
+        String text = AppCache.getInstance().getMApplication().getString(res);
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            ThreadManager.getInstance().postUi(() -> {
+                ToastUtils.Companion.getInstance().showCustomToastView(text);
+            });
+        } else {
+            ToastUtils.Companion.getInstance().showCustomToastView(text);
         }
     }
 

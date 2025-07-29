@@ -318,14 +318,13 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         mNaviActionBarVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
         mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
 
-        mCruiseLanesVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
         mCruisebg.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
-        cruiseUiVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
         mSlStationVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
         mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
     }
 
     public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {
+        Logger.d(TAG,"updateCruiseCameraInfo = " + cruiseInfoEntity);
         mView.updateCruiseCameraInfo(cruiseInfoEntity);
         if (TextUtils.equals(mModel.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE)){
             cruiseUiVisibility.set(cruiseInfoEntity != null);
