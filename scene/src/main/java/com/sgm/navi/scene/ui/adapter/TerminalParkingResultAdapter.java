@@ -129,12 +129,15 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(freeSpace);
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setTextColor(
                     AppCache.getInstance().getMContext().getColor(R.color.poi_details_bottom_ff_00));
+            holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setVisibility(VISIBLE);
         } else if (ConvertUtils.equals(freeSpace, DEFAULT_NUM)) {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(totalSpace);
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setTextColor(
                     AppCache.getInstance().getMContext().getColor(R.color.search_quick_tab_view_color));
+            holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setVisibility(VISIBLE);
         } else {
             holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setText(getColoredParkingInfo(totalSpace, freeSpace));
+            holder.mTerminalParkingItemBinding.sktvParkingItemLeisureNum.setVisibility(VISIBLE);
         }
 
         // 设置繁忙状态,1064249:状态未知则不显示该标签

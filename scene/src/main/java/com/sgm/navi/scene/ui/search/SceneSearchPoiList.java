@@ -1796,10 +1796,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     public void routeClickEvent(final PoiInfoEntity poiInfoEntity) {
-        if (mAdapter == null) {
+        if (mAdapter == null || poiInfoEntity == null) {
             return;
         }
         int position = mAdapter.getTargetIndex(poiInfoEntity);
+        int pointType = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
             for (PoiInfoEntity poiInfoEntity1 : mResultEntity.getPoiList()) {
@@ -1807,7 +1808,6 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     poiInfoEntity1.setMIsVisible(false);
                 }
             }
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         } else {
             gasChargeAddMode(poiInfoEntity);
             for (PoiInfoEntity poiInfoEntity1 : mResultEntity.getPoiList()) {
@@ -1815,6 +1815,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     poiInfoEntity1.setMIsVisible(true);
                 }
             }
+        }
+        if (pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
             mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         }
         if (mAdapter != null) {
@@ -1823,12 +1825,17 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     }
 
     public void routeClickEvent(final PoiInfoEntity poiInfoEntity, final int position) {
+        if (poiInfoEntity == null) {
+            return;
+        }
+        int pointType = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
         if (isBelongAlongList(poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
             poiInfoEntity.setMIsVisible(false);
-            mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         } else {
             gasChargeAddMode(poiInfoEntity);
+        }
+        if (pointType == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
             mScreenViewModel.setEnrouteSelect(LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD, position, mResultEntity.getPoiList());
         }
         if (mAdapter != null) {
