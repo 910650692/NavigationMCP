@@ -1086,7 +1086,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if(mIsFilterViewShow){
             hideFilterPage();
         }
-        if(!searchResultEntity.getIsNetData()){
+        if(searchResultEntity != null && !searchResultEntity.getIsNetData()){
             mSearchResultEntity = searchResultEntity;
         }
         final String chargeType = ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge);
@@ -1595,7 +1595,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"onDestroy: " + mScreenViewModel);
         if (mScreenViewModel != null) {
             //切换桌面地图 应用重走声明周期  onDestroy中应该调用删除扎标方法
-            mScreenViewModel.clearLabelMarker();
+            mScreenViewModel.clearListLabel();
         }
         super.onDestroy();
         if (!ConvertUtils.isNull(mAnimator)) {
@@ -2056,7 +2056,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             if (mRouteChargeProgressViews != null && !mRouteChargeProgressViews.isEmpty()) {
                 for (PoiInfoEntity poiInfoEntity : mRouteChargeProgressViews.keySet()) {
                     final View view = mRouteChargeProgressViews.get(poiInfoEntity);
-                    if (view != null && !ConvertUtils.isEmpty(mViewBinding.routeChargeProgressIcons)) {
+                    if (mViewBinding != null && view != null && !ConvertUtils.isEmpty(mViewBinding.routeChargeProgressIcons)) {
                         mViewBinding.routeChargeProgressIcons.removeView(view);
                     }
                     mRouteChargeProgressViews.remove(poiInfoEntity);

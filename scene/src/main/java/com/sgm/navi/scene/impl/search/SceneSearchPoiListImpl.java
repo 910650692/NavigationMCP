@@ -70,9 +70,23 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
         }
         mScreenView.clearEditText();
-        mSearchPackage.clearLabelMark();
+//        mSearchPackage.clearLabelMark();
+        clearListLabel();
         //算路页面点击搜索加油站终点后返回，显示全揽画面
         OpenApiHelper.enterPreview(mMapTypeId);
+    }
+
+    /**
+     * 清除列表扎标
+     */
+    public void clearListLabel() {
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Park);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
     }
 
     @Override
@@ -88,7 +102,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             });
         }
         mScreenView.clearEditText();
-        mSearchPackage.clearLabelMark();
+//        mSearchPackage.clearLabelMark();
+        clearListLabel();
     }
 
 
