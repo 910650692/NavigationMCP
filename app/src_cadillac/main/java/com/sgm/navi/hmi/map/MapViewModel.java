@@ -80,8 +80,8 @@ public class MapViewModel extends BaseMapViewModel {
     }
 
     private void initMFC() {
-        if (!ConvertUtils.isEmpty(mView) && !ConvertUtils.isEmpty(mView.getMapView())) {
-            mapView = (MainScreenMapView) mView.getMapView();
+        if (!ConvertUtils.isEmpty(mView) && !ConvertUtils.isEmpty(mView.getMainMapView())) {
+            mapView = mView.getMainMapView();
             mapView.setOnFocusChangeListener((view, b) -> {
                 if (Boolean.FALSE.equals(b)) {
                     //地图失去焦点，取消倒计时

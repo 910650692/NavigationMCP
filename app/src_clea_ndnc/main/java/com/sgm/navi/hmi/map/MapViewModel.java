@@ -43,7 +43,9 @@ public class MapViewModel extends BaseMapViewModel {
     public Action switchSr = () -> {
         if (ScreenTypeUtils.getInstance().isFullScreen()) {
             Logger.d("screen_change_used", "切换到2/3屏幕");
-            SplitScreenManager.getInstance().switchSRToOneThirdScreen(mView.getTaskId());
+            if (mView != null) {
+                SplitScreenManager.getInstance().switchSRToOneThirdScreen(mView.getTaskId());
+            }
         } else {
             Logger.d("screen_change_used", "切换到全屏幕");
             SplitScreenManager.getInstance().switchSRToFullScreen();

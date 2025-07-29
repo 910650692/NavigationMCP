@@ -479,6 +479,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         return mBinding.mainMapview;
     }
 
+    public MainScreenMapView getMainMapView() {
+        return mBinding.mainMapview;
+    }
+
     public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         mBinding.cruiseLayout.cruiseLanesView.onLaneInfo(isShowLane, laneInfoEntity);
     }
