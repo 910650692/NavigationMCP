@@ -388,6 +388,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         startIconVisibility.set(true);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(null != mModel) StartService.getInstance().unregisterSdkCallback(mModel);
+    }
+
     /**
      * 设置SDK激活状态
      *

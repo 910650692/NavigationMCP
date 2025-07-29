@@ -212,6 +212,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
             mViewModel.loadMapView(mBinding.mainMapview);
+            // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
         }
     }
 
