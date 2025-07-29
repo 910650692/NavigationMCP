@@ -622,6 +622,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return false;
     }
 
+    public Fragment getTopFragment() {
+        if (mView == null) {
+            Logger.w(TAG, "mView is null");
+            return null;
+        }
+        return mView.getSupportFragmentManager().findFragmentById(R.id.layout_fragment);
+    }
+
     public boolean isFragmentStackNull() {
         return mView.isFragmentStackNull();
     }

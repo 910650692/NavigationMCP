@@ -71,7 +71,6 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.define.aos.RestrictedEndNumberParam;
 import com.sgm.navi.service.define.aos.RestrictedParam;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
@@ -131,6 +130,7 @@ import com.sgm.navi.service.logicpaket.message.MessageCenterManager;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
@@ -2119,17 +2119,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Objects.equals(NaviStatusPackage.getInstance().getCurrentNaviStatus(), NaviStatus.NaviStatusType.NAVING)) {
             // Activity被意外destroy需要恢复页面的时候Fragment栈一定是空的
             if (mViewModel == null || mViewModel.isFragmentStackNull()) {
-                Logger.i(TAG, " add NaviGuidanceFragment");
-                addFragment(new NaviGuidanceFragment(), null);
-            } else {
-                if (mViewModel.getTopFragment(SplitFragment.class)) {
-                    Logger.i(TAG, " Top SplitFragment");
-                } else if (mViewModel.getTopFragment(NaviGuidanceFragment.class)) {
-                    Logger.i(TAG, " Top NaviGuidanceFragment");
-                } else {
-                    Logger.i(TAG, " Stack Not Null, Not SplitFragment");
+                if (!ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+                    Logger.i(TAG, " add NaviGuidanceFragment");
                     addFragment(new NaviGuidanceFragment(), null);
+                } else {
+                    Logger.i(TAG, "OneThirdScreen is true, not add NaviGuidanceFragment");
                 }
+            } else {
+                Logger.i(TAG, " Top Fragment is " + (mViewModel.getTopFragment() == null ?
+                        "null" : mViewModel.getTopFragment().getClass().getSimpleName()));
             }
         } else {
             Logger.i(TAG, " NaviStatus is not NAVING");
