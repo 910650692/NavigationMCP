@@ -5,6 +5,7 @@ import static com.autonavi.gbl.map.layer.model.LayerIconType.LayerIconTypeBMP;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.SpeedCarLayerItem;
@@ -23,6 +24,8 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,7 +62,7 @@ public final class TexturePoolManager {
     private static final int MARK_ID_3D_CAR = 0x10001;
 
     //用于存储MarkerId key:layer.getName() + item.getBusinessType() + item.getID()
-    private ConcurrentHashMap<String, Integer> textureMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Integer> textureMap = new ConcurrentHashMap<>();
 
     public void add(String key, Integer value) {
         textureMap.put(key, value);
@@ -73,7 +76,31 @@ public final class TexturePoolManager {
         return textureMap.containsKey(key);
     }
     public int getValueAsInt(String key) {
-        return textureMap.remove(key);
+        Integer i = textureMap.get(key);
+        return i == null ? DEF_ERROR_ID : i;
+    }
+
+    public void removeKey(String key) {
+        synchronized (textureMap) {
+            if (!ConvertUtils.isEmpty(key)) {
+                textureMap.remove(key);
+            }
+        }
+    }
+
+    public List<Integer> removeKeys(String name) {
+        List<Integer> ids = new ArrayList<>();
+        List<String> keys = new ArrayList<>();
+        for (String key : textureMap.keySet()) {
+            if (key.startsWith(name)) {
+                ids.add(textureMap.get(key));
+                keys.add(key);
+            }
+        }
+        for (String key : keys){
+            textureMap.remove(key);
+        }
+        return ids;
     }
 
     /**

@@ -45,7 +45,9 @@ import com.sgm.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
 import com.sgm.navi.service.define.map.MapType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -307,6 +309,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         if (TexturePoolManager.get().containsKey(key)) {
             int markerId = TexturePoolManager.get().getValueAsInt(key);
             layer.getMapView().destroyTexture(markerId);
+            TexturePoolManager.get().removeKey(key);
             Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
         }
         super.clearLayerItem(layer, item);
@@ -315,11 +318,11 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     @Override
     public void clearLayerItems(BaseLayer layer) {
         Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
-        for (String key : TexturePoolManager.get().getKeys()) {
-            if (!ConvertUtils.isEmpty(key) && key.contains(layer.getName())) {
-                int markerId = TexturePoolManager.get().getValueAsInt(key);
-                layer.getMapView().destroyTexture(markerId);
-                Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems key:", key, " markerId:", markerId);
+        List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
+        for (Integer value : removeValues) {
+            layer.getMapView().destroyTexture(value);
+            if (Logger.openLog) {
+                Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems layer:", layer.getName(), " markerId:", value);
             }
         }
         super.clearLayerItems(layer);
