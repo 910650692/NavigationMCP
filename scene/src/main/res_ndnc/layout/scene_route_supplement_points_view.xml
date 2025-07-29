@@ -6,9 +6,9 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_descendants_view"
         android:layout_width="@dimen/dp_814"
-        android:layout_height="@dimen/dp_176"
+        android:layout_height="@dimen/dp_186"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
-        android:padding="@dimen/dp_29">
+        android:padding="@dimen/dp_34">
 
         <ProgressBar
             android:id="@+id/route_charge_progress"
