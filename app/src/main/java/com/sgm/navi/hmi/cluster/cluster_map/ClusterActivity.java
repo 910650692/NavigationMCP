@@ -179,6 +179,9 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void bindMapView() {
         Logger.d(TAG, "bindMapView");
         MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
-        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
+        mBinding.clusterMapview.postDelayed(()->{
+            Logger.d(TAG, "bindMapView:post");
+            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
+        },600);
     }
 }
