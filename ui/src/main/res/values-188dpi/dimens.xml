@@ -4015,49 +4015,49 @@
     <dimen name="navi_nd_cluster_navi_padding_horizontal">32px</dimen>
     <dimen name="navi_nd_cluster_navi_padding_vertical">14px</dimen>
 
-    <dimen name="bg_charge_number_item_corner">@dimen/dp_12</dimen>
-    <dimen name="bg_search_main_tab_corner">@dimen/dp_20</dimen>
+    <dimen name="bg_charge_number_item_corner">12dp</dimen>
+    <dimen name="bg_search_main_tab_corner">20dp</dimen>
 
-    <dimen name="navi_main_tap_margin_start">@dimen/dp_34</dimen>
-    <dimen name="navi_main_tap_margin_top">@dimen/dp_85</dimen>
-    <dimen name="navi_main_tap_margin_bottom">@dimen/dp_130</dimen>
-    <dimen name="navi_main_tap_margin_end">@dimen/dp_34</dimen>
-    <dimen name="navi_main_limit_margin_end">@dimen/dp_40</dimen>
-    <dimen name="navi_main_tap_height">@dimen/dp_95</dimen>
-    <dimen name="navi_main_parking_margin_end">@dimen/dp_m_73</dimen>
-    <dimen name="navi_main_parking_gone_margin_start">@dimen/dp_225</dimen>
-    <dimen name="navi_main_message_margin_start">@dimen/dp_17</dimen>
-    <dimen name="navi_guide_widget_margin_start">@dimen/dp_1</dimen>
-    <dimen name="navi_guide_line_views">@dimen/dp_608</dimen>
+    <dimen name="navi_main_tap_margin_start">34dp</dimen>
+    <dimen name="navi_main_tap_margin_top">85dp</dimen>
+    <dimen name="navi_main_tap_margin_bottom">130dp</dimen>
+    <dimen name="navi_main_tap_margin_end">34dp</dimen>
+    <dimen name="navi_main_limit_margin_end">40dp</dimen>
+    <dimen name="navi_main_tap_height">95dp</dimen>
+    <dimen name="navi_main_parking_margin_end">-73dp</dimen>
+    <dimen name="navi_main_parking_gone_margin_start">225dp</dimen>
+    <dimen name="navi_main_message_margin_start">17dp</dimen>
+    <dimen name="navi_guide_widget_margin_start">1dp</dimen>
+    <dimen name="navi_guide_line_views">608dp</dimen>
 
-    <dimen name="navi_phone_address_dialog_width">@dimen/dp_417</dimen>
-    <dimen name="navi_phone_address_dialog_width_main_btn">@dimen/dp_600</dimen>
+    <dimen name="navi_phone_address_dialog_width">417dp</dimen>
+    <dimen name="navi_phone_address_dialog_width_main_btn">600dp</dimen>
 
-    <dimen name="navi_fragment_margin_botton">@dimen/dp_96</dimen>
+    <dimen name="navi_fragment_margin_botton">96dp</dimen>
 
-    <dimen name="navi_main_fragment_margin_start">@dimen/dp_5</dimen>
-    <dimen name="navi_main_fragment_margin_top">@dimen/dp_51</dimen>
-    <dimen name="navi_setting_fragment_height">@dimen/dp_1078</dimen>
-    <dimen name="navi_we_chat_fragment_height">@dimen/dp_1010</dimen>
+    <dimen name="navi_main_fragment_margin_start">5dp</dimen>
+    <dimen name="navi_main_fragment_margin_top">51dp</dimen>
+    <dimen name="navi_setting_fragment_height">1078dp</dimen>
+    <dimen name="navi_we_chat_fragment_height">1010dp</dimen>
 
-    <dimen name="navi_main_float_window_width">@dimen/dp_571</dimen>
-    <dimen name="navi_btn_add_via_corner">@dimen/dp_12</dimen>
-    <dimen name="navi_guide_road_name_height">@dimen/dp_92</dimen>
-    <dimen name="navi_guide_road_name_text_size">@dimen/sp_34</dimen>
-    <dimen name="navi_guide_road_name_padding_horizontal">@dimen/dp_29</dimen>
-    <dimen name="navi_guide_road_name_padding_vertical">@dimen/dp_29</dimen>
-    <dimen name="navi_guide_road_name_button_padding_horizontal">@dimen/dp_26</dimen>
-    <dimen name="navi_guide_continue_button_width">@dimen/dp_310</dimen>
-    <dimen name="navi_guide_continue_button_height">@dimen/dp_92</dimen>
-    <dimen name="navi_guide_area_margin_end">@dimen/dp_141</dimen>
-    <dimen name="navi_guide_area_continue_margin_end">@dimen/dp_141</dimen>
-    <dimen name="navi_guide_area_margin_bottom">@dimen/dp_29</dimen>
-    <dimen name="navi_page_max_height">@dimen/dp_762</dimen>
+    <dimen name="navi_main_float_window_width">571dp</dimen>
+    <dimen name="navi_btn_add_via_corner">12dp</dimen>
+    <dimen name="navi_guide_road_name_height">92dp</dimen>
+    <dimen name="navi_guide_road_name_text_size">34sp</dimen>
+    <dimen name="navi_guide_road_name_padding_horizontal">29dp</dimen>
+    <dimen name="navi_guide_road_name_padding_vertical">29dp</dimen>
+    <dimen name="navi_guide_road_name_button_padding_horizontal">26dp</dimen>
+    <dimen name="navi_guide_continue_button_width">310dp</dimen>
+    <dimen name="navi_guide_continue_button_height">92dp</dimen>
+    <dimen name="navi_guide_area_margin_end">141dp</dimen>
+    <dimen name="navi_guide_area_continue_margin_end">141dp</dimen>
+    <dimen name="navi_guide_area_margin_bottom">29dp</dimen>
+    <dimen name="navi_page_max_height">762dp</dimen>
 
-    <dimen name="bg_downloading_city_corner">@dimen/dp_5</dimen>
-    <dimen name="route_preference_nol_corner">@dimen/dp_10</dimen>
-    <dimen name="navi_preference_nol_corner">@dimen/dp_12</dimen>
-    <dimen name="traffic_big_pic_margin_hor">@dimen/dp_160</dimen>
-    <dimen name="traffic_big_pic_margin_vertical">@dimen/dp_251</dimen>
-    <dimen name="bg_route_detail_corner">@dimen/dp_5</dimen>
+    <dimen name="bg_downloading_city_corner">5dp</dimen>
+    <dimen name="route_preference_nol_corner">10dp</dimen>
+    <dimen name="navi_preference_nol_corner">12dp</dimen>
+    <dimen name="traffic_big_pic_margin_hor">160dp</dimen>
+    <dimen name="traffic_big_pic_margin_vertical">251dp</dimen>
+    <dimen name="bg_route_detail_corner">5dp</dimen>
 </resources>
