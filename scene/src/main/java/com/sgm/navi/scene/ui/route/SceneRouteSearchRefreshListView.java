@@ -78,12 +78,12 @@ public class SceneRouteSearchRefreshListView extends BaseSceneView<SceneRouteSea
         mAdapter = new RouteSearchRefreshAdapter();
         mAdapter.setItemClickListener(new RouteSearchRefreshAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(final PoiInfoEntity poiInfoEntity) {
+            public void onItemClick(final PoiInfoEntity poiInfoEntity, final int index) {
                 for (ISceneRouteSearchRefreshItemCallBack callBack : mSearchRefreshItemCallBackHashtable.values()) {
                     if (ConvertUtils.isEmpty(callBack)) {
                         continue;
                     }
-                    callBack.enterToDetails(poiInfoEntity);
+                    callBack.enterToDetails(poiInfoEntity, index);
                 }
             }
 

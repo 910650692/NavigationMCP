@@ -1607,6 +1607,33 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     }
 
     /**
+     * 设置服务区扎点选中
+     *
+     * @param mapTypeId 屏幕ID
+     * @param isSelect 是否选中态
+     * @param index index
+     */
+    public void setRestAreaSelect(final MapType mapTypeId, final boolean isSelect, final int index) {
+        ThreadManager.getInstance().postUi(() -> {
+            mLayerAdapter.setRoutePointSelect(mapTypeId,
+                    LayerPointItemType.ROUTE_POINT_REST_AREA, isSelect, index);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
+        });
+    }
+
+    /**
+     * 清除服务区扎点选中态
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void clearRestAreaFocus(final MapType mapTypeId) {
+        ThreadManager.getInstance().postUi(() -> {
+            mLayerAdapter.clearRoutePointFocus(mapTypeId, LayerPointItemType.ROUTE_POINT_REST_AREA);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
+        });
+    }
+
+    /**
      * 展示天气扎点
      *
      * @param mapTypeId 屏幕ID
@@ -1627,6 +1654,33 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public void clearWeatherView(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> mLayerAdapter.showWeatherView(mapTypeId, null));
+    }
+
+    /**
+     * 设置天气扎点选中
+     *
+     * @param mapTypeId 屏幕ID
+     * @param isSelect 是否选中态
+     * @param index index
+     */
+    public void setWeatherViewSelect(final MapType mapTypeId, final boolean isSelect, final int index) {
+        ThreadManager.getInstance().postUi(() -> {
+            mLayerAdapter.setRoutePointSelect(mapTypeId,
+                    LayerPointItemType.ROUTE_POINT_WEATHER, isSelect, index);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
+        });
+    }
+
+    /**
+     * 清除天气扎点选中态
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void clearWeatherViewFocus(final MapType mapTypeId) {
+        ThreadManager.getInstance().postUi(() -> {
+            mLayerAdapter.clearRoutePointFocus(mapTypeId, LayerPointItemType.ROUTE_POINT_WEATHER);
+            mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP, 2);
+        });
     }
 
     /**

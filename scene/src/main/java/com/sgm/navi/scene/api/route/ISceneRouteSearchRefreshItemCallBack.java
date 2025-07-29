@@ -6,6 +6,7 @@ public interface ISceneRouteSearchRefreshItemCallBack {
     /**
      * 进入详情
      * @param poiInfoEntity   poi信息
+     * @param index
      * */
-    void enterToDetails(PoiInfoEntity poiInfoEntity);
+    void enterToDetails(PoiInfoEntity poiInfoEntity, int index);
 }

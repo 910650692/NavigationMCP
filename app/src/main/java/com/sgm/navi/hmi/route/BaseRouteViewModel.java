@@ -1397,6 +1397,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void hideWeatherDeatilsUI() {
         removeCurrentPageUI("4");
         mIncludePageVisibility.set(getCurrentPageUI());
+        mModel.clearWeatherViewFocus();
     }
 
     /***
@@ -1509,6 +1510,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void hideRouteSearchDetailsUI() {
         removeCurrentPageUI("5");
         mIncludePageVisibility.set(getCurrentPageUI());
+        mModel.clearRestAreaFocus();
     }
 
     /***
@@ -2039,9 +2041,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
 
     @Override
-    public void enterToDetails(final PoiInfoEntity poiInfoEntity) {
+    public void enterToDetails(final PoiInfoEntity poiInfoEntity, final int index) {
         mView.changePage(RoutePageLevel.ROUTE_POI_DETAILS_LIST);
         mModel.getSearchDetailsMode(poiInfoEntity);
+        mModel.setRestAreaSelect(true, index);
     }
 
     @Override

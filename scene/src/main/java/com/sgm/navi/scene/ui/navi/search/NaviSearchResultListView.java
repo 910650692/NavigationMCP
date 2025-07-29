@@ -90,13 +90,13 @@ public class NaviSearchResultListView extends BaseSceneView<SceneRouteSearchRefr
         mAdapter = new NaviSearchResultAdapter();
         mAdapter.setItemClickListener(new RouteSearchRefreshAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(final PoiInfoEntity poiInfoEntity) {
+            public void onItemClick(final PoiInfoEntity poiInfoEntity, final int index) {
                 for (ISceneRouteSearchRefreshItemCallBack callBack :
                         mNaviSearchResultItemCallbackHashtable.values()) {
                     if (ConvertUtils.isEmpty(callBack)) {
                         continue;
                     }
-                    callBack.enterToDetails(poiInfoEntity);
+                    callBack.enterToDetails(poiInfoEntity, index);
                 }
             }
 

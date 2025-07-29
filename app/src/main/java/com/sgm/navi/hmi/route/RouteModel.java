@@ -224,6 +224,14 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     /**
+     * 清除天气扎点选中态
+     *
+     */
+    public void clearWeatherViewFocus() {
+        mRoutePackage.clearWeatherViewFocus(MapType.MAIN_SCREEN_MAIN_MAP);
+    }
+
+    /**
      * 获取服务区列表
      * */
     public void getSearchListAndShow() {
@@ -272,6 +280,24 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
         });
 
+    }
+
+    /**
+     * 设置服务区扎点选中
+     *
+     * @param isSelect 选中状态
+     * @param index index
+     */
+    public void setRestAreaSelect(final boolean isSelect, final int index) {
+        mRoutePackage.setRestAreaSelect(MapType.MAIN_SCREEN_MAIN_MAP, isSelect, index);
+    }
+
+    /**
+     * 清除服务区扎点选中态
+     *
+     */
+    public void clearRestAreaFocus() {
+        mRoutePackage.clearRestAreaFocus(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
@@ -827,6 +853,15 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         ThreadManager.getInstance().postDelay( () -> {
             if (RoutePackage.getInstance().isRouteState()) {
+                if (mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP) == null) {
+                    Logger.d(TAG, "The endpoint is null");
+                    return;
+                }
+                PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
+                if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
+                    Logger.d(TAG, "The endpoint is the parking");
+                    return;
+                }
                 final RoutePoint endPoint = routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0);
                 mParkSearchId = mSearchPackage.routeTerminalAroundSearch(1, BuryConstant.SearchType.PARKING, endPoint.getMPos(),"2000", false);
             }
@@ -1193,7 +1228,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                         && !ConvertUtils.isEmpty(mRouteRestAreaInfos.get(0).getMRouteRestAreaDetailsInfos())) {
                     final PoiInfoEntity poiEntryFromService = getPoiEntryFromService(
                             mRouteRestAreaInfos.get(0).getMRouteRestAreaDetailsInfos().get((int) (item.getIndex())));
-                    mViewModel.enterToDetails(poiEntryFromService);
+                    mViewModel.enterToDetails(poiEntryFromService, (int) item.getIndex());
                 }
                 break;
             case ROUTE_POINT_VIA_CHARGE_STATION:
@@ -1334,21 +1369,14 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
     @Override
 public void onSearchResult(final int taskId, final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         if (!RoutePackage.getInstance().isRouteState()) {
+            Logger.d(TAG, "not in route state");
+            mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
             mParkSearchId = -1;
             return;
         }
         if (mParkSearchId == taskId) {
             if (searchResultEntity != null && searchResultEntity.getMTotal() > 0
                     && mRoutePackage.isRouteState()) {
-                if (mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP) == null) {
-                    Logger.d(TAG, "The endpoint is null");
-                    return;
-                }
-                PoiInfoEntity endPoiEntity = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getMPoiInfoEntity();
-                if (endPoiEntity != null && endPoiEntity.getPointTypeCode() != null && endPoiEntity.getPointTypeCode().startsWith("1509")) {
-                    Logger.d(TAG, "The endpoint is the parking");
-                    return;
-                }
                 showRoutePark(MapType.MAIN_SCREEN_MAIN_MAP);
             }
         }

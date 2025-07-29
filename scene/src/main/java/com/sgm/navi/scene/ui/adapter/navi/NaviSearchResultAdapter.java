@@ -76,7 +76,7 @@ public class NaviSearchResultAdapter extends RecyclerView.Adapter<NaviSearchResu
                                 getDrawable(R.drawable.img_route_search_add));
         holder.routeSearchRefreshListItemBinding.itemRootViewService.setOnClickListener(v -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(mPoiInfoEntityList.get(position));
+                itemClickListener.onItemClick(mPoiInfoEntityList.get(position), position);
             }
         });
 
