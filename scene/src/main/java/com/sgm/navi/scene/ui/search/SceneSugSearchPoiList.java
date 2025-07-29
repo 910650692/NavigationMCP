@@ -122,6 +122,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
         mAdapter = new SearchResultAdapter();
         mViewBinding.recyclerSearchResult.setAdapter(mAdapter);
+        mViewBinding.recyclerSearchResult.setItemAnimator(null);
         mViewBinding.recyclerSearchResult.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, final int dx, final int dy) {
