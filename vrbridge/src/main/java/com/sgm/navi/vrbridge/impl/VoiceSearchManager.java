@@ -446,13 +446,8 @@ public final class VoiceSearchManager {
             mKeyword = dest;
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
-            final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-            if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
-                    || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)
-                    || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
-                bundle.putBoolean("IS_END", true);
-            }
             bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, dest);
+            setEndParam(bundle);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
 
@@ -1260,24 +1255,23 @@ public final class VoiceSearchManager {
             } else {
                 mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, center);
             }
-        } else {
-            if (!(VoiceConvertUtil.isNumber(distance))) {
-                //执行关键字搜索
-                mSearchType = IVrBridgeConstant.VoiceSearchType.CONDITION_IN_PAGE;
-                final Bundle bundle = new Bundle();
-                bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
-                bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
-                MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+        } else if (VoiceConvertUtil.isNumber(distance)) {
+            //当前位置的周边搜，指定半径
+            final LocInfoBean curLocation = PositionPackage.getInstance().getLastCarLocation();
+            if (null != curLocation) {
+                final GeoPoint geoPoint = new GeoPoint(curLocation.getLongitude(), curLocation.getLatitude());
+                dealAfterConditionCenter(geoPoint);
             } else {
-                //没有中心点，当前位置的周边搜
-                final LocInfoBean curLocation = PositionPackage.getInstance().getLastCarLocation();
-                if (null != curLocation) {
-                    final GeoPoint geoPoint = new GeoPoint(curLocation.getLongitude(), curLocation.getLatitude());
-                    dealAfterConditionCenter(geoPoint);
-                } else {
-                    return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.CANT_GET_POS_INFO);
-                }
+                return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.CANT_GET_POS_INFO);
             }
+        } else {
+            //执行关键字搜索
+            mSearchType = IVrBridgeConstant.VoiceSearchType.CONDITION_IN_PAGE;
+            final Bundle bundle = new Bundle();
+            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
+            bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
+            setEndParam(bundle);
+            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
 
         return CallResponse.createSuccessResponse();
@@ -1320,8 +1314,28 @@ public final class VoiceSearchManager {
         bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
         bundle.putParcelable(IVrBridgeConstant.VoiceIntentParams.AROUND_POINT, geoPoint);
         bundle.putInt(IVrBridgeConstant.VoiceIntentParams.AROUND_RADIUS, radius);
+        setEndParam(bundle);
         MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
     }
+
+    /**
+     * 当前已处于选路或引导太，但语音输入的是导航去xxx，需要搜索结果展示"去这里"
+     *
+     * @param bundle Bundle，fragment接收数据.
+     */
+    private void setEndParam(final Bundle bundle) {
+        if (null == bundle) {
+            return;
+        }
+
+        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+            bundle.putBoolean("IS_END", true);
+        }
+    }
+
 
     /**
      * 处理多条件搜索结果回调.
