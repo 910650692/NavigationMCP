@@ -48,6 +48,7 @@ import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -182,11 +183,11 @@ public class L2Adapter {
                 aheadIntersections.clear();
                 return;
             }
-            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
-            aheadIntersections.clear();
+            long linkIndexDist = -1;
+            List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = new ArrayList<>();
             for (int i = 0; i < laneInfoList.size(); i++) {
                 LaneInfoEntity laneInfoEntity = laneInfoList.get(i);
-                long linkIndexDist = getLinkIndexDist(laneInfoEntity.getSegmentIdx(), laneInfoEntity.getLinkIdx());
+                linkIndexDist = getLinkIndexDist(laneInfoEntity.getSegmentIdx(), laneInfoEntity.getLinkIdx());
                 if (linkIndexDist < 0) {
                     continue;
                 }
@@ -200,11 +201,12 @@ public class L2Adapter {
                 aheadIntersectionsBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
                 aheadIntersectionsBean.setBackLaneType(laneInfoEntity.getBackLaneType()); // 引导点处所有车道的类型信息
                 aheadIntersections.add(aheadIntersectionsBean);
-                if (aheadIntersections.size() > 5) {
+                if (aheadIntersections.size() >= 5) {
                     break;
                 }
             }
-            if (Logger.isDebugLevel()) Logger.i(TAG, PREFIX , "后续车道信息", laneInfoList);
+            l2NaviBean.setAheadIntersections(aheadIntersections);
+            Logger.d(TAG, PREFIX , "后续车道信息", aheadIntersections.size(), linkIndexDist);
         }
 
         @Override
@@ -671,6 +673,7 @@ public class L2Adapter {
         if (ConvertUtils.isEmpty(l2DriveObserver)) {
             Logger.v(TAG, "l2++回调接口未注册");
         } else {
+            long startTime = System.nanoTime();
             if (mNaviEtaInfo != null) {
                 NaviAdapter.getInstance().queryAppointLanesInfo(mNaviEtaInfo.curSegIdx, mNaviEtaInfo.curLinkIdx);
             }
@@ -704,7 +707,19 @@ public class L2Adapter {
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象
             // unRegisterAdapterCallback();
+            l2NaviBean.getAheadIntersections().removeIf(Objects::isNull);
+            long midleTime = System.nanoTime();
             l2DriveObserver.onSdTbtDataChange(l2NaviBean);
+            long endTime = System.nanoTime();
+            if (Logger.isDebugLevel()) {
+                long take = (endTime - startTime) / 1000000;
+                long take1 = (midleTime - startTime) / 1000000;
+                long take2 = (endTime - midleTime) / 1000000;
+                Logger.d(TAG, "sendTBTdata耗时: " + take1 + "ms, " + take2 + "ms");
+                if (take >= 1000) {
+                    Logger.d(TAG, "sendTBTdata超时: " + take + "ms");
+                }
+            }
             // registerAdapterCallback();
         }
     }
@@ -988,11 +1003,11 @@ public class L2Adapter {
                 return mNaviEtaInfo.linkRemainDist;
             }
             if (mNaviEtaInfo.getCurSegIdx() > curSegIdx) {
-                return -1;
+                return -2;
             }
         }
         if (mNaviEtaInfo.getCurSegIdx() > curSegIdx) {
-            return -1;
+            return -3;
         }
         long dist = 0;
         RouteCurrentPathParam currentPath = RouteAdapter.getInstance().getCurrentPath(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1017,19 +1032,19 @@ public class L2Adapter {
                         }
                         if (i == curSegIdx && j == curLinkIdx) {
                             if (dist > 2000) {
-                                return -1;
+                                return -4;
                             } else {
                                 return dist;
                             }
                         }
                         if (dist > 2000) {
-                            return -1;
+                            return -5;
                         }
                     }
                 }
             }
         }
-        return -1;
+        return -6;
     }
 
     public GeoPoint getLinkLastGeoPoint(int curSegIdx, int curLinkIdx) {
