@@ -59,7 +59,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public ObservableField<Boolean> mIsHomeCompanyDisplayed;
     public ObservableField<Boolean> mIsEVCar;
     public ObservableField<String> mSyncTime;
-    public ObservableField<Boolean> mFavoriteListChecked = new MutableLiveData<>(true);
+    public ObservableField<Boolean> mFavoriteListChecked = new ObservableField<>(true);
     private final ArrayList<PoiInfoEntity> mStationList = new ArrayList<>();
     private PoiInfoEntity mHome;
     private PoiInfoEntity mCompany;
