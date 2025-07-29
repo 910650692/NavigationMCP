@@ -106,15 +106,11 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
     }
 
     public void setActivateStateCallBack(LoadingViewCallBack callBack) {
-        if (mActivateStateCallBack == null) {
-            this.mActivateStateCallBack = callBack;
-        }
+        this.mActivateStateCallBack = callBack;
     }
 
     public void removeActivateStateCallBack() {
-        if (mActivateStateCallBack != null) {
-            this.mActivateStateCallBack = null;
-        }
+        this.mActivateStateCallBack = null;
     }
 
     public String getErrorMsgSave() {
