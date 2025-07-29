@@ -72,9 +72,13 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
                 params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width_main_btn);
             }
             params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
-        }else{
-            params.x = 517;
-            params.y = 85;
+        } else {
+            if (isMainBTNVisible) {
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width);
+            } else {
+                params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width_main_btn);
+            }
+            params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
         }
         window.setAttributes(params);
     }

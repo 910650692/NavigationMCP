@@ -14,8 +14,9 @@
     <com.sgm.navi.ui.view.SkinLinearLayout
         android:id="@+id/message_center_parent"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_120"
+        android:layout_height="@dimen/dp_152"
         android:background="@drawable/bg_shadow_navi_cadillac"
+        android:layout_marginStart="@dimen/dp_20"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_103"
