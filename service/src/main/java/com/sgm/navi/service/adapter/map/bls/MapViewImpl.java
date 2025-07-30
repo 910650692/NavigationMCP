@@ -221,7 +221,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         mapParameter.value4 = 0;//保留
         getMapview().getOperatorBusiness().setMapBusinessDataPara(MapBusinessDataType.MAP_BUSINESSDATA_FORCE_NAVI_LABEL, mapParameter);
         //设置底图默认字体大小
-        getMapview().getOperatorBusiness().setMapTextScale(AutoMapConstant.MAP_DEFAULT_TEXT_SIZE);
+        //getMapview().getOperatorBusiness().setMapTextScale(AutoMapConstant.MAP_DEFAULT_TEXT_SIZE);
         //开启POI标注
         getMapview().getOperatorBusiness().setLabelVisable(true);
         //开启TMC
