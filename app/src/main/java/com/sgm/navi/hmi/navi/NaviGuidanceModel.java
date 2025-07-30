@@ -28,6 +28,7 @@ import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.SceneNaviChargeBtnType;
+import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.service.AppCache;
@@ -174,6 +175,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private static final long MIN_REFRESH_INTERVAL = 10000; // 10秒，十秒内多只刷新一次路线，控制频率
     private boolean mIsWaitingNetworkStable = false;
     private long mLastRefreshTime = 0;
+    private RouteWayID mRouteWayID;
+
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
@@ -301,6 +304,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             public void run() {
                 try {
                     if (mViewModel != null) {
+                        if (mRouteWayID != null && mRouteWayID.equals(RouteWayID.ROUTE_WAY_DELETE_VIA)) {
+                            NaviSceneManager.getInstance().notifySceneStateChangeReset(INaviSceneEvent.SceneStateChangeType.SceneShowState,
+                                    NaviSceneId.NAVI_SCENE_VIA_POINT_LIST, false);
+                        }
                         mViewModel.updateViaList();
                     }
                 } catch (Exception e) {
@@ -678,6 +685,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onRouteResult(final RequestRouteResult requestRouteResult) {
         RouteWayID routeWayID = requestRouteResult.getMRouteWay();
+        mRouteWayID = routeWayID;
         mIsAutoReRoute = requestRouteResult.isMAutoRouting();
         Logger.i(TAG, "onRouteResult routeWayID = ", routeWayID);
         if (routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_VIA) ||

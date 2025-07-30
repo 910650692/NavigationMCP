@@ -30,19 +30,6 @@ public class ImmersiveStatusScene {
     }
 
     public void setImmersiveStatus(MapType mapTypeId, ImersiveStatus imersiveStatus) {
-        if (Logger.openLog) {
-            StackTraceElement[] traceElements = Thread.currentThread().getStackTrace();
-            StringBuilder stackTrace = new StringBuilder();
-            for (StackTraceElement element : traceElements) {
-                if (element != null) {
-                    String elementStr = element.toString();
-                    if (elementStr.contains("com.sgm")) {
-                        stackTrace.append(elementStr).append("\n");
-                    }
-                }
-            }
-            Logger.d("ImmersiveStatusScene", stackTrace.toString());
-        }
         synchronized (ImmersiveStatusScene.class) {
             imersiveStatusMap.put(mapTypeId, imersiveStatus);
             ThreadManager.getInstance().postDelay(()->{
