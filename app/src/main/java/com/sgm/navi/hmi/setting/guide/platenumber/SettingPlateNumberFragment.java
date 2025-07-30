@@ -369,6 +369,6 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
      */
     public boolean isEVCar() {
         final int carMode = CalibrationPackage.getInstance().powerType();
-        return carMode == 1;
+        return carMode != -1 && carMode != 0;
     }
 }
