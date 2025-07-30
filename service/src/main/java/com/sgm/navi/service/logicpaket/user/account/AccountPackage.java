@@ -159,10 +159,10 @@ public final class AccountPackage implements AccountAdapterCallBack {
             mIsLogin = true;
             Logger.i("notifyQRCodeLoginConfirm mIsLogin = true",
                     "result.getProfileInfo().getUid() = " + result.getProfileInfo().getUid());
-            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().startListen(result.getProfileInfo().getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
             mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+            MsgPushPackage.getInstance().startListen(result.getProfileInfo().getUid());
             BehaviorPackage.getInstance().setLoginInfo();
         }
         for (AccountCallBack observer : mCallBacks.values()) {
