@@ -193,8 +193,10 @@ public final class MapStateManager {
                 final int size = mRouteList.size();
                 Logger.w(IVrBridgeConstant.TAG, "路线size = " + size);
                 mBuilder.setPathCount(size);
-                AMapStateUtils.saveMapState(mBuilder.build());
-                VoiceSearchManager.getInstance().playRouteResult();
+                final int result = AMapStateUtils.saveMapState(mBuilder.build());
+                if (result == 1) {
+                    VoiceSearchManager.getInstance().playRouteResult();
+                }
             } else {
                 mBuilder.setPathCount(0);
                 AMapStateUtils.saveMapState(mBuilder.build());

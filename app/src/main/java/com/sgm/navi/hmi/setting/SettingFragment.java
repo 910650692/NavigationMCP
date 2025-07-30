@@ -104,13 +104,17 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
     private void showFragment(int position) {
         FragmentManager manager = getChildFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        if (mCurrentFragment != null) {
-            transaction.hide(mCurrentFragment);
-        }
         if (mFragmentMap == null) {
             mFragmentMap = new SparseArray<>();
         }
         Fragment target = mFragmentMap.get(position);
+
+        if (mCurrentFragment != null) {
+            if (mCurrentFragment.equals(target)) {
+                return;
+            }
+            transaction.hide(mCurrentFragment);
+        }
         if (target == null) {
             switch (position) {
                 case 0:
