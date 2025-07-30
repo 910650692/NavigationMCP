@@ -88,6 +88,8 @@ public final class VoiceSearchManager {
 
     private int mPlanRouteResult; //是否应该播报路线规划结果
 
+    private GeoPoint mCenterPoint; //中心点坐标
+
 
     public static VoiceSearchManager getInstance() {
         return VoiceSearchManagerHolder.INSTANCE;
@@ -149,6 +151,7 @@ public final class VoiceSearchManager {
         mNormalDestList = new SparseArray<>();
         mGenericsDestList = new SparseArray<>();
         mMultiplePoiArray = new SparseArray<>();
+        mCenterPoint = null;
     }
 
     private final SearchResultCallback mSearchCallback = new SearchResultCallback() {
@@ -455,6 +458,12 @@ public final class VoiceSearchManager {
         return CallResponse.createSuccessResponse();
     }
 
+    /**
+     * 获取目的地类型.
+     *
+     * @param dest 类型.
+     * @return 1:家  2：公司  0:普通点.
+     */
     private int getDestType(final String dest) {
         final int type = switch (dest) {
             case IVrBridgeConstant.DestType.HOME -> 1;
@@ -1306,7 +1315,12 @@ public final class VoiceSearchManager {
             return;
         }
 
+        mCenterPoint = geoPoint;
         mSearchType = IVrBridgeConstant.VoiceSearchType.CONDITION_IN_PAGE;
+        aroundSearchByPoint(mCenterPoint);
+    }
+
+    private void aroundSearchByPoint(final GeoPoint geoPoint) {
         final String distance = mSearchCondition.getDistance();
         int radius = VoiceConvertUtil.getIntValue(distance);
         radius = radius > 0 ? radius : 5000;
@@ -1979,10 +1993,22 @@ public final class VoiceSearchManager {
                 if (mCurrentPage < 1) {
                     mCurrentPage = 1;
                 }
-                SearchPackage.getInstance().keywordSearch(mCurrentPage, mKeyword, false);
+                if (null != mCenterPoint && null != mSearchCondition) {
+                    aroundSearchByPoint(mCenterPoint);
+                } else {
+                    final Bundle bundle = new Bundle();
+                    bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
+                    bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mKeyword);
+                    bundle.putInt(IVrBridgeConstant.VoiceIntentParams.TARGET_PAGE, mCurrentPage);
+                    setEndParam(bundle);
+                    MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+                }
             } else {
-                //为语音增加的接口，按支持的规则排序
-                SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                if (null != mCenterPoint) {
+                    SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue, mCenterPoint);
+                } else {
+                    SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                }
             }
         }
     }
