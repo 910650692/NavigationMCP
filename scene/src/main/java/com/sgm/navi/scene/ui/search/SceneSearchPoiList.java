@@ -1058,6 +1058,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             } else {
                 updatePoiMarkerVisibleState();
             }
+            if(!ConvertUtils.isNull(mAdapter)){
+                mAdapter.clearPoiListChild();
+            }
         }
     }
 

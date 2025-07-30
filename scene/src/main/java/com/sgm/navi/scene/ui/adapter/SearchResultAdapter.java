@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -42,6 +41,7 @@ import com.sgm.navi.scene.databinding.SearchResultItemBinding;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.ChargeInfo;
@@ -57,6 +57,7 @@ import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -411,7 +412,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 }
                 binding.poiScenicSpotChildList.setAdapter(scenicChildAdapter);
                 scenicChildAdapter.setItemClickListener((index, isSelectIndex) -> {
-                    mChildSelectIndex = index;
                     if (isFirstRefresh) {
                         mLastParentSelectIndex = resultHolder.getAdapterPosition();
                         isFirstRefresh = false;
@@ -430,6 +430,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                     }
                     if (isSelectIndex) {
                         final ChildInfo childInfo = childInfoList.get(index);
+                        mChildSelectIndex = index;
                         mChildSelectInfo = new PoiInfoEntity()
                                 .setName(childInfo.getName())
                                 .setAddress(childInfo.getAddress())
@@ -440,8 +441,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                         } else {
                             mChildSelectInfo.setMChildType(AutoMapConstant.ChildType.CHILD_HAS_GRAND);
                         }
+                        SearchResultEntity searchResultEntity = new SearchResultEntity()
+                                .setPoiList(Collections.singletonList(mChildSelectInfo));
+                        mSearchPackage.createLabelMarker(searchResultEntity);
                     } else {
                         mChildSelectInfo = null;
+                        mChildSelectIndex = -1;
+                        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
                     }
                     mLastParentSelectIndex = resultHolder.getAdapterPosition();
                 });
@@ -906,6 +912,14 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             }
         }
         return -1;
+    }
+
+    public void clearPoiListChild(){
+        if(!ConvertUtils.isNull(mChildSelectInfo)){
+            mChildSelectInfo = null;
+            mChildSelectIndex = -1;
+            notifyDataSetChanged();
+        }
     }
 
     public interface OnItemClickListener {

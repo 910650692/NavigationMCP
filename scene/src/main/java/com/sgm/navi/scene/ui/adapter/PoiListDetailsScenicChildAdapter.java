@@ -54,6 +54,10 @@ public class PoiListDetailsScenicChildAdapter extends RecyclerView.Adapter<PoiLi
 
         mChildList.clear();
         mChildList.addAll(childInfoList);
+        // 重新进入列表取消子点选中
+        for (int i = 0; i < childInfoList.size(); i++) {
+            childInfoList.get(i).setChecked(-1);
+        }
         notifyDataSetChanged();
     }
 

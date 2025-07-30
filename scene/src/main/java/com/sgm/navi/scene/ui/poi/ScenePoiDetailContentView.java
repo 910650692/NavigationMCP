@@ -1667,6 +1667,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         .setPid(childInfo.getPoiId())
                         .setMChildInfoList(childInfo.getMGrandChildInfoList())
                         .setPoint(childInfo.getLocation());
+                ThreadManager.getInstance().postDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScreenViewModel.setChildIndex(mChildSelectIndex);
+                    }
+                },1000);
             }
             scenicChildAdapter.setChildInfoList(childInfoList);
             mViewBinding.scenePoiDetailsNormalView.poiChildList.setLayoutManager(
