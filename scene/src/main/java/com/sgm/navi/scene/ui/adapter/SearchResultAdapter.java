@@ -220,7 +220,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.ivNaviIcon.setImageDrawable(
                     ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_basic_ic_add));
 
-            if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position))) {
+            if (isBelongSamePoi(mGasChargeAlongList, mPoiEntities.get(position)) || mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                 holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_005CFF));
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(

@@ -40,6 +40,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -112,6 +113,20 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         this.mSearchType = searchType;
     }
 
+
+    private void updateRouteList() {
+        final List<RouteParam> allPoiParamList = RoutePackage.getInstance().getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (!ConvertUtils.isEmpty(allPoiParamList) && allPoiParamList.size() >= 2) {
+            allPoiParamList.remove(0);
+            allPoiParamList.remove(allPoiParamList.size() - 1);
+        } else {
+            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG, "ERROR VIA LIST");
+            return;
+        }
+        if (mAdapter != null) {
+            mAdapter.updateAlongList(allPoiParamList);
+        }
+    }
     /**
      * 初始化 RecyclerView
      */
@@ -122,6 +137,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
 
         mAdapter = new SearchResultAdapter();
         mViewBinding.recyclerSearchResult.setAdapter(mAdapter);
+        updateRouteList();
         mViewBinding.recyclerSearchResult.setItemAnimator(null);
         mViewBinding.recyclerSearchResult.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -157,7 +173,16 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
             @Override
             public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP,poiInfoEntity)) {
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+                        return;
+                    }
+                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                        RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                    } else {
+                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    }
                 } else {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Route.ROUTE_FRAGMENT)
@@ -257,8 +282,8 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
                 poiInfoEntity.setPoint(geoPoint);
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
                     if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                        ToastUtils.Companion.getInstance().showCustomToastView("起点终点不能删除");
-                    }else{
+                        ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+                    } else {
                         mScreenViewModel.addRemoveClick(poiInfoEntity);
                     }
                 } else {

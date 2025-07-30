@@ -1820,7 +1820,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         int position = mAdapter.getTargetIndex(poiInfoEntity);
         int pointType = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
-        if (isBelongAlongList(poiInfoEntity)) {
+        if (isBelongAlongList(poiInfoEntity) || mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
             for (PoiInfoEntity poiInfoEntity1 : mResultEntity.getPoiList()) {
                 if (ConvertUtils.equals(poiInfoEntity1.getPid(), poiInfoEntity.getPid())) {
@@ -1848,7 +1848,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             return;
         }
         int pointType = mScreenViewModel.getPointTypeCode(poiInfoEntity.getPointTypeCode());
-        if (isBelongAlongList(poiInfoEntity)) {
+        if (isBelongAlongList(poiInfoEntity) || mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
             gasChargeRemoveMode(poiInfoEntity);
             poiInfoEntity.setMIsVisible(false);
         } else {
@@ -2207,6 +2207,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         if ((mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
                 || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) && mRouteAround) {
             routeClickEvent(poiInfoEntity, position);
+            return;
+        }
+        if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
             return;
         }
         if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {

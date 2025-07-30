@@ -240,7 +240,7 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
                         if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
                             if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                                ToastUtils.Companion.getInstance().showCustomToastView("起点终点不能删除");
+                                ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
                             } else {
                                 RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
                             }
