@@ -2,6 +2,7 @@ package com.sgm.navi.scene.ui.map;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -67,8 +68,10 @@ public class SceneScaleView extends BaseSceneView<SceneScaleBinding, SceneScaleI
                 return;
             }
             mViewBinding.screenScaleSize.setText(scale);
+            int maxWidth = 400;
+            int finalWidth = Math.min(scaleLineVaule, maxWidth);
             ViewGroup.LayoutParams layoutParams = mViewBinding.screenBgSampleScale.getLayoutParams();
-            layoutParams.width = scaleLineVaule;
+            layoutParams.width = finalWidth;
             mViewBinding.screenBgSampleScale.setLayoutParams(layoutParams);
 
             if (scale.equals("1000公里")) {
