@@ -179,8 +179,7 @@ public class L2Adapter {
         public void onLaneInfoReceived(ArrayList<LaneInfoEntity> laneInfoList) {
             if (laneInfoList == null || laneInfoList.isEmpty()) {
                 Logger.i(TAG, PREFIX , "后续车道信息 null");
-                List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = l2NaviBean.getAheadIntersections();
-                aheadIntersections.clear();
+                l2NaviBean.setAheadIntersections(new ArrayList<>());
                 return;
             }
             long linkIndexDist = -1;

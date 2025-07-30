@@ -233,9 +233,9 @@ public class NaviApiImplHelper {
         cameraParam.enable = true;       /* 打开摄像头显示 */
         cameraParam.maxCount = 5;        /* 摄像头显示个数为5个 */
         cameraParam.checkDistance = new int[]{1000, 1000, 500};
-        cameraParam.checkDistance[0] = 5000;    /* 高速公路 */
-        cameraParam.checkDistance[1] = 5000;    /* 主要大街、城市快速道 */
-        cameraParam.checkDistance[2] = 5000;    /* 其他道路 */
+        cameraParam.checkDistance[0] = 2000;    /* 高速公路 */
+        cameraParam.checkDistance[1] = 2000;    /* 主要大街、城市快速道 */
+        cameraParam.checkDistance[2] = 2000;    /* 其他道路 */
         mGuideService.setParam(camera);
     }
 

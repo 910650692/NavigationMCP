@@ -80,8 +80,8 @@ public class L2NaviBean {
         mVehiclePosition = new VehiclePositionBean();
         mWarningFacility = new WarningFacilityBean();
         mEndParkingInfo = new EndParkingInfo();
-        mAheadIntersections.clear();
-        mMixForks.clear();
+        mAheadIntersections = new ArrayList<>();
+        mMixForks = new ArrayList<>();
         mTollStationDist = 0xFFFF;
         mHasTidalLane = 0;
         mIsServiceAreaRoad = 0;
