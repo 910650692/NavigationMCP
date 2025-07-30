@@ -1189,7 +1189,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 ThreadManager.getInstance().postDelay(mOfflineRunnable, 3500);
                 //搜索无数据时，展示无结果页面
                 mViewBinding.searchResultNoData.setVisibility(VISIBLE);
-                if ((searchResultEntity != null && searchResultEntity.getPoiType() == 0 && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList())) || mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
+                // 提示网络错误：关键字搜（离线-无离线数据）顺路搜因为不支持离线搜（返回错误码33554433）
+                if ((searchResultEntity != null
+                        && searchResultEntity.getPoiType() == 0
+                        && ConvertUtils.isEmpty(MapDataPackage.getInstance().getAllDownLoadedList()))
+                        || (searchResultEntity != null
+                        && mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                        && searchResultEntity.getCode() == 33554433)) {
                     mViewBinding.searchResultNoData.setText(R.string.search_offline_no_city_hint);
                 } else {
                     mViewBinding.searchResultNoData.setText(R.string.sug_search_result_no_data);
