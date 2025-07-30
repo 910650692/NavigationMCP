@@ -44,18 +44,59 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/net_error_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/net_error_hint"
-            android:textSize="@dimen/sp_42"
-            android:textColor="@color/dialog_title_color"
+
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/img_loading"
+            android:layout_width="@dimen/dp_94"
+            android:layout_height="@dimen/dp_94"
+            android:layout_marginBottom="@dimen/dp_50"
+            android:src="@drawable/icon_limit_loading"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/reminder_web_view"
             app:layout_constraintEnd_toEndOf="@id/reminder_web_view"
             app:layout_constraintStart_toStartOf="@id/reminder_web_view"
             app:layout_constraintTop_toTopOf="@id/reminder_web_view" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/loading_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_38"
+            android:text="@string/loading_url"
+            android:textColor="@color/authorization_request_content"
+            android:textSize="@dimen/sp_34"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/reminder_web_view"
+            app:layout_constraintStart_toStartOf="@id/reminder_web_view"
+            app:layout_constraintTop_toBottomOf="@id/img_loading" />
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/load_failed_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_100"
+            android:text="@string/load_failed"
+            android:textColor="@color/authorization_request_content"
+            android:textSize="@dimen/sp_34"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/reminder_web_view"
+            app:layout_constraintEnd_toEndOf="@id/reminder_web_view"
+            app:layout_constraintStart_toStartOf="@id/reminder_web_view"
+            app:layout_constraintTop_toTopOf="@id/reminder_web_view" />
+
+        <com.sgm.navi.ui.view.SkinButton
+            android:id="@+id/btn_retry"
+            android:layout_width="@dimen/dp_360"
+            android:layout_height="@dimen/dp_96"
+            android:layout_marginTop="@dimen/dp_40"
+            android:text="@string/load_retry"
+            android:textColor="@color/dialog_startup_exception_button_text"
+            android:textSize="@dimen/sp_32"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/reminder_web_view"
+            app:layout_constraintStart_toStartOf="@id/reminder_web_view"
+            app:layout_constraintTop_toBottomOf="@id/load_failed_hint" />
+
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 </layout>

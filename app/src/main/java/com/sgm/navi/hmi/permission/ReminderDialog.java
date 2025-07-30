@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -55,40 +56,26 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             public void onClick(View v) {
                 showOrHideDetail(true);
                 mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_service_title);
+                boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
 
-                if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                    boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
-                    mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
-                    Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
-                    String serviceTermsUrl = isDarkMode ?
-                            getContext().getString(R.string.service_terms_url_dark) :
-                            getContext().getString(R.string.service_terms_url_light);
+                Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+                String serviceTermsUrl = isDarkMode ?
+                        getContext().getString(R.string.service_terms_url_dark) :
+                        getContext().getString(R.string.service_terms_url_light);
 
-                    mWebView.loadUrl(serviceTermsUrl);
-                } else {
-                    Logger.d("ReminderDialog", "Network is not available, cannot load service terms.");
-                    mViewBinding.reminderDetail.netErrorHint.setVisibility(View.VISIBLE);
-                    mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
-                }
+                mWebView.loadUrl(serviceTermsUrl);
             }
         });
         mViewBinding.reminderIndex.reminderPagePrivacy.setOnClickListener(v -> {
             showOrHideDetail(true);
             mViewBinding.reminderDetail.reminderTitle.setText(R.string.reminder_page_privacy_title);
+            boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
 
-            if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                boolean isDarkMode = ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext());
-                mViewBinding.reminderDetail.netErrorHint.setVisibility(View.INVISIBLE);
-                Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
-                String privacyPolicyUrl = isDarkMode ?
-                        getContext().getString(R.string.privacy_policy_url_dark) :
-                        getContext().getString(R.string.privacy_policy_url_light);
-                mWebView.loadUrl(privacyPolicyUrl);
-            } else {
-                Logger.d("ReminderDialog", "Network is not available, cannot load service terms.");
-                mViewBinding.reminderDetail.netErrorHint.setVisibility(View.VISIBLE);
-                mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
-            }
+            Logger.d("ReminderDialog", "isDarkModeEnabled: ", isDarkMode);
+            String privacyPolicyUrl = isDarkMode ?
+                    getContext().getString(R.string.privacy_policy_url_dark) :
+                    getContext().getString(R.string.privacy_policy_url_light);
+            mWebView.loadUrl(privacyPolicyUrl);
         });
         mViewBinding.reminderIndex.dialogCommit.setOnClickListener(v -> {
             if (mDialogClickListener != null) {
@@ -146,12 +133,20 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 view.setVisibility(View.INVISIBLE);
+                mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
+                mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
+                mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 applyCustomStyles(view);
+                mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
                 view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -159,6 +154,29 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                         view.animate().alpha(1f).setDuration(200).start();
                     }
                 }, 350);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                Logger.e("ReminderDialog", "WebView加载失败");
+                mViewBinding.reminderDetail.btnRetry.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String failedUrl = request.getUrl().toString();
+                        Logger.e("ReminderDialog", "WebView加载失败，URL: ", failedUrl);
+                        mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
+                        mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                        mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
+                        mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
+                        view.loadUrl(failedUrl);
+                    }
+                });
+                mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
+                mViewBinding.reminderDetail.btnRetry.setVisibility(View.VISIBLE);
+                mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.VISIBLE);
+                mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
             }
 
             @Override
