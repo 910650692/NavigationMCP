@@ -171,8 +171,12 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         mapViewParam.mapProfileName = "mapprofile_fa2";//TODO 性能优化配置
         mapViewParam.zoomScaleMode = MapZoomScaleMode.PhysicalAdaptiveMode;//TODO 性能优化配置
         mapViewParam.asyncTaskThreadCount = 4;//TODO 性能优化配置
-        return ConvertUtils.isNullRequire(getMapService().createMapView(mapViewParam, this, this, null, null),
-                "获取对应的 MapView 失败 : " + mapType);
+        MapService mapService = getMapService();
+        MapView mapView = null;
+        if(null!= mapService){
+            mapView = mapService.createMapView(mapViewParam, this, this, null, null);
+        }
+        return ConvertUtils.isNullRequire(mapView, "获取对应的 MapView 失败 : " + mapType);
     }
 
     /**
