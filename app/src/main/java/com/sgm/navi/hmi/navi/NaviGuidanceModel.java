@@ -128,6 +128,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mInitLazyView;
     private Runnable mUpdateViaList;
     private Runnable mShowPreView;
+    private Runnable mReRouteByNetChange;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -597,6 +598,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onNaviStop() {
         mNaviPackage.setEndPoint(null);
+        ThreadManager.getInstance().removeHandleTask(mReRouteByNetChange);
+        mIsWaitingNetworkStable = false;
         closeNavi();
     }
 
@@ -1146,17 +1149,24 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         // 离线转在线直接刷新,在线转离线不用管
         if (netStatus && !mIsWaitingNetworkStable) {
             mIsWaitingNetworkStable = true;
-            // 防止网络波动延时三秒进行重算路判断，如果三秒后还是在线状态就进行算路，并且10秒内只能算路一次
-            ThreadManager.getInstance().postDelay(() -> {
-                if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-                    long now = System.currentTimeMillis();
-                    if (now - mLastRefreshTime > MIN_REFRESH_INTERVAL) {
-                        requestReRoute();
-                        mLastRefreshTime = now;
+            if (mReRouteByNetChange == null) {
+                mReRouteByNetChange = () -> {
+                    try {
+                        if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                            long now = System.currentTimeMillis();
+                            if (now - mLastRefreshTime > MIN_REFRESH_INTERVAL) {
+                                requestReRoute();
+                                mLastRefreshTime = now;
+                            }
+                        }
+                        mIsWaitingNetworkStable = false;
+                    } catch (Exception e) {
+                        Logger.e(TAG, e.getMessage());
                     }
-                }
-                mIsWaitingNetworkStable = false;
-            }, NETWORK_STABLE_DELAY);
+                };
+            }
+            // 防止网络波动延时三秒进行重算路判断，如果三秒后还是在线状态就进行算路，并且10秒内只能算路一次
+            ThreadManager.getInstance().postDelay(mReRouteByNetChange, NETWORK_STABLE_DELAY);
         }
     }
 
