@@ -47,6 +47,7 @@ import com.sgm.navi.scene.ui.adapter.QuickFilterListAdapter;
 import com.sgm.navi.scene.ui.adapter.SearchResultAdapter;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
@@ -1354,9 +1355,24 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
      * @param sortValue 筛选条件
      */
     public void onVoicePoiSort(final String sortValue) {
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onVoicePoiSort: " + sortValue);
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onVoicePoiSort1: " + sortValue);
         if (mScreenViewModel != null && mResultEntity != null) {
             mScreenViewModel.keywordSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getVoiceClassifyData(sortValue), false);
+        }
+    }
+
+    /**
+     * 语音筛选搜索回调，收到此回调后根据筛选条件进行一次筛选搜索
+     * @param sortValue 筛选条件
+     * @param point 目标经纬度
+     */
+    public void onVoicePoiSort(final String sortValue, final GeoPoint point) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onVoicePoiSort2: " + sortValue);
+        if (mScreenViewModel != null && mResultEntity != null) {
+            PoiInfoEntity poiInfo = new PoiInfoEntity()
+                    .setPoint(point);
+            mScreenViewModel.aroundSearch(mPageNum, mSearchText, mResultEntity.getRetain(), getVoiceClassifyData(sortValue), false, poiInfo);
+
         }
     }
 

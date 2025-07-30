@@ -1,6 +1,7 @@
 package com.sgm.navi.service.logicpaket.search;
 
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -69,6 +70,15 @@ public interface SearchResultCallback {
      * @param sortValue String，筛选规则.
      */
     default void onVoicePoiSort(MapType mapTypeId, String sortValue) {
+
+    }
+
+    /**
+     * 语音触发筛选，通过此接口传递到搜索结果界面.
+     * @param mapTypeId MapTypeId.
+     * @param sortValue String，筛选规则.
+     */
+    default void onVoicePoiSort(MapType mapTypeId, String sortValue, GeoPoint point) {
 
     }
 

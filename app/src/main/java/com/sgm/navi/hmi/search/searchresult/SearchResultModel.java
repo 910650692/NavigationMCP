@@ -10,6 +10,7 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapTypeManager;
@@ -156,6 +157,14 @@ public class SearchResultModel extends BaseModel<SearchResultViewModel> implemen
         if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
             Logger.d(TAG, "onVoicePoiSort: " + sortValue);
             mViewModel.onVoicePoiSort(sortValue);
+        }
+    }
+
+    @Override
+    public void onVoicePoiSort(final MapType mapTypeId, final String sortValue, final GeoPoint point) {
+        if (mCallbackId.equals(mSearchPackage.getCurrentCallbackId())) {
+            Logger.d(TAG, "onVoicePoiSort: " + sortValue + " ,point: " + point);
+            mViewModel.onVoicePoiSort(sortValue, point);
         }
     }
 

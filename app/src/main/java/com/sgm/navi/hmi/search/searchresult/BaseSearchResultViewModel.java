@@ -78,6 +78,15 @@ public class BaseSearchResultViewModel extends BaseViewModel<SearchResultFragmen
     }
 
     /**
+     * 语音筛选排序回调
+     * @param sortValue 排序条件
+     * @param point 目标经纬度
+     */
+    public void onVoicePoiSort(final String sortValue, GeoPoint point) {
+        mView.onVoicePoiSort(sortValue, point);
+    }
+
+    /**
      * 图层点击事件回调
      * @param poiInfoEntity 点击下标
      */

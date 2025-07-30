@@ -2206,6 +2206,25 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         });
     }
 
+    /**
+     * 语音poi排序，根据排序规则，将筛选项传递到搜索结果页面.
+     *
+     * @param mapTypeId MapTypeId。对应地图.
+     * @param sortValue String，筛选规则，eg:距离优先、好评优先、低/高价优先.
+     */
+    public void voiceSortPoi(final MapType mapTypeId, final String sortValue, final GeoPoint point) {
+        ThreadManager.getInstance().postUi(() -> {
+            for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+                final String identifier = entry.getKey();
+                mCurrentCallbackId.set(identifier);
+                final SearchResultCallback callback = entry.getValue();
+                if (null != callback) {
+                    callback.onVoicePoiSort(mapTypeId, sortValue, point);
+                }
+            }
+        });
+    }
+
     @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_INPUT)
     private void sentBuryPointForSearch(String keywords){
         BuryProperty buryProperty = new BuryProperty.Builder()

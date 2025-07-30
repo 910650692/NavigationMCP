@@ -14,6 +14,7 @@ import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -173,6 +174,15 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
      */
     public void onVoicePoiSort(final String sortValue) {
         mBinding.scenePoiList.onVoicePoiSort(sortValue);
+    }
+
+    /**
+     * 语音筛选搜索回调
+     * @param sortValue 筛选条件
+     * @param point 目标经纬度
+     */
+    public void onVoicePoiSort(final String sortValue, final GeoPoint point) {
+        mBinding.scenePoiList.onVoicePoiSort(sortValue, point);
     }
 
     /**
