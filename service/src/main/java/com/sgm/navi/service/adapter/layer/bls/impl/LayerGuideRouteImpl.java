@@ -635,6 +635,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
         }
         mViaList = new ArrayList<>(infos.mViaPoints);
+        if (Logger.openLog) {
+            Logger.d(TAG, getMapType(), " 途经点个数 ", mViaList.size());
+        }
         return infos;
     }
 
