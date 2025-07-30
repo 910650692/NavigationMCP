@@ -1752,8 +1752,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 
     public void updateChargeProgress() {
         if (mViewBinding.layoutRouteChargeProgress != null && mViewBinding.routeChargeTotalMileage != null
-                && mViewBinding.routeChargeExhaustionPoint != null && mViewBinding.routeChargeExhaustionText != null
-                && mViewBinding.routeChargeProgress != null) {
+                && mViewBinding.routeChargeExhaustionPoint != null && mViewBinding.routeChargeProgress != null) {
             if (mRoutePackage.isRouteTips() && mRouteAround) {
                 final RouteLineInfo routeLineInfo = mRoutePackage.getSelectLineInfo(MapType.MAIN_SCREEN_MAIN_MAP);
                 if (getCurrentIndex() == null || routeLineInfo == null) {
@@ -1765,13 +1764,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mRouteTotalDistance = routeLineInfo.getMDistance();
                 if (evRangeOnRouteInfo == null || evRangeOnRouteInfo.isMCanArrived()) {
                     mViewBinding.routeChargeExhaustionPoint.setVisibility(View.GONE);
-                    mViewBinding.routeChargeExhaustionText.setVisibility(View.GONE);
                     mViewBinding.routeChargeProgress.setProgress(100);
                     mExhaustDistance = mRouteTotalDistance;
                     mRouteExhaustDistance = mRouteTotalDistance;
                 } else {
                     mViewBinding.routeChargeExhaustionPoint.setVisibility(View.VISIBLE);
-                    mViewBinding.routeChargeExhaustionText.setVisibility(View.VISIBLE);
                     mExhaustDistance = mRouteTotalDistance - evRangeOnRouteInfo.getMRemainRangeDistance();
                     mRouteExhaustDistance = mExhaustDistance;
                     final int progress = Math.round(((float) (mExhaustDistance) / mRouteTotalDistance) * 100);
@@ -1939,11 +1936,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         //算路能耗距离更远
         mExhaustDistance = Math.max(mExhaustDistance, mRouteExhaustDistance);
         mViewBinding.routeChargeExhaustionPoint.setVisibility(View.VISIBLE);
-        mViewBinding.routeChargeExhaustionText.setVisibility(View.VISIBLE);
         int progress = Math.round(((float) (mExhaustDistance) / mRouteTotalDistance) * 100);
         if (progress >= 100) {
             mViewBinding.routeChargeExhaustionPoint.setVisibility(View.GONE);
-            mViewBinding.routeChargeExhaustionText.setVisibility(View.GONE);
             progress = 100;
         }
         mViewBinding.routeChargeProgress.setProgress(progress);
