@@ -170,7 +170,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private String mSuccessMsg = "";
     private boolean mIsAutoReRoute = true;
     private static final int ONE_ROUTE_LINE_DISTANCE = 150 * 1000; //超过150公里不显示备选路线
-
+    private static final long NETWORK_STABLE_DELAY = 3000; // 3秒，延时路线刷新时间，防止网络波动
+    private static final long MIN_REFRESH_INTERVAL = 10000; // 10秒，十秒内多只刷新一次路线，控制频率
+    private boolean mIsWaitingNetworkStable = false;
+    private long mLastRefreshTime = 0;
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
         mSettingPackage = SettingPackage.getInstance();
@@ -1120,7 +1123,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                         for (OnNetStatusChangeListener listener : mNetStatusChangeListeners) {
                             listener.onNetStatusChange(Boolean.TRUE.equals(isNetConnected));
                         }
-                        refreshRouteByNetChange(Boolean.TRUE.equals(mCurrentNetStatus));
+                        // 当前是离线算路结果并且转到了有网络的状态，就进行一次重算路
+                        if (!OpenApiHelper.getCurrentRouteStatus(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                            refreshRouteByNetChange(Boolean.TRUE.equals(mCurrentNetStatus));
+                        }
+
                     }
                 }
             }
@@ -1129,8 +1136,19 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     private void refreshRouteByNetChange(boolean netStatus) {
         // 离线转在线直接刷新,在线转离线不用管
-        if (netStatus) {
-            requestReRoute();
+        if (netStatus && !mIsWaitingNetworkStable) {
+            mIsWaitingNetworkStable = true;
+            // 防止网络波动延时三秒进行重算路判断，如果三秒后还是在线状态就进行算路，并且10秒内只能算路一次
+            ThreadManager.getInstance().postDelay(() -> {
+                if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                    long now = System.currentTimeMillis();
+                    if (now - mLastRefreshTime > MIN_REFRESH_INTERVAL) {
+                        requestReRoute();
+                        mLastRefreshTime = now;
+                    }
+                }
+                mIsWaitingNetworkStable = false;
+            }, NETWORK_STABLE_DELAY);
         }
     }
 

@@ -1524,7 +1524,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         // TODO: 2025/6/8 暂时先放在这里 后续OpenApiHelper需要删除
         OpenApiHelper.setCurrentPathInfos((ArrayList<PathInfo>)
-                routeLineLayerParam.getMPathInfoList());
+                routeLineLayerParam.getMPathInfoList(), true);
     }
 
     /**

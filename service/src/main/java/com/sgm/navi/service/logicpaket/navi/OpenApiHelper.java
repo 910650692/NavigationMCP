@@ -27,6 +27,7 @@ import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -103,6 +104,18 @@ public final class OpenApiHelper {
     }
 
     /**
+     * 查看当前是离线算路还是在线算路结果
+     * @return true 在线算路，false 离线算路
+     */
+    public static boolean getCurrentRouteStatus(MapType mapType) {
+        PathInfo pathInfo = getCurrentPathInfo(mapType);
+        if (pathInfo != null) {
+            return pathInfo.isOnline();
+        }
+        return false;
+    }
+
+    /**
      * @param mapTypeId 屏幕id
      * @return 返回当前的路径id
      */
@@ -137,6 +150,23 @@ public final class OpenApiHelper {
         }
         Logger.i(TAG, "setCurrentPathInfos size = " + currentPathInfos.size());
         CURRENT_PATH_INFOS = new CopyOnWriteArrayList<>(currentPathInfos);
+    }
+
+    /**
+     * @param currentPathInfos – 设置当前的路径信息列表
+     * @param isSetMainPath - 是否设置主路线
+     */
+    public static void setCurrentPathInfos(final List<PathInfo> currentPathInfos,
+                                           boolean isSetMainPath) {
+        if (ConvertUtils.isEmpty(currentPathInfos)) {
+            Logger.e(TAG, "setCurrentPathInfos is null");
+            return;
+        }
+        Logger.i(TAG, "setCurrentPathInfos size = " + currentPathInfos.size());
+        CURRENT_PATH_INFOS = new CopyOnWriteArrayList<>(currentPathInfos);
+        if (isSetMainPath) {
+            setCurrentPathInfo(CURRENT_PATH_INFOS.get(0));
+        }
     }
 
     /**
