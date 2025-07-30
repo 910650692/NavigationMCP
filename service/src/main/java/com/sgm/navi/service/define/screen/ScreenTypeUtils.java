@@ -1,5 +1,7 @@
 package com.sgm.navi.service.define.screen;
 
+import static com.sgm.navi.service.adapter.layer.bls.utils.CommonUtil.getResources;
+
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
@@ -21,6 +23,8 @@ public class ScreenTypeUtils {
     public static ScreenTypeUtils getInstance() {
         return InstanceHolder.instance;
     }
+
+    private final int CAR_557_DPI = 200;
 
     @Getter
     private ScreenType screenType  = ScreenType.SCREEN_FULL;
@@ -91,6 +95,13 @@ public class ScreenTypeUtils {
         } else {
             Logger.d("screen_change_used", "没有变化");
         }
+    }
+
+    public boolean is557CarMode() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int densityDpi = dm.densityDpi;
+        Logger.d("DPI",String.valueOf(densityDpi));
+        return CAR_557_DPI == densityDpi;
     }
 
     public void addSplitScreenChangeListener(String key, SplitScreenChangeListener listener) {

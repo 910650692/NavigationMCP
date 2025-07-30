@@ -177,7 +177,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintHeight_default="wrap"
                 app:layout_constraintHeight_min="@dimen/dp_206"
-                app:layout_constraintHeight_max="@dimen/dp_818"/>
+                app:layout_constraintHeight_max="@dimen/navi_page_traffic_max_height"/>
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_no_content"

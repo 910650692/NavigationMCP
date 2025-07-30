@@ -4048,10 +4048,12 @@
     <dimen name="navi_guide_road_name_button_padding_horizontal">20dp</dimen>
     <dimen name="navi_guide_continue_button_width">264dp</dimen>
     <dimen name="navi_guide_continue_button_height">78dp</dimen>
-    <dimen name="navi_guide_area_margin_end">132dp</dimen>
-    <dimen name="navi_guide_area_continue_margin_end">194dp</dimen>
+    <dimen name="navi_guide_area_margin_end">264dp</dimen>
+    <dimen name="navi_guide_area_continue_margin_end">264dp</dimen>
     <dimen name="navi_guide_area_margin_bottom">34dp</dimen>
     <dimen name="navi_page_max_height">554dp</dimen>
+    <dimen name="navi_page_traffic_max_height">637dp</dimen>
+    <dimen name="navi_page_route_detail_max_height">530dp</dimen>
 
     <dimen name="bg_downloading_city_corner">8dp</dimen>
     <dimen name="navi_btn_add_via_corner">12dp</dimen>
