@@ -1174,7 +1174,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }
             } else {
                 //当任何需要网络相应才能完成的操作，但网络异常时，统一给予以下提示
-                if(searchResultEntity.getPoiList().isEmpty() && searchResultEntity.getCode() != 33554433){
+                if(!ConvertUtils.isNull(searchResultEntity) && searchResultEntity.getPoiList().isEmpty() && searchResultEntity.getCode() != 33554433){
                     ToastUtils.Companion.getInstance().showCustomToastView("抱歉，未找到结果");
                 }else{
                     ToastUtils.Companion.getInstance().showCustomToastView("网络异常，请检查网络后重试");
