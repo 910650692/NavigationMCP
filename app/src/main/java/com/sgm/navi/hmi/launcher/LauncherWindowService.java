@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
@@ -29,6 +30,7 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
+import com.sgm.navi.hmi.navi.NaviGuidanceModel;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
@@ -63,7 +65,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
  * Description: [在这里描述文件功能]
  */
 public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
-        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback {
+        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -89,6 +91,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private String currentNaviStatus;
     private final int DisplayId = 0;
     private LayerPackage mLayerPackage;
+    private boolean isConnected;
 
     private LauncherWindowService() {
 
@@ -124,6 +127,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         currentNaviStatus = mNaviStatusPackage.getCurrentNaviStatus();
         mRoutePackage = RoutePackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
+        isConnected = NetWorkUtils.Companion.getInstance().checkNetwork();
     }
 
     private void initCallBacks() {
@@ -135,6 +139,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils.registerListener(this);
         mNaviStatusPackage.registerObserver(KEY, this);
         mLayerPackage.registerCallBack(MAP_TYPE, this);
+        //注册网络监听
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(this);
     }
 
     private void unInitCallBacks() {
@@ -147,6 +153,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         captureScreenUtils.unRegisterListener(this);
         mNaviStatusPackage.unregisterObserver(KEY);
         mLayerPackage.unRegisterCallBack(MAP_TYPE, this);
+        //注销网络监听
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(this);
     }
 
     private void unregisterFloatWindowReceiver() {
@@ -257,6 +265,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
+        onNetStatusChange(isConnected);
     }
 
     private void registerFloatWindowReceiver() {
@@ -488,6 +497,49 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         if (mFloatManager != null) {
             mFloatManager.onNaviStop();
         }
+    }
+
+    public void onNetStatusChange(boolean isConnect) {
+        // 离线隐藏Tbt面板
+        Logger.d(TAG, "离线隐藏Tbt面板，在线显示 isConnected:", isConnect);
+        isConnected = isConnect;
+        if (mBinding == null) {
+            Logger.w(TAG, "onNetStatusChange: mBinding is null, ignoring update");
+            return;
+        }
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.sceneNaviTmc.setVisibility(isConnected ? View.VISIBLE : View.GONE);
+        });
+    }
+
+    @Override
+    public void onNetConnectSuccess() {
+        isConnected = true;
+        Logger.d(TAG, "onNetConnectSuccess: isConnected=" + isConnected);
+        onNetStatusChange(isConnected);
+    }
+
+    @Override
+    public void onNetDisConnect() {
+        isConnected = false;
+        Logger.d(TAG, "onNetDisConnect: isConnected=" + isConnected);
+        onNetStatusChange(isConnected);
+    }
+
+    @Override
+    public void onNetUnavailable() {
+    }
+
+    @Override
+    public void onNetBlockedStatusChanged() {
+    }
+
+    @Override
+    public void onNetLosing() {
+    }
+
+    @Override
+    public void onNetLinkPropertiesChanged() {
     }
 
     private static final class InstanceHolder {
