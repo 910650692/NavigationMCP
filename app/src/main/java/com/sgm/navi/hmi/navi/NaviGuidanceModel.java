@@ -1390,6 +1390,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             Logger.i(TAG, "离线状态，不支持手动切换路线");
+            if (pathId != OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP)) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().
+                                getString(com.sgm.navi.scene.R.string.net_error));
+            }
             return;
         }
         mNaviPackage.selectPath(MapType.MAIN_SCREEN_MAIN_MAP, pathId);
@@ -1596,7 +1601,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         RouteLineInfo routeLineInfo = mRoutePackage.getSelectLineInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         Logger.i(TAG, "getMDistance = ", (routeLineInfo == null ? "null" : routeLineInfo.getMDistance())
                 , " NaviStatus:", mNaviSatusPackage.getCurrentNaviStatus());
-        if (!ConvertUtils.isEmpty(routeLineInfo) && routeLineInfo.getMDistance() > ONE_ROUTE_LINE_DISTANCE) {
+        // 路程大于150公里/离线/模拟导航都只显示一条路线
+        if (!ConvertUtils.isEmpty(routeLineInfo) &&
+                (routeLineInfo.getMDistance() > ONE_ROUTE_LINE_DISTANCE ||
+                        !OpenApiHelper.getCurrentRouteStatus(MapType.MAIN_SCREEN_MAIN_MAP) ||
+                        mNaviPackage.getCurrentNaviType() == NumberUtils.NUM_1)) {
             mRoutePackage.showOnlyOneRouteLine(routeLineLayerParam.getMMapTypeId());
         } else {
             mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());

@@ -124,9 +124,10 @@ public final class NaviAdapter {
     public boolean startNavigation(final NaviStartType naviStartType) {
         updateBroadcastParam(mSettingAdapter.getConfigKeyBroadcastMode(), true);
         if (!ConvertUtils.isNull(mPathInfo) && mPathInfo instanceof PathInfo pathInfo) {
-            // 如果路径长度大于150km或者是模拟导航，不显示备选路线，因为模拟导航不支持点击切换路线，所以这里也显示一条主路
+            // 如果路径长度大于150km或者是模拟导航或者是离线算路，不显示备选路线，因为模拟导航不支持点击切换路线，所以这里也显示一条主路,
             if (pathInfo.getLength() >= NumberUtils.NUM_150 * NumberUtils.NUM_1000 ||
-                    NaviStartType.NAVI_TYPE_SIMULATION.equals(naviStartType)) {
+                    NaviStartType.NAVI_TYPE_SIMULATION.equals(naviStartType) ||
+                    !pathInfo.isOnline()) {
                 ArrayList<PathInfo> pathInfoList = new ArrayList<>();
                 pathInfoList.add(pathInfo);
                 updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
