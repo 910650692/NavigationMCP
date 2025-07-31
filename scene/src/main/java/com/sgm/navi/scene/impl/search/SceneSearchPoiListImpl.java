@@ -9,7 +9,10 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.patacnetlib.NetQueryManager;
+import com.sgm.navi.patacnetlib.response.activate.AppKeyResponse;
 import com.sgm.navi.scene.BaseSceneModel;
+import com.sgm.navi.scene.BuildConfig;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.api.search.ISceneSearchPoiList;
 import com.sgm.navi.scene.ui.search.SceneSearchPoiList;
@@ -24,6 +27,7 @@ import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.usertrack.SearchHistoryItemBean;
 import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.sgm.navi.service.logicpaket.activate.ActivatePackage;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -50,6 +54,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     private final RoutePackage mRoutePackage;
     private final UserTrackPackage mUserTrackPackage;
     private final CalibrationPackage mCalibrationPackage;
+    private final ActivatePackage mActivatePackage;
     private int mTaskId;
     private int mListSearchType = -1;
     public int getMTaskId() {
@@ -62,6 +67,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         this.mRoutePackage = RoutePackage.getInstance();
         this.mUserTrackPackage = UserTrackPackage.getInstance();
         this.mCalibrationPackage = CalibrationPackage.getInstance();
+        this.mActivatePackage = ActivatePackage.getInstance();
     }
 
     @Override
@@ -474,7 +480,6 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"searchResultEntity is null");
             return;
         }
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"keyword: "+searchResultEntity.getKeyword());
         mTaskId = mSearchPackage.queryStationNewResult(ResourceUtils.Companion.getInstance().getString(R.string.search_charge_self));
     }
 
@@ -508,5 +513,41 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
     public Fragment getCurrentFragment(){
         return StackManager.getInstance().getCurrentFragment(mMapTypeId.name());
+    }
+
+    public void getAppKey(SearchResultEntity searchResultEntity){
+        if(!ConvertUtils.isNull(mActivatePackage)){
+            if(ConvertUtils.isEmpty(mActivatePackage.getAppKeyFromDB())){
+                mActivatePackage.getAppKeyFromNet(new NetQueryManager.INetResultCallBack<AppKeyResponse>() {
+                    @Override
+                    public void onSuccess(AppKeyResponse response) {
+                        if(ConvertUtils.isNull(response)) return;
+                        if(BuildConfig.DEBUG){
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"AppKey: "+response.getMAppKey());
+                        }
+                        NetQueryManager.getInstance().saveAppSecurity(response.getMAppKey());
+                        queryStationNewResult(searchResultEntity);
+                    }
+
+                    @Override
+                    public void onFailed(final String errorCode) {
+                        if(BuildConfig.DEBUG){
+                            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getAppKeyFromNet onFailed");
+                        }
+                        ThreadManager.getInstance().postUi(() -> mScreenView.showLoading(false));
+                    }
+                });
+            }else{
+                if(BuildConfig.DEBUG){
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getAppKeyFromDB: "+mActivatePackage.getAppKeyFromDB());
+                    queryStationNewResult(searchResultEntity);
+                }
+            }
+        }else{
+            if(BuildConfig.DEBUG){
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mActivatePackage is null");
+            }
+            mScreenView.showLoading(false);
+        }
     }
 }

@@ -1717,7 +1717,6 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 清除高亮
      */
     public void clearFocus(){
-        Logger.d("huangli","1111111112323123");
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT);
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK);

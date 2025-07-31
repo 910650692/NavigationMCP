@@ -420,11 +420,11 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             return;
         }
         hideEmptyView();
-        mViewBinding.sllNoNet.setVisibility(VISIBLE);
+        mViewBinding.sllNoFavorite.setVisibility(VISIBLE);
     }
 
     private AccessTokenParam getAccessTokenParam(Activity activity){
-        if(!ConvertUtils.isNull(activity)) return null;
+        if(ConvertUtils.isNull(activity)) return null;
         return new AccessTokenParam(
                 AutoMapConstant.AccountTokenParamType.ACCOUNT_TYPE_PATAC_HMI,
                 AutoMapConstant.AccountTokenParamType.AUTH_TOKEN_TYPE_READ_ONLY,

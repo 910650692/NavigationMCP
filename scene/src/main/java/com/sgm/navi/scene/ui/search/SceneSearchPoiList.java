@@ -772,7 +772,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 if("charge".equals(info.getValue())){
                     mAdapter.clearList();
                     // 请求SGM自营站数据
-                    mScreenViewModel.queryStationNewResult(mResultEntity);
+                    mScreenViewModel.getAppKey(mSearchResultEntity);
 //                    mSearchLoadingDialog.dismiss();
 //                    ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
                 }else{
