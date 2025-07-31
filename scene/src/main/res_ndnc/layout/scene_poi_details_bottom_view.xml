@@ -146,7 +146,7 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/stl_poi_favorites"
-                android:layout_width="@dimen/dp_76"
+                android:layout_width="@dimen/dp_79"
                 android:layout_height="@dimen/dp_90"
                 android:layout_marginStart="@dimen/dp_14"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -317,6 +317,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     R.drawable.img_star_filling58;
             mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                     ContextCompat.getDrawable(getContext(), favoriteIcon));
+            mViewBinding.scenePoiDetailsBottomView.stvPoiFavorites.setText(isFavorite ? R.string.sha_favorite : R.string.sha_has_favorite);
             if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
                 final int favIcon = isFavorite ? R.drawable.img_star_white58 :
                         R.drawable.img_star_filling58;
@@ -903,6 +904,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mPoiInfoEntity.getFavoriteInfo().setItemId(itemId);
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
+                mViewBinding.scenePoiDetailsBottomView.stvPoiFavorites.setText(R.string.sha_has_favorite);
                 if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                             ContextCompat.getDrawable(getContext(), R.drawable.icon_basic_ic_star_fav));
@@ -914,6 +916,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.sivPoiFavorites.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.img_star58));
+                mViewBinding.scenePoiDetailsBottomView.stvPoiFavorites.setText(R.string.sha_favorite);
                 if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                             ContextCompat.getDrawable(getContext(), R.drawable.img_star_white58));
