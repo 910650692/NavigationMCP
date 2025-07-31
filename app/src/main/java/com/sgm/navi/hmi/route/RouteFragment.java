@@ -1397,7 +1397,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 }
 
                 ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
-                ThreadManager.getInstance().postDelay(mRouteLoadingTask, 15000);
+                ThreadManager.getInstance().postDelay(mRouteLoadingTask, 20000);
             }
         }
     }
@@ -1409,7 +1409,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         if (!ConvertUtils.isEmpty(mRouteRequestLoadingDialog) && mRouteRequestLoadingDialog.isShowing()) {
             mRouteRequestLoadingDialog.showOfflineRouting();
             ThreadManager.getInstance().removeHandleTask(mRouteLoadingTask);
-            ThreadManager.getInstance().postDelay(mRouteLoadingTask, 15000);
+            ThreadManager.getInstance().postDelay(mRouteLoadingTask, 20000);
         }
     }
 

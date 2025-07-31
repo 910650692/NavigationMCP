@@ -2077,6 +2077,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.i(TAG, "通勤预测没有数据");
             return;
         }
+        //避免通勤打断正常算路
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING)) {
+            Logger.i(TAG, "正在算路中不触发通勤");
+            return;
+        }
         final RouteParam endParam = getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_END);
         final List<RouteParam> routeParams = new ArrayList<>();
         routeParams.add(getLocationParam());
