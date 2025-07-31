@@ -152,6 +152,7 @@
 
                         <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_home_tq"
+                            clickCommand="@{ViewModel.openHomeFragment}"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
                             android:layout_marginStart="@dimen/dp_60"
@@ -205,6 +206,7 @@
                         <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_bus_tq"
                             android:layout_width="@dimen/dp_106"
+                            clickCommand="@{ViewModel.openCompanyFragment}"
                             android:layout_height="@dimen/dp_106"
                             android:layout_marginStart="@dimen/dp_81"
                             android:focusable="false"
@@ -267,6 +269,7 @@
 
                         <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/sk_iv_basic_search_tq"
+                            clickCommand="@{ViewModel.openSearchFragment}"
                             android:layout_width="@dimen/dp_106"
                             android:layout_height="@dimen/dp_106"
                             android:layout_marginStart="@dimen/dp_81"
