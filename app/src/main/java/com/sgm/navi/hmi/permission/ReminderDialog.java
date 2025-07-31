@@ -159,24 +159,26 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                Logger.e("ReminderDialog", "WebView加载失败");
-                mViewBinding.reminderDetail.btnRetry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String failedUrl = request.getUrl().toString();
-                        Logger.e("ReminderDialog", "WebView加载失败，URL: ", failedUrl);
-                        mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
-                        mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
-                        mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
-                        mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
-                        view.loadUrl(failedUrl);
-                    }
-                });
-                mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
-                mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
-                mViewBinding.reminderDetail.btnRetry.setVisibility(View.VISIBLE);
-                mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.VISIBLE);
-                mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
+                if (request.isForMainFrame()){
+                    Logger.e("ReminderDialog", "WebView加载失败");
+                    mViewBinding.reminderDetail.btnRetry.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String failedUrl = request.getUrl().toString();
+                            Logger.e("ReminderDialog", "WebView加载失败，URL: ", failedUrl);
+                            mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
+                            mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                            mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
+                            mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
+                            view.loadUrl(failedUrl);
+                        }
+                    });
+                    mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
+                    mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
+                    mViewBinding.reminderDetail.btnRetry.setVisibility(View.VISIBLE);
+                    mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.VISIBLE);
+                    mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
