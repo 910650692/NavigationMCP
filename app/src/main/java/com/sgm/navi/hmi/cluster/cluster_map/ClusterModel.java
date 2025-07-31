@@ -116,9 +116,9 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
             LayerAdapter.getInstance().setStartPointVisible(MapType.CLUSTER_MAP,false);
             if (SettingPackage.getInstance().getMapViewTextSize()) {
-                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1f);
+                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.3f);
             } else {
-                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.8f);
+                MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.7f);
             }
             showRouteLine();
             LayerPackage.getInstance().setStartPointVisible(MapType.CLUSTER_MAP, false);

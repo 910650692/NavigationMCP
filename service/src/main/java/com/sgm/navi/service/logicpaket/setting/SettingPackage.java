@@ -583,9 +583,9 @@ public final class SettingPackage implements SettingAdapterCallback {
     public boolean getMapViewTextSize() {
         String value = getValueFromDB(SettingController.KEY_SETTING_TEXT_SIZE);
         if (TextUtils.isEmpty(value)) {
-            MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1f);
+            //MapPackage.getInstance().setMapViewTextSize(MapType.MAIN_SCREEN_MAIN_MAP, 1.3f);
             value = SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD;
-            setMapViewTextSize(true);
+            //setMapViewTextSize(true);
         }
         return switch (value) {
             case SettingController.VALUE_NAVI_TEXT_SIZE_STANDARD -> true;
