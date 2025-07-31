@@ -482,9 +482,8 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             }
             // 主动放大音量破除静音状态
         } else if (volume > NumberUtils.NUM_0) {
-            if (!mIsMute) {
-                mNaviPackage.setCurrentNaviVolume(volume);
-            } else {
+            mNaviPackage.setCurrentNaviVolume(volume);
+            if (mIsMute) {
                 changeMuteStatus();
                 return;
             }
