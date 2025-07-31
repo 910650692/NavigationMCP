@@ -335,4 +335,8 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
     }
+    public void showLimitDriveView() {
+        AosRestrictedPackage.getInstance().showRestrictedAreaPreview(MapType.MAIN_SCREEN_MAIN_MAP,
+                mCurrentRouteRestrictionParam, 0);
+    }
 }

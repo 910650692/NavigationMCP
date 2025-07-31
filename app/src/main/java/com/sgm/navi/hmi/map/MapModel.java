@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -46,6 +47,7 @@ import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.launcher.IDeskBackgroundChangeListener;
 import com.sgm.navi.hmi.launcher.OnDeskCardVisibleStateChangeListener;
+import com.sgm.navi.hmi.limit.LimitDriveFragment;
 import com.sgm.navi.hmi.message.MessageCenterHelper;
 import com.sgm.navi.hmi.navi.AuthorizationRequestDialog;
 import com.sgm.navi.hmi.navi.ContinueNaviDialog;
@@ -154,6 +156,7 @@ import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
+import com.sgm.navi.ui.base.FragmentIntent;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
@@ -855,6 +858,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             mViewModel.showOrHideSelfParkingView(false);
             getCurrentCityLimit();
+
+            BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mapTypeId.name());
+            if (currentFragment instanceof LimitDriveFragment) {
+                LimitDriveFragment limitDriveFragment = (LimitDriveFragment) currentFragment;
+                limitDriveFragment.showLimitDriveView();
+            }
         }
     }
 
