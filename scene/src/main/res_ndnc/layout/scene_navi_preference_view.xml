@@ -36,7 +36,7 @@
 
         <com.sgm.navi.ui.view.SkinScrollView
             android:id="@+id/skinScrollView2"
-            android:layout_width="@dimen/dp_545"
+            android:layout_width="@dimen/navi_guide_perference_page_width"
             android:layout_height="@dimen/dp_436"
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"

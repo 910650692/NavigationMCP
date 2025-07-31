@@ -4169,6 +4169,7 @@
     <dimen name="navi_guide_area_margin_end">141dp</dimen>
     <dimen name="navi_guide_area_continue_margin_end">141dp</dimen>
     <dimen name="navi_guide_area_margin_bottom">29dp</dimen>
+    <dimen name="navi_guide_perference_page_width">545dp</dimen>
     <dimen name="navi_page_max_height">762dp</dimen>
     <dimen name="navi_page_traffic_max_height">818dp</dimen>
     <dimen name="navi_page_route_detail_max_height">700dp</dimen>
