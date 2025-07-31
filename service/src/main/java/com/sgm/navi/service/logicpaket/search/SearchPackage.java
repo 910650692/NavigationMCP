@@ -1610,8 +1610,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setSelectIndex type: " + searchType + " ,index: " + index);
 
         if (searchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
-                    , index, select);
+            if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD
+                        , index, select);
+            }else{
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
+                        , index, select);
+            }
         } else if (searchType == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
             mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK
                     , index, select);
@@ -1661,8 +1666,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "setSelectIndex type: " + searchType + " ,index: " + index);
 
         if (searchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH) {
-            mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
-                    , index);
+            if (getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.CHARGING_STATION) {
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE_ADD
+                        , index);
+            }else{
+                mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE
+                        , index);
+            }
         } else if (searchType == AutoMapConstant.SearchType.TERMINAL_PARK_AROUND_SEARCH) {
             mLayerAdapter.setSearchSelect(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK
                     , index);
@@ -1707,6 +1717,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 清除高亮
      */
     public void clearFocus(){
+        Logger.d("huangli","1111111112323123");
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_POINT);
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
         mLayerAdapter.clearFocus(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_PARK);

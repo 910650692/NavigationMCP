@@ -137,6 +137,7 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
                 if (infoEntity != null) {
                     mBinding.scenePoiList.routeClickEvent(infoEntity);
                 }
+                mBinding.scenePoiList.updateSearchEntity();
             }
 
         } else {
