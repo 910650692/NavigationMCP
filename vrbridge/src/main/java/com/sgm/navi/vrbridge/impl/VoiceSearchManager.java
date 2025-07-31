@@ -692,9 +692,17 @@ public final class VoiceSearchManager {
             mRouteType = null;
         }
 
-        if (judgeNaviStatusForRouting()) {
-            //当前为导航态，更换目的地直接发起快速导航
-            mPlanRouteResult = -1;
+        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        final boolean inNavi = NaviStatus.NaviStatusType.NAVING.equals(curStatus)
+                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus);
+        final boolean inRoute = NaviStatus.NaviStatusType.ROUTING.equals(curStatus)
+                || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus);
+        if (inNavi || inRoute) {
+            if (inRoute) {
+                mPlanRouteResult = 1;
+            } else {
+                mPlanRouteResult = -1;
+            }
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
         } else {
             //打开算路界面
@@ -703,17 +711,6 @@ public final class VoiceSearchManager {
             bundle.putParcelable(IVrBridgeConstant.VoiceIntentParams.ROUTE_REQUEST, requestParam);
             MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
-    }
-
-    /**
-     * 判断当前是否处理引导态.
-     *
-     * @return true:引导态   false:非引导态.
-     */
-    private boolean inNaviStatus() {
-        final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-        return NaviStatus.NaviStatusType.NAVING.equals(curStatus)
-                || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus);
     }
 
     /**
