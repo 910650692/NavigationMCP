@@ -15,6 +15,7 @@ import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
@@ -72,6 +73,7 @@ import com.sgm.navi.service.define.route.RoutePriorityType;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteWayID;
 import com.sgm.navi.service.define.route.RouteWeatherInfo;
+import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
@@ -108,7 +110,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
         SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback,
-        IMapPackageCallback {
+        IMapPackageCallback, ScreenTypeUtils.SplitScreenChangeListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
@@ -226,6 +228,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mSettingPackage.setSettingChangeCallback(TAG, this);
         mMapPackage.registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mClusterMapOpenCloseManager.addClusterMapOpenCloseListener(this);
+        ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
         initRunnable();
         // 因为生命周期是和HMI绑定的，如果页面重启并且是在导航台进入三分钟一次的终点POI查询
         if (NaviStatus.NaviStatusType.NAVING.equals(
@@ -713,6 +716,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mSettingPackage.unRegisterSettingChangeCallback(TAG);
         mMapPackage.unRegisterCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mClusterMapOpenCloseManager.removeListener(this);
+        ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
         }
@@ -1094,6 +1098,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     public void restoreNavigationByRebuild() {
         mNaviPackage.restoreNavigationByRebuild();
+    }
+
+    @Override
+    public void onSplitScreenChanged() {
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
+        mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     public interface OnNetStatusChangeListener {

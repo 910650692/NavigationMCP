@@ -250,6 +250,7 @@
                 android:paddingHorizontal="@dimen/navi_guide_road_name_padding_horizontal"
                 android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
                 android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
+                app:layout_goneMarginStart="@dimen/navi_guide_area_margin_start"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/line_widget_views_roads"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -342,6 +343,7 @@
             android:layout_marginBottom="@dimen/navi_guide_area_margin_bottom"
             android:layout_marginEnd="@dimen/navi_guide_area_continue_margin_end"
             android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+            app:layout_goneMarginStart="@dimen/navi_guide_area_continue_margin_start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/line_widget_views"
             app:layout_constraintEnd_toEndOf="parent"/>

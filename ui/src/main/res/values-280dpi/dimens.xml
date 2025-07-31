@@ -4371,7 +4371,9 @@
     <dimen name="navi_guide_road_name_button_padding_horizontal">14.82dp</dimen>
     <dimen name="navi_guide_continue_button_width">176.7dp</dimen>
     <dimen name="navi_guide_continue_button_height">52.44dp</dimen>
+    <dimen name="navi_guide_area_margin_start">-313.5dp</dimen>
     <dimen name="navi_guide_area_margin_end">80.37dp</dimen>
+    <dimen name="navi_guide_area_continue_margin_start">-285dp</dimen>
     <dimen name="navi_guide_area_continue_margin_end">80.37dp</dimen>
     <dimen name="navi_guide_area_margin_bottom">16.53dp</dimen>
     <dimen name="navi_guide_perference_page_width">545dp</dimen>
