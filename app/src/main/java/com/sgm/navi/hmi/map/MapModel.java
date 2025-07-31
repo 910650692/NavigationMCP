@@ -1406,8 +1406,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.i(TAG, "onGearChanged:" , gear);
         switch (gear) {
             case 0 -> {
-                // 停车
-                stopCruise();
+
             }
             default -> {
 
