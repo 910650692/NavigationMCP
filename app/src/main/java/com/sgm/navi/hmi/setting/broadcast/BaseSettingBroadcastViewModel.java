@@ -34,6 +34,8 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
     public final MutableLiveData<Boolean> mIsCruiseBroadcastCamera = new MutableLiveData<>(true);
     public final MutableLiveData<Boolean> mIsCruiseBroadcastSafe = new MutableLiveData<>(true);
     private static final String TAG = BaseSettingBroadcastViewModel.class.getName();
+    private long lastClickTime = 0;
+    private static final long CLICK_INTERVAL = 300; // 300ms防连点间隔
 
     public BaseSettingBroadcastViewModel(final @NonNull Application application) {
         super(application);
@@ -92,17 +94,20 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
     }
 
     public Action mSwitchNaviBroadcastDetailClick = () -> {
+        if (isFastClick()) return;
         NaviPackage.getInstance().updateBroadcastParam(2, true);
 
         sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.DETAILED);
     };
     public Action mSwitchNaviBroadcastConciseClick = () -> {
+        if (isFastClick()) return;
         NaviPackage.getInstance().updateBroadcastParam(1, true);
 
         sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.CONCISE);
     };
 
     public Action mSwitchNaviBroadcastSimpleClick = () -> {
+        if (isFastClick()) return;
         NaviPackage.getInstance().updateBroadcastParam(3, true);
 
         sendBuryPointForSettingBroadcast(BuryConstant.BroadcastOption.VOICE_STYLE, BuryConstant.VoiceStyle.SIMPLE);
@@ -202,5 +207,15 @@ public class BaseSettingBroadcastViewModel extends BaseViewModel<SettingBroadcas
                 .setParams(BuryConstant.ProperType.BURY_KEY_SETTING_CONTENT, value)
                 .build();
         BuryPointController.getInstance().setBuryProps(buryProperty);
+    }
+
+    /**
+     * 检查是否快速点击
+     */
+    private boolean isFastClick() {
+        long currentTime = System.currentTimeMillis();
+        boolean isFast = (currentTime - lastClickTime < CLICK_INTERVAL);
+        lastClickTime = currentTime;
+        return isFast;
     }
 }
