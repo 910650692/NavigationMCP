@@ -14,7 +14,7 @@
 
     <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1110"
-        android:layout_height="@dimen/dp_1078"
+        android:layout_height="@dimen/navi_setting_fragment_height"
         android:orientation="vertical"
         android:clickable="true"
         android:padding="@dimen/dp_34"
