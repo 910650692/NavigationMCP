@@ -104,6 +104,7 @@
     <color name="navi_color_000000_70">#B3000000</color>
     <color name="navi_color_000000_75">#8F000000</color>
     <color name="navi_color_000000_100">#FF000000</color>
+    <color name="navi_color_000000_100_only">#FF000000</color>
     <color name="navi_color_FFFFFF_60">#99FFFFFF</color>
     <color name="navi_color_FFFFFF_80">#CCFFFFFF</color>
     <color name="navi_color_FFFFFF_100">#FFFFFFFF</color>
