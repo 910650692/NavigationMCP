@@ -1,18 +1,18 @@
 package com.sgm.navi.hmi.permission;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.android.utils.NetWorkUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.burypoint.anno.HookMethod;
@@ -32,10 +32,16 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBinding> {
 
     private WebView mWebView;
+    private Animation mRotateAnim;
+    private boolean mHasError = false;
 
     public ReminderDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
         super(context);
         setDialogClickListener(baseDialogClickListener);
+        mRotateAnim = AnimationUtils.loadAnimation(AppCache.getInstance().getMContext(), R.anim.rotate_animation);
+        mRotateAnim.setDuration(2000);
+        mRotateAnim.setRepeatCount(Animation.INFINITE);
+        mRotateAnim.setInterpolator(new LinearInterpolator());
     }
 
     @Override
@@ -64,6 +70,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                         getContext().getString(R.string.service_terms_url_light);
 
                 mWebView.loadUrl(serviceTermsUrl);
+                startLoadingAnimation();
             }
         });
         mViewBinding.reminderIndex.reminderPagePrivacy.setOnClickListener(v -> {
@@ -76,6 +83,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
                     getContext().getString(R.string.privacy_policy_url_dark) :
                     getContext().getString(R.string.privacy_policy_url_light);
             mWebView.loadUrl(privacyPolicyUrl);
+            startLoadingAnimation();
         });
         mViewBinding.reminderIndex.dialogCommit.setOnClickListener(v -> {
             if (mDialogClickListener != null) {
@@ -103,10 +111,10 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.INVISIBLE);
             mViewBinding.reminderDetail.reminderRootDetail.setVisibility(View.VISIBLE);
         } else {
+            mWebView.setVisibility(View.INVISIBLE);
+            mWebView.stopLoading();
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.VISIBLE);
             mViewBinding.reminderDetail.reminderRootDetail.setVisibility(View.INVISIBLE);
-            mWebView.stopLoading();
-            mWebView.setVisibility(View.GONE);
         }
     }
 
@@ -114,6 +122,27 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         setDialogClickListener(null);
+    }
+
+    private void startLoadingAnimation() {
+        mViewBinding.reminderDetail.imgLoading.animate().alpha(1f);
+        mViewBinding.reminderDetail.imgLoading.startAnimation(mRotateAnim);
+        mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
+        mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
+        mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
+        mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+    }
+
+    private void hideLoadingUI() {
+        // 先设置透明度为0，避免闪烁
+        mViewBinding.reminderDetail.imgLoading.animate().alpha(0f).setDuration(100)
+                .withEndAction(() -> {
+                    mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
+                    if (mRotateAnim != null) {
+                        mRotateAnim.cancel();
+                    }
+                }).start();
+        mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
     }
 
     private void configureWebView() {
@@ -133,18 +162,17 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 view.setVisibility(View.INVISIBLE);
-                mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
-                mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
-                mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
-                mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                mHasError = false;
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                if (mHasError) {
+                    return;
+                }
                 applyCustomStyles(view);
-                mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
-                mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
+                hideLoadingUI();
                 mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
                 mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
                 view.postDelayed(new Runnable() {
@@ -160,24 +188,25 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (request.isForMainFrame()){
+                    mHasError = true;
                     Logger.e("ReminderDialog", "WebView加载失败");
+                    mWebView.setVisibility(View.INVISIBLE);
+                    hideLoadingUI();
+                    mViewBinding.reminderDetail.btnRetry.setVisibility(View.VISIBLE);
+                    mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.VISIBLE);
                     mViewBinding.reminderDetail.btnRetry.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             String failedUrl = request.getUrl().toString();
                             Logger.e("ReminderDialog", "WebView加载失败，URL: ", failedUrl);
+                            view.loadUrl(failedUrl);
                             mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
                             mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                            mViewBinding.reminderDetail.imgLoading.startAnimation(mRotateAnim);
                             mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
                             mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
-                            view.loadUrl(failedUrl);
                         }
                     });
-                    mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
-                    mViewBinding.reminderDetail.loadingHint.setVisibility(View.GONE);
-                    mViewBinding.reminderDetail.btnRetry.setVisibility(View.VISIBLE);
-                    mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.VISIBLE);
-                    mViewBinding.reminderDetail.reminderWebView.setVisibility(View.INVISIBLE);
                 }
             }
 
