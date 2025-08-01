@@ -3,7 +3,7 @@
     <dimen name="dp_toast_margin_start">0dp</dimen>
     <dimen name="navi_toast_base_height">96dp</dimen>
     <dimen name="navi_toast_text_size">29sp</dimen>
-    <dimen name="navi_toast_text_height">43dp</dimen>
+    <dimen name="navi_toast_text_height">39dp</dimen>
     <dimen name="navi_toast_base_padding_vertical">0dp</dimen>
     <dimen name="navi_toast_base_padding_horizontal">64dp</dimen>
     <dimen name="navi_toast_base_offset_y">34dp</dimen>
