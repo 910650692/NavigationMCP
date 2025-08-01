@@ -1,20 +1,18 @@
-package com.sgm.navi.service.define.screen;
+package com.android.utils;
 
-import static com.sgm.navi.service.adapter.layer.bls.utils.CommonUtil.getResources;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
-import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.AppCache;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.Getter;
-import lombok.Setter;
 
 public class ScreenTypeUtils {
+
+    private Context mContext;
 
     private static final class InstanceHolder {
         private static final ScreenTypeUtils instance = new ScreenTypeUtils();
@@ -24,13 +22,13 @@ public class ScreenTypeUtils {
         return InstanceHolder.instance;
     }
 
+    public void init(Context context) {
+        mContext = context;
+    }
+
     private final int CAR_557_DPI = 200;
 
-    @Getter
     private ScreenType screenType  = ScreenType.SCREEN_FULL;
-    @Getter
-    @Setter
-    private boolean isSRGuideTBTOpen  = false;
 
     private final ConcurrentHashMap<String, SplitScreenChangeListener> mSplitScreenChangeListeners;
 
@@ -98,7 +96,7 @@ public class ScreenTypeUtils {
     }
 
     public boolean is557CarMode() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
         int densityDpi = dm.densityDpi;
         Logger.d("DPI",String.valueOf(densityDpi));
         return CAR_557_DPI == densityDpi;

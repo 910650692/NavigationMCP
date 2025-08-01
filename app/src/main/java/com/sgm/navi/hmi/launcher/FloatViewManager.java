@@ -18,20 +18,16 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
-import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
-import com.sgm.navi.service.logicpaket.layer.LayerPackage;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
-import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 

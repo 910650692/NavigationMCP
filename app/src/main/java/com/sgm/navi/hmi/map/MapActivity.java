@@ -35,7 +35,6 @@ import com.sgm.navi.hmi.activate.ActivateFailedDialog;
 import com.sgm.navi.hmi.activate.ActivateUiStateManager;
 import com.sgm.navi.hmi.databinding.ActivityMapBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
-import com.sgm.navi.hmi.launcher.LauncherWindowService;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.splitscreen.SplitFragment;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -54,7 +53,7 @@ import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
@@ -67,7 +66,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO

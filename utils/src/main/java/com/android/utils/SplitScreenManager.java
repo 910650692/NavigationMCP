@@ -1,4 +1,4 @@
-package com.sgm.navi.hmi.splitscreen;
+package com.android.utils;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,9 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.AppCache;
 import com.patac.sgmsystemextendservice.ISystemExtendServiceProxy;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
 
@@ -24,11 +22,13 @@ public class SplitScreenManager {
     private static final String CLS_NAME = "com.patac.sgmsystemextendservice.service.SystemExtendService";
     private boolean isServiceConnect = false;
     private ISystemExtendServiceProxy mBinder;
+    private Context mContext;
 
     /***
      * 这里不要做耗时操作
      */
-    public void init() {
+    public void init(Context context) {
+        mContext = context;
         bindService();
     }
 
@@ -121,9 +121,12 @@ public class SplitScreenManager {
             if (!isServiceConnect) {
                 final Intent intent = new Intent();
                 intent.setClassName(PACKAGE_NAME, CLS_NAME);
-                Context context = AppCache.getInstance().getMContext();
-                if (null != context) isServiceConnect = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-                Logger.i("screen_change_used", isServiceConnect);
+                if (mContext != null) {
+                    isServiceConnect = mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+                } else {
+                    Logger.e("screen_change_used", "bindService failed: mContext is null!");
+                    isServiceConnect = false;
+                }
             }
         } catch (SecurityException exception) {
             Logger.i("screen_change_used", "bind service failed:" + exception.getMessage());
@@ -131,8 +134,9 @@ public class SplitScreenManager {
     }
 
     private void unBindService() {
-        if (isServiceConnect && !ConvertUtils.isNull(connection)) {
-            AppCache.getInstance().getMContext().unbindService(connection);
+        if (isServiceConnect && !ConvertUtils.isNull(connection) && mContext != null) {
+            mContext.unbindService(connection);
+            mContext = null;
         }
     }
 
@@ -248,5 +252,33 @@ public class SplitScreenManager {
             }
         }
         return null;
+    }
+
+    public int getToastOffsetX() {
+        int offsetX = 0;
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            return 0;
+        }
+        String[] splitScreenStatus = getSplitScreenStatus();
+        if (splitScreenStatus == null) {
+            return 0;
+        }
+        if (splitScreenStatus.length != 2) {
+            return 0;
+        }
+        String splitLeft = splitScreenStatus[0];
+        String splitRight = splitScreenStatus[1];
+        if (splitLeft == null || splitRight == null) {
+            return 0;
+        }
+        boolean isLeft = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitLeft);
+        boolean isRight = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitRight);
+        if (!isLeft && !isRight) {
+            return 0;
+        } else if (isLeft) {
+            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? -855 : -435;
+        } else {
+            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? 855 : 435;
+        }
     }
 }

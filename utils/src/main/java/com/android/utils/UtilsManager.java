@@ -21,6 +21,7 @@ public class UtilsManager {
         OkHttpUtils.Companion.getInstance().init(context);
         ToastUtils.Companion.getInstance().init(context);
         ScreenUtils.Companion.getInstance().init(context);
+        ScreenTypeUtils.getInstance().init(context);
         ResourceUtils.Companion.getInstance().init(context);
         DeviceUtils.mApplication = context;
         SpUtils.getInstance().init(context);

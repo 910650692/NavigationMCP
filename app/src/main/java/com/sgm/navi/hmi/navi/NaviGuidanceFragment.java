@@ -63,7 +63,7 @@ import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;

@@ -234,7 +234,7 @@ dependencies {
     implementation project(":burypoint")
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
-    implementation libs.sgmsystem.extendservice
+//    implementation libs.sgmsystem.extendservice
 }
 
 static def generateTime() {

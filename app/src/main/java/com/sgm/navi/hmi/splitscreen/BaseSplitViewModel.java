@@ -8,9 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.patac.sgmsystemextendservicelib.PatacSESConstants;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.utils.ExportIntentParam;
@@ -143,7 +143,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public Action stopNavi = () -> {
         Logger.i(TAG, "stopNavi");
         mModel.stopNavi();
-        SplitScreenManager.getInstance().exitSplitScreen(PatacSESConstants.EXIT_TYPE_OUT, PatacSESConstants.SPLIT_SCREEN_NAVI);
+        SplitScreenManager.getInstance().switchSRToFullScreen();
     };
 
     /***

@@ -76,7 +76,7 @@ import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;

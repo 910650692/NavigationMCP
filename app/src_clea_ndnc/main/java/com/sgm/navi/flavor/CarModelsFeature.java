@@ -2,10 +2,12 @@ package com.sgm.navi.flavor;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.NAVI_EXIT;
 
+import com.android.utils.ScreenTypeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.broadcast.HomeActionBroadcastReceiver;
 import com.sgm.navi.hmi.launcher.LauncherWindowService;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
+import com.android.utils.SplitScreenManager;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 
 /**
@@ -21,7 +23,7 @@ public class CarModelsFeature extends BaseCarModelsFeature {
 
     @Override
     public void initComponent() {
-        SplitScreenManager.getInstance().init();
+        SplitScreenManager.getInstance().init(AppCache.getInstance().getMContext());
         LauncherWindowService.startService();
         HomeActionBroadcastReceiver.registerHomeActionReceiver();
     }

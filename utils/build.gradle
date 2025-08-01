@@ -56,4 +56,5 @@ dependencies {
     implementation libs.gson
     implementation libs.okhttp
     implementation project(":burypoint")
+    implementation libs.sgmsystem.extendservice
 }

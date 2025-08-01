@@ -60,7 +60,7 @@ import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;

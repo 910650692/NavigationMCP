@@ -5,15 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
-import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.StackManager;
 

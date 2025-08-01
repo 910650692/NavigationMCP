@@ -16,7 +16,7 @@ import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.StackManager;

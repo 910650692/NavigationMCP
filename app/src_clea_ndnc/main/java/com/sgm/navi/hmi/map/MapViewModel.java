@@ -5,9 +5,9 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.android.utils.log.Logger;
-import com.sgm.navi.hmi.splitscreen.SplitScreenManager;
+import com.android.utils.SplitScreenManager;
 import com.sgm.navi.service.BuildConfig;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.ui.action.Action;
 
 /**

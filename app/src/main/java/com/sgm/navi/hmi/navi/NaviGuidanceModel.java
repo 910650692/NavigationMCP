@@ -78,7 +78,7 @@ import com.sgm.navi.service.define.route.RoutePriorityType;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.route.RouteWayID;
 import com.sgm.navi.service.define.route.RouteWeatherInfo;
-import com.sgm.navi.service.define.screen.ScreenTypeUtils;
+import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
