@@ -430,10 +430,6 @@ public final class VoiceSearchManager {
     private CallResponse disposeSingleDest(final String dest) {
         final int type = getDestType(dest);
         if (type == 1 || type == 2) {
-            //回家或去公司需要要先结束当前导航
-            if (MapStateManager.getInstance().isNaviStatus()) {
-                NaviPackage.getInstance().stopNavigation(true);
-            }
             final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
             if (null != homeCompanyInfo) {
                 //单目的地涉及家和公司，需要播报路线规划结果
