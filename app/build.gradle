@@ -4,7 +4,6 @@ plugins {
 }
 
 String aveFlavorType = "type"
-String appName = "导航"
 String apkName = "NaviApp"
 
 androidAopConfig {
@@ -62,7 +61,8 @@ android {
             manifestPlaceholders = [CAR_TYPE_VALUE: "Default",
                                     logo          : "@mipmap/ic_launcher",
                                     roundLogo     : "@mipmap/ic_launcher_round",
-                                    appName       : appName]
+                                    appName       : "@string/app_name"
+            ]
             println("Pad渠道配置")
         }
         buick {
@@ -72,7 +72,7 @@ android {
                     CAR_TYPE_VALUE: "gbBuick",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : appName
+                    appName       : "@string/app_name"
             ]
             println("Buick车型渠道配置")
         }
@@ -83,7 +83,7 @@ android {
                     CAR_TYPE_VALUE: "gbCadi",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : appName
+                    appName       : "@string/app_name"
             ]
             println("Cadi车型渠道配置")
         }
@@ -94,7 +94,7 @@ android {
                     CAR_TYPE_VALUE: "clea_8255",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : appName
+                    appName       : "@string/app_name"
             ]
             println("557-8255车型渠道配置")
         }
@@ -105,7 +105,7 @@ android {
                     CAR_TYPE_VALUE: "clea_local_8155",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : appName
+                    appName       : "@string/app_name"
             ]
             println("ndnc8155车型渠道配置")
         }
@@ -116,7 +116,7 @@ android {
                     CAR_TYPE_VALUE: "clea_8775",
                     logo          : "@mipmap/ic_launcher",
                     roundLogo     : "@mipmap/ic_launcher_round",
-                    appName       : appName
+                    appName       : "@string/app_name"
             ]
             println("ndnc8775车型渠道配置")
         }
