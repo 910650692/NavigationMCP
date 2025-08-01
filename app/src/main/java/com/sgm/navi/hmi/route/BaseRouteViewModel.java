@@ -1264,8 +1264,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         } else {
             mTitle.set(AppCache.getInstance().getMContext().getString(R.string.route_my_location));
             mViaPoiListVisibility.set(true);
-            String stringParam = ResourceUtils.Companion.getInstance().getString(R.string.route_via_head)
-                    + routeParams.size() + ResourceUtils.Companion.getInstance().getString(R.string.route_via_palce);
+            String stringParam = "";
+            if (routeParams.size() > 1) {
+                stringParam = ResourceUtils.Companion.getInstance().getString(R.string.route_via_head)
+                        + routeParams.size() + ResourceUtils.Companion.getInstance().getString(R.string.route_via_palce);
+            }
             for (int t = NumberUtils.NUM_0; t < routeParams.size(); t++) {
                 if (t == routeParams.size() - NumberUtils.NUM_1) {
                     stringParam += routeParams.get(t).getName();
