@@ -230,12 +230,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        LauncherWindowService.getInstance().showOrHideFloatView(false);
-    }
-
-    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (!ConvertUtils.isEmpty(outState)) {
