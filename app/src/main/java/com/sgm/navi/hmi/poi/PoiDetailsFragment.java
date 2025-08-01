@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentPoiDetailsBinding;
@@ -142,9 +143,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         super.onHiddenChanged(hidden);
         if (!hidden) {
             try {
-                if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mBinding)) {
-                    mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
-                }
+                ThreadManager.getInstance().postDelay(reloadRunnable, 200);
                 final Bundle parsedArgs = getArguments();
                 if (parsedArgs != null) {
                     final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
@@ -154,7 +153,6 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                     mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
                     mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
                 }
-                mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
                 if (mViewModel.calcDistanceBetweenPoints()) {
                     mBinding.scenePoiDetailContentView.showSelfParkingView();
                 }
@@ -163,6 +161,18 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             }
         }
     }
+
+    private final Runnable reloadRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mBinding != null) {
+                if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mBinding)) {
+                    mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
+                    mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
+                }
+            }
+        }
+    };
 
     /**
      * 搜索结果回调
@@ -223,6 +233,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             mBinding.scenePoiDetailContentView.setViaIndexSelect(false,mViaIndex);
             mViaIndex = -1;
         }
+        ThreadManager.getInstance().removeHandleTask(reloadRunnable);
     }
 
     private AccessTokenParam getAccessTokenParam(Activity activity){
