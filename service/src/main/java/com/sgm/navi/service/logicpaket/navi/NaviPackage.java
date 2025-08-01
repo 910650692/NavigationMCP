@@ -56,6 +56,7 @@ import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.route.RouteCurrentPathParam;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
@@ -859,6 +860,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
             PathInfo pathInfo = OpenApiHelper.getPathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathID);
             OpenApiHelper.setCurrentPathInfo(pathInfo);
+            RouteCurrentPathParam routeCurrentPathParam = new RouteCurrentPathParam();
+            routeCurrentPathParam.setMPathInfo(pathInfo);
+            RouteAdapter.getInstance().sendL2Data(routeCurrentPathParam);
         }
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
@@ -956,6 +960,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         Logger.i(TAG, "onChangeNaviPath oldPathId = " + oldPathId + " pathID = " + pathID);
         PathInfo pathInfo = OpenApiHelper.getPathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathID);
         OpenApiHelper.setCurrentPathInfo(pathInfo);
+        RouteCurrentPathParam routeCurrentPathParam = new RouteCurrentPathParam();
+        routeCurrentPathParam.setMPathInfo(pathInfo);
+        RouteAdapter.getInstance().sendL2Data(routeCurrentPathParam);
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

@@ -242,6 +242,15 @@ final public class RouteAdapter {
         });
     }
 
+    public void sendL2Data(final RouteCurrentPathParam routeCurrentPathParam) {
+        L2Adapter.getInstance().postL2Thread(() -> {
+            if (!ConvertUtils.isEmpty(routeCurrentPathParam)) {
+                mRouteApi.sendL2Data(routeCurrentPathParam);
+            }
+        });
+    }
+
+
     public void requestRouteDetails(int index) {
         mRouteApi.requestRouteDetails(index);
     }
