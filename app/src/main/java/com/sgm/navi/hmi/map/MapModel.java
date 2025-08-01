@@ -373,8 +373,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 boolean value = ((ObservableBoolean) sender).get();
                 if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
                     phoneAddressDialog.resetDialogParams(
-                            value ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_417)
-                                    : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_600));
+                            value ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_show_margin_start)
+                                    : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_not_show_margin_start),
+                            ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top)
+                    );
                 }
             }
         });

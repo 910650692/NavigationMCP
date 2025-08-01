@@ -4182,4 +4182,8 @@
     <dimen name="traffic_big_pic_margin_hor">670dp</dimen>
     <dimen name="traffic_big_pic_margin_vertical">115dp</dimen>
     <dimen name="bg_route_detail_corner">6dp</dimen>
+    <dimen name="phone_address_dialog_main_show_margin_start">417dp</dimen>
+    <dimen name="phone_address_dialog_main_not_show_margin_start">600dp</dimen>
+    <dimen name="phone_address_dialog_setting_show_margin_start">1062dp</dimen>
+    <dimen name="phone_address_dialog_setting_show_margin_top">85dp</dimen>
 </resources>
