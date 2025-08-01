@@ -34,11 +34,11 @@ public class ActivityCloseManager {//自己的activity关闭接口方法
     /**
      * 触发关闭事件
      */
-    public void triggerClose(boolean isCluster) {
+    public void triggerClose(boolean isCluster, boolean isOpen) {
         if (!listeners.isEmpty()) {
             Logger.d(TAG, "triggerClose ActivityCloseManager: 正在触发关闭");
             for (OnCloseActivityListener listener : listeners) {
-                listener.onClose(isCluster);
+                listener.onOpenOrClose(isCluster, isOpen);
             }
         } else {
             Logger.w(TAG, "triggerClose ActivityCloseManager: 未设置监听器");

@@ -435,7 +435,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         if (!openHud) {
             //关闭HUD
             Logger.d(FsaConstant.FSA_TAG, "close HudActivity");
-            ActivityCloseManager.getInstance().triggerClose(false);
+            ActivityCloseManager.getInstance().triggerClose(false, openHud);
             return;
         }
         int displayId = -1;
@@ -953,6 +953,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         }
         if (isOpen) {
             Logger.d(FsaConstant.FSA_TAG, "----open ClusterActivity",secondeDid);
+            ActivityCloseManager.getInstance().triggerClose(true, isOpen);
             final ActivityOptions options = ActivityOptions.makeBasic();
             options.setLaunchDisplayId(secondeDid);
             final Intent intent = new Intent();
@@ -966,7 +967,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             }
         } else {
             Logger.d(FsaConstant.FSA_TAG, "----close ClusterActivity");
-            ActivityCloseManager.getInstance().triggerClose(true);
+            ActivityCloseManager.getInstance().triggerClose(true, isOpen);
         }
     }
 

@@ -116,8 +116,8 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
     }
 
     @Override
-    public void onClose(boolean isCluster) {
-        if (!isCluster){
+    public void onOpenOrClose(boolean isCluster, boolean isOpen) {
+        if (!isCluster && !isOpen) {
             Logger.d(TAG, "hud close");
             mBinding.hudMapview.setVisibility(View.GONE);
             //finishAndRemoveTask();

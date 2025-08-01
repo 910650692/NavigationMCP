@@ -40,6 +40,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     //填洞
     private static final String MAP_DISPLAYING_FALSE = "{\"isMapDisplaying\":false}";
 
+    private boolean isDisplayCluster = false;// 是否上屏
 
     @Override
     public void onCreateBefore() {
@@ -92,15 +93,27 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        overridePendingTransition(0,0);
+    }
+
+    @Override
     protected void onResume() {
+        overridePendingTransition(0,0);
         super.onResume();
         Logger.d(TAG, "----onResume");
         mViewModel.remainingMileageConstraintLayoutVisibility.set(NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING));
        // mBinding.clusterMapview.postDelayed(() -> MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE),500);
+        if (isDisplayCluster) {
+            mBinding.clusterMapview.postDelayed(() -> MyFsaService.getInstance()
+                    .sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE),100);
+        }
     }
 
     @Override
     protected void onPause() {
+        overridePendingTransition(0,0);
         super.onPause();
         Logger.d(TAG, "----onPause");
     }
@@ -126,6 +139,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
 //        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
 //        ThreadManager.getInstance().removeHandleTask(mRunnable);
         SignalPackage.getInstance().unregisterObserver(TAG);
+        ThreadManager.getInstance().removeHandleTask(holeAction);
     }
 
     @Override
@@ -165,11 +179,17 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
 
 
     @Override
-    public void onClose(boolean isCluster) {
-        if (isCluster){
-            Logger.d(TAG, "----ClusterActivity onClose");
-            mBinding.cluster.setVisibility(GONE);
-            finishAndRemoveTask();
+    public void onOpenOrClose(boolean isCluster, boolean isOpen) {
+        if (isCluster) {
+            Logger.d(TAG, "----ClusterActivity onOpenOrClose");
+            isDisplayCluster = isOpen;
+            if (isOpen) {
+                ThreadManager.getInstance().removeHandleTask(finishAndRemoveTaskAction);
+            } else {
+//            mBinding.cluster.setVisibility(GONE);
+                moveTaskToBack(true);
+                ThreadManager.getInstance().postDelay(finishAndRemoveTaskAction, 2000);
+            }
         }
     }
 
@@ -179,9 +199,16 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     public void bindMapView() {
         Logger.d(TAG, "bindMapView");
         MapPackage.getInstance().bindMapView(mBinding.clusterMapview);
-        mBinding.clusterMapview.postDelayed(()->{
-            Logger.d(TAG, "bindMapView:post");
-            MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
-        },600);
+        ThreadManager.getInstance().postDelay(holeAction,600);
     }
+
+    private final Runnable holeAction = () -> {
+        Logger.d(TAG, "holeAction:post");
+        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_TRUE);
+    };
+
+    private final Runnable finishAndRemoveTaskAction = () -> {
+        Logger.d(TAG, "finishAndRemoveTask:post");
+        finishAndRemoveTask();
+    };
 }
