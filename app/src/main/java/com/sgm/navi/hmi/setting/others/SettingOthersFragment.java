@@ -23,6 +23,7 @@ import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
@@ -221,6 +222,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @Override
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
+                        NaviPackage.getInstance().stopNavigation(true);
                         CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         mViewModel.clearAll();
