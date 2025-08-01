@@ -468,6 +468,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     }
                     return customUpdatePairs;
                 }
+                boolean focus = item.getFocus();
                 int slowFree = chargeStationInfo.slowFree;
                 int slowTotal = chargeStationInfo.slowTotal;
                 int fastFree = chargeStationInfo.fastFree;
@@ -489,13 +490,46 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 if (!isSlowShow && !isFastShow) {
                     customUpdatePairs.add(createUpdateStylePair("detail_info", "display:none;"));
                 } else if (isSlowShow && isFastShow){
-                    break;
+                    if (focus) {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:200px;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:140px;"));
+                    }
                 } else if (isSlowShow){
-                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:130px;"));
+                    if (focus) {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:90px;"));
+                    }
                 } else {
-                    customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
+                    if (focus) {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:130px;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:92px;"));
+                    }
                 }
-                break;
+                if (focus) {
+                    customUpdatePairs.add(createUpdateStylePair("id_fast","font-size:24px;"));
+                    customUpdatePairs.add(createUpdateStylePair("id_slow","font-size:24px;"));
+                    customUpdatePairs.add(createUpdateStylePair("div_title","font-size:24px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","margin-top:90px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-top:13px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-bottom:13px;"));
+                } else {
+                    customUpdatePairs.add(createUpdateStylePair("id_fast","font-size:20px;"));
+                    customUpdatePairs.add(createUpdateStylePair("id_slow","font-size:20px;"));
+                    customUpdatePairs.add(createUpdateStylePair("div_title","font-size:20px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","margin-top:5px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-top:5px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-bottom:5px;"));
+                }
+                if (isNightMode) {
+                    customUpdatePairs.add(createUpdateStylePair("id_fast","color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("id_slow","color:#ffffff;"));
+                } else {
+                    customUpdatePairs.add(createUpdateStylePair("id_fast","color:#000000;"));
+                    customUpdatePairs.add(createUpdateStylePair("id_slow","color:#000000;"));
+                }
             }
         }
         return customUpdatePairs;
