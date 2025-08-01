@@ -416,12 +416,20 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     if (fastTotal == 0) {
                         customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
                     } else {
-                        customUpdatePairs.add(createUpdateValuePair("id_fast", "快"+fastFree + "/" + fastTotal));
+                        if (fastFree < 0) {
+                            customUpdatePairs.add(createUpdateValuePair("id_fast", "快" + fastTotal));
+                        } else {
+                            customUpdatePairs.add(createUpdateValuePair("id_fast", "快" + fastFree + "/" + fastTotal));
+                        }
                     }
                     if (slowTotal == 0) {
                         customUpdatePairs.add(createUpdateStylePair("div_slow", "display:none;"));
                     } else {
-                        customUpdatePairs.add(createUpdateValuePair("id_slow", "慢"+slowFree + "/" + slowTotal));
+                        if (slowFree < 0) {
+                            customUpdatePairs.add(createUpdateValuePair("id_slow", "慢" + slowTotal));
+                        } else {
+                            customUpdatePairs.add(createUpdateValuePair("id_slow", "慢" + slowFree + "/" + slowTotal));
+                        }
                     }
                     List<PoiInfoEntity> poiInfoEntityList = mPoiInfoList.get();
                     boolean focus = item.getFocus();
@@ -479,13 +487,21 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     customUpdatePairs.add(createUpdateStylePair("div_slow", "display:none;"));
                     isSlowShow = false;
                 } else {
-                    customUpdatePairs.add(createUpdateValuePair("id_slow", slowFree + "/" + slowTotal));
+                    if (slowFree < 0) {
+                        customUpdatePairs.add(createUpdateValuePair("id_slow", slowTotal + ""));
+                    } else {
+                        customUpdatePairs.add(createUpdateValuePair("id_slow", slowFree + "/" + slowTotal));
+                    }
                 }
                 if (fastTotal == 0) {
                     customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
                     isFastShow = false;
                 } else {
-                    customUpdatePairs.add(createUpdateValuePair("id_fast", fastFree + "/" + fastTotal));
+                    if (fastFree < 0) {
+                        customUpdatePairs.add(createUpdateValuePair("id_fast", fastTotal + ""));
+                    } else {
+                        customUpdatePairs.add(createUpdateValuePair("id_fast", fastFree + "/" + fastTotal));
+                    }
                 }
                 if (!isSlowShow && !isFastShow) {
                     customUpdatePairs.add(createUpdateStylePair("detail_info", "display:none;"));
