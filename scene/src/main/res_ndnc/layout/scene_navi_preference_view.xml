@@ -26,14 +26,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.sgm.navi.scene.ui.navi.view.SwipeView
-            android:id="@+id/sv_bar_area"
-            android:layout_width="@dimen/dp_166"
-            android:layout_height="@dimen/dp_30"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.sgm.navi.ui.view.SkinScrollView
             android:id="@+id/skinScrollView2"
             android:layout_width="@dimen/navi_guide_perference_page_width"
@@ -188,6 +180,14 @@
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.sgm.navi.ui.view.SkinScrollView>
+
+        <com.sgm.navi.scene.ui.navi.view.SwipeView
+            android:id="@+id/sv_bar_area"
+            android:layout_width="@dimen/dp_166"
+            android:layout_height="@dimen/dp_30"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 

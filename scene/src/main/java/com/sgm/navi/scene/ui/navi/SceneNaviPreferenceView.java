@@ -19,6 +19,7 @@ import com.sgm.navi.scene.databinding.SceneNaviPreferenceViewBinding;
 import com.sgm.navi.scene.impl.preference.SceneRoutePreferenceImpl;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
+import com.sgm.navi.scene.ui.navi.view.SwipeView;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 
@@ -31,7 +32,7 @@ import java.util.Hashtable;
  */
 public class SceneNaviPreferenceView extends NaviSceneBase
         <SceneNaviPreferenceViewBinding, SceneRoutePreferenceImpl> implements
-        SceneRoutePreferenceImpl.IRoutePreferenceChangeListener {
+        SceneRoutePreferenceImpl.IRoutePreferenceChangeListener, SwipeView.DownSwipeAndClickListener {
 
     public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_PREFERENCE;
 
@@ -93,6 +94,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
             mScreenViewModel.setOnPreferenceChangeListener("route fragment", this);
             mScreenViewModel.setDefaultPreference();
         }
+        mViewBinding.svBarArea.setDownSwipeListener(this);
     }
 
     /**
@@ -254,6 +256,7 @@ public class SceneNaviPreferenceView extends NaviSceneBase
     public void onDestroy() {
         Logger.i(TAG, "onDestroy");
         mScreenViewModel.unSettingChangeCallback(TAG);
+        mViewBinding.svBarArea.setDownSwipeListener(null);
     }
 
     /**
@@ -280,5 +283,19 @@ public class SceneNaviPreferenceView extends NaviSceneBase
                 INaviSceneEvent.SceneStateChangeType.SceneShowState,
                 NaviSceneId.NAVI_SCENE_CONTROL);
         mISceneCallback.showControlDetails();*/
+    }
+
+    @Override
+    public void onDownSwipe() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.closeScene();
+        }
+    }
+
+    @Override
+    public void onClick() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.closeScene();
+        }
     }
 }
