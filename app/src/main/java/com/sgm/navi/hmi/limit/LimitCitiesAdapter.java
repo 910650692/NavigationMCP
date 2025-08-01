@@ -13,7 +13,7 @@ import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
-import com.sgm.navi.hmi.R;
+import com.sgm.navi.scene.R;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 
 import java.util.ArrayList;
