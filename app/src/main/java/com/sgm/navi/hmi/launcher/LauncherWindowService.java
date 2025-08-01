@@ -501,14 +501,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     public void onNetStatusChange(boolean isConnect) {
         // 离线隐藏Tbt面板
-        Logger.d(TAG, "离线隐藏Tbt面板，在线显示 isConnected:", isConnect);
+        Logger.d(TAG, "离线隐藏tmc光柱图，在线显示 isConnected:", isConnect);
         isConnected = isConnect;
         if (mBinding == null) {
             Logger.w(TAG, "onNetStatusChange: mBinding is null, ignoring update");
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            mBinding.sceneNaviTmc.setVisibility(isConnected ? View.VISIBLE : View.GONE);
+            boolean shouldShow = isConnected && isOnNavigating();
+            mBinding.sceneNaviTmc.setVisibility(shouldShow ? View.VISIBLE : View.GONE);
         });
     }
 

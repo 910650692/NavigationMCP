@@ -110,6 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
+                    android:minHeight="1dp"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/iv_cross" />
 
@@ -118,6 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="@dimen/dp_30"
+                    android:visibility="visible"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
 
