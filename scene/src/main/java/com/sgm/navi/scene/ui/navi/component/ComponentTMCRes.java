@@ -327,6 +327,10 @@ public class ComponentTMCRes extends SkinConstraintLayout {
         invalidate();
     }
 
+    public boolean isForceUpdate() {
+        return mTmcAreaItemsNew == null;
+    }
+
     /**
      * @param offline 是否离线
      */

@@ -431,6 +431,9 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
     }
 
     private boolean isViaChange(final long totalDistance) {
+        if (mChargeStationRemain == null || mViaRemain == null) {
+            return true;
+        }
         if (mTotalDistance != totalDistance || mLastChargeSize != mChargeStationRemain.size()
                 || mLastViaSize != mViaRemain.size()) {
             mLastChargeSize = mChargeStationRemain.size();
@@ -713,4 +716,21 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
         this.mIsShowAutoAddChargeStation = isShow;
         mScreenViewModel.innerUpdateNaviInfo();
     }
+
+    /**
+     * 是否强制更新 光柱图
+     *
+     * @return true 强制更新
+     */
+    public boolean isForceUpdate() {
+        if (mViewBinding == null) {
+            return false;
+        }
+        boolean isForceUpdate = mViewBinding.tmrtrResources.isForceUpdate();
+        if (isForceUpdate) {
+            mInvalidateCount = 0;
+        }
+        return isForceUpdate;
+    }
+
 }

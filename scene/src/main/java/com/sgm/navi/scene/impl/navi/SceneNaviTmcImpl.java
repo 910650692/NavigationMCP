@@ -207,7 +207,7 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
                 // 从新规划路线以后，先不更新，等待途径点数据更新后再更新
                 mUpdateTMCInfoDistance = true;
             }
-            if (!mUpdateTMCInfoDistance) {
+            if (!mUpdateTMCInfoDistance || mScreenView.isForceUpdate()) {
                 updateTmcNew(mTmcItemsInTmcBarNew, mDistanceHasPassed, mTotalDistance, false);
             }
             mLastDistanceHasPassed = mLightBarDetail.getFinishDistance();
