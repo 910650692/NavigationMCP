@@ -67,6 +67,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private static final String KEY_ROAD_END_DEFAULT = "road_end_default";
     //能量耗尽点
     private static final String KEY_ROAD_ENERGY_EMPTY = "road_energy_empty";
+    //途经点
+    private static final String KEY_ROAD_VIA_DEFAULT_POINT = "road_via_default";
     //路线补能点
     private static final String KEY_ROAD_VIA_CHARGE_STATION = "road_via_charge_station";
     //路线替换补能点扎标
@@ -142,7 +144,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                         return KEY_ROAD_ROUTE_VIA_CHARGE_STATION;
                     }
                     Logger.d(TAG, "途经点扎标-默认扎标");
-                    return super.provideLayerItemStyleJson(layer, item);
+                    return KEY_ROAD_VIA_DEFAULT_POINT;
                 }
             }
             case BizRouteType.BizRouteTypeGuideLabel -> {

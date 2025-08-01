@@ -1,0 +1,12 @@
+{
+  "point_layer_item_style": {
+    "normal_style": {
+      "poi_marker_id": "layer_icon_route_via_point_normal",
+      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.5,\"y_ratio\":0.0}"
+    },
+    "focus_style": {
+      "poi_marker_id": "layer_icon_route_via_point_focus",
+      "poi_marker_info": "{\"anchor\":5,\"x_ratio\":0.5,\"y_ratio\":0.0}"
+    }
+  }
+}
