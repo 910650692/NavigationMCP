@@ -196,22 +196,20 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
             @Override
             public void onScrolled(final @NonNull RecyclerView recyclerView, final int dx, final int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                updateButtonStates();
             }
         });
 
-        updateButtonStates();
     }
 
     /**
      * 点击上一页
      */
     private void scrollToPrevious() {
-        final int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+        final int firstVisibleItemPosition = mLayoutManager.findFirstCompletelyVisibleItemPosition();
         if (firstVisibleItemPosition > 0) {
             mLayoutManager.scrollToPositionWithOffset(firstVisibleItemPosition - 1, 0);
         } else {
-            mBinding.ivItemPre.setEnabled(false);
+            mLayoutManager.scrollToPositionWithOffset(0, 0);
         }
     }
 
@@ -219,26 +217,15 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
      * 点击下一页
      */
     private void scrollToNext() {
-        final int lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
+        final int lastVisibleItemPosition = mLayoutManager.findLastCompletelyVisibleItemPosition();
         final int totalItemCount = mLayoutManager.getItemCount();
         if (lastVisibleItemPosition < totalItemCount - 1) {
             mLayoutManager.scrollToPositionWithOffset(lastVisibleItemPosition + 1, 0);
         } else {
-            mBinding.ivItemNext.setEnabled(false);
+            mLayoutManager.scrollToPositionWithOffset(totalItemCount - 1, 0);
         }
     }
 
-    /**
-     * 改变按钮图标
-     */
-    private void updateButtonStates() {
-        final int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
-        final int lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition();
-        final int totalItemCount = mLayoutManager.getItemCount();
-
-        mBinding.ivItemPre.setEnabled(firstVisibleItemPosition > 0);
-        mBinding.ivItemNext.setEnabled(lastVisibleItemPosition < totalItemCount - 1);
-    }
 
     /**
      * 显示加载中界面
@@ -285,6 +272,13 @@ public class LimitDriveFragment extends BaseFragment<FragmentLimitDetailBinding,
                     mBinding.tvCity.setVisibility(View.GONE);
                     mBinding.tvOtherCity.setVisibility(View.GONE);
                     mBinding.layoutMultiCity.setVisibility(View.VISIBLE);
+                    if (restrictedArea.getMCityNames().size() > 3) {
+                        mBinding.ivItemPre.setVisibility(View.VISIBLE);
+                        mBinding.ivItemNext.setVisibility(View.VISIBLE);
+                    } else {
+                        mBinding.ivItemPre.setVisibility(View.GONE);
+                        mBinding.ivItemNext.setVisibility(View.GONE);
+                    }
                     mCitiesAdapter.setData(restrictedArea.getMCityNames());
                     mCitiesAdapter.setListener(new LimitDriverCitiesAdapter.ItemClickListener() {
                         @Override

@@ -121,9 +121,10 @@
                     android:layout_width="@dimen/dp_403"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_5"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_item_next"
                     app:layout_constraintStart_toEndOf="@+id/iv_item_pre"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_goneMarginStart="@dimen/dp_12"
                     android:orientation="horizontal"/>
 
 
