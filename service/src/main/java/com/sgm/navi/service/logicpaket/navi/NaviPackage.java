@@ -873,7 +873,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     @Override
     public void updateBroadcastParam(final int broadcastType, final boolean isDay) {
-        Logger.i(TAG, "updateBroadcastParam");
+        Logger.i(TAG, " broadcastType = " + broadcastType + ", isDay = " + isDay);
         if (mNaviAdapter == null) {
             mNaviAdapter = NaviAdapter.getInstance();
         }

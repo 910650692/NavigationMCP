@@ -32,6 +32,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     public int playingRequestId = 0;
     private boolean mIsNormalTTS = true;
     private int mBroadcastTtsId = NumberUtils.NUM_ERROR;
+    private int mGetDataRequestId;
 
     public SpeechAdapterImpl() {
         mSpeechAdapterCallback = new CopyOnWriteArrayList<>();
@@ -46,12 +47,15 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
         String path = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PATH);
         if (mInitResult == 0 && path != null && !path.isEmpty()) {
             int voiceResult = setVoice(path);
-            Logger.i(TAG, "mInitResult：" + mInitResult + ",voiceResult：" + voiceResult);
+            Logger.i(TAG, "mInitResult：", mInitResult, " voiceResult：", voiceResult, " path：", path);
+        } else {
+            Logger.w(TAG, "mInitResult: ", mInitResult, " path：", path);
         }
     }
 
     @Override
     public void unInit() {
+        Logger.i(TAG, "unInit mSpeechService is Empty? :", mSpeechService == null);
         if (mSpeechService != null) {
             mSpeechService.unInit();
         }
@@ -59,13 +63,23 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     @Override
     public void registerCallback(ISpeechAdapterCallback callback) {
+        if (callback == null) {
+            Logger.i(TAG, "registerCallback: callback is null");
+            return;
+        }
         if (!mSpeechAdapterCallback.contains(callback)) {
+            Logger.i(TAG, "registerCallback");
             mSpeechAdapterCallback.add(callback);
         }
     }
 
     @Override
     public void unregisterCallback(ISpeechAdapterCallback callback) {
+        if (callback == null) {
+            Logger.i(TAG, "callback is null");
+            return;
+        }
+        Logger.i(TAG, "unregisterCallback");
         mSpeechAdapterCallback.remove(callback);
     }
 
@@ -78,7 +92,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
     @Override
     public int setVoice(String irfPath) {
         int result = mSpeechService.setVoice(irfPath);
-        Logger.i(TAG, "result：" + result);
+        Logger.i(TAG, "result：", result, " irfPath：", irfPath);
 
         for (ISpeechAdapterCallback callback : mSpeechAdapterCallback) {
             callback.onVoiceSet(result);
@@ -89,27 +103,34 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
 
     @Override
     public void synthesize(boolean isNormalTTS, String text) {
-        Logger.i(TAG, "text：" + text + ",isNormalTTS：" + isNormalTTS);
-        if (!ConvertUtils.isEmpty(text)) {
-            if (null != mSpeechService) {
-                mIsNormalTTS = isNormalTTS;
-                playingRequestId = taskId;
-                mSpeechService.synthesize(text, false, taskId++);
+        if (!ConvertUtils.isEmpty(text) && null != mSpeechService) {
+            mIsNormalTTS = isNormalTTS;
+            playingRequestId = taskId;
+            int result = mSpeechService.synthesize(text, false, taskId++);
+            Logger.i(TAG, "text：", text, " isNormalTTS：", isNormalTTS, " result：", result, " taskId：", taskId);
+        } else {
+            Logger.w(TAG, "text：", text, " isNormalTTS：", isNormalTTS,
+                    " mSpeechService is null?：", (mSpeechService == null), " taskId：", taskId);
+            if (mSpeechService == null) {
+                init();
             }
         }
     }
 
     @Override
     public void synthesize(String text) {
-        Logger.i(TAG, "text：" + text);
-        if (!ConvertUtils.isEmpty(text)) {
-            if (null != mSpeechService) {
-                playingRequestId = taskId;
-                if (mBroadcastTtsId != NumberUtils.NUM_ERROR) {
-                    mSpeechService.stop(mBroadcastTtsId);
-                }
-                mBroadcastTtsId = taskId;
-                mSpeechService.synthesize(text, false, taskId++);
+        if (!ConvertUtils.isEmpty(text) && null != mSpeechService) {
+            playingRequestId = taskId;
+            if (mBroadcastTtsId != NumberUtils.NUM_ERROR) {
+                mSpeechService.stop(mBroadcastTtsId);
+            }
+            mBroadcastTtsId = taskId;
+            int result = mSpeechService.synthesize(text, false, taskId++);
+            Logger.i(TAG, "text：", text, " result：", result, " taskId：", taskId);
+        } else {
+            Logger.w(TAG, "text：", text, " mSpeechService is null?：", (mSpeechService == null), " taskId：", taskId);
+            if (mSpeechService == null) {
+                init();
             }
         }
     }
@@ -131,7 +152,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      */
     @Override
     public void onSampleRateChange(int sampleRate, int[] pcmLen) {
-        Logger.d(TAG, "onSampleRateChange sampleRate:" + sampleRate);
+        Logger.d(TAG, "onSampleRateChange sampleRate:", sampleRate);
         mSampleRate = sampleRate;
     }
 
@@ -142,7 +163,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      */
     @Override
     public void onStart(int requestId) {
-        Logger.d(TAG, "onStart requestId:" + requestId);
+        Logger.d(TAG, "onStart requestId:", requestId);
         NaviAudioPlayer.getInstance().createAudioTrack(requestId, mSampleRate, mIsNormalTTS);
     }
 
@@ -155,7 +176,10 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      */
     @Override
     public void onGetData(int requestId, BinaryStream pcmData, long duration) {
-        Logger.i(TAG, "requestId:" + requestId, "duration:" + duration);
+        if (mGetDataRequestId != requestId || duration != 40) {
+            mGetDataRequestId = requestId;
+            Logger.i(TAG, "requestId:", requestId, " duration:", duration);
+        }
         NaviAudioPlayer.getInstance().playPcmData(requestId, pcmData.buffer, mSampleRate);
     }
 
@@ -167,7 +191,7 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      */
     @Override
     public void onError(int requestId, int errCode) {
-        Logger.d(TAG, "onError requestId:" + requestId, "errCode:" + errCode);
+        Logger.d(TAG, "onError requestId:", requestId, "errCode:", errCode);
         NaviAudioPlayer.getInstance().releaseAudioTrack(requestId);
     }
 
@@ -178,13 +202,13 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      */
     @Override
     public void onFinish(int requestId) {
-        Logger.d(TAG, "onFinish requestId:" + requestId);
+        Logger.d(TAG, "onFinish requestId:", requestId);
         NaviAudioPlayer.getInstance().releaseAudioTrack(requestId);
     }
 
     @Override
     public void onStop(int requestId) {
-        Logger.d(TAG, "onStop requestId:" + requestId);
+        Logger.d(TAG, "onStop requestId:", requestId);
         NaviAudioPlayer.getInstance().releaseAudioTrack(requestId);
     }
 }
