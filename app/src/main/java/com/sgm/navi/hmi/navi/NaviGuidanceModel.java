@@ -603,6 +603,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mNaviPackage.setEndPoint(null);
         ThreadManager.getInstance().removeHandleTask(mReRouteByNetChange);
         mIsWaitingNetworkStable = false;
+        LayerItemRouteEndPoint endPoint = new LayerItemRouteEndPoint();
+        endPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BUSINESS_HOURS);
+        endPoint.setBusinessHours("");
+        mRoutePackage.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+        mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
         closeNavi();
     }
 
