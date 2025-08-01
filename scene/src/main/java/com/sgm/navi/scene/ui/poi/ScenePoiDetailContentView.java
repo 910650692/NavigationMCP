@@ -813,8 +813,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 @HookMethod(eventName = BuryConstant.EventName.AMAP_DESTINATION_PHONE)
                 public void onClick(final View v) {
                     final String phone = mPoiInfoEntity.getPhone();
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getPhone: " , phone);
                     final ArrayList<String> phoneString = new ArrayList<>();
-                    final StringBuffer phoneProp = new StringBuffer();
                     if (phone.contains(";")) {
                         final String[] split = phone.split(";");
                         phoneString.addAll(Arrays.asList(split));
@@ -823,7 +823,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     }
                     if (!ConvertUtils.isEmpty(phoneString) && !ConvertUtils.isEmpty(phoneString.get(0))) {
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone: " , phoneString.get(0));
-                        phoneProp.append(phoneString.get(0));
                         if(phoneString.size() > 1){
                             mSearchDialogBuild = new SearchPhoneDialog.Build(getContext()).setDialogObserver(new IBaseDialogClickListener() {
                                 @Override
@@ -877,12 +876,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         }
                     } else {
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "call phone is null ");
-                        phoneProp.append("");
                     }
 
                     //For burying point
                     final BuryProperty buryProperty = new BuryProperty.Builder()
-                            .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, phoneProp.toString())
+                            .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, phone)
                             .build();
                     BuryPointController.getInstance().setBuryProps(buryProperty);
 
