@@ -89,6 +89,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         if (mModel.isOnTouch() && mModel.isOnNavigating()) {
             startImmersiveSchedule();
         }
+        mIsOnShowPreview.set(mModel.getPreviewStatus());
     }
 
     /***

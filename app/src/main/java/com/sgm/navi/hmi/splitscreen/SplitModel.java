@@ -251,11 +251,17 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             Logger.d(TAG, "非导航态无需显示或者关闭全览！");
             return;
         }
-        if (mNaviPackage.getPreviewStatus()) {
+        if (getPreviewStatus()) {
             closePreview();
         } else {
             showPreview();
         }
+    }
+
+    public boolean getPreviewStatus(){
+        boolean previewStatus = mNaviPackage.getPreviewStatus();
+        Logger.d(TAG, "getPreviewStatus = " + previewStatus);
+        return previewStatus;
     }
 
     /***
