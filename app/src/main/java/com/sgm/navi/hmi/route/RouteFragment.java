@@ -1064,7 +1064,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 poiServiceAreaOil.setVisibility(View.GONE);
             }
         }
-
+        if (mViewModel.powerType() == 1) {
+            mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.VISIBLE);
+            mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.VISIBLE);
+        } else {
+            mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.GONE);
+            mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.GONE);
+        }
         if (mRoutePoiDetailsPageView.stlPhone.getVisibility() == View.GONE
                 && mRoutePoiDetailsPageView.stlAroundSearch.getVisibility() == View.GONE
                 && mRoutePoiDetailsPageView.stlPoiFavorites.getVisibility() == View.GONE) {

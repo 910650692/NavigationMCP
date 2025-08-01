@@ -1543,9 +1543,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                     ThreadManager.getInstance().postUi(() -> {
                         mRouteSearchTimeAndDistance.set(MessageFormat.format("{0} {1}",
                                 requestPoiInfoEntity.getDistance(), etaInfo.getTravelTime()));
-                        mView.showPOIDetailCharge(etaInfo.getLeftCharge());
-                        mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
-                                com.sgm.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge()));
+                        int leftCharge = etaInfo.getLeftCharge();
+                        mView.showPOIDetailCharge(leftCharge);
+
+                        if(leftCharge<=0){
+                            int chargeTime = (int) Math.abs(leftCharge)/100 + 1;
+                            mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
+                                    com.sgm.navi.scene.R.string.remain_charge_travel, chargeTime));
+                        }else{
+                            mRouteSearchElec.set(ResourceUtils.Companion.getInstance().getString(
+                                    com.sgm.navi.scene.R.string.remain_charge, etaInfo.getLeftCharge()));
+                        }
                     });
 
                 })
