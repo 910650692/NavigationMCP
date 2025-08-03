@@ -225,13 +225,14 @@ public class FragmentIntent {
                         toFragment.onNewIntent(bundle);
                     }
                     currentFragment = toFragment;
-                    if (currentFragment.getParentFragmentManager() == fragmentManager) {
+                    FragmentManager fragmentManager1 = currentFragment.getParentFragmentManager();
+                    if (fragmentManager1 == fragmentManager) {
                         Logger.d(TAG, "transaction.show ", toFragment.getClass().getSimpleName());
                         transaction.show(toFragment);
                     }else{
-                        if(!ConvertUtils.isNull(currentFragment.getParentFragmentManager())){
+                        if(!ConvertUtils.isNull(fragmentManager1)){
                             Logger.d(TAG, "fragmentManager is error show ", toFragment.getClass().getSimpleName());
-                            currentFragment.getParentFragmentManager().beginTransaction().show(toFragment);
+                            fragmentManager1.beginTransaction().show(toFragment);
                         } else {
                             Logger.d(TAG, "error currentFragment.getParentFragmentManager() is null");
                         }

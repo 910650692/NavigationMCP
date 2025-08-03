@@ -110,32 +110,16 @@ public final class StackManager {
      * @param baseView 被压栈的视图
      */
     public void push(final String screenId, final IBaseView baseView) {
-        if (ConvertUtils.isNullRequire(baseView) instanceof BaseActivity) {
+        if (ConvertUtils.isEmpty(baseView)) return;
+        if (baseView instanceof BaseActivity) {
             Stack<BaseActivity> activities = ConvertUtils.containToValue(mBaseActivityStack, screenId);
             activities = ConvertUtils.push(activities, (BaseActivity) baseView);
             mBaseActivityStack.put(screenId, activities);
-        } else if (ConvertUtils.isNullRequire(baseView) instanceof BaseFragment) {
+        } else if (baseView instanceof BaseFragment) {
             Stack<BaseFragment> fragmentStack = ConvertUtils.containToValue(mBaseFragmentStack, screenId);
             fragmentStack = ConvertUtils.push(fragmentStack, (BaseFragment) baseView);
             mBaseFragmentStack.put(screenId, fragmentStack);
         }
-    }
-
-    /**
-     * 获取正在显示的视图.
-     *
-     * @return 视图实例
-     */
-    @Nullable
-    public BaseActivity getFirstActivity() {
-        if (ConvertUtils.isEmpty(mBaseActivityStack)) {
-            return null;
-        }
-        final String firstKey = mBaseActivityStack.keySet().stream().findFirst().get();
-        if (TextUtils.isEmpty(firstKey)) {
-            return null;
-        }
-        return getCurrentActivity(firstKey);
     }
 
     /**

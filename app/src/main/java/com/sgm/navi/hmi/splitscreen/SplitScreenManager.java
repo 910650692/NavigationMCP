@@ -121,7 +121,8 @@ public class SplitScreenManager {
             if (!isServiceConnect) {
                 final Intent intent = new Intent();
                 intent.setClassName(PACKAGE_NAME, CLS_NAME);
-                isServiceConnect = AppCache.getInstance().getMContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+                Context context = AppCache.getInstance().getMContext();
+                if (null != context) isServiceConnect = context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
                 Logger.i("screen_change_used", isServiceConnect);
             }
         } catch (SecurityException exception) {

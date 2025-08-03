@@ -129,6 +129,7 @@ public abstract class BaseFragment<V extends ViewDataBinding, VM extends BaseVie
     @Override
     public void onDetach() {
         super.onDetach();
+        mActivity = null;
         Logger.i(TAG, getClass().getSimpleName(), "onDetach");
     }
 
