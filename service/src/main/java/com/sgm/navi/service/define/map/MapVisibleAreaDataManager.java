@@ -35,6 +35,7 @@ public class MapVisibleAreaDataManager {
         dataMap.put(MapVisibleAreaType.MAIN_AREA_CAR,point.getMap_main_car());
         dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING,point.getMap_main_naving());
         dataMap.put(MapVisibleAreaType.MAIN_AREA_SETTING,point.getMap_main_setting());
+        dataMap.put(MapVisibleAreaType.MAIN_AREA_NAVING_WINDOW,point.getMap_main_naving_window());
     }
 
     public static MapVisibleAreaDataManager getInstance() {

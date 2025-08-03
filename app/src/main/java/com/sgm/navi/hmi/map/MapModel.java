@@ -239,6 +239,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private boolean isReallyMove = false;
 
     private PhoneAddressDialog phoneAddressDialog;
+    private Boolean isShowMusicTab = false;
 
     private final ActivateUiStateManager.LoadingViewCallBack mActivateStateCallBack = new ActivateUiStateManager.LoadingViewCallBack() {
         @Override
@@ -738,7 +739,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             if (mViewModel.getTopFragment(SettingFragment.class)){
                 mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
             } else {
-                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                if (isShowMusicTab) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING_WINDOW);
+                } else {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                }
             }
         }
         MapMode mapModel = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -2352,6 +2357,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onWindowSideChanged(boolean isOpenFloat) {
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
+        isShowMusicTab = isOpenFloat;
         if (mViewModel != null) {
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
         }

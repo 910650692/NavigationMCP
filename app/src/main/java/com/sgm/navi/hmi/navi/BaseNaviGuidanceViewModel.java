@@ -181,6 +181,7 @@ public class BaseNaviGuidanceViewModel extends
     public void onWindowSideChanged(boolean isOpenFloat) {
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
         musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
+        mModel.setMapCenterInScreen(isOpenFloat);
     }
 
     /**

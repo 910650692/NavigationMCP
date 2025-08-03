@@ -10,5 +10,9 @@
   "map_main_setting": {
     "mleftscreenoffer": 362,
     "mtopscreenoffer": 816
+  },
+  "map_main_naving_window": {
+    "mleftscreenoffer": 362,
+    "mtopscreenoffer": 816
   }
 }

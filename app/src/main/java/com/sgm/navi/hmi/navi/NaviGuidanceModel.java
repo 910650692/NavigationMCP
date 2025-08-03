@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -44,9 +45,13 @@ import com.sgm.navi.service.define.layer.refix.DynamicLevelMode;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRoutePointClickResult;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
+import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapStateStyle;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapTypeManager;
+import com.sgm.navi.service.define.map.MapVisibleAreaDataManager;
+import com.sgm.navi.service.define.map.MapVisibleAreaInfo;
+import com.sgm.navi.service.define.map.MapVisibleAreaType;
 import com.sgm.navi.service.define.message.MessageCenterInfo;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
@@ -179,6 +184,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private boolean mIsWaitingNetworkStable = false;
     private long mLastRefreshTime = 0;
     private RouteWayID mRouteWayID;
+    private MapVisibleAreaDataManager mapVisibleAreaDataManager;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -192,6 +198,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mNetWorkUtils = NetWorkUtils.Companion.getInstance();
         messageCenterManager = MessageCenterManager.getInstance();
         mModelHelp = new NaviGuidanceHelp();
+        mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
     }
 
     /**
@@ -1721,5 +1728,47 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     break;
             }
         }
+    }
+
+    public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
+        MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
+        if (true) {
+            //如果是ND  需要把数据转换为dp
+            int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
+            int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
+            MapVisibleAreaInfo ndMapArea = new MapVisibleAreaInfo(left, top);
+            return ndMapArea;
+        }
+        return mapVisibleAreaInfo;
+    }
+
+
+    public void setMapCenterInScreen(boolean isOpenFloat) {
+        Logger.e("zhaoshun", "setMapCenterInScreen1");
+        MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+        if(!StackManager.getInstance().isFragmentStackNull(MapType.MAIN_SCREEN_MAIN_MAP.name())){
+            if (!isOpenFloat) {
+                if (StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) instanceof SettingFragment){
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
+                } else {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                }
+            } else {
+                if (StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name()) instanceof NaviGuidanceFragment) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING_WINDOW);
+                } else {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                }
+            }
+
+        }
+        MapMode mapModel = mMapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        Logger.i(TAG, "setMapCenterInScreen (" , mapVisibleAreaInfo.getMleftscreenoffer() , "," , mapVisibleAreaInfo.getMtopscreenoffer() , ")" , ", mapMode: " , mapModel.ordinal());
+        if(mapModel == MapMode.NORTH_2D){
+            Logger.i(TAG, "setMapCenterInScreen NORTH_2D");
+            mMapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), (mapVisibleAreaInfo.getMtopscreenoffer() * 3) / 4);
+            return;
+        }
+        mMapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
     }
 }
