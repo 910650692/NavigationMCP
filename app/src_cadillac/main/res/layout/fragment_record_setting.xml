@@ -151,7 +151,6 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             style="@style/style_mfc_config"
-            clickCommand="@{ViewModel.mClearDivingRecord}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_202"
             app:layout_constraintStart_toStartOf="parent"

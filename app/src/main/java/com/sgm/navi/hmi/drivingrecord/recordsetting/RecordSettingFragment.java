@@ -85,8 +85,10 @@ public class RecordSettingFragment extends BaseFragment<FragmentRecordSettingBin
                         if (AccountPackage.getInstance().isLogin()) {
                             final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans =
                                     mViewModel.getDrivingRecordDataFromSdk();
-                            for (DrivingRecordDataBean drivingRecordDataBean : drivingRecordDataBeans) {
-                                mViewModel.delBehaviorData(String.valueOf(drivingRecordDataBean.getId()));
+                            if (drivingRecordDataBeans != null && drivingRecordDataBeans.size() > 0) {
+                                for (DrivingRecordDataBean drivingRecordDataBean : drivingRecordDataBeans) {
+                                    mViewModel.delBehaviorData(String.valueOf(drivingRecordDataBean.getId()));
+                                }
                             }
                         }
                         mViewModel.deleteValueByKey(2);
