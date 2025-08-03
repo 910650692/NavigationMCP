@@ -14,6 +14,7 @@ public class AppCache {
     private Context mContext;
     private Application mApplication;
     private boolean mIsFirstOpenMap = true;
+    private boolean mHandCarInterconnection = true;
 
     public static AppCache getInstance() {
         return AppCache.Helper.RA;
