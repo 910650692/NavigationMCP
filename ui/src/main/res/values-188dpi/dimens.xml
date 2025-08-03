@@ -4024,8 +4024,8 @@
     <dimen name="navi_main_tap_margin_end">34dp</dimen>
     <dimen name="navi_main_limit_margin_end">40dp</dimen>
     <dimen name="navi_main_tap_height">95dp</dimen>
-    <dimen name="navi_main_parking_margin_end">-73dp</dimen>
-    <dimen name="navi_main_parking_gone_margin_start">225dp</dimen>
+    <dimen name="navi_main_parking_margin_end">102dp</dimen>
+    <dimen name="navi_main_parking_gone_margin_start">490dp</dimen>
     <dimen name="navi_main_message_margin_start">17dp</dimen>
     <dimen name="navi_guide_widget_margin_start">1dp</dimen>
     <dimen name="navi_guide_line_views">608dp</dimen>
