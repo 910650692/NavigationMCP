@@ -78,10 +78,12 @@ public class PhoneAddressDialog extends BaseDialog<DialogPhoneAddressBinding> {
         } else {
             if (isMainBTNVisible) {
                 params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width);
+                params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
             } else {
                 params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_phone_address_dialog_width_main_btn);
+                params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_setting_show_margin_top);
             }
-            params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
+
             if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())) {
                 params.x = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_setting_show_margin_start);
                 params.y = ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_setting_show_margin_top);
