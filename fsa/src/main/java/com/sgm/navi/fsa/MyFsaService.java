@@ -715,8 +715,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             int height = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMContext());
             Logger.d(TAG, "startScreenshot width==" , width , "height==" , height);
             orginBitmap = getBitmapFromPool(width, height);
-            if (orginBitmap != null) {
-                Logger.d(TAG, "processMapCrossPicture orginBitmap != null");
+            if (orginBitmap == null) {
+                Logger.d(TAG, "processMapCrossPicture orginBitmap == null");
+                return;
             }
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
             Logger.d(TAG, "Bitmap size = " , orginBitmap.getByteCount());
@@ -748,6 +749,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private Bitmap getBitmapFromPool(int width, int height) {
         synchronized (mLock) {
             for (Bitmap bitmap : mBitmapPool) {
+                if (bitmap == null)  {
+                    continue;
+                }
                 if (!bitmap.isRecycled() && bitmap.getWidth() == width && bitmap.getHeight() == height) {
                     mBitmapPool.remove(bitmap);
                     return bitmap;

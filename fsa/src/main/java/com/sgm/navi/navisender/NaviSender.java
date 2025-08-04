@@ -362,7 +362,7 @@ public class NaviSender {
                 mSignalPackage.setRemainTimeToChargingStationy(0); // 距离充电站的剩余时长
 
                 sendIndex = 0;
-                mRoadGroupDatas.clear();
+                mRoadGroupDatas = new ArrayList<>();
                 if (mScheduledFuture != null) {
                     mScheduledFuture.cancel(true);
                 }
@@ -472,7 +472,6 @@ public class NaviSender {
         }
         sendRoadConditionGroupInvalid();
         sendIndex = 0;
-        mRoadGroupDatas.clear();
         mRoadGroupDatas = L2Package.getInstance().getRoadGroupData();
         if (mRoadGroupDatas == null) {
             return;
