@@ -456,6 +456,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                                 getSpeedOverallEntity());
                         guidanceObserver.onNaviSAPAInfo(mModelSaveEntity.getSapaInfoEntity());
                         guidanceObserver.onLaneInfo(mIsShowLanes, mModelSaveEntity.getLaneInfo());
+                        guidanceObserver.onUpdateElectVehicleETAInfo(mModelSaveEntity.
+                                getFyElecVehicleETAInfos());
                     }
                 }
             }
@@ -919,6 +921,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                         if (guidanceObserver != null) {
                             guidanceObserver.onUpdateElectVehicleETAInfo(infos);
+                            if (mModelSaveEntity != null) {
+                                mModelSaveEntity.setFyElecVehicleETAInfos(infos);
+                            }
                         }
                     }
                 }

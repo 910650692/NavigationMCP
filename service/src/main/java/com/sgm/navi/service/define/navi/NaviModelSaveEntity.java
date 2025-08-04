@@ -19,6 +19,7 @@ public class NaviModelSaveEntity {
     private int mSapaDetailType;
     private List<PoiInfoEntity> mHangingCardPoiList;
     private HandCardType mHandCardType;
+    private List<FyElecVehicleETAInfo> mFyElecVehicleETAInfos;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -130,5 +131,13 @@ public class NaviModelSaveEntity {
 
     public void setHandCardType(final HandCardType mHandCardType) {
         this.mHandCardType = mHandCardType;
+    }
+
+    public List<FyElecVehicleETAInfo> getFyElecVehicleETAInfos() {
+        return mFyElecVehicleETAInfos;
+    }
+
+    public void setFyElecVehicleETAInfos(List<FyElecVehicleETAInfo> mFyElecVehicleETAInfos) {
+        this.mFyElecVehicleETAInfos = mFyElecVehicleETAInfos;
     }
 }
