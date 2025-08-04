@@ -159,6 +159,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (mViewModel.judgeAutoProtocol()) {
+                Logger.e(TAG, "引擎已初始化 直接渲染底图");
                 mViewModel.loadMapView(mBinding.mainMapview);
             }
             // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
@@ -315,7 +316,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case PermissionUtils.REQUEST_PERMISSION_EXTERNAL_CODE:
-                Logger.i(TAG, "所有文件修改权限申请结果");
+                Logger.e(TAG, "所有文件修改权限申请结果");
                 if (Environment.isExternalStorageManager()) {
                     PermissionUtils.getInstance().onRequestPermissionsResult(android.Manifest.permission.MANAGE_EXTERNAL_STORAGE, 0);
                 } else {
@@ -323,7 +324,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 }
                 break;
             case PermissionUtils.REQUEST_PERMISSION_OVERLAY_CODE:
-                Logger.i(TAG, "悬浮窗申请结果");
+                Logger.e(TAG, "悬浮窗申请结果");
                 if (Settings.canDrawOverlays(this)) {
                     PermissionUtils.getInstance().onRequestPermissionsResult(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, 0);
                 } else {

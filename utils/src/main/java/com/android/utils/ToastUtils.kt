@@ -75,7 +75,13 @@ class ToastUtils private constructor() {
 
     @SuppressLint("InflateParams", "MissingInflatedId")
     fun showCustomToastView(msg: CharSequence) {
-        showCustomToastView(msg.toString(), Toast.LENGTH_LONG)
+        try {
+            showCustomToastView(msg.toString(), Toast.LENGTH_LONG)
+        } catch (e: Exception) {
+            checkLooper(true)
+            showCustomToastView(msg.toString(), Toast.LENGTH_LONG)
+            checkLooper(false)
+        }
     }
 
     @SuppressLint("InflateParams")

@@ -237,7 +237,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void checkAgreementRights() {
-        Logger.i(TAG, "checkAgreementRights");
+        Logger.e(TAG, "checkAgreementRights");
         if (!mModel.isAllowSGMAgreement()) {
             mModel.showSGMAgreement(true);
         } else {
@@ -247,7 +247,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void checkPrivacyRights() {
         mFirstLaunch = mModel.isFirstLauncher();
-        Logger.i(TAG, "checkPrivacyRights: ", mFirstLaunch);
+        Logger.e(TAG, "checkPrivacyRights: ", mFirstLaunch);
         if (mFirstLaunch) {
             popAgreementDialog();
         } else {
@@ -1577,20 +1577,20 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         final String restartFlag = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH);
         final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
         final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
-        Logger.d(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
+        Logger.e(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
         if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
             return;
         }
         if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
             ThreadManager.getInstance().asyncDelay(() -> {
-                Logger.d(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
+                Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
                 ProcessManager.restartProcess(mApplication);
             }, 800, TimeUnit.MILLISECONDS);
         }
         //closeAllFragment();
         moveToBack();
         ThreadManager.getInstance().asyncDelay(() -> {
-            Logger.d(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
+            Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
             mView.finish();
         }, 400, TimeUnit.MILLISECONDS);
     }

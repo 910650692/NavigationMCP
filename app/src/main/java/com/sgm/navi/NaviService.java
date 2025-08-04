@@ -73,7 +73,7 @@ public class NaviService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.i(TAG, "onCreate");
+        Logger.e(TAG, "onCreate");
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_ID, NOTIFICATION_NAME,
                 NotificationManager.IMPORTANCE_LOW);
         NotificationManager manager = (NotificationManager) this
@@ -87,14 +87,14 @@ public class NaviService extends Service {
         }
         ThreadManager.getInstance().execute(() -> {
             boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
-            Logger.i(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
+            Logger.e(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
             if (sdkStatus) StartService.getInstance().startInitSdk();
         });
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Logger.i(TAG, "onStartCommand");
+        Logger.e(TAG, "onStartCommand");
         stopSelf();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -108,7 +108,7 @@ public class NaviService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Logger.i(TAG, "onDestroy");
+        Logger.e(TAG, "onDestroy");
     }
 
     /**
@@ -141,7 +141,7 @@ public class NaviService extends Service {
 
         public VrBridgeInitWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
-            Logger.i(TAG, "VrBridgeInitWorker constructor");
+            Logger.e(TAG, "VrBridgeInitWorker constructor");
         }
 
         @NonNull
@@ -157,7 +157,7 @@ public class NaviService extends Service {
 
         public CarModelsFeatureWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
             super(context, workerParams);
-            Logger.i(TAG, "CarModelsFeatureWork constructor");
+            Logger.e(TAG, "CarModelsFeatureWork constructor");
             carModelsFeature = CarModelsFeature.getInstance();
         }
 
@@ -182,14 +182,14 @@ public class NaviService extends Service {
 
         @Override
         public void onSdkBaseLibInitSuccess() {
-            Logger.i(TAG, "onSdkBaseLibInitSuccess");
+            Logger.e(TAG, "onSdkBaseLibInitSuccess");
             ActivateUiStateManager.getInstance().init();
         }
 
         @Override
         public void onSdkInitFail(int initSdkResult, String msg) {
             if (!atomicBoolean.get()) {
-                Logger.i(TAG, "Engine init fail and the retry in progress......");
+                Logger.e(TAG, "Engine init fail and the retry in progress......");
                 StartService.getInstance().retryEngineInit();
                 // 在log没有打开的情况下，如果引擎初始化失败，则强制打开log开关，方便排查问题
                 atomicBoolean.set(true);
@@ -197,7 +197,7 @@ public class NaviService extends Service {
                 initSdkLogSwitch = true;
                 Logger.switchLog(true);
             } else {
-                Logger.i(TAG, "Engine init fail and the number of retries exceeded");
+                Logger.e(TAG, "Engine init fail and the number of retries exceeded");
             }
         }
     };

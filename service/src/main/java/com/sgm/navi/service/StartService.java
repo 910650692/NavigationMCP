@@ -66,13 +66,13 @@ public class StartService {
     private EHPService mEHPService;
 
     private StartService() {
-        Logger.i(TAG, "start SDK before......");
+        Logger.e(TAG, "start SDK before......");
         sdkInitCallbacks = new CopyOnWriteArrayList<>();
         EnginePackage.getInstance().addEngineObserver(TAG, engineObserver);
     }
 
     public void registerSdkCallback(String key, ISdkInitCallback callback) {
-        Logger.i(TAG, "call path name : ", key);
+        Logger.e(TAG, "call path name : ", key);
         ConvertUtils.push(sdkInitCallbacks, callback);
     }
 
@@ -81,7 +81,7 @@ public class StartService {
     }
 
     public void startInitSdk() {
-        Logger.i(TAG, "start SDK......");
+        Logger.e(TAG, "start SDK......");
         startEngine();
     }
 
@@ -89,7 +89,7 @@ public class StartService {
      * 引擎初始化失败需要重试，这个方法只能在NaviService中调用
      */
     public void retryEngineInit() {
-        Logger.i(TAG, "retryEngineInit");
+        Logger.e(TAG, "retryEngineInit");
         startEngine();
     }
 
@@ -99,7 +99,7 @@ public class StartService {
      * @return -1：引擎没有初始化、0：引擎初始化成功、1、引擎初始化中
      */
     public int getSdkActivation() {
-        Logger.i(TAG, "startEngine engineActive ", engineActive);
+        Logger.e(TAG, "startEngine engineActive ", engineActive);
         return engineActive;
     }
 
@@ -117,23 +117,23 @@ public class StartService {
      * @return true 需要重新初始化/false 不需要初始化
      */
     public boolean checkSdkIsNeedInit() {
-        Logger.i(TAG, "checkSdkIsNeedInit engineActive ", getSdkActivation());
+        Logger.e(TAG, "checkSdkIsNeedInit engineActive ", getSdkActivation());
         if (-1 == engineActive) {
-            Logger.i(TAG, "Engine not init");
+            Logger.e(TAG, "Engine not init");
             return true;
         } else if (1 == engineActive) {
-            Logger.i(TAG, "Engine init progress......");
+            Logger.e(TAG, "Engine init progress......");
             ThreadManager.getInstance().execute(this::conformInitializingCallback);
             return false;
         } else {
-            Logger.i(TAG, "Engine already init finish");
+            Logger.e(TAG, "Engine already init finish");
             ThreadManager.getInstance().execute(this::conformSuccessCallback);
             return false;
         }
     }
 
     private void startEngine() {
-        Logger.i(TAG, "startEngine engineActive ", engineActive);
+        Logger.e(TAG, "startEngine engineActive ", engineActive);
         if (1 == engineActive || 0 == engineActive) return;
         ThreadManager.getInstance().execute(() -> {
             conformInitializingCallback();
@@ -149,17 +149,17 @@ public class StartService {
     private static void checkExternalStorageAvailable() {
         boolean storageAvailable = FileUtils.getInstance().isStorageAreaAvailable();
         if (storageAvailable) {
-            Logger.i(TAG, "分区挂载成功，开启SDK初始化流程");
+            Logger.e(TAG, "分区挂载成功，开启SDK初始化流程");
             EnginePackage.getInstance().loadLibrary();
         } else {
-            Logger.i(TAG, "分区尚未加载成功，导致so文件无法被正常加载，等待分区挂载");
+            Logger.e(TAG, "分区尚未加载成功，导致so文件无法被正常加载，等待分区挂载");
             ThreadManager.getInstance().asyncDelay(StartService::checkExternalStorageAvailable, 2);
         }
     }
 
     private boolean parseErrorCode() {
         try {
-            Logger.i(TAG, "parse doWork");
+            Logger.e(TAG, "parse doWork");
             ErrorCode errorCode = CodeManager.getInstance().getErrorCode();
             if (ConvertUtils.isNull(errorCode)) return true;
             String errCodePath = BuildConfig.MAP_SDK;
@@ -168,12 +168,12 @@ public class StartService {
             JSONObject jsonObject = new JSONObject(json);
             parseErrorCode(errorCode, jsonObject);
             if (!ConvertUtils.isEmpty(errorCode)) {
-                Logger.i(TAG, "errorCode parse success");
+                Logger.e(TAG, "errorCode parse success");
                 return true;
             }
 
         } catch (Exception e) {
-            Logger.i(TAG, "Exception");
+            Logger.e(TAG, "Exception");
             return false;
         }
         return false;
@@ -184,7 +184,7 @@ public class StartService {
      */
     private void checkActivation() {
         if (ActivatePackage.getInstance().checkActivation()) {
-            Logger.i(TAG, "Sdk already activation");
+            Logger.e(TAG, "Sdk already activation");
             EnginePackage.getInstance().initBL();
         } else {
             startActivation();
@@ -195,7 +195,7 @@ public class StartService {
      * 初始化SDK，注意时序不能变
      */
     private void initSdkService() {
-        Logger.i(TAG, "initSdkService");
+        Logger.e(TAG, "initSdkService");
         initPositionService();
         initMapService();
         initLayerService();
@@ -206,29 +206,29 @@ public class StartService {
 
     public void initEhpService() {
         if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
-            Logger.i(TAG, "not GMC L2++ configuration");
+            Logger.e(TAG, "not GMC L2++ configuration");
             return;
         }
         if (mEHPService == null) {
             mEHPService = (EHPService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.EHPSingleServiceID);
             if (mEHPService == null) {
-                Logger.i(TAG, "mEHPService == null");
+                Logger.e(TAG, "mEHPService == null");
                 return;
             }
         }
         EHPInitParam ehpInitParam = new EHPInitParam();
         boolean result = mEHPService.init(ehpInitParam);
-        Logger.i(TAG, "initEhpService result = ", result);
+        Logger.e(TAG, "initEhpService result = ", result);
     }
 
     private void initPositionService() {
         boolean iniPositionResult = PositionPackage.getInstance().init();
         if (iniPositionResult) {
-            Logger.i(TAG, "Position service init success");
+            Logger.e(TAG, "Position service init success");
             PositionPackage.getInstance().startPosition();
         } else {
             // 理论上定位服务初始化失败不能影响后边逻辑，没有定位只是位置显示不正确
-            Logger.i(TAG, "Position service init fail");
+            Logger.e(TAG, "Position service init fail");
         }
     }
 
@@ -241,7 +241,7 @@ public class StartService {
     }
 
     private void initOtherService() {
-        Logger.i(TAG, "initOtherService start");
+        Logger.e(TAG, "initOtherService start");
         SearchPackage.getInstance().initSearchService();
         NaviPackage.getInstance().initNaviService();
         SettingPackage.getInstance().init();
@@ -263,7 +263,7 @@ public class StartService {
         NaviAudioPlayer.getInstance().init();
         NaviMediaPlayer.getInstance().init();
         HotUpdatePackage.getInstance().initService();
-        Logger.i(TAG, "initOtherService end");
+        Logger.e(TAG, "initOtherService end");
 
     }
 
@@ -271,7 +271,7 @@ public class StartService {
      * 开启激活流程
      */
     public void startActivation() {
-        Logger.i(TAG, "Sdk no activation, Start activation in progress.....");
+        Logger.e(TAG, "Sdk no activation, Start activation in progress.....");
         ActivatePackage.getInstance().startActivate();
     }
 
@@ -279,7 +279,7 @@ public class StartService {
      * 通知BaseLib初始化完成，为了注册激活回调
      */
     private void conformBaseLibSuccessCallback() {
-        Logger.i(TAG, "Sdk baselib init success", "sdkInitCallbacks : ", sdkInitCallbacks.size());
+        Logger.e(TAG, "Sdk baselib init success", "sdkInitCallbacks : ", sdkInitCallbacks.size());
         for (ISdkInitCallback callback : sdkInitCallbacks) {
             callback.onSdkBaseLibInitSuccess();
         }
@@ -289,7 +289,7 @@ public class StartService {
      * 整合引擎初始化中的回调
      */
     private void conformInitializingCallback() {
-        Logger.i(TAG, "Sdk init progress......", "sdkInitCallbacks : ", sdkInitCallbacks.size());
+        Logger.e(TAG, "Sdk init progress......", "sdkInitCallbacks : ", sdkInitCallbacks.size());
         engineActive = 1;
         for (ISdkInitCallback callback : sdkInitCallbacks) {
             callback.onSdkInitializing();
@@ -300,7 +300,7 @@ public class StartService {
      * 整合初始化成功的回调
      */
     private void conformSuccessCallback() {
-        Logger.i(TAG, "Sdk init success", "sdkInitCallbacks : ", sdkInitCallbacks.size());
+        Logger.e(TAG, "Sdk init success", "sdkInitCallbacks : ", sdkInitCallbacks.size());
         engineActive = 0;
         ThreadManager.getInstance().postUi(() -> {
             for (ISdkInitCallback callback : sdkInitCallbacks) {
@@ -316,7 +316,7 @@ public class StartService {
      * @param msg           Error msg
      */
     private void conformFailCallback(int initSdkResult, String msg) {
-        Logger.i(TAG, "Sdk init fail", "sdkInitCallbacks : ", sdkInitCallbacks.size());
+        Logger.e(TAG, "Sdk init fail", "sdkInitCallbacks : ", sdkInitCallbacks.size());
         engineActive = -1;
         ThreadManager.getInstance().execute(() -> {
             for (ISdkInitCallback callback : sdkInitCallbacks) {
@@ -448,13 +448,13 @@ public class StartService {
 
         @Override
         public void onLoadLibraryFail(int code, String msg) {
-            Logger.i(TAG, "so文件无法被正常加载");
+            Logger.e(TAG, "so文件无法被正常加载");
             ThreadManager.getInstance().asyncDelay(StartService::checkExternalStorageAvailable, 2);
         }
 
         @Override
         public void onLoadLibrarySuccess() {
-            Logger.i(TAG, "SO库加载成功，开启SDK初始化流程");
+            Logger.e(TAG, "SO库加载成功，开启SDK初始化流程");
             ThreadManager.getInstance().execute(() -> {
                 SettingManager.getInstance().init();
                 CommonManager.getInstance().init();
@@ -464,7 +464,7 @@ public class StartService {
 
         @Override
         public void onInitBaseLibSuccess() {
-            Logger.i(TAG, "Engine baseLib init success");
+            Logger.e(TAG, "Engine baseLib init success");
             ActivatePackage.getInstance().init();
             ActivatePackage.getInstance().addActObserver(activateObserver);
             getInstance().conformBaseLibSuccessCallback();
@@ -473,7 +473,7 @@ public class StartService {
 
         @Override
         public void onInitEngineSuccess() {
-            Logger.i(TAG, "Engine init success.....");
+            Logger.e(TAG, "Engine init success.....");
             getInstance().initSdkService();
             EnginePackage.getInstance().switchLog(SpUtils.getInstance().
                     getBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, false) ?
@@ -482,7 +482,7 @@ public class StartService {
 
         @Override
         public void onInitEngineFail(int code, String msg) {
-            Logger.i(TAG, "Engine init fail", "errorCode：", code, "errorMsg：", msg);
+            Logger.e(TAG, "Engine init fail", "errorCode：", code, "errorMsg：", msg);
             getInstance().conformFailCallback(code, msg);
         }
     };

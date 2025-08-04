@@ -458,7 +458,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onPermissionsSuccess() {
-        Logger.d(TAG, "权限都申请成功 检测网络和数据缓存");
+        Logger.e(TAG, "权限都申请成功 检测网络和数据缓存");
         startInitEngine();
     }
 
@@ -467,14 +467,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.printStackTrace(NAVI_EXIT,true);
         }
-        Logger.i(TAG, "权限申请失败无法进行下一步");
+        Logger.e(TAG, "权限申请失败无法进行下一步");
         ToastUtils.Companion.getInstance().showCustomToastView(ResourceUtils.Companion.getInstance().getString(R.string.permission_quest_fail));
         System.exit(0);
     }
 
     @Override
     public void onSdkInitSuccess() {
-        Logger.i(TAG, "onSdkInitSuccess");
+        Logger.e(TAG, "onSdkInitSuccess");
         StartService.getInstance().unregisterSdkCallback(this);
         setPackageAfterSdkInit();
         FloatViewManager.getInstance().showAllCardWidgets();
@@ -528,7 +528,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         final boolean isFirstLauncher = TextUtils.isEmpty(
                 mCommonManager.getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH)
         );
-        Logger.i(TAG, "isFirstLauncher:" + isFirstLauncher);
+        Logger.e(TAG, "isFirstLauncher:" + isFirstLauncher);
         return isFirstLauncher;
     }
 
@@ -540,7 +540,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void checkPermission() {
-        Logger.i(TAG, "checkPermission");
+        Logger.e(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
             startInitEngine();
         } else {
@@ -561,9 +561,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
-        Logger.d(TAG, "mStartExceptionDialog", "is net connect", isNetConnect, "is offline data", isOfflineData);
+        Logger.e(TAG, "mStartExceptionDialog", "is net connect", isNetConnect, "is offline data", isOfflineData);
         boolean isShowException = !isNetConnect && !isOfflineData;
-        Logger.d(TAG, "mStartExceptionDialog", "检测网络和离线数据", isShowException);
+        Logger.e(TAG, "mStartExceptionDialog", "检测网络和离线数据", isShowException);
         return isShowException;
     }
 
@@ -620,7 +620,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 checkAuthorizationExpired();
             }
         } else {
-            Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
+            Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
             Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
         }
@@ -642,9 +642,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         //map devices绑定成功后适配深浅色模式
         mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                 ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()) ? ThemeType.NIGHT : ThemeType.DAY);
-        if (Logger.openLog) {
-            Logger.d(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()));
-        }
+        Logger.e(TAG, "isNightModeEnabled ", ThemeUtils.INSTANCE.isNightModeEnabled(mapSurfaceView.getMapViewContext()));
     }
 
     public void startListenMsg() {
