@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.android.utils.log.Logger
 import com.sgm.navi.burypoint.anno.HookMethod
 import com.sgm.navi.burypoint.bean.BuryProperty
 import com.sgm.navi.burypoint.constant.BuryConstant
@@ -21,6 +22,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController
  * @Description :后续待扩展
  */
 class ToastUtils private constructor() {
+    private var TAG: String = "ToastUtils"
     private var mToast: Toast? = null
     private var mContext: Context? = null
     private var myLopper: Looper? = null
@@ -88,7 +90,11 @@ class ToastUtils private constructor() {
         mToast?.setDuration(time)
         toastText.text = msg
         mToast?.show()
-        sendBuryPointForShowToast(msg)
+        try {
+            sendBuryPointForShowToast(msg)
+        } catch (e: Exception) {
+            Logger.e(TAG, e.message)
+        }
     }
 
     fun showCustomToastView(view: View, msg: String) {
@@ -100,7 +106,11 @@ class ToastUtils private constructor() {
         mToast?.view = view
         mToast?.setDuration(Toast.LENGTH_SHORT)
         mToast?.show()
-        sendBuryPointForShowToast(msg)
+        try {
+            sendBuryPointForShowToast(msg)
+        } catch (e: Exception) {
+            Logger.e(TAG, e.message)
+        }
     }
 
     /**
@@ -120,7 +130,11 @@ class ToastUtils private constructor() {
         }
 
         mToast?.show()
-        sendBuryPointForShowToast(sequence.toString())
+        try {
+            sendBuryPointForShowToast(sequence.toString())
+        } catch (e: Exception) {
+            Logger.e(TAG, e.message)
+        }
     }
 
     fun cancelView() {
