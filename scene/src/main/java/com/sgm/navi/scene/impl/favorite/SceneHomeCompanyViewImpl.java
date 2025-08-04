@@ -63,6 +63,11 @@ public class SceneHomeCompanyViewImpl extends BaseSceneModel<SceneHomeCompanyVie
         mTaskId = mSearchPackage.suggestionSearch(key);
     }
 
+    public void currentLocationSearch() {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "currentLocationSearch ");
+        mTaskId = mSearchPackage.currentLocationSearch();
+    }
+
     /**
      * 设置移图选点可见性
      * @param mapTypeId mapId

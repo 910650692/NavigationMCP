@@ -360,7 +360,7 @@ public class SceneHomeCompanyView extends BaseSceneView<SceneHomeCompanyViewBind
      */
     @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_MYLOCATION)
     private void clickMyPosition(){
-        SearchPackage.getInstance().currentLocationSearch();
+        mScreenViewModel.currentLocationSearch();
         mIsClickMyPos = true;
     }
 

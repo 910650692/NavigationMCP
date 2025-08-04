@@ -2060,7 +2060,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         ThreadManager.getInstance().postUi(() -> {
             if (mRouteChargeProgressViews != null) {
                 final View view = mRouteChargeProgressViews.get(poiInfoEntity);
-                if (view != null) {
+                if (view != null && mViewBinding != null) {
                     mViewBinding.routeChargeProgressIcons.removeView(view);
                 }
                 mRouteChargeProgressViews.remove(poiInfoEntity);
