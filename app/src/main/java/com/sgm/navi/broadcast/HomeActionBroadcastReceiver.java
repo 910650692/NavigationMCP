@@ -27,12 +27,17 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG = "HomeActionBroadcastReceiver";
     public static boolean isRegister = false;
     public static final String HOME_CLICK_ACTION = "com.patac.launcher.action.NOTIFY_LAUNCHER_RESUME";
+    public static final String APPTRAY_CLICK_EVENT_ACTION = "com.patac.systemui.intent.action.ACTION_APPTRAY_CLICK_EVENT";
 
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null || intent.getAction() == null) return;
-        Logger.d(TAG, "HOME_CLICK_ACTION", intent.getAction());
-        if (intent.getAction().equals(HOME_CLICK_ACTION)) {
+        Logger.d(TAG, "HOME_CLICK_ACTION or APPTRAY_CLICK_EVENT_ACTION", intent.getAction());
+
+        // 区分dock栏点击Home还是导航图标
+        String sourceName = intent.getStringExtra("SourceName"); // 新增参数
+        if (intent.getAction().equals(HOME_CLICK_ACTION)
+                || (intent.getAction().equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName == null)) {
             final boolean isNaviDeskBg = FloatViewManager.getInstance().isNaviDeskBg();
             final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
             final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
@@ -63,6 +68,7 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
 
             final IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(HOME_CLICK_ACTION);
+            intentFilter.addAction(APPTRAY_CLICK_EVENT_ACTION);
             context.registerReceiver(new HomeActionBroadcastReceiver(), intentFilter, Context.RECEIVER_EXPORTED);
             isRegister = true;
             Logger.d(TAG, "registerHomeActionReceiver-success!");
