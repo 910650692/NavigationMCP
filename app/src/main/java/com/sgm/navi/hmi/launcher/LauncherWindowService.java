@@ -508,8 +508,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             return;
         }
         ThreadManager.getInstance().postUi(() -> {
-            boolean shouldShow = isConnected && isOnNavigating();
-            mBinding.sceneNaviTmc.setVisibility(shouldShow ? View.VISIBLE : View.GONE);
+            mBinding.sceneNaviTmc.setVisibility(isConnected ? View.VISIBLE : View.GONE);
         });
     }
 
