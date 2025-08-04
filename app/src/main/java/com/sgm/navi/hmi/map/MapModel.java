@@ -186,7 +186,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ForecastCallBack, SearchResultCallback, NaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
         IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
-        ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback  {
+        ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver {
 
     private static final String TAG = "MapModel";
     private CommonManager mCommonManager;
@@ -290,6 +290,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mCallbackId = UUID.randomUUID().toString();
         mCommonManager = CommonManager.getInstance();
         mCommonManager.init();
+        NetWorkUtils.Companion.getInstance().registerNetworkObserver(this);
     }
 
     private void setPackageAfterSdkInit() {
@@ -367,9 +368,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     @Override
                     public void agreementCallback(boolean isSGMAgreed) {
                         if (isSGMAgreed) {
+                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                             mViewModel.checkPrivacyRights();
                         } else {
-                            StackManager.getInstance().exitApp();
+                            if (FloatViewManager.getInstance().isNaviDeskBg()) {
+                                Logger.d(TAG, "桌面地图隐藏弹窗");
+                                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL);
+                            } else {
+                                mViewModel.exitSelf();
+                            }
                         }
                     }
                 });
@@ -440,6 +447,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         LayerPackage.getInstance().unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         FloatWindowReceiver.unregisterCallback(TAG);
         ActivateUiStateManager.getInstance().removeActivateStateCallBack();
+        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(this);
     }
 
     public void clearDialog() {
@@ -542,6 +550,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
+    /**
+     * 给activity调用的
+     */
+    public void judgeNetException() {
+        if (isShowStartupException()) {
+            popStartupExceptionDialog();
+        }
+    }
+
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
@@ -565,28 +582,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (null == mStartExceptionDialog || !mStartExceptionDialog.isShowing()) {
             mStartExceptionDialog = new StartupExceptionDialog(mViewModel.getView(), new IBaseDialogClickListener() {
                 @Override
-                public void onNetWorkConnect() {
-                    if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
-                        Logger.d(TAG, "mStartExceptionDialog", "close");
-                        mStartExceptionDialog.dismiss();
-                    }
-                    mViewModel.closeProtectView();
-                    ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
-                }
-
-                @Override
                 public void onExit() {
                     FloatViewManager.getInstance().showAllCardWidgets();
                     if (FloatViewManager.getInstance().isNaviDeskBg()) {
                         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
                             Logger.d(TAG, "桌面地图隐藏弹窗");
-                            mStartExceptionDialog.dismiss();
-                            mViewModel.showProtectView();
-                            mViewModel.protectMap(AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG);
-                        }
-                        if (!isShowStartupException()) {
-                            Logger.d(TAG, "有网情况下弹窗依然存在");
-                            mViewModel.closeProtectView();
+                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG);
+                            mStartExceptionDialog.cancel();
                         }
                     } else {
                         if (null != mViewModel) {
@@ -605,10 +607,16 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
+    public boolean judgeAutoProtocol() {
+        return isAllowSGMAgreement() && !isFirstLauncher();
+    }
+
     public void startInitEngine() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
+            } else if (isShowStartupException()) {
+                popStartupExceptionDialog();
             } else if (isAllowSGMAgreement() && !isFirstLauncher()) {
                 checkAuthorizationExpired();
             }
@@ -2026,23 +2034,21 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!isShowDialog) {
             return;
         }
-        mViewModel.showProtectView();
         authorizationRequestDialog = new AuthorizationRequestDialog(
                 stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         authorizationRequestDialog.setEndDate(endDate);
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
+                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                 mSettingPackage.setPrivacyStatus(true);
-                mViewModel.closeProtectView();
             }
 
             @Override
             public void onCancelClick() {
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
-                    mViewModel.showProtectView();
-                    mViewModel.protectMap(AutoMapConstant.CANCEL_LOCATION_PROTOCOL);
+                    mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
                 } else {
                     mViewModel.exitSelf();
                 }
@@ -2398,5 +2404,59 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         authorizationRequestDialog = null;
         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) mStartExceptionDialog.dismiss();
         mStartExceptionDialog = null;
+    }
+
+    /**
+     * 监听网络链接，目前用于激活弹窗以及StartupExceptionDialog
+     */
+    @Override
+    public void onNetConnectSuccess() {
+        Logger.e(TAG, "<<<onNetConnectSuccess>>>");
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
+        if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
+            Logger.e(TAG, "网络异常弹窗展示中，网络连恢复后消失");
+            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
+            mStartExceptionDialog.dismiss();
+            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
+        }
+
+        if (ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG)) {
+            Logger.e(TAG, "网络异常点击事件拦截中，网络恢复后消失");
+            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
+            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
+        }
+
+        if (mViewModel.isActivateDialogShowing()) {
+            Logger.e(TAG, "激活失败弹窗展示中，网络恢复重试一遍");
+            ActivateUiStateManager.getInstance().retryActivate();
+        }
+    }
+
+    @Override
+    public void onNetUnavailable() {
+        Logger.i(TAG, "onNetUnavailable");
+    }
+
+    @Override
+    public void onNetBlockedStatusChanged() {
+        Logger.i(TAG, "onNetBlockedStatusChanged");
+    }
+
+    @Override
+    public void onNetLosing() {
+        Logger.i(TAG, "onNetLosing");
+    }
+
+    @Override
+    public void onNetLinkPropertiesChanged() {
+        Logger.i(TAG, "onNetLinkPropertiesChanged");
+    }
+
+    @Override
+    public void onNetDisConnect() {
+        Logger.i(TAG, "onNetDisConnect");
     }
 }

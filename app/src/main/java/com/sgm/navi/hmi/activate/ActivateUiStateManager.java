@@ -1,9 +1,7 @@
 package com.sgm.navi.hmi.activate;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.NetWorkUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
@@ -15,7 +13,6 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
 
     private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
     private LoadingViewCallBack mActivateStateCallBack;
-    private NetWorkUtils.NetworkObserver networkCall;
     private IActivateObserver mActObserver;
 
     private int mActivateState = AutoMapConstant.ActivateState.NONE;
@@ -67,42 +64,16 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
             }
         };
         ActivatePackage.getInstance().addActObserver(mActObserver);
+    }
 
-        networkCall = new NetWorkUtils.NetworkObserver() {
-            @Override
-            public void onNetDisConnect() {
-
-            }
-
-            @Override
-            public void onNetLinkPropertiesChanged() {
-
-            }
-
-            @Override
-            public void onNetLosing() {
-
-            }
-
-            @Override
-            public void onNetBlockedStatusChanged() {
-
-            }
-
-            @Override
-            public void onNetUnavailable() {
-
-            }
-
-            @Override
-            public void onNetConnectSuccess() {
-                Logger.e(TAG, "网络连接成功，如果失败状态重走激活");
-                if (mActivateState == AutoMapConstant.ActivateState.ACTIVATE_FAILED) {
-                    ActivatePackage.getInstance().startActivate();
-                }
-            }
-        };
-        NetWorkUtils.Companion.getInstance().registerNetworkObserver(networkCall);
+    /**
+     * 如果是网络原因，重试激活
+     */
+    public void retryActivate() {
+        Logger.e(TAG, "retryActivate: ", mActivateState);
+        if (mActivateState == AutoMapConstant.ActivateState.ACTIVATE_FAILED) {
+            ActivatePackage.getInstance().startActivate();
+        }
     }
 
     public void setActivateStateCallBack(LoadingViewCallBack callBack) {

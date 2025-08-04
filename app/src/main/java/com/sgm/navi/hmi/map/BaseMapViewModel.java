@@ -157,6 +157,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private final int mTimer = 300;
     public ReminderDialog reminderDialog = null;
     private boolean mRemindDialogShow = false;
+    private int mCurrentProtectState;
 
     public BaseMapViewModel(@NonNull Application application) {
         super(application);
@@ -208,6 +209,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void onCreate() {
         super.onCreate();
         checkAgreementRights();
+        mCurrentProtectState = AutoMapConstant.ProtectState.NONE;
     }
 
     @Override
@@ -215,10 +217,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         super.onResume();
         if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
-        }
-        if (mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher() && SettingPackage.getInstance().getPrivacyStatus()) {
-            Logger.d(TAG, "三协议全通，关闭protectView");
-            closeProtectView();
         }
     }
 
@@ -235,7 +233,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         return mInitSdkSuccess;
     }
 
-    private void checkAgreementRights() {
+    public void checkAgreementRights() {
         Logger.i(TAG, "checkAgreementRights");
         if (!mModel.isAllowSGMAgreement()) {
             mModel.showSGMAgreement(true);
@@ -254,6 +252,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
+    public void judgeNetException() {
+        if (mModel != null) {
+            mModel.judgeNetException();
+        }
+    }
+
+    public boolean judgeAutoProtocol() {
+        return mModel.judgeAutoProtocol();
+    }
+
     public void startTime() {
         mView.startTime();
     }
@@ -263,17 +271,16 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     /**
-     * 打开隐私权限弹窗
+     * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
-        showProtectView();
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
                 FloatViewManager.getInstance().mRemindDialogShow = false;
+                setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                 mModel.updateFirstLauncherFlag();
                 mModel.checkPermission();
-                closeProtectView();
             }
 
             @Override
@@ -281,8 +288,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
-                    showProtectView();
-                    mView.protectMap(AutoMapConstant.CANCEL_AUTO_PROTOCOL);
+                    setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
                 } else {
                     moveToBack();
                     ThreadManager.getInstance().asyncDelay(new Runnable() {
@@ -314,24 +320,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public boolean isRemindDialogShow() {
         return mRemindDialogShow;
-    }
-
-
-    public void closeProtectView() {
-        mView.closeProtectView();
-    }
-
-    public void showProtectView() {
-        mView.showProtectView();
-    }
-
-    /**
-     * 展示保护view
-     *
-     * @param situation 不同情况
-     */
-    public void protectMap(final int situation) {
-        mView.protectMap(situation);
     }
 
     /**
@@ -369,6 +357,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.showActivateFailedDialog(errCode, msg);
         }
+    }
+
+    public boolean isActivateDialogShowing() {
+        if (mView != null) {
+            return mView.isActivateDialogShowing();
+        }
+        return false;
     }
 
     /**
@@ -1870,5 +1865,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setGoHomeView(boolean visible) {
         mGoHomeVisible.set(visible);
+    }
+
+    public int getCurrentProtectState() {
+        return mCurrentProtectState;
+    }
+
+    public void setCurrentProtectState(int protectState) {
+        this.mCurrentProtectState = protectState;
     }
 }

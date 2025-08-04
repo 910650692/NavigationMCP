@@ -9,7 +9,6 @@ import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupExceptionBinding> {
-    private NetWorkUtils.NetworkObserver networkCall;
 
     public StartupExceptionDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
         super(context);
@@ -24,42 +23,6 @@ public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupEx
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        networkCall = new NetWorkUtils.NetworkObserver() {
-            @Override
-            public void onNetConnectSuccess() {
-                if (mDialogClickListener != null) {
-                    mDialogClickListener.onNetWorkConnect();
-                }
-            }
-
-            @Override
-            public void onNetDisConnect() {
-
-            }
-
-            @Override
-            public void onNetLinkPropertiesChanged() {
-
-            }
-
-            @Override
-            public void onNetLosing() {
-
-            }
-
-            @Override
-            public void onNetBlockedStatusChanged() {
-
-            }
-
-            @Override
-            public void onNetUnavailable() {
-
-            }
-
-
-        };
-        NetWorkUtils.Companion.getInstance().registerNetworkObserver(networkCall);
         mViewBinding.tvExit.setOnClickListener(v -> {
             if (mDialogClickListener != null) {
                 mDialogClickListener.onExit();
@@ -69,14 +32,12 @@ public class StartupExceptionDialog extends BaseFullScreenDialog<DialogStartupEx
 
     @Override
     public void dismiss() {
-        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(networkCall);
         super.dismiss();
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        NetWorkUtils.Companion.getInstance().unRegisterNetworkObserver(networkCall);
         setDialogClickListener(null);
     }
 }

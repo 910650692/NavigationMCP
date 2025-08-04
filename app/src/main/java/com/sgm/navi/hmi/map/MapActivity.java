@@ -115,59 +115,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
     }
 
-    /**
-     * 桌面地图不同意协议后处理
-     *
-     * @param situation 1是高德协议， 2是定位协议
-     */
-    public void protectMap(final int situation) {
-        switch (situation) {
-            case AutoMapConstant.CANCEL_AUTO_PROTOCOL:
-                mBinding.protectView.setOnClickListener(v -> {
-                    Logger.d(TAG, "protectMap: 高德协议");
-                    mViewModel.checkPrivacyRights();
-                    mBinding.protectView.setOnClickListener(null);
-                });
-                break;
-            case AutoMapConstant.CANCEL_LOCATION_PROTOCOL:
-                mBinding.protectView.setOnClickListener(v -> {
-                    Logger.d(TAG, "protectMap: 定位协议");
-                    mViewModel.checkAuthorizationExpired();
-                    mBinding.protectView.setOnClickListener(null);
-                });
-                break;
-            case AutoMapConstant.CANCEL_NET_EXCEPTION_DIALOG:
-                mBinding.protectView.setOnClickListener(v -> {
-                    Logger.d(TAG, "protectMap: 网络异常");
-                    closeProtectView();
-                    mViewModel.checkPermission();
-                    mBinding.protectView.setOnClickListener(null);
-                });
-                break;
-            default:
-                Logger.e(TAG, "protectMap: situation is not supported");
-                break;
-        }
-    }
-
-    public void closeProtectView() {
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                mBinding.protectView.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    public void showProtectView() {
-        ThreadManager.getInstance().postUi(new Runnable() {
-            @Override
-            public void run() {
-                mBinding.protectView.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
     private void updateTimeText() {
         // 更新时间格式
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -211,7 +158,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            mViewModel.loadMapView(mBinding.mainMapview);
+            if (mViewModel.judgeAutoProtocol()) {
+                mViewModel.loadMapView(mBinding.mainMapview);
+            }
             // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
         }
     }
@@ -408,6 +357,13 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 mRotateAnim.reset();
             }
         }
+    }
+
+    public boolean isActivateDialogShowing() {
+        if (mFailedDialog != null) {
+            return mFailedDialog.isShowing();
+        }
+        return false;
     }
 
     /**
@@ -621,20 +577,54 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     /**
      * 监听触摸事件，当焦点不在exitText中时隐藏软键盘
      *
-     * @param ev
+     * @param event
      * @return
      */
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (mViewModel == null) {
+            Logger.e(TAG, "onTouch: mViewModel is null");
+            return false;
+        }
+        if (!ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.NONE)) {
+            Logger.e(TAG, "onTouchEvent: 当前保护状态为 " + mViewModel.getCurrentProtectState());
+            if(ConvertUtils.equals(event.getAction(), MotionEvent.ACTION_UP)) {
+                switch (mViewModel.getCurrentProtectState()) {
+                    case AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL:
+                        Logger.e(TAG, "泛亚协议未同意，触发泛亚协议检查");
+                        mViewModel.checkAgreementRights();
+                        break;
+                    case AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL:
+                        Logger.e(TAG, "高德协议未同意，触发高德协议检查");
+                        mViewModel.checkPrivacyRights();
+                        break;
+                    case AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL:
+                        Logger.e(TAG, "定位协议未同意，触发定位授权检查");
+                        mViewModel.checkAuthorizationExpired();
+                        break;
+                    case AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG:
+                        Logger.e(TAG, "网络异常，触发权限检查");
+                        mViewModel.judgeNetException();
+                        break;
+                    case AutoMapConstant.ProtectState.ACTIVATION_EXCEPTION:
+                        Logger.w(TAG, "激活异常，触发激活检查");
+                        //todo暂时没用
+                        break;
+                }
+                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
+            }
+            return true;
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View view = getCurrentFocus();
             if (!ConvertUtils.isNull(view)
                     && !ConvertUtils.isNull(mViewModel)
-                    && mViewModel.isShouldHideKeyboard(view, ev)) {
+                    && mViewModel.isShouldHideKeyboard(view, event)) {
                 mViewModel.hideKeyboard(view);
             }
         }
-        return super.dispatchTouchEvent(ev);
+        return super.dispatchTouchEvent(event);
     }
 
     public void notifyStepOneThirdScreen() {
