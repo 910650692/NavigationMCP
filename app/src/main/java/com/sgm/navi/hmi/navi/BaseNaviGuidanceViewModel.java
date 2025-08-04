@@ -981,4 +981,10 @@ public class BaseNaviGuidanceViewModel extends
             mModelSaveEntity.setHangingCardPoiList(infoEntities);
         }
     }
+
+    public void closeNavi() {
+        if (mView != null) {
+            mView.closeNavi();
+        }
+    }
 }

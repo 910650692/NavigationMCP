@@ -260,4 +260,12 @@ public interface IGuidanceObserver {
     default void onChargeTipsCallBack(int type) {
 
     }
+
+    /**
+     * 手机推送消息关闭导航
+     */
+    default void quitByMessage() {
+
+    }
+
 }

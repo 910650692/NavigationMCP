@@ -1089,4 +1089,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     protected void onBackPressed() {
 
     }
+
+    public void closeNavi() {
+        if (mBinding != null && mBinding.sceneNaviControl != null) {
+            mBinding.sceneNaviControl.closeNavi();
+        }
+    }
 }

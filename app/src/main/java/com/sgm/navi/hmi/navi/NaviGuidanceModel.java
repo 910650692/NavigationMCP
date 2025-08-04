@@ -227,6 +227,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         NaviSceneManager.getInstance().onCreateSceneView();
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
+        mNaviPackage.setMIsNaviViewActive(true);
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mNetWorkUtils.registerNetworkObserver(this);
         mCurrentNetStatus = mNetWorkUtils.checkNetwork();
@@ -731,6 +732,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
+            mNaviPackage.setMIsNaviViewActive(false);
         }
         if (mTipManager != null) {
             mTipManager.unInit();
@@ -1727,6 +1729,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 default:
                     break;
             }
+        }
+    }
+
+    @Override
+    public void quitByMessage() {
+        if (mViewModel != null) {
+            mViewModel.closeNavi();
         }
     }
 

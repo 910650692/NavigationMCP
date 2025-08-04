@@ -235,4 +235,10 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
         mScreenViewModel.clickToShowOverview();
         mScreenViewModel.onFixedOverView();
     }
+
+    public void closeNavi() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.closeNavi();
+        }
+    }
 }

@@ -32,6 +32,8 @@ import com.sgm.navi.service.adapter.setting.SettingAdapter;
 import com.sgm.navi.service.adapter.signal.SignalAdapter;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
 import com.sgm.navi.service.adapter.speech.SpeechAdapter;
+import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapter;
+import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapterCallback;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
@@ -57,11 +59,14 @@ import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
+import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
+import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
 import com.sgm.navi.service.define.user.usertrack.HistoryPoiItemBean;
 import com.sgm.navi.service.define.user.usertrack.HistoryRouteItemBean;
 import com.sgm.navi.service.define.utils.NumberUtils;
@@ -85,12 +90,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author sgm
  * @version $Revision.*$
  */
-public final class NaviPackage implements GuidanceObserver, SignalAdapterCallback, StartService.ISdkInitCallback {
+public final class NaviPackage implements GuidanceObserver, SignalAdapterCallback, StartService.ISdkInitCallback, MsgPushAdapterCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     @Getter
     private CrossImageEntity lastCrossEntity;
@@ -133,6 +139,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private AppFocusHelper mAppFocusHelper;
     @Getter
     private boolean hasSetCrossRect = false;
+    @Setter
+    private boolean mIsNaviViewActive = false; // 记录引导页面是否存在
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -176,6 +184,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mNaviAdapter.initNaviService();
         mNaviAdapter.registerObserver("NaviPackage", this);
         mSignalAdapter.registerCallback("NaviPackage", this);
+        MsgPushAdapter.getInstance().registerCallBack(TAG, this);
     }
 
     /**
@@ -481,6 +490,61 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (mainPathIndex != NumberUtils.NUM_ERROR) {
             mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfos, mainPathIndex);
         }
+    }
+
+    @Override
+    public void initService() {
+
+    }
+
+    @Override
+    public void notifyAutoPushMessage(MsgPushInfo msg) {
+
+    }
+
+    @Override
+    public void notifyAimPoiPushMessage(MsgPushInfo msg) {
+
+    }
+
+    @Override
+    public void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+
+    }
+
+    @Override
+    public void notifyQuitNaviPushMessage() {
+        Logger.i(TAG, "notifyQuitNaviPushMessage");
+        // 因为退出后台页面可能会被kill，所以如果页面在通过页面关闭导航，如果页面不存在了直接关闭导航
+        if (mIsNaviViewActive) {
+            ThreadManager.getInstance().postUi(() -> {
+                if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                    for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                        if (guidanceObserver != null) {
+                            guidanceObserver.quitByMessage();
+                        }
+                    }
+                }
+            });
+        } else {
+            stopNavigation(true);
+        }
+
+    }
+
+    @Override
+    public void notifyMobileLinkPushMessage(MsgPushInfo msg) {
+
+    }
+
+    @Override
+    public void onRecvAckGSendToPhoneResponse(MsgPushResponseInfo sendToPhoneResponseParam) {
+
+    }
+
+    @Override
+    public void onRecvAckGWsTserviceInternalLinkAutoReportResponse(MsgPushResponseInfo gwsTserviceInternalLinkAutoReportResponseParam) {
+
     }
 
     private static final class Helper {
