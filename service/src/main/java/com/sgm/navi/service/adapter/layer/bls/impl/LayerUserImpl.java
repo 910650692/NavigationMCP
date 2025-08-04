@@ -212,6 +212,10 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
 
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
+        if (ConvertUtils.isEmpty(item)) {
+            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            return;
+        }
         switch (item.getBusinessType()) {
             case BizUserType.BizUserTypeFavoriteMain: {
                 if ((item instanceof FavoritePointLayerItem) && getCallBack() != null) {

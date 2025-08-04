@@ -191,6 +191,10 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
+        if (ConvertUtils.isEmpty(item)) {
+            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            return;
+        }
         int index = 0;
         LayerPointItemType type = LayerPointItemType.NULL;
             switch (item.getBusinessType()) {

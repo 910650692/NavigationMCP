@@ -18,8 +18,8 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 /**
@@ -31,7 +31,7 @@ public class LayerPackage implements ILayerAdapterCallBack {
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
     private LayerAdapter mLayerAdapter;
 
-    private final Hashtable<MapType, List<ILayerPackageCallBack>> callbacks = new Hashtable<>();
+    private final ConcurrentHashMap<MapType, List<ILayerPackageCallBack>> callbacks = new ConcurrentHashMap<>();
 
     public void clearRouteLine(MapType mapType) {
         mLayerAdapter.clearRouteLine(mapType);
@@ -171,12 +171,15 @@ public class LayerPackage implements ILayerAdapterCallBack {
     @Override
     public void onSearchItemClick(MapType mapTypeId, LayerPointItemType type, int index) {
         if (callbacks.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
-                @Override
-                public void accept(ILayerPackageCallBack callBack) {
-                    callBack.onSearchItemClick(mapTypeId, type, index);
-                }
-            });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (callBacks != null && !callBacks.isEmpty()) {
+                callBacks.forEach(new Consumer<ILayerPackageCallBack>() {
+                    @Override
+                    public void accept(ILayerPackageCallBack callBack) {
+                        callBack.onSearchItemClick(mapTypeId, type, index);
+                    }
+                });
+            }
         }
     }
 
@@ -186,49 +189,63 @@ public class LayerPackage implements ILayerAdapterCallBack {
     @Override
     public void onRouteItemClick(MapType mapTypeId, LayerPointItemType type, LayerItemRoutePointClickResult result) {
         if (callbacks.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
-                @Override
-                public void accept(ILayerPackageCallBack callBack) {
-                    callBack.onRouteItemClick(mapTypeId, type, result);
-                }
-            });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (callBacks != null && !callBacks.isEmpty()) {
+                callBacks.forEach(new Consumer<ILayerPackageCallBack>() {
+                    @Override
+                    public void accept(ILayerPackageCallBack callBack) {
+                        callBack.onRouteItemClick(mapTypeId, type, result);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public void onFavoriteClick(MapType mapTypeId, PoiInfoEntity poiInfo) {
         if (callbacks.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
-                @Override
-                public void accept(ILayerPackageCallBack callBack) {
-                    callBack.onFavoriteClick(mapTypeId, poiInfo);
-                }
-            });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (callBacks != null && !callBacks.isEmpty()) {
+                callBacks.forEach(new Consumer<ILayerPackageCallBack>() {
+                    @Override
+                    public void accept(ILayerPackageCallBack callBack) {
+                        callBack.onFavoriteClick(mapTypeId, poiInfo);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public void onFlyLineMoveEnd(MapType mapTypeId, GeoPoint descPoint) {
         if (callbacks.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
-                @Override
-                public void accept(ILayerPackageCallBack callBack) {
-                    callBack.onFlyLineMoveEnd(mapTypeId, descPoint);
-                }
-            });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (callBacks != null && !callBacks.isEmpty()) {
+                callBacks.forEach(new Consumer<ILayerPackageCallBack>() {
+                    @Override
+                    public void accept(ILayerPackageCallBack callBack) {
+                        callBack.onFlyLineMoveEnd(mapTypeId, descPoint);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public void onCarClick(MapType mapTypeId, GeoPoint geoPoint) {
         if (callbacks.containsKey(mapTypeId)) {
-            callbacks.get(mapTypeId).forEach(new Consumer<ILayerPackageCallBack>() {
-                @Override
-                public void accept(ILayerPackageCallBack callBack) {
-                    Logger.e(TAG, "onCarClick :");
-                    callBack.onCarClick(mapTypeId, geoPoint);
-                }
-            });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (callBacks != null && !callBacks.isEmpty()) {
+                callBacks.forEach(new Consumer<ILayerPackageCallBack>() {
+                    @Override
+                    public void accept(ILayerPackageCallBack callBack) {
+                        if (Logger.openLog) {
+                            Logger.e(TAG, mapTypeId, " onCarClick :");
+                        }
+                        callBack.onCarClick(mapTypeId, geoPoint);
+                    }
+                });
+            }
         }
     }
 
@@ -309,10 +326,15 @@ public class LayerPackage implements ILayerAdapterCallBack {
     private void notifyCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
         if (callbacks.containsKey(mapTypeId)) {
             ThreadManager.getInstance().execute(() -> {
-                callbacks.get(mapTypeId).forEach(callBack -> {
-                    Logger.d(TAG, "notifyCrossImageVisibleChanged");
-                    callBack.onCrossImageVisibleChanged(mapTypeId, visible);
-                });
+                List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+                if (callBacks != null && !callBacks.isEmpty()) {
+                    callBacks.forEach(callBack -> {
+                        if (Logger.openLog) {
+                            Logger.d(TAG, mapTypeId, " visible ", visible);
+                        }
+                        callBack.onCrossImageVisibleChanged(mapTypeId, visible);
+                    });
+                }
             });
         }
     }

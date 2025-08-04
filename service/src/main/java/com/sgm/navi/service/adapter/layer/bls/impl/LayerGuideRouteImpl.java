@@ -97,6 +97,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
+        if (ConvertUtils.isEmpty(item)) {
+            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            return;
+        }
         dispatchItemClick(item);
     }
 

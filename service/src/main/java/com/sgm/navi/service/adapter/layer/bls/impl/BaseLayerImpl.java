@@ -320,9 +320,11 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
         List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
         for (Integer value : removeValues) {
-            layer.getMapView().destroyTexture(value);
-            if (Logger.openLog) {
-                Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems layer:", layer.getName(), " markerId:", value);
+            if (null != value) {
+                layer.getMapView().destroyTexture(value);
+                if (Logger.openLog) {
+                    Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems layer:", layer.getName(), " markerId:", value);
+                }
             }
         }
         super.clearLayerItems(layer);

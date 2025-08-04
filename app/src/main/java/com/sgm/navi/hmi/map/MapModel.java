@@ -798,6 +798,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void setFollowMode(MapType mapType, boolean bFollow){
+        if (layerPackage == null) {
+            layerPackage = LayerPackage.getInstance();
+        }
         layerPackage.setFollowMode(mapType, bFollow);
     }
 
