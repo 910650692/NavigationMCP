@@ -71,6 +71,8 @@ import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
+import com.sgm.navi.ui.base.BaseActivity;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
 import com.google.gson.reflect.TypeToken;
 
@@ -1767,6 +1769,13 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     public void openBasicSearch(final String pkgName) {
         if (isNaviStatus(INNER_CLIENT)) {
             return;
+        }
+
+        if (!isNaviStatus(INNER_CLIENT)) {
+            BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+            if (!ConvertUtils.isNull(baseActivity)) {
+                baseActivity.closeAllFragment();
+            }
         }
 
         Logger.d(TAG, pkgName + "basicSearch");
