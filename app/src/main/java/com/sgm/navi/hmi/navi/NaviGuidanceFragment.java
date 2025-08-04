@@ -789,7 +789,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        Logger.i(TAG, "onHiddenChanged = " + hidden);
         if (!hidden) {
+            if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
+                mBinding.sceneNaviCrossImage.hideLayerCross();
+            }
             if (null != mViewModel) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
                 if (mSceneNaviControlMoreView != null) {
@@ -798,6 +802,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                 }
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
+            }
+        } else {
+            if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
+                mBinding.sceneNaviCrossImage.showLayerCross();
             }
         }
     }
