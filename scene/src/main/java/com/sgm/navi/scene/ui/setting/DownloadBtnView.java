@@ -97,6 +97,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
                 } else {
                     setDownloadViewText("下载");
                     setDownloadViewIcon(R.drawable.img_untop_bwhite_42);
+                    mLinearLayout.setGravity(Gravity.CENTER);
                 }
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
                 setDownloadViewTextColor(R.color.setting_white);
