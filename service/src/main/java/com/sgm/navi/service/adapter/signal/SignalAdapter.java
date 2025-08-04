@@ -269,4 +269,18 @@ public final class SignalAdapter {
         }
         mSignalApi.setVcuSpeedLimitArbitrationResultsAssured(value);
     }
+
+    public int getPredictedFuelSavingPer100km() {
+        if (mSignalApi == null) {
+            return -1;
+        }
+        return mSignalApi.getPredictedFuelSavingPer100km();
+    }
+
+    public int getTotalFuelSaving() {
+        if (mSignalApi == null) {
+            return -1;
+        }
+        return mSignalApi.getTotalFuelSaving();
+    }
 }

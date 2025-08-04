@@ -166,4 +166,8 @@ public interface SignalApi {
     void setVcuSpeedLimitArbitrationResults(int value);
 
     void setVcuSpeedLimitArbitrationResultsAssured(int value);
+
+    int getPredictedFuelSavingPer100km();
+
+    int getTotalFuelSaving();
 }

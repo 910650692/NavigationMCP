@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.android.utils.log.Logger;
-import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
@@ -49,6 +48,8 @@ public class SignalAdapterImpl implements SignalApi {
     private float mHighVoltageBatteryPropulsionRange = -1;
     private float mRangeRemaining = -1;
     private int mBatteryEnergyPercent = -1;
+    private int mPredictedFuelSavingPer100km = -1;
+    private int mTotalFuelSaving = -1;
 
 
     public SignalAdapterImpl() {
@@ -490,6 +491,44 @@ public class SignalAdapterImpl implements SignalApi {
 
                 }
             }, VendorProperty.LANE_CENTERING_WARNING_EXTENDED_INDICATION_REQUEST, 0);
+
+            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+                @Override
+                public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                    if (carPropertyValue == null) {
+                        Logger.i(TAG, "PREDICTED_FUEL_SAVING_PER_100_KM", "carPropertyValue == null");
+                        return;
+                    }
+                    Integer value = (Integer) carPropertyValue.getValue();
+                    Logger.i(TAG, "PREDICTED_FUEL_SAVING_PER_100_KM", value);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onPredictedFuelSavingPer100km(value);
+                    }
+                }
+
+                @Override
+                public void onErrorEvent(int i, int i1) {
+                }
+            }, PatacProperty.PREDICTED_FUEL_SAVING_PER_100_KM, 0);
+
+            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+                @Override
+                public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                    if (carPropertyValue == null) {
+                        Logger.i(TAG, "TOTAL_FUEL_SAVING", "carPropertyValue == null");
+                        return;
+                    }
+                    Integer value = (Integer) carPropertyValue.getValue();
+                    Logger.i(TAG, "TOTAL_FUEL_SAVING", value);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onTotalFuelSaving(value);
+                    }
+                }
+
+                @Override
+                public void onErrorEvent(int i, int i1) {
+                }
+            }, PatacProperty.TOTAL_FUEL_SAVING, 0);
         } else {
             Logger.i(TAG, "mPropertyManager initialized");
         }
@@ -929,6 +968,18 @@ public class SignalAdapterImpl implements SignalApi {
         } catch (Exception e) {
             Logger.e(TAG, e.getMessage());
         }
+    }
+
+    @Override
+    public int getPredictedFuelSavingPer100km() {
+        Logger.d(TAG, mPredictedFuelSavingPer100km);
+        return mPredictedFuelSavingPer100km;
+    }
+
+    @Override
+    public int getTotalFuelSaving() {
+        Logger.d(TAG, mTotalFuelSaving);
+        return mTotalFuelSaving;
     }
     //endregion
 

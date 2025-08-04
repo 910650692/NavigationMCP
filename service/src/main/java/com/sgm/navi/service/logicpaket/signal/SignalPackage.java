@@ -175,6 +175,32 @@ public final class SignalPackage implements SignalAdapterCallback {
         });
     }
 
+    @Override
+    public void onPredictedFuelSavingPer100km(int value) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onPredictedFuelSavingPer100km(value);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onTotalFuelSaving(int value) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+                for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                    if (signalCallback != null) {
+                        signalCallback.onTotalFuelSaving(value);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 车外温度
      *
@@ -442,5 +468,13 @@ public final class SignalPackage implements SignalAdapterCallback {
 
     public void setVcuSpeedLimitArbitrationResultsAssured(int value) {
         mSignalAdapter.setVcuSpeedLimitArbitrationResultsAssured(value);
+    }
+
+    public int getPredictedFuelSavingPer100km() {
+        return mSignalAdapter.getPredictedFuelSavingPer100km();
+    }
+
+    public int getTotalFuelSaving() {
+        return mSignalAdapter.getTotalFuelSaving();
     }
 }

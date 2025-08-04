@@ -84,4 +84,12 @@ public interface SignalCallback {
     default void onFuelLevelPercentSignalChanged(float value) {
 
     }
+
+    default void onPredictedFuelSavingPer100km(int value) {
+
+    }
+
+    default void onTotalFuelSaving(int value) {
+
+    }
 }
