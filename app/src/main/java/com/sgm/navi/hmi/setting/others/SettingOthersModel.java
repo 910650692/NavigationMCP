@@ -10,6 +10,7 @@ import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
 import com.sgm.navi.service.define.user.wechat.BLResponseBean;
+import com.sgm.navi.service.greendao.favorite.FavoriteManager;
 import com.sgm.navi.service.greendao.history.History;
 import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
@@ -33,6 +34,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
     private final SettingPackage mSettingPackage;
     private final WeChatPackage mWeChatPackage;
     private final SettingManager mSettingManager;
+    private final FavoriteManager mFavoriteManager;
     private final HistoryManager mHistoryManager;
     private static final String MODEL_NAME = "SettingOthersModel";
 
@@ -47,6 +49,8 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
         mWeChatPackage.initWeChatService();
         mSettingManager = SettingManager.getInstance();
         mSettingManager.init();
+        mFavoriteManager = FavoriteManager.getInstance();
+        mFavoriteManager.init();
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
     }
@@ -221,6 +225,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     public void clearAll() {
         mSettingManager.deleteAll();
+        mFavoriteManager.deleteAll();
     }
 
     /**
