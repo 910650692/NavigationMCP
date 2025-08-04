@@ -575,7 +575,8 @@ public final class NaviDataFormatHelper {
                 for (Short speed : subCamera.speed) {
                     if (isValidSpeed(speed)) {
                         // 如果当前摄像头距离更近，则更新为最佳匹配
-                        if (cameraInfo.distance < bestMatch.getDistance()) {
+                        if ((cameraInfo.distance < bestMatch.getDistance()) ||
+                                (bestMatch.getDistance() == NumberUtils.NUM_0) ) {
                             bestMatch.setCameraId(cameraInfo.cameraId);
                             bestMatch.setCoord2D(new GeoPoint(cameraInfo.coord2D.lon, cameraInfo.coord2D.lat));
                             bestMatch.setDistance(cameraInfo.distance);
