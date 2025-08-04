@@ -22,7 +22,9 @@ public class BuryProperty {
     }
 
     public BuryProperty(String key, String value){
-        params.add(new BuryParam(key,value));
+        if (params != null) {
+            params.add(new BuryParam(key,value));
+        }
     }
 
     public BuryProperty(List<BuryParam> params){
@@ -58,7 +60,9 @@ public class BuryProperty {
         sb.append("BuryProperty{");
         if (params != null && !params.isEmpty()) {
             for (BuryParam param : params) {
-                sb.append(param.getKey()).append("=").append(param.getValue()).append(", ");
+                if (param != null) {
+                    sb.append(param.getKey()).append("=").append(param.getValue()).append(", ");
+                }
             }
             sb.setLength(sb.length() - 2); // Remove the last comma and space
         }

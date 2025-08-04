@@ -43,7 +43,9 @@ public class HookPointCut implements BasePointCut<HookMethod> {
             JSONObject properties = new JSONObject();
             for (BuryParam param : params) {
                 try {
-                    properties.put(param.getKey(), param.getValue());
+                    if (param != null) {
+                        properties.put(param.getKey(), param.getValue());
+                    }
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

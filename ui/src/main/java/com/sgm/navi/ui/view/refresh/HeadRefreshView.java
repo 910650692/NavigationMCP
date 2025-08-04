@@ -5,13 +5,17 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.sgm.navi.ui.R;
 import com.sgm.navi.ui.view.SkinFrameLayout;
 import com.sgm.navi.ui.view.SkinImageView;
 import com.sgm.navi.ui.view.SkinTextView;
 
 public class HeadRefreshView extends SkinFrameLayout implements HeadView {
+    private static final String TAG = HeadRefreshView.class.getSimpleName();
 
     private SkinTextView mSkinTextView;
     private SkinImageView mSkinImageView;
@@ -40,16 +44,22 @@ public class HeadRefreshView extends SkinFrameLayout implements HeadView {
     private void init(final Context context) {
         final View view = LayoutInflater.from(context).inflate(R.layout.layout_header, null);
         addView(view);
-        mSkinTextView = view.findViewById(R.id.header_tv);
-        mSkinImageView = view.findViewById(R.id.header_arrow);
-        mProgressBar = view.findViewById(R.id.header_progress);
+        if (view != null) {
+            mSkinTextView = view.findViewById(R.id.header_tv);
+            mSkinImageView = view.findViewById(R.id.header_arrow);
+            mProgressBar = view.findViewById(R.id.header_progress);
+        }
     }
 
     @Override
     public void begin() {
-        mSkinImageView.setVisibility(VISIBLE);
-        mProgressBar.setVisibility(GONE);
-        mSkinTextView.setText(mTips);
+        if (mSkinImageView != null) {
+            mSkinImageView.setVisibility(VISIBLE);
+        }
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(GONE);
+        }
+        safetySetText(mSkinTextView, mTips);
     }
 
     @Override
@@ -57,17 +67,21 @@ public class HeadRefreshView extends SkinFrameLayout implements HeadView {
         final float time = progress / all;
         if (time >= 0.9f) {
             if (mRefresh) {
-                mSkinImageView.setRotation(180);
+                if (mSkinImageView != null) {
+                    mSkinImageView.setRotation(180);
+                }
             }
         } else {
-            mSkinImageView.setRotation(0);
+            if (mSkinImageView != null) {
+                mSkinImageView.setRotation(0);
+            }
         }
         if (progress >= all - 10) {
             if (mRefresh) {
-                mSkinTextView.setText("回到上一页");
+                safetySetText(mSkinTextView, "回到上一页");
             }
         } else {
-            mSkinTextView.setText(mTips);
+            safetySetText(mSkinTextView, mTips);
         }
     }
 
@@ -78,18 +92,26 @@ public class HeadRefreshView extends SkinFrameLayout implements HeadView {
 
     @Override
     public void loading() {
-        mSkinImageView.setVisibility(GONE);
-        mProgressBar.setVisibility(VISIBLE);
+        if (mSkinImageView != null) {
+            mSkinImageView.setVisibility(GONE);
+        }
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(VISIBLE);
+        }
         if (mRefresh) {
-            mSkinTextView.setText("刷新中...");
+            safetySetText(mSkinTextView, "刷新中...");
         }
     }
 
     @Override
     public void normal() {
-        mSkinImageView.setVisibility(VISIBLE);
-        mProgressBar.setVisibility(GONE);
-        mSkinTextView.setText(mTips);
+        if (mSkinImageView != null) {
+            mSkinImageView.setVisibility(VISIBLE);
+        }
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(GONE);
+        }
+        safetySetText(mSkinTextView, mTips);
     }
 
     @Override
@@ -105,5 +127,13 @@ public class HeadRefreshView extends SkinFrameLayout implements HeadView {
     @Override
     public void setRefreshTips(final String tips) {
         mTips = tips;
+    }
+
+    private void safetySetText(TextView textView, String string) {
+        if (ConvertUtils.isEmpty(textView)) {
+            Logger.e(TAG, "safetySetText textView == null");
+            return;
+        }
+        textView.setText(string);
     }
 }
