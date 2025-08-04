@@ -241,6 +241,9 @@ public class LogUtils {
 
     private static int getStackOffset(StackTraceElement... traceElements) {
         for (int i = 3; i < traceElements.length; i++) {
+            if (traceElements[i] == null) {
+                continue;
+            }
             String name = traceElements[i].getClassName();
             if (ConvertUtils.equalsIgnoreCase(LogUtils.class.getName(), name)
                     && ConvertUtils.equalsIgnoreCase(Logger.class.getName(), name)) {

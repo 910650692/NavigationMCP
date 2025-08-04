@@ -80,6 +80,9 @@ public class RouteLoadingDialog extends Dialog {
      * @param sivLoading 加载动画视图
      */
     private void initLoadAnim(final View sivLoading) {
+        if (sivLoading == null) {
+            return;
+        }
         // 如果动画已存在并正在运行，则取消并清理
         if (mAnimator != null) {
             if (mAnimator.isRunning()) {

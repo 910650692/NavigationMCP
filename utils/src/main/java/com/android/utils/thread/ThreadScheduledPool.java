@@ -50,6 +50,9 @@ public class ThreadScheduledPool extends Pool {
      * @return 任务体
      */
     protected ScheduledFuture schedule(Runnable runnable, long start, TimeUnit timeUnit) {
+        if (runnable == null) {
+            throw new IllegalArgumentException("Runnable cannot be null");
+        }
         isShutdown();
         return schedulePool.schedule(runnable, start, timeUnit);
     }

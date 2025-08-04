@@ -22,6 +22,9 @@ public class AppCrashRecord implements Thread.UncaughtExceptionHandler {
     private Context context;
 
     public AppCrashRecord(Context context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Context cannot be null");
+        }
         this.context = context;
         this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
@@ -29,6 +32,9 @@ public class AppCrashRecord implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         try {
+            if (context == null) {
+                return;
+            }
             // 收集崩溃信息
             String crashInfo = collectCrashInfo(ex);
             // 保存到本地
@@ -64,6 +70,9 @@ public class AppCrashRecord implements Thread.UncaughtExceptionHandler {
     }
 
     private void saveToFile(String crashInfo) {
+        if (context == null) {
+            return;
+        }
         String fileName = "crash_" + System.currentTimeMillis() + ".log";
         File file = new File(context.getFilesDir(), "crash_logs");
         if (!file.exists()) {

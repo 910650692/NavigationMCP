@@ -38,6 +38,9 @@ public class ProcessManager {
      * @param callback IsAppInForegroundCallback
      */
     public static void removeIsAppInForegroundCallback(final ProcessForegroundStatus callback) {
+        if (ConvertUtils.isEmpty(processStatusList)) {
+            return;
+        }
         ConvertUtils.remove(processStatusList, callback);
     }
 

@@ -21,6 +21,9 @@ public class ParseJsonUtils {
      * @return Json字符串
      */
     public static String parseJsonFile(byte[] result) {
+        if (result == null) {
+            return null;
+        }
         return new String(result, StandardCharsets.UTF_8);
     }
 

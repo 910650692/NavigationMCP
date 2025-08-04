@@ -43,6 +43,10 @@ public class RouteViewModel extends BaseRouteViewModel {
     }
 
     private boolean isRoutePage() {
+        if (NaviStatusPackage.getInstance() == null && NaviStatusPackage.getInstance().getCurrentNaviStatus() == null) {
+            Logger.d(TAG,  "currentNaviStatus is null");
+            return false;
+        }
         return NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE);
     }
 }

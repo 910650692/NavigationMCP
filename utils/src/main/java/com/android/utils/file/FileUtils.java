@@ -317,6 +317,9 @@ public class FileUtils {
         createFile(filePath);
         InputStream inputStream = null;
         File file = new File(filePath);
+        if (!file.exists()) {
+            return null;
+        }
         try {
             inputStream = new FileInputStream(file);
             buffer = new byte[inputStream.available()];

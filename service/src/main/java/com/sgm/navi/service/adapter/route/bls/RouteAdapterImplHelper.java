@@ -1035,7 +1035,15 @@ public class RouteAdapterImplHelper {
      */
     private void handlerChargingStation(final RequestRouteResult requestRouteResult,
                                         final ArrayList<PathInfo> pathInfoList, final long requestId, final MapType mapTypeId) {
+        if (requestRouteResult == null || pathInfoList == null) {
+            Logger.e(TAG, "handlerChargingStation: null input parameters");
+            return;
+        }
         List<RouteParam> routeParams = requestRouteResult.getMRouteParams();
+        if (routeParams == null) {
+            Logger.e(TAG, "handlerChargingStation: routeParams is null");
+            return;
+        }
         List<RouteParam> chargeParams = new ArrayList<>(routeParams);
         RouteChargeStationParam routeChargeStationParam = requestRouteResult.getMRouteChargeStationParam();
         routeChargeStationParam.setMRequestId(requestId);

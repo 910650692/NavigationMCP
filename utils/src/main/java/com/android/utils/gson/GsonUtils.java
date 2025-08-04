@@ -162,6 +162,9 @@ public class GsonUtils {
      * @param objReplica 转换之后得对象
      */
     public static void copyBean(Object objSource, Object objReplica) {
+        if (objSource == null || objReplica == null) {
+            return;
+        }
         Field[] fieldsSource = objSource.getClass().getDeclaredFields();
         Field[] fieldsReplica = objReplica.getClass().getDeclaredFields();
         for (Field dataSource : fieldsSource) {
@@ -220,6 +223,9 @@ public class GsonUtils {
     }
 
     private static boolean isContainsBasicDataType(String classType) {
+        if (classType == null) {
+            return false;
+        }
         if (!classType.contains("class")) {
             return false;
         } else {

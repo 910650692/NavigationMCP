@@ -38,6 +38,9 @@ public class ThreadPool extends Pool {
     private Context mContext;
 
     protected ThreadPool(Context context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Context cannot be null");
+        }
         this.mContext = context;
         //取最优核心线程数
         if (CPU_NAM > THREAD_POOL_CENTER_SIZE) THREAD_POOL_CENTER_SIZE = CPU_NAM;
