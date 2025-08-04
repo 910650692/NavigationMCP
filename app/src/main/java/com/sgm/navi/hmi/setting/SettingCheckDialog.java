@@ -74,7 +74,7 @@ public class SettingCheckDialog extends BaseFullScreenDialog<DialogSettingCheckB
             final WindowManager.LayoutParams params = window.getAttributes();
             params.gravity = Gravity.START | Gravity.BOTTOM;
             params.x = getContext().getResources().getDimensionPixelOffset(com.sgm.navi.ui.R.dimen.dp_255);
-            params.y = getContext().getResources().getDimensionPixelOffset(com.sgm.navi.ui.R.dimen.dp_50);
+            params.y = getContext().getResources().getDimensionPixelOffset(com.sgm.navi.ui.R.dimen.dp_125);
             window.setAttributes(params);
             window.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
             window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
