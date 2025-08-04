@@ -144,6 +144,16 @@
                     app:layout_constraintStart_toStartOf="@id/user_code"
                     app:layout_constraintTop_toBottomOf="@id/user_code" />
 
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/uuid_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_30"
+                    android:text="UUID:无法获取到UUID，请检查车机环境"
+                    android:textSize="@dimen/sp_34"
+                    app:layout_constraintStart_toStartOf="@id/user_code"
+                    app:layout_constraintTop_toBottomOf="@id/login_code" />
+
                 <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/back_door_confirm"
                     android:layout_width="wrap_content"

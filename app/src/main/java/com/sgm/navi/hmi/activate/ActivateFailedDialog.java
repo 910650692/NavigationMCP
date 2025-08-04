@@ -8,7 +8,9 @@ import android.widget.EditText;
 import com.android.utils.ConvertUtils;
 import com.sgm.navi.hmi.databinding.DialogActivateFailedBinding;
 import com.sgm.navi.mapservice.util.Logger;
+import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.adapter.activate.bls.ActivationManager;
+import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
@@ -65,6 +67,7 @@ public class ActivateFailedDialog extends BaseFullScreenDialog<DialogActivateFai
                 mTestClickNum = 0;
                 mViewBinding.activateDialogLayout.setVisibility(View.GONE);
                 mViewBinding.backDoorLayout.setVisibility(View.VISIBLE);
+                setUuidHint();
             }
         });
 
@@ -108,6 +111,17 @@ public class ActivateFailedDialog extends BaseFullScreenDialog<DialogActivateFai
                 requestKeyboard(mViewBinding.loginCode);
             }
         });
+    }
+
+    private void setUuidHint() {
+        String uuid = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
+        String hint = "";
+        if (ConvertUtils.isEmpty(uuid)) {
+            hint = "UUID:没有获取到UUID，请检查车机的环境是否正常";
+        } else {
+            hint = "UUID: " + uuid;
+        }
+        mViewBinding.uuidHint.setText(hint);
     }
 
     private void requestKeyboard(EditText editText) {
