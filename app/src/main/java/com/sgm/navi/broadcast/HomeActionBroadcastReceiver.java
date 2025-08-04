@@ -45,6 +45,8 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
                 final BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
                 if (baseActivity instanceof MapActivity) {
                     ((MapActivity)baseActivity).updateUiOnHomeKeyClick();
+                }else {
+                    Logger.w(TAG, "Current activity is not MapActivity or is null");
                 }
             }
         }
@@ -52,14 +54,21 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
 
     public static void registerHomeActionReceiver() {
         try {
+            Context context = AppCache.getInstance().getMContext();
+            if (context == null) {
+                isRegister = false;
+                Logger.e(TAG, "registerHomeActionReceiver-failed: context is null");
+                return;
+            }
+
             final IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(HOME_CLICK_ACTION);
-            AppCache.getInstance().getMContext().registerReceiver(new HomeActionBroadcastReceiver(), intentFilter, Context.RECEIVER_EXPORTED);
+            context.registerReceiver(new HomeActionBroadcastReceiver(), intentFilter, Context.RECEIVER_EXPORTED);
             isRegister = true;
             Logger.d(TAG, "registerHomeActionReceiver-success!");
         } catch (Exception e) {
             isRegister = false;
-            Logger.e(TAG, "registerHomeActionReceiver-failed", e.getMessage());
+            Logger.e(TAG, "registerHomeActionReceiver-failed", e);
         }
     }
 }

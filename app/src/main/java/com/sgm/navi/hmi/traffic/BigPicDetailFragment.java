@@ -41,8 +41,9 @@ public class BigPicDetailFragment extends BaseFragment<FragmentPicDetailBinding,
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (getArguments().containsKey(KEY_URL)) {
-            url = getArguments().getString(KEY_URL);
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(KEY_URL)) {
+            url = args.getString(KEY_URL);
         }
         animation = AnimationUtils.loadAnimation(context, R.anim.rotate_animation);
     }

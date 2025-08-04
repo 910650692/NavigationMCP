@@ -20,6 +20,9 @@ public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
 
     public MsgTopDialog(final Context context, final TripID tripID, final int top, final int left) {
         super(context);
+        if (tripID == null) {
+            throw new IllegalArgumentException("TripID cannot be null");
+        }
         mTripId = tripID;
         this.left = left;
         this.top = top;
@@ -28,6 +31,9 @@ public class MsgTopDialog extends BaseDialog<DialogMsgTopBinding> {
     public MsgTopDialog(final Context context, final TripID tripID, final IBaseDialogClickListener dialogClickListener,
                         final int top, final int left) {
         super(context);
+        if (tripID == null) {
+            throw new IllegalArgumentException("TripID cannot be null");
+        }
         mTripId = tripID;
         setDialogClickListener(dialogClickListener);
         this.left = left;

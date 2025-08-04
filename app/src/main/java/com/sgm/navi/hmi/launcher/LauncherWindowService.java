@@ -92,6 +92,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private final int DisplayId = 0;
     private LayerPackage mLayerPackage;
     private boolean isConnected;
+    private static boolean isInitialized = false;
 
     private LauncherWindowService() {
 
@@ -335,6 +336,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         if (TextUtils.equals("buick", BuildConfig.FLAVOR)) return;
         Logger.i(TAG, "start service success!");
         InstanceHolder.instance.init();
+        if (!isInitialized) {
+            isInitialized = true;
+        }
+    }
+
+    public static boolean isServiceInitialized() {
+        return isInitialized;
     }
 
     private void initAndGetMusicTabStatus() {
