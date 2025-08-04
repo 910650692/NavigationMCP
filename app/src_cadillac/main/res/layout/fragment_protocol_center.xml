@@ -13,6 +13,7 @@
         android:id="@+id/ll_protocol_center_root"
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
         android:padding="@dimen/dp_51"
         android:clickable="true"
         android:focusable="false"

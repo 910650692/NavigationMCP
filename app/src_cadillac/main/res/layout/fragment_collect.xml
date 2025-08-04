@@ -15,6 +15,7 @@
     <com.sgm.navi.ui.view.SkinLinearLayout
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="@dimen/dp_922"
+        android:layout_marginStart="@dimen/dp_259"
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="false"

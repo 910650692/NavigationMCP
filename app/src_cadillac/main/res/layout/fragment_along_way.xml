@@ -16,6 +16,7 @@
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="@dimen/dp_922"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_259"
         android:clickable="true"
         android:orientation="vertical">
         <!--MFC___FocusParkingView-->

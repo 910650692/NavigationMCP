@@ -15,6 +15,7 @@
         clickCommand="@{viewModel.rootClick}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_259"
         android:clickable="true"
         android:orientation="vertical">
 

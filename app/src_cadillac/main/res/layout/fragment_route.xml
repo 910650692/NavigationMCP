@@ -21,6 +21,7 @@
             android:visibility="invisible"
             android:layout_width="@dimen/dp_2062"
             android:layout_height="@dimen/dp_1102"
+            android:layout_marginStart="@dimen/dp_259"
             android:focusable="false">
             <!--tab list-->
             <com.sgm.navi.scene.ui.route.SceneRouteGasStationWeatherServiceView

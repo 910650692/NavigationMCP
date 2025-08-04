@@ -15,6 +15,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
         android:focusable="false">
 
         <com.android.car.ui.FocusParkingView

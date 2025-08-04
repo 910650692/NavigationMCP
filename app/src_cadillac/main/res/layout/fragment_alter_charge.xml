@@ -17,6 +17,7 @@
         android:background="@drawable/bg_route_result"
         android:layout_width="@dimen/dp_922"
         android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
         android:paddingHorizontal="@dimen/dp_51"
         android:paddingVertical="@dimen/dp_51"
         android:focusable="false">

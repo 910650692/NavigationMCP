@@ -12,6 +12,7 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
         android:focusable="false"
         android:padding="@dimen/dp_51"
         android:background="@drawable/bg_shadow_navi_cadillac">

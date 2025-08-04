@@ -12,6 +12,7 @@
     <com.sgm.navi.ui.view.SkinLinearLayout
         android:layout_width="@dimen/dp_1680"
         android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
         android:clickable="true"
         android:orientation="vertical"
         android:focusable="false"
