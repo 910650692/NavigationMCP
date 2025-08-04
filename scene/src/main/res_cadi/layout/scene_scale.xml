@@ -81,20 +81,18 @@
             android:paddingHorizontal="@dimen/dp_28"
             android:focusable="false"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_reduce"
-           app:layout_constraintLeft_toLeftOf="@+id/screen_scale_reduce"
             app:layout_constraintRight_toRightOf="@+id/screen_scale_reduce"
             tools:text="500公里" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/screen_bg_sample_scale"
             android:layout_width="@dimen/dp_152"
-            android:layout_height="@dimen/dp_12"
+            android:layout_height="@dimen/dp_18"
             android:scaleType="fitXY"
             android:src="@drawable/bg_sample_scale"
             android:layout_marginTop="@dimen/dp_3"
             android:focusable="false"
             app:layout_constraintEnd_toEndOf="@id/screen_scale_size"
-            app:layout_constraintStart_toStartOf="@id/screen_scale_size"
             app:layout_constraintTop_toBottomOf="@id/screen_scale_size" />
 
         <com.sgm.navi.ui.view.SkinImageView
@@ -107,7 +105,6 @@
             android:layout_marginTop="@dimen/dp_8"
             android:focusable="false"
             app:layout_constraintEnd_toEndOf="@id/screen_bg_sample_scale"
-            app:layout_constraintStart_toStartOf="@id/screen_bg_sample_scale"
             app:layout_constraintTop_toBottomOf="@id/screen_bg_sample_scale" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
