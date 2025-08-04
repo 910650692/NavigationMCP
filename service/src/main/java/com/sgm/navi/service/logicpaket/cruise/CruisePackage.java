@@ -1,11 +1,13 @@
 package com.sgm.navi.service.logicpaket.cruise;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.burypoint.controller.BuryPointController;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.cruise.CruiseAdapter;
 import com.sgm.navi.service.adapter.cruise.CruiseObserver;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
@@ -19,6 +21,7 @@ import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.navi.AppFocusHelper;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.Iterator;
@@ -36,6 +39,17 @@ public class CruisePackage implements CruiseObserver {
     private ConcurrentHashMap<String, ICruiseObserver> mCruiseObserver;
     private NavistatusAdapter mNavistatusAdapter;
     private SpeechAdapter mSpeechAdapter;
+    private AppFocusHelper mAppFocusHelper;
+    public interface OnFocusLostCallback {
+        void onCruiseStopByFocusLost();
+    }
+    private OnFocusLostCallback mFocusLostCallback;
+    public void setFocusLostCallback(OnFocusLostCallback callback) {
+        this.mFocusLostCallback = callback;
+    }
+    public void clearFocusLostCallback() {
+        this.mFocusLostCallback = null;
+    }
 
     private CruisePackage() {
         mCruiseObserver = new ConcurrentHashMap<>();
@@ -43,6 +57,12 @@ public class CruisePackage implements CruiseObserver {
         mLayerAdapter = LayerAdapter.getInstance();
         mSpeechAdapter = SpeechAdapter.getInstance();
         mNavistatusAdapter = NavistatusAdapter.getInstance();
+
+        if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+            Logger.d(TAG, "汽车环境，初始化AppFocusHelper");
+            mAppFocusHelper = AppFocusHelper.getInstance();
+            mAppFocusHelper.init(AppCache.getInstance().getMContext());
+        }
     }
 
     public void initCruise() {
@@ -75,6 +95,9 @@ public class CruisePackage implements CruiseObserver {
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.CRUISE);
             mLayerAdapter.setVisibleCruiseSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, true);
             initScaleSize();
+            if (mAppFocusHelper != null) {
+                mAppFocusHelper.startCarMapNavigation();
+            }
             sendBuryPointForCruise(true);
         }
         return result;
@@ -112,6 +135,16 @@ public class CruisePackage implements CruiseObserver {
         }
         Logger.i(TAG, "stopCruise", "result:" + isSuccess, "currentNaviStatus:" + mNavistatusAdapter.getCurrentNaviStatus());
         return isSuccess;
+    }
+
+    /**
+     * 专门处理因焦点丢失导致的巡航停止
+     */
+    public void stopCruiseWithFocusLost() {
+        Logger.d(TAG, "Stop cruise due to focus loss");
+        if (mFocusLostCallback != null) {
+            mFocusLostCallback.onCruiseStopByFocusLost();
+        }
     }
 
     @Override

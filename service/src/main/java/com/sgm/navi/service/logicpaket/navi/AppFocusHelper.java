@@ -8,6 +8,7 @@ import android.content.Context;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
 
 public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListener, CarAppFocusManager.OnAppFocusOwnershipCallback {
 
@@ -57,7 +58,7 @@ public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListe
             int result = mCarAppFocusManager.requestAppFocus(CarAppFocusManager.APP_FOCUS_TYPE_NAVIGATION, this);
             if (ConvertUtils.equals(result,CarAppFocusManager.APP_FOCUS_REQUEST_SUCCEEDED)) {
                 mIsCarMapNavigating = true;
-                Logger.d(TAG, "车机地图获得导航焦点，开始导航");
+                Logger.d(TAG, "车机地图获得导航焦点，开始导航/巡航");
             } else {
                 Logger.e(TAG, "其余焦点信息 " + result);
             }
@@ -69,7 +70,7 @@ public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListe
         if (mCarAppFocusManager != null && mIsCarMapNavigating) {
             mCarAppFocusManager.abandonAppFocus(this, CarAppFocusManager.APP_FOCUS_TYPE_NAVIGATION);
             mIsCarMapNavigating = false;
-            Logger.d(TAG, "车机地图放弃导航焦点，停止导航");
+            Logger.d(TAG, "车机地图放弃导航焦点，停止导航/巡航");
         }
     }
 
@@ -92,9 +93,14 @@ public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListe
     @Override
     public void onAppFocusOwnershipLost(int appType) {
         if (ConvertUtils.equals(appType, CarAppFocusManager.APP_FOCUS_TYPE_NAVIGATION) && mIsCarMapNavigating) {
-            Logger.d(TAG, "车机地图导航焦点被收回，退出导航");
+            Logger.d(TAG, "车机地图导航焦点被收回，退出导航/巡航");
             mIsCarMapNavigating = false;
             NaviPackage.getInstance().stopNavigation(false);
+
+            CruisePackage cruise = CruisePackage.getInstance();
+            if (cruise != null) {
+                cruise.stopCruiseWithFocusLost();
+            }
         }
     }
 

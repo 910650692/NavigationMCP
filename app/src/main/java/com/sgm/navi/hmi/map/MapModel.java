@@ -304,6 +304,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         settingManager = SettingManager.getInstance();
         settingManager.init();
         cruisePackage = CruisePackage.getInstance();
+        cruisePackage.setFocusLostCallback(new CruisePackage.OnFocusLostCallback() {
+            @Override
+            public void onCruiseStopByFocusLost() {
+                ThreadManager.getInstance().postUi(() -> {
+                    stopCruise();
+                });
+            }
+        });
         signalPackage = SignalPackage.getInstance();
         msgPushPackage = MsgPushPackage.getInstance();
         speedMonitor = new SpeedMonitor();
@@ -410,6 +418,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         restrictedPackage.removeRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT);
         msgPushPackage.unregisterCallBack(TAG);
         cruisePackage.unregisterObserver(mViewModel.mScreenId);
+        cruisePackage.clearFocusLostCallback();
         messageCenterManager.unRegisterCallBack(MessageCenterManager.MESSAGECENTERKEY);
         mRoutePackage.unRegisterRouteObserver("Map Activity");
         mforCastPackage.unregisterCallBack(this);
@@ -1410,6 +1419,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         final boolean isSuccess = cruisePackage.stopCruise();
+        Logger.d(TAG,"stopCruise = " + isSuccess);
         if (isSuccess) {
             UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
