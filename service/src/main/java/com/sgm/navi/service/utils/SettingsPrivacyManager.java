@@ -59,18 +59,20 @@ public class SettingsPrivacyManager implements IPrivacyPermission {
      * 隐私协议管理初始化.
      */
     public void init() {
-        mPackageName = AppCache.getInstance().getMContext().getPackageName();
-        Logger.d(TAG, "PrivacyManager init", mPackageName);
-        //注册LOCATION权限变化通知
-        try {
-            PrivacyDataSourceRepository.getInstance().registerPrivacyPermissionChangeListener(
-                    PrivacyBean.Privacy.LOCATION, SettingsPrivacyManager.this);
-            //获取Map所有申请的权限状态
-            List<PrivacyBean> locationApps = PrivacyDataSourceRepository.getInstance()
-                    .getAppAllPrivacyList(mPackageName);
-            processMapLocationState(locationApps);
-        } catch (Exception e) {
-            Logger.e(TAG, e.getMessage());
+        if (null != AppCache.getInstance().getMContext()) {
+            mPackageName = AppCache.getInstance().getMContext().getPackageName();
+            Logger.d(TAG, "PrivacyManager init", mPackageName);
+            //注册LOCATION权限变化通知
+            try {
+                PrivacyDataSourceRepository.getInstance().registerPrivacyPermissionChangeListener(
+                        PrivacyBean.Privacy.LOCATION, SettingsPrivacyManager.this);
+                //获取Map所有申请的权限状态
+                List<PrivacyBean> locationApps = PrivacyDataSourceRepository.getInstance()
+                        .getAppAllPrivacyList(mPackageName);
+                processMapLocationState(locationApps);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
         }
     }
 

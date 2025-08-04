@@ -58,6 +58,7 @@ public final class SettingPackage implements SettingAdapterCallback {
         mFavoriteManager = FavoriteManager.getInstance();
         mFavoriteManager.init();
         mLayerAdapter = LayerAdapter.getInstance();
+        SettingsPrivacyManager.getInstance().init();
     }
 
     /**
@@ -108,8 +109,6 @@ public final class SettingPackage implements SettingAdapterCallback {
         mSettingAdapter.initSetting();
         mSettingAdapter.registerCallback(TAG, this);
         initAllSetting();
-
-        SettingsPrivacyManager.getInstance().init();
     }
 
     @Override
