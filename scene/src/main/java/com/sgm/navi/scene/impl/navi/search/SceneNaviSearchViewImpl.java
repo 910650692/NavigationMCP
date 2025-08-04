@@ -2,6 +2,7 @@ package com.sgm.navi.scene.impl.navi.search;
 
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.api.navi.ISceneNaviSearchView;
@@ -61,7 +62,9 @@ public class SceneNaviSearchViewImpl extends BaseSceneModel<SceneNaviSearchView>
         Logger.i(TAG, "onSearchResult taskId:" + taskId + " errorCode:" + errorCode +
                 " message:" + message);
         if (taskId == mSearchTaskId) {
-            mSearchLoadingDialog.hide();
+            if(!ConvertUtils.isNull(mSearchLoadingDialog)){
+                mSearchLoadingDialog.hide();
+            }
             mScreenView.setSearchResultData(searchResultEntity);
         }
     }

@@ -2,6 +2,7 @@ package com.sgm.navi.scene.impl.navi.search;
 
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.R;
@@ -32,6 +33,9 @@ public class SceneNaviSearchResultViewImpl extends BaseSceneModel<SceneNaviSearc
     public void updateData(final SearchResultEntity searchResultEntity) {
         if (null != searchResultEntity) {
             String keyword = searchResultEntity.getKeyword();
+            if(ConvertUtils.isNull(keyword)){
+                keyword = "";
+            }
             mKeyWordField.set(keyword);
             if (ResourceUtils.Companion.getInstance().getString(R.string.st_quick_search_charge).
                     equals(keyword)) {
