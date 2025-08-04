@@ -466,6 +466,8 @@ public interface IVrBridgeConstant {
         String ROUTE_CHARGE_NO_SUPPORT = "当前无补能规划相关信息";
         String ROUTE_CHARGE_SEARCH = "已搜索补能点";
         String ROUTE_CHARGE_REFRESH = "已刷新路线";
+
+        String UN_SUPPORT_SORT = "当前搜索结果不支持排序";
     }
 
     interface PoiPageType {

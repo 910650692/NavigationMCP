@@ -66,6 +66,7 @@ public final class VoiceSearchManager {
     private boolean mInTurnRound = false;
     private RespCallback mTurnCallback;
     private boolean mWaitPoiSearch = false; //搜索结果只有一个，需要poi详情搜结果返回后再执行算路
+    private boolean mSupportSortPoi = false; //搜索结果是否支持排序
 
     private List<String> mGenericsList; //DestType为泛型的集合，用来判断途径点和目的地是不是泛型
     private SparseArray<SingleDestInfo> mNormalDestList; //多目的地普通点集合
@@ -199,6 +200,7 @@ public final class VoiceSearchManager {
             if (null == searchResultEntity || null == searchResultEntity.getPoiList() || searchResultEntity.getPoiList().isEmpty()) {
                 Logger.e(IVrBridgeConstant.TAG, "searchResult is empty");
                 searchSuccess = false;
+                mSupportSortPoi = false;
                 mMaxPage = 0;
                 mCurrentPage = 0;
             } else {
@@ -206,6 +208,7 @@ public final class VoiceSearchManager {
                 mSearchResultList.addAll(searchResultEntity.getPoiList());
                 mMaxPage = searchResultEntity.getMaxPageNum();
                 mCurrentPage = searchResultEntity.getPageNum();
+                mSupportSortPoi = !(null == searchResultEntity.getLocalInfoList() || searchResultEntity.getLocalInfoList().isEmpty());
             }
 
             if (mInTurnRound) {
@@ -277,6 +280,7 @@ public final class VoiceSearchManager {
                 firstPoi = searchResultEntity.getPoiList().get(0);
                 mSearchResultList.addAll(searchResultEntity.getPoiList());
             }
+            mSupportSortPoi = false;
 
             switch (mSearchType) {
                 case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
@@ -1931,16 +1935,21 @@ public final class VoiceSearchManager {
      * @param rule         排序方式.
      * @param respCallback RespCallback，执行结果回调.
      */
-    public void sortPoi(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
+    public CallResponse sortPoi(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
         if(Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "poiSort rule: ", rule);
         }
         if (null == mSearchResultList || mSearchResultList.isEmpty()) {
-            responsePreviousSearchEmpty(respCallback);
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "poiSort searchResult is empty");
             }
-            return;
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.LAST_SEARCH_RESULT_EMPTY);
+        }
+        if(!mSupportSortPoi) {
+            if(Logger.openLog) {
+                Logger.d(IVrBridgeConstant.TAG, "sort info is empty");
+            }
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.UN_SUPPORT_SORT);
         }
 
         mSortValue = "";
@@ -1977,7 +1986,7 @@ public final class VoiceSearchManager {
         }
 
         if (TextUtils.isEmpty(mSortValue)) {
-            responseUnSupportSortRule(respCallback);
+            return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_CURRENT_SORT);
         } else {
             mSearchType = IVrBridgeConstant.VoiceSearchType.POI_SORT;
             mRespCallback = respCallback;
@@ -2003,6 +2012,7 @@ public final class VoiceSearchManager {
                     SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
                 }
             }
+            return CallResponse.createSuccessResponse();
         }
     }
 

@@ -2120,8 +2120,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onPoiSort(final String sessionId, final String type, final String rule, final RespCallback respCallback) {
         Logger.d(IVrBridgeConstant.TAG, "onPoiSort: sessionId = " + sessionId + ", type = " + type + ", rule = " + rule);
-        VoiceSearchManager.getInstance().sortPoi(sessionId, type, rule, respCallback);
-        return CallResponse.createSuccessResponse();
+        return VoiceSearchManager.getInstance().sortPoi(sessionId, type, rule, respCallback);
     }
 
     @Override
