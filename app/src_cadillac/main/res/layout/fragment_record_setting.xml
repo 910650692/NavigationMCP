@@ -189,7 +189,7 @@
                         android:background="@drawable/bg_record_setting"
                         android:text="@string/driving_record_clear_toast"
                         android:focusable="false"
-                        android:textColor="@color/setting_bg_to_login_text"
+                        android:textColor="@color/setting_clear_now_edging"
                         android:textSize="@dimen/sp_38"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"

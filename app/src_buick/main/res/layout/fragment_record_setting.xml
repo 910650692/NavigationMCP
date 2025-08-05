@@ -124,7 +124,7 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:background="@drawable/bg_record_setting"
             android:text="@string/driving_record_clear_toast"
-            android:textColor="@color/setting_bg_to_login_text"
+            android:textColor="@color/setting_clear_now_edging"
             android:textSize="@dimen/sp_30"
             app:layout_constraintTop_toTopOf="@+id/record_setting_line"
             app:layout_constraintEnd_toEndOf="parent"/>

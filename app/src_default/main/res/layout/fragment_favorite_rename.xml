@@ -66,7 +66,7 @@
             android:background="@drawable/bg_setting_preference_select"
             android:gravity="center"
             android:text="@string/favorite_item_rename_confirm"
-            android:textColor="@color/white"
+            android:textColor="@color/always_white"
             android:textSize="@dimen/sp_29"
             app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
             app:layout_constraintEnd_toEndOf="parent"
