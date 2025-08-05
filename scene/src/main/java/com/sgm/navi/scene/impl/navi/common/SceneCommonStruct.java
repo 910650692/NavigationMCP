@@ -24,6 +24,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static QuickSearch getDefault() {
+            return None;
+        }
+
         /**
          * @param value value
          * @return QuickSearch
@@ -34,7 +38,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -55,6 +59,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static NearbyRecommend getDefault() {
+            return RECOMMEND;
+        }
+
         /**
          * @param value value
          * @return NearbyRecommend
@@ -65,7 +73,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -92,6 +100,10 @@ public class SceneCommonStruct {
             return (int) mValue + 1;
         }
 
+        public static SearchResultListIcon getDefault() {
+            return SearchResultIconFirst;
+        }
+
         /**
          * @param value value
          * @return SearchResultListIcon
@@ -102,7 +114,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -115,6 +127,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static GusSearchHistoryIcon getDefault() {
+            return UsusllyCardSearch;
+        }
+
         /**
          * @param value value
          * @return GusSearchHistoryIcon
@@ -125,7 +141,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -143,6 +159,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static EnumCommuteCard getDefault() {
+            return CommuteCardGoHome;
+        }
+
         /**
          * @param value value
          * @return EnumCommuteCard
@@ -153,7 +173,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -179,6 +199,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static MapModeIcon getDefault() {
+            return MAP_MODE_2D_NORTH;
+        }
+
         /**
          * @param value value
          * @return MapModeIcon
@@ -189,7 +213,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -207,6 +231,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static SearchPoiLabel getDefault() {
+            return LabelNone;
+        }
+
         /**
          * @param value value
          * @return SearchPoiLabel
@@ -217,7 +245,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -235,6 +263,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static SearchListItemLabelType getDefault() {
+            return LableTypeAmapGuide;
+        }
+
         /**
          * @param value value
          * @return SearchListItemLabelType
@@ -245,7 +277,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -263,6 +295,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static DefaultIconType getDefault() {
+            return DefaultIconTypeScenic;
+        }
+
         /**
          * @param value value
          * @return DefaultIconType
@@ -273,7 +309,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -297,6 +333,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static ExpresswayBrand getDefault() {
+            return MaiDangLao;
+        }
+
         /**
          * @param value value
          * @return ExpresswayBrand
@@ -307,7 +347,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -324,6 +364,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static ExpresswayOil getDefault() {
+            return ZhongShiYou;
+        }
+
         /**
          * @param value value
          * @return ExpresswayOil
@@ -334,7 +378,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -428,6 +472,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static RouteWeatherType getDefault() {
+            return WEATHER_SUNNY;
+        }
+
         /**
          * @param value value
          * @return RouteWeatherType
@@ -438,7 +486,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -457,6 +505,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static DefaultIconRectangleShapeType getDefault() {
+            return DefaultIconTypeScenic;
+        }
+
         /**
          * @param value value
          * @return DefaultIconRectangleShapeType
@@ -467,7 +519,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -492,6 +544,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static DestinationGuidePicture getDefault() {
+            return FOOD;
+        }
+
         /**
          * @param value value
          * @return DestinationGuidePicture
@@ -502,7 +558,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -527,6 +583,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static NaviButton getDefault() {
+            return NaviBtnEnterPreview;
+        }
+
         /**
          * @param value value
          * @return NaviButton
@@ -537,7 +597,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -555,6 +615,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static AlongQuickSearch getDefault() {
+            return None;
+        }
+
         /**
          * @param value value
          * @return AlongQuickSearch
@@ -565,7 +629,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -642,6 +706,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static LaneAction getDefault() {
+            return LaneActionAheadAndNUll;
+        }
+
         /**
          * @param value value
          * @return enum type for value
@@ -652,7 +720,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -671,6 +739,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static TollGateLaneAction getDefault() {
+            return TollLaneTypeNULL;
+        }
+
         /**
          * @param value value
          * @return enum type for value
@@ -681,7 +753,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -701,6 +773,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static TimeLaneBottomAction getDefault() {
+            return BackLaneBusWorkable;
+        }
+
         /**
          * @param value value
          * @return enum type for value
@@ -711,7 +787,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -729,6 +805,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static NaviCardTrafficEvent getDefault() {
+            return RoadForbid;
+        }
+
         /**
          * @param value value
          * @return enum type for value
@@ -739,7 +819,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -811,19 +891,6 @@ public class SceneCommonStruct {
         TbtIconAction(final Object value) {
             this.mValue = value;
         }
-
-        *//**
-         * @param value value
-         * @return TbtIconAction
-         *//*
-        public static TbtIconAction get(final Object value) {
-            for (TbtIconAction obj : values()) {
-                if (obj.mValue.equals(value)) {
-                    return obj;
-                }
-            }
-            return values()[0];
-        }
     }*/
 
     public enum ViaPointType {
@@ -838,6 +905,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static ViaPointType getDefault() {
+            return Normal;
+        }
+
         /**
          * @param value value
          * @return ViaPointType
@@ -848,7 +919,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -863,6 +934,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static TmcViaPointType getDefault() {
+            return ViaPointType;
+        }
+
         /**
          * @param value value
          * @return TmcViaPointType
@@ -873,7 +948,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -893,6 +968,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static CarDirectionType getDefault() {
+            return North;
+        }
+
         /**
          * @param value value
          * @return CarDirectionType
@@ -903,7 +982,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -966,6 +1045,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static TbtExitIconAction getDefault() {
+            return ManeuverIconTurnLeft;
+        }
+
         /**
          * @param value value
          * @return Enum
@@ -976,7 +1059,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 
@@ -992,6 +1075,10 @@ public class SceneCommonStruct {
             this.mValue = value;
         }
 
+        public static EnumSettingDraw getDefault() {
+            return SettingDrawNaviLane;
+        }
+
         /**
          * @param value value
          * @return Enum
@@ -1002,7 +1089,7 @@ public class SceneCommonStruct {
                     return obj;
                 }
             }
-            return values()[0];
+            return getDefault();
         }
     }
 }

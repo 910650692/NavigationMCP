@@ -14,7 +14,7 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
     private final boolean mIncludeEdge; // 是否包括边缘
     private Context mContext;
 
-    public GridSpacingItemDecoration(final Context context, final int spanCount, final int spacing,
+    public GridSpacingItemDecoration(@NonNull final Context context, final int spanCount, final int spacing,
                                      final int horizontalSpacing, final boolean includeEdge) {
         this.mSpanCount = spanCount;
         this.mSpacing = spacing;

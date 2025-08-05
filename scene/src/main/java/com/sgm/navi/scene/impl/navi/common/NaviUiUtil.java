@@ -114,7 +114,7 @@ public final class NaviUiUtil {
                                            final boolean isHud, final String hudResPrefix,
                                            String iconResName, final String night) {
 
-        Bitmap roadSignBmp;
+        Bitmap roadSignBmp = null;
         int imageResId;
         if (isHud) {
             iconResName = hudResPrefix + iconResName;
@@ -124,37 +124,41 @@ public final class NaviUiUtil {
             /*11进入环岛图标，右侧通行地区的逆时针环岛,12驶出环岛图标，右侧通行地区的逆时针环岛*/
             if (maneuverId == 12 || maneuverId == 11) {
                 imageResId = getDrawableID(iconResName, String.valueOf(49 + roundNum));
-                roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
-//                Logger.d("getRoadSignBitmap", " 1 maneuverId :" + maneuverId);
+                if (imageResId != 0) {
+                    roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
+                }
                 return roadSignBmp;
             } else if (maneuverId == 18 || maneuverId == 17) {
                 /*17进入环岛图标，左侧通行地区的顺时针环岛,18驶出环岛图标，左侧通行地区的顺时针环岛*/
                 imageResId = getDrawableID(iconResName, String.valueOf(59 + roundNum));
-                roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
-//                Logger.d("getRoadSignBitmap", " 2 maneuverId :" + maneuverId);
+                if (imageResId != 0) {
+                    roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
+                }
                 return roadSignBmp;
             }
         }
         if (maneuverId == 65) {
             //1076B新增，65靠左图标
             imageResId = getDrawableID(iconResName, String.valueOf(6 + maneuverId));
-            roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
-//            Logger.d("getRoadSignBitmap", " 3 maneuverId :" + maneuverId);
+            if (imageResId != 0) {
+                roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
+            }
             return roadSignBmp;
         } else if (maneuverId == 66) {
             //1076B新增，66靠右图标
             imageResId = getDrawableID(iconResName, String.valueOf(4 + maneuverId));
-            roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
-//            Logger.d("getRoadSignBitmap", " 4 maneuverId :" + maneuverId);
+            if (imageResId != 0) {
+                roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
+            }
             return roadSignBmp;
         }
         if (roadSrc != null && roadSrc.length > 0) {
             roadSignBmp = bytesToBimap(roadSrc);
-//            Logger.d("getRoadSignBitmap", " 5 maneuverId :" + maneuverId);
         } else {
             imageResId = getDrawableID(iconResName, maneuverId + "");
-            roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
-//            Logger.d("getRoadSignBitmap", " 6 maneuverId :" + maneuverId);
+            if (imageResId != 0) {
+                roadSignBmp = BitmapFactory.decodeResource(Resources.getSystem(), imageResId);
+            }
         }
 
         return roadSignBmp;

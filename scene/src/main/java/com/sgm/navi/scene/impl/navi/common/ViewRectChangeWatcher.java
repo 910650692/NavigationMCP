@@ -50,20 +50,21 @@ public class ViewRectChangeWatcher implements ViewTreeObserver.OnGlobalLayoutLis
      * 位置大小变化
      */
     private void onRectChanged() {
-        final AutoUIViewRect newRect = NaviUiUtil.getAutoUIViewRect(mView);
-        /**
-         * 初始化或者位置大小有发生变化时才通知
-         */
-        if (null == mCurrentRect) {
-            mCurrentRect = new AutoUIViewRect(new Rect(), new Rect(), new Rect());
-            if (mListener != null) {
-                mListener.onRectChange(mView,newRect, mCurrentRect);
+        if (null != mView && mView.isAttachedToWindow()) {
+            final AutoUIViewRect newRect = NaviUiUtil.getAutoUIViewRect(mView);
+            // 初始化或者位置大小有发生变化时才通知
+            if (null == mCurrentRect) {
+                mCurrentRect = new AutoUIViewRect(new Rect(), new Rect(), new Rect());
+                if (mListener != null) {
+                    mListener.onRectChange(mView,newRect, mCurrentRect);
+                }
+            } else if (!newRect.equals(mCurrentRect)) {
+                if (mListener != null) {
+                    mListener.onRectChange(mView,newRect, mCurrentRect);
+                }
             }
-        } else if (!newRect.equals(mCurrentRect)) {
-            if (mListener != null) {
-                mListener.onRectChange(mView,newRect, mCurrentRect);
-            }
+            mCurrentRect = newRect;
         }
-        mCurrentRect = newRect;
     }
+
 }

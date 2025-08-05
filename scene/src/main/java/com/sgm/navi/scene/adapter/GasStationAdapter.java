@@ -52,14 +52,18 @@ public class GasStationAdapter extends RecyclerView.Adapter<GasStationAdapter.Ho
 
     @Override
     public void onBindViewHolder(final Holder holder, @SuppressLint("RecyclerView")final int position) {
-        String type = mGasStationInfos.get(position).getType();
+        final GasStationInfo gasStationInfo = mGasStationInfos.get(position);
+        if (null == gasStationInfo) {
+            return;
+        }
+        String type = gasStationInfo.getType();
         if ("B5生物柴油".equals(type)) {
             type = "B5";
         } else if ("0#车柴".equals(type)) {
             type = "0#";
         }
         holder.mGasStationItemBinding.poiGasOilType.setText(type);
-        holder.mGasStationItemBinding.poiGasOilPrice.setText(mGasStationInfos.get(position).getPrice());
+        holder.mGasStationItemBinding.poiGasOilPrice.setText(gasStationInfo.getPrice());
     }
 
     public class Holder extends RecyclerView.ViewHolder {

@@ -4,6 +4,8 @@ import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 
 public class AutoUIViewRect {
     private Rect mOnScreenRect = new Rect();
@@ -42,22 +44,31 @@ public class AutoUIViewRect {
 
     /**
      * 是否与指定的矩形区域相等
-     * @param rect rect
+     * @param o rect
      * @return boolean
      */
-    public boolean equals(final AutoUIViewRect rect) {
-        return mOnScreenRect.equals(rect.mOnScreenRect)
-                && mOnAppRect.equals(rect.mOnAppRect)
-                && mInParentRect.equals(rect.mInParentRect);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AutoUIViewRect that = (AutoUIViewRect) o;
+        return Objects.equals(mOnScreenRect, that.mOnScreenRect)
+                && Objects.equals(mOnAppRect, that.mOnAppRect)
+                && Objects.equals(mInParentRect, that.mInParentRect);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mOnScreenRect, mOnAppRect, mInParentRect);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "AutoUIViewRect{" +
-                "mOnScreenRect=" + mOnScreenRect.toShortString() +
-                ", mOnAppRect=" + mOnAppRect.toShortString() +
-                ", mInParentRect=" + mInParentRect.toShortString() +
+                "mOnScreenRect=" + (null != mOnScreenRect ? mOnScreenRect.toShortString(): "empty screen rect") +
+                ", mOnAppRect=" + (null != mOnAppRect ? mOnAppRect.toShortString(): "empty app rect") +
+                ", mInParentRect=" + (null != mInParentRect ? mInParentRect.toShortString() : "empty inParent rect") +
                 '}';
     }
 }
