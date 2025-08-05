@@ -109,18 +109,10 @@ public final class MapStateManager {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         updateNaviStatus(mCurNaviStatus);
 
-        final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
-        if (Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "init muteMode: ", muteMode);
-        }
-        if (muteMode == 1) {
-            mBuilder.setMute(true);
-            mBuilder.setBroadcastMode(2);
-        } else {
-            mBuilder.setMute(false);
-            final int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
-            updateBroadcastMode(broadcastMode);
-        }
+        // 播报模式只支持详细、简洁、极简
+        mBuilder.setMute(false);
+        final int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
+        updateBroadcastMode(broadcastMode);
 
         final RoutePreferenceID routePreference = SettingPackage.getInstance().getRoutePreference();
         updatePreference(SettingPackage.getInstance().formatPreferenceToDB(routePreference));
@@ -285,25 +277,11 @@ public final class MapStateManager {
         public void onSettingChanged(final String key, final String value) {
             switch (key) {
                 case SettingController.KEY_SETTING_NAVI_BROADCAST:
-                    //引导播报
+                    // 播报模式
                     updateBroadcastMode(value);
                     break;
                 case SettingController.KEY_SETTING_VOICE_MUTE:
-                    //播报静音
-                    switch (value) {
-                        case SettingController.VALUE_VOICE_MUTE_ON:
-                            //声音打开
-                            mBuilder.setMute(false);
-                            updateBroadcastMode(SettingPackage.getInstance().getConfigKeyBroadcastMode());
-                            break;
-                        case SettingController.VALUE_VOICE_MUTE_OFF:
-                            //声音关闭
-                            mBuilder.setMute(true);
-                            mBuilder.setBroadcastMode(2);
-                            break;
-                        default:
-                            return;
-                    }
+                    //播报静音-静音状态不涉及播报模式
                     break;
                 case SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE:
                     //路线偏好
