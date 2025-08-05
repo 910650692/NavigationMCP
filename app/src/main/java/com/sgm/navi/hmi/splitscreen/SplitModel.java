@@ -253,8 +253,10 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         }
         if (getPreviewStatus()) {
             closePreview();
+            mNaviPackage.setPreviewStatus(false);
         } else {
             showPreview();
+            mNaviPackage.setPreviewStatus(true);
         }
     }
 
@@ -287,6 +289,11 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         mMapPackage.isSplitScreen(MapType.MAIN_SCREEN_MAIN_MAP, isSplit);
         mMapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, !isSplit);
         mMapPackage.setLockMapPinchZoom(MapType.MAIN_SCREEN_MAIN_MAP, isSplit);
+
+        if (mNaviPackage.getPreviewStatus()){
+            OpenApiHelper.enterPreview(MAP_TYPE);
+            ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.TOUCH);
+        }
     }
 
     public void exitPreviewIfNeeded() {
