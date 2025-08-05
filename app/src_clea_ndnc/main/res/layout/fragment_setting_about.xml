@@ -52,33 +52,27 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-        <com.sgm.navi.ui.view.SkinLinearLayout
-            android:id="@+id/setting_others_about_image_layout"
-            android:layout_width="@dimen/dp_217"
-            android:layout_height="wrap_content"
+        <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/setting_others_about_image"
+            android:layout_width="@dimen/dp_218"
+            android:layout_height="@dimen/dp_160"
             android:layout_marginStart="@dimen/dp_141"
             android:layout_marginTop="@dimen/dp_35"
-            android:gravity="center"
-            android:orientation="vertical"
+            android:src="@mipmap/icon_setting_about"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout">
+            app:layout_constraintTop_toBottomOf="@+id/setting_others_about_layout" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/setting_others_about_image"
-                android:layout_width="@dimen/dp_218"
-                android:layout_height="@dimen/dp_160"
-                android:src="@mipmap/icon_setting_about" />
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:id="@+id/setting_others_about_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_27"
-                android:text="@{viewModel.getVersionName()}"
-                android:textColor="@color/setting_bg_tab_text_unselect"
-                android:textSize="@dimen/sp_26" />
-        </com.sgm.navi.ui.view.SkinLinearLayout>
-
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/setting_others_about_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_27"
+            android:text="@{viewModel.getVersionName()}"
+            android:textColor="@color/setting_bg_tab_text_unselect"
+            android:textSize="@dimen/sp_26"
+            app:layout_constraintEnd_toEndOf="@id/setting_others_about_image"
+            app:layout_constraintStart_toStartOf="@id/setting_others_about_image"
+            app:layout_constraintTop_toBottomOf="@id/setting_others_about_image" />
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_392"
@@ -220,6 +214,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_77"
                 android:layout_marginTop="@dimen/dp_14"
+                android:visibility="gone"
                 android:background="@drawable/bg_setting_about">
 
                 <com.sgm.navi.ui.view.SkinTextView
