@@ -667,7 +667,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
-        if (mViewModel.showNdGoHomeView()) {
+        if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
             //如果是ND  需要把数据转换为dp
             int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
             int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());

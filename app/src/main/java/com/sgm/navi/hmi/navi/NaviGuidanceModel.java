@@ -99,6 +99,7 @@ import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.utils.ClusterMapOpenCloseListener;
@@ -1741,7 +1742,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
-        if (true) {
+        if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
             //如果是ND  需要把数据转换为dp
             int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
             int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
