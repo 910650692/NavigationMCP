@@ -207,6 +207,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         }
         getMapview().getOperatorGesture().hidePoiOn3DMoving(false);
         getMapview().getOperatorGesture().hidePoiOn3DSliding(false);
+        getMapview().getOperatorGesture().lockMapPitchAngle(true);
     }
 
     /**
