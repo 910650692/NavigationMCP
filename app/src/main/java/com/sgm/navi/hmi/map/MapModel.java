@@ -1162,12 +1162,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     }
                     //半径
                     final int radius = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.AROUND_RADIUS, 5000);
+                    //是否作为终点
+                    final boolean asEnd = bundle.getBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, false);
                     final Parcelable parcelable = bundle.getParcelable(IVrBridgeConstant.VoiceIntentParams.AROUND_POINT);
                     if (parcelable instanceof GeoPoint centerPoint) {
                         //中心点
                         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
                         poiInfoEntity.setPoint(centerPoint);
-                        mViewModel.toSearchAroundFragment(aroundKey, radius, poiInfoEntity);
+                        mViewModel.toSearchAroundFragment(aroundKey, radius, poiInfoEntity, asEnd);
                     }
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.ROUTING:

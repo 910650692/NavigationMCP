@@ -1007,13 +1007,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
-    public void toSearchAroundFragment(String keyword, final int radius, PoiInfoEntity endPoint) {
+    public void toSearchAroundFragment(String keyword, final int radius, PoiInfoEntity endPoint, boolean asEnd) {
         Bundle args = new Bundle();
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.AROUND_SEARCH);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
         args.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, endPoint);
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_RANGE, radius);
+        args.putBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, asEnd);
         addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
