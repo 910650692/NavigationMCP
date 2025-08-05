@@ -46,7 +46,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/setting_others_account"
+                android:text="@string/car_connect_binding_user_name"
                 android:textSize="@dimen/sp_34"
                 android:textColor="@color/setting_bg_tab_text_select" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
