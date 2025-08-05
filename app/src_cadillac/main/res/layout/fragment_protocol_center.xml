@@ -172,6 +172,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.sgm.navi.ui.view.SkinImageView
+                        clickCommand="@{viewModel.mCloseProtocolCenter}"
                         android:id="@+id/protocol_center_back"
                         android:layout_width="@dimen/dp_80"
                         android:layout_height="@dimen/dp_80"
