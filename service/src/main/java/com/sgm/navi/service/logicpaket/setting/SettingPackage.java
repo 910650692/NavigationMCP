@@ -840,6 +840,15 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
+     * 恢复默认设置
+     */
+    public void resetSettingConfig() {
+        for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+            callback.onResetSettingConfig();
+        }
+    }
+
+    /**
      * 获取路况开关
      *
      * @return 路况开关 true：开启 false：关闭
@@ -1049,14 +1058,21 @@ public final class SettingPackage implements SettingAdapterCallback {
          * @param key   设置项的key值
          * @param value 设置项对应的value值
          */
-        default void onSettingChanged(String key, String value){
+        default void onSettingChanged(String key, String value) {
 
         }
 
         /**
-         * @param routePreferenceID  偏好ID
+         * @param routePreferenceID 偏好ID
          */
-        default void onRoutePreferenceChange(RoutePreferenceID routePreferenceID){
+        default void onRoutePreferenceChange(RoutePreferenceID routePreferenceID) {
+
+        }
+
+        /**
+         * 恢复默认设置
+         */
+        default void onResetSettingConfig() {
 
         }
     }

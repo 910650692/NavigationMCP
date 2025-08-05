@@ -233,6 +233,7 @@ public class SettingOthersModel extends BaseModel<SettingOthersViewModel>
      */
     public void resetSetting() {
         mSettingPackage.initAllSetting();
+        mSettingPackage.resetSettingConfig();
     }
 
     /**

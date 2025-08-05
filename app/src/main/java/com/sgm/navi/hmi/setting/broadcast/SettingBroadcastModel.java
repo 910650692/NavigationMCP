@@ -185,6 +185,11 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     }
 
     @Override
+    public void onResetSettingConfig() {
+        Logger.d(TAG,"onResetSettingConfig: ");
+    }
+
+    @Override
     public void onVoiceSet(int result) {
         mViewModel.setCurrentVoice();
     }
