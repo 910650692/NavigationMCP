@@ -3,8 +3,11 @@ package com.sgm.navi.service.logicpaket.signal;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.JsonLog;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.signal.SignalAdapter;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
 import com.sgm.navi.service.define.signal.RoadConditionGroup;
@@ -357,6 +360,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      */
     public void setSdNavigationStatus(SdNavigationStatusGroup sdNavigationStatusGroup) {
         mSignalAdapter.setSdNavigationStatus(sdNavigationStatusGroup);
+        JsonLog.saveJsonToCacheV2(AppCache.getInstance().getMContext(), sdNavigationStatusGroup, "cleacan.json", "NavigationStatus");
     }
 
     /**
@@ -416,6 +420,7 @@ public final class SignalPackage implements SignalAdapterCallback {
      */
     public void setRoadConditionGroup(RoadConditionGroup roadConditionGroup) {
         mSignalAdapter.setRoadConditionGroup(roadConditionGroup);
+        JsonLog.saveJsonToCacheV2(AppCache.getInstance().getMContext(), roadConditionGroup, "cleacan.json", "RoadConditionGroup");
     }
 
     /**
@@ -427,6 +432,7 @@ public final class SignalPackage implements SignalAdapterCallback {
             value = 65535;
         }
         mSignalAdapter.setTotalDistanceFromStartToDestinationOnNavigation(value);
+        JsonLog.saveJsonToCacheV2(AppCache.getInstance().getMContext(), value, "cleacan.json", "TotalDistance");
     }
 
     /**
@@ -438,6 +444,7 @@ public final class SignalPackage implements SignalAdapterCallback {
             value = 65535;
         }
         mSignalAdapter.setTotalPredictedTimeFromStartToDestinationOnNavigation(value);
+        JsonLog.saveJsonToCacheV2(AppCache.getInstance().getMContext(), value, "cleacan.json", "TotalPredictedTime");
     }
 
     /**

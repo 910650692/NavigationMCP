@@ -3,13 +3,10 @@ package com.sgm.navi.l2pp;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.adas.JsonLog;
+import com.android.utils.log.JsonLog;
 import com.sgm.navi.adas.bean.OddBean;
-import com.sgm.navi.fsa.BuildConfig;
 import com.sgm.navi.fsa.R;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteOdd;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.L2NaviBean;
@@ -127,7 +124,7 @@ public final class GmcL2ppManager {
             }
             String json = GsonUtils.toJson(routeL2Data);
             Logger.d(TAG, "send SD Map route data");
-            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_route");
+            JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), json, "l2.json", "l2_route");
             // 发送SD Map route数据
             mAdasManager.sendData(DataType.SDRoute, json.getBytes());
         }
@@ -142,7 +139,7 @@ public final class GmcL2ppManager {
             }
             String json = GsonUtils.toJson(l2NaviBean);
             Logger.d(TAG, "send SD Map tbt data: " , json);
-            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(json, "l2.json", "l2_tbt");
+            JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), json, "l2.json", "l2_tbt");
             // 发送SD Map tbt数据
             mAdasManager.sendData(DataType.SDPeriodShortData, json.getBytes());
         }
@@ -167,7 +164,7 @@ public final class GmcL2ppManager {
                 return;
             }
             final String jsonString = new String(bytes, StandardCharsets.UTF_8);
-            if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(jsonString, "l2.json", "l2_odd");
+            JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), jsonString, "l2.json", "l2_odd");
             Logger.d(TAG, "ODD data fromJson start");
             OddBean oddBean = null;
             try {

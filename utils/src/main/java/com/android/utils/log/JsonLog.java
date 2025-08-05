@@ -1,11 +1,11 @@
-package com.sgm.navi.adas;
+package com.android.utils.log;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.util.Log;
 
-import com.android.utils.log.Logger;
-import com.sgm.navi.service.AppCache;
+import com.android.utils.gson.GsonUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,9 +54,6 @@ public final class JsonLog {
      * @param json  json
      */
     public static void print(final String tag, final String json) {
-        if (!Logger.isDebugLevel()) {
-            return;
-        }
         if (mExecutorService == null) {
             mExecutorService = Executors.newSingleThreadExecutor();
         }
@@ -76,8 +75,8 @@ public final class JsonLog {
      * @param json json
      * @param fileName 文件名
      */
-    public static void saveJsonToCache(final String json, final String fileName) {
-        saveJsonToCache(json, fileName, null);
+    public static void saveJsonToCache(Context context, final String json, final String fileName) {
+        saveJsonToCache(context, json, fileName, null);
     }
 
     /**
@@ -88,7 +87,7 @@ public final class JsonLog {
      * @param tag   TAG
      */
     @SuppressLint("SimpleDateFormat")
-    public static void saveJsonToCache(final String json, final String fileName, final String tag) {
+    public static void saveJsonToCache(Context context, final String json, final String fileName, final String tag) {
         if (!Logger.isDebugLevel()) {
             return;
         }
@@ -104,10 +103,37 @@ public final class JsonLog {
             } else {
                 message = LINE_SEPARATOR + currentTime + " " + TAG + LINE_SEPARATOR + message;
             }
-            final File cacheDir = AppCache.getInstance().getMContext().getCacheDir();
+            final File cacheDir = context.getCacheDir();
             final File file = new File(cacheDir, fileName);
             try (FileWriter fileWriter = new FileWriter(file, true)) {
                 fileWriter.write(message);
+            } catch (IOException e) {
+                // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
+                Log.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);
+            }
+        });
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static void saveJsonToCacheV2(Context context, final Object object, final String fileName, final String tag) {
+        if (!Logger.isDebugLevel()) {
+            return;
+        }
+        if (mExecutorService == null) {
+            mExecutorService = Executors.newSingleThreadExecutor();
+        }
+        mExecutorService.submit(() -> {
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
+            final String currentTime = dateFormat.format(new Date());
+            Map<String, Object> map = new HashMap<>();
+            map.put("currentTime", currentTime);
+            map.put("tag", (tag == null ? TAG : tag));
+            map.put("data", object);
+            String json = jsonFormat(GsonUtils.toJson(map)) + "," + LINE_SEPARATOR;
+            final File cacheDir = context.getCacheDir();
+            final File file = new File(cacheDir, fileName);
+            try (FileWriter fileWriter = new FileWriter(file, true)) {
+                fileWriter.write(json);
             } catch (IOException e) {
                 // 此类仅在本地调试时使用，且因为格式需要所以使用原生的log
                 Log.e(TAG, "Error saving JSON data to cache file: " + file.getAbsolutePath(), e);

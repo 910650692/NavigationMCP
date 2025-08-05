@@ -18,7 +18,6 @@ import com.android.utils.ScreenUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
-import com.sgm.navi.adas.JsonLog;
 import com.sgm.navi.fsa.bean.DestInfo;
 import com.sgm.navi.fsa.bean.GeoPoint;
 import com.sgm.navi.fsa.bean.LaneLineInfo;
@@ -76,7 +75,6 @@ import com.sgm.navi.utils.ClusterMapOpenCloseManager;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenListener;
 import com.sgm.navi.utils.ThreeFingerFlyingScreenManager;
 import com.gm.fsa.service.FSAService;
-import com.gm.fsa.service.catalog.FSACatalog;
 import com.iauto.vtserver.VTDescription;
 import com.iauto.vtserver.VTServerBQJni;
 
@@ -656,7 +654,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
 
         final FsaServiceEvent event = (FsaServiceEvent) mService.eventHandler.getEventById(functionId);
         event.setOutputPayload(info.getBytes(StandardCharsets.UTF_8));
-        if (Logger.isDebugLevel()) JsonLog.saveJsonToCache(info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
+//        JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), info, "fsa.json", functionId + "-" + FsaIdString.function2String(functionId));
         if (functionId == FsaConstant.FsaFunction.ID_ENLARGE_ICON || functionId == FsaConstant.FsaFunction.ID_HUD_ENLARGE_MAP) {
             Logger.d(FsaConstant.FSA_TAG, "sendEvent: ",functionId, "-" , FsaIdString.function2String(functionId));
         } else if (functionId == FsaConstant.FsaFunction.ID_FINGER_FLYING_HUD) {//三指飞屏

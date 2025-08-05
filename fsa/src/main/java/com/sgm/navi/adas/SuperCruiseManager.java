@@ -2,6 +2,7 @@ package com.sgm.navi.adas;
 
 import com.android.utils.NetWorkUtils;
 import com.android.utils.gson.GsonUtils;
+import com.android.utils.log.JsonLog;
 import com.android.utils.log.Logger;
 import com.gm.cn.adassdk.AdasDataStateListener;
 import com.gm.cn.adassdk.AdasManager;
@@ -9,6 +10,7 @@ import com.gm.cn.adassdk.proto.NaviLinkProto;
 import com.gm.cn.adassdk.proto.RouteInfo;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
@@ -563,7 +565,7 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
         final String json = GsonUtils.toJson(superCruiseJson);
-        JsonLog.saveJsonToCache(json, "sc.json", "sendLinkData");
+        JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), json, "sc.json", "sendLinkData");
         Logger.d(TAG, "sendData: ", json);
 //        JsonLog.print(TAG, json);
     }
@@ -723,10 +725,8 @@ public final class SuperCruiseManager {
         RouteInfo.RouteProto route = generateRouteProto(active);
         try {
             String routeInfo = JsonFormat.printer().printingEnumsAsInts().omittingInsignificantWhitespace().print(route);
-            if (Logger.isDebugLevel()) {
-//                JsonLog.print("sendRouteData", routeInfo);
-                JsonLog.saveJsonToCache(routeInfo, "sc.json", "sendRouteData");
-            }
+//            JsonLog.print("sendRouteData", routeInfo);
+            JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), routeInfo, "sc.json", "sendRouteData");
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
