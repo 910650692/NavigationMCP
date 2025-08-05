@@ -144,6 +144,11 @@ public class WeChatModel extends BaseModel<WeChatViewModel> implements WeChatCal
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
 
         }

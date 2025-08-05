@@ -319,6 +319,11 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
             setNetworkConnected(true);
         }

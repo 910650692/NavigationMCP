@@ -550,6 +550,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     public void onNetLinkPropertiesChanged() {
     }
 
+    @Override
+    public void onNetValidated() {
+
+    }
+
     private static final class InstanceHolder {
         private static final LauncherWindowService instance = new LauncherWindowService();
     }

@@ -394,6 +394,11 @@ public final class SuperCruiseManager {
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
             Logger.i(TAG, "onNetConnectSuccess: ");
             setOnlineMapVersion();

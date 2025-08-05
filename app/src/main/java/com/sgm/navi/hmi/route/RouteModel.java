@@ -1617,4 +1617,9 @@ public void setPoint() {
     public void onNetDisConnect() {
 
     }
+
+    @Override
+    public void onNetValidated() {
+
+    }
 }

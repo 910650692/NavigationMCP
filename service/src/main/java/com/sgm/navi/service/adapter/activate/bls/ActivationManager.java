@@ -47,15 +47,15 @@ public final class ActivationManager {
     private final static String SD = "SD";
     private static int CREATE_ORDER_NUM = 0;
 
-    private final static String EXCEPTION_CODE = "Exception code : ";
-    private final static String EXCEPTION_MSG = "Exception msg : ";
-
-
     private IActivateHelper mActivateListener;
     private ActivationModule mActivationService;
     private boolean mIsInit = false;
 
     private ActivationManager() {
+        DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
+        Logger.e(TAG, "VIN = ", DEVICES_ID);
+        final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
+        Logger.e(TAG, "当前车机环境 = ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**
@@ -78,7 +78,7 @@ public final class ActivationManager {
         Logger.e(TAG, "ActivationManager: devicesId = ", DEVICES_ID);
         Logger.e(TAG, "                  sysVersion = ", SYS_VERSION);
         final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
-        Logger.e(TAG, "                   当前车机环境 = ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
+        Logger.e(TAG, "当前车机环境 = ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**

@@ -71,7 +71,7 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
      */
     public void retryActivate() {
         Logger.e(TAG, "retryActivate: ", mActivateState);
-        if (mActivateState == AutoMapConstant.ActivateState.ACTIVATE_FAILED) {
+        if (isActivateFailed()) {
             ActivatePackage.getInstance().startActivate();
         }
     }

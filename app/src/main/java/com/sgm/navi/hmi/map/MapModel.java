@@ -2407,16 +2407,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mStartExceptionDialog = null;
     }
 
-    /**
-     * 监听网络链接，目前用于激活弹窗以及StartupExceptionDialog
-     */
+
     @Override
-    public void onNetConnectSuccess() {
-        Logger.e(TAG, "<<<onNetConnectSuccess>>>");
+    public void onNetValidated() {
+        Logger.e(TAG, "<<<onNetValidated>>>");
         if (mViewModel == null) {
             Logger.e(TAG, "mViewModel is null");
             return;
         }
+
         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
             Logger.e(TAG, "网络异常弹窗展示中，网络连恢复后消失");
             mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
@@ -2434,6 +2433,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             Logger.e(TAG, "激活失败弹窗展示中，网络恢复重试一遍");
             ActivateUiStateManager.getInstance().retryActivate();
         }
+    }
+
+    /**
+     * 监听网络链接，目前用于激活弹窗以及StartupExceptionDialog
+     */
+    @Override
+    public void onNetConnectSuccess() {
     }
 
     @Override

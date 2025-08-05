@@ -99,6 +99,11 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
             setPreferenceEnable(true);
         }

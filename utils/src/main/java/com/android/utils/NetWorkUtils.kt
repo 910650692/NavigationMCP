@@ -135,6 +135,16 @@ class NetWorkUtils private constructor() {
 
     inner class NetworkCallback : ConnectivityManager.NetworkCallback() {
 
+        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities)
+            if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+                Logger.i(tag, "网络验证完成")
+                for (code in netObservers!!) {
+                    code.onNetValidated() // 新增验证完成回调
+                }
+            }
+        }
+
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             if(Logger.openLog) {
@@ -185,6 +195,8 @@ class NetWorkUtils private constructor() {
     }
 
     interface NetworkObserver{
+        fun onNetValidated()
+
         fun onNetConnectSuccess()
 
         fun onNetUnavailable()

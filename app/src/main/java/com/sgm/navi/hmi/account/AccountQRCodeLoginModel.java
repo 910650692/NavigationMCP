@@ -81,6 +81,11 @@ public class AccountQRCodeLoginModel extends BaseModel<AccountQRCodeLoginViewMod
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
 
         }

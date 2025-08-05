@@ -20,6 +20,7 @@ import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
@@ -216,13 +217,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (ActivateUiStateManager.getInstance().isActivating()) {
             Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "展示加载动画");
             showActivatingView(ActivateUiStateManager.getInstance().isActivating());
-        } else if (ActivateUiStateManager.getInstance().isActivateFailed()) {
-            int errCode = ActivateUiStateManager.getInstance().getErrorCodeSave();
-            String msg = ActivateUiStateManager.getInstance().getErrorMsgSave();
-            Logger.e(MapDefaultFinalTag.ACTIVATE_SERVICE_TAG, "展示失败弹窗:", errCode, msg);
-            if (!ConvertUtils.equals(errCode, 0) && !ConvertUtils.isEmpty(msg)) {
-                showActivateFailedDialog(errCode, msg);
-            }
+        } else {
+            ActivateUiStateManager.getInstance().retryActivate();
         }
 
         //check Home键广播

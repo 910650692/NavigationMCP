@@ -294,4 +294,9 @@ public class SceneNaviTmcImpl extends BaseSceneModel<SceneNaviTmcView> implement
                 INaviSceneEvent.SceneStateChangeType.SceneShowState :
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_SCENE_TMC);
     }
+
+    @Override
+    public void onNetValidated() {
+
+    }
 }

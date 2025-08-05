@@ -1124,6 +1124,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
     }
 
+    @Override
+    public void onNetValidated() {
+
+    }
+
     public interface OnNetStatusChangeListener {
         /**
          * @param isConnected true 网络可用，false 网络不可用

@@ -229,6 +229,11 @@ public class DrivingRecordLoginModel extends BaseModel<DrivingRecordLoginViewMod
 
     private final NetWorkUtils.NetworkObserver mNetworkObserver = new NetWorkUtils.NetworkObserver() {
         @Override
+        public void onNetValidated() {
+
+        }
+
+        @Override
         public void onNetConnectSuccess() {
 
         }
