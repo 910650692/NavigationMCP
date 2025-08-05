@@ -31,8 +31,6 @@ public class SceneNaviDriveReportImpl extends BaseSceneModel<SceneNaviDriveRepor
      */
     public void onDriveReport(final NaviDriveReportEntity entity) {
         Logger.i(TAG, "onDriveReport");
-        mTotalTime.set(entity.getNaviStatisticsInfoEntity().getDrivenTime() + "");
-        mTotalMiles.set(entity.getNaviStatisticsInfoEntity().getDrivenDist() + "");
         updateSceneVisible(true);
     }
 

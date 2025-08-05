@@ -9,6 +9,7 @@ import com.autonavi.gbl.common.path.model.TollGateInfo;
 import com.autonavi.gbl.common.path.option.RouteOption;
 import com.autonavi.gbl.common.path.option.RouteType;
 import com.autonavi.gbl.guide.model.CrossImageInfo;
+import com.autonavi.gbl.guide.model.DriveReport;
 import com.autonavi.gbl.guide.model.ExitDirectionInfo;
 import com.autonavi.gbl.guide.model.LaneInfo;
 import com.autonavi.gbl.guide.model.LightBarDetail;
@@ -44,6 +45,7 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviCongestionInfoEntity;
+import com.sgm.navi.service.define.navi.NaviDriveReportEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviMixForkInfo;
@@ -673,6 +675,21 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
             if (guidanceObserver != null) {
                 guidanceObserver.onShowNaviFacility(naviRoadFacilityEntities);
+            }
+        }
+    }
+
+    @Override
+    public void onDriveReport(DriveReport report) {
+        Logger.i(TAG, "onDriveReport");
+        if (report != null && report.blNaviStatisticsInfo != null) {
+            NaviDriveReportEntity naviDriveReportEntity = new NaviDriveReportEntity();
+            naviDriveReportEntity.setDrivenTime(report.blNaviStatisticsInfo.drivenTime);
+            naviDriveReportEntity.setDrivenDist(report.blNaviStatisticsInfo.drivenDist);
+            for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                if (guidanceObserver != null) {
+                    guidanceObserver.onDriveReport(naviDriveReportEntity);
+                }
             }
         }
     }

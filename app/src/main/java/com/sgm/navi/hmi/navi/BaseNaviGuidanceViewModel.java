@@ -41,9 +41,11 @@ import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.sgm.navi.service.define.screen.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.tts.NaviMediaPlayer;
 import com.sgm.navi.ui.BuildConfig;
@@ -389,6 +391,11 @@ public class BaseNaviGuidanceViewModel extends
             mView.onNaviStop();
         }
         closeAllFragment();
+        // 混动车型才显示驾驶报告页面,并且必须是真实导航
+        if (OpenApiHelper.powerType() == NumberUtils.NUM_2 &&
+                NaviPackage.getInstance().getCurrentNaviType() == NumberUtils.NUM_0) {
+            addFragment(new NaviDriveReportFragment(), new Bundle());
+        }
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             addFragment(new SplitFragment(), new Bundle());
         }

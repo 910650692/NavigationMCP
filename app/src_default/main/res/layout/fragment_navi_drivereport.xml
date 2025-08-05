@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="ViewModel"
+            type="com.sgm.navi.hmi.navi.NaviDriveReportViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/dp_603"
+        android:layout_height="@dimen/dp_418"
+        android:paddingHorizontal="@dimen/dp_29"
+        android:paddingVertical="@dimen/dp_29"
+        android:background="@drawable/bg_shadow_navi_buick">
+
+        <View
+            android:id="@+id/start_point"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_34"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_44"
+            android:background="@drawable/bg_start_point"/>
+
+        <View
+            android:id="@+id/end_point"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_34"
+            app:layout_constraintTop_toBottomOf="@+id/start_point"
+            android:layout_marginTop="@dimen/dp_40"
+            android:background="@drawable/bg_end_oval_point"/>
+
+        <TextView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toStartOf="@+id/exit"
+            app:layout_constraintTop_toTopOf="@+id/start_point"
+            app:layout_constraintBottom_toBottomOf="@+id/start_point"
+            app:layout_constraintStart_toEndOf="@+id/start_point"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/navi_color_000000_70"
+            android:text="@{ViewModel.mStartPos}"
+            tools:text="柯桥路123号裕丰半导体"/>
+
+        <TextView
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/end_point"
+            app:layout_constraintBottom_toBottomOf="@+id/end_point"
+            app:layout_constraintStart_toEndOf="@+id/end_point"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/navi_color_000000_70"
+            android:text="@{ViewModel.mEndPos}"
+            tools:text="淮海路733号"/>
+
+        <ImageView
+            android:id="@+id/exit"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/img_off"
+            android:layout_marginTop="@dimen/dp_27"
+            android:layout_marginEnd="@dimen/dp_20"
+            clickCommand="@{ViewModel.closeAllFragment}"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/navi_color_000000_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/dp_141"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginEnd="@dimen/dp_34"/>
+
+        <TextView
+            android:id="@+id/driven_dist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_34"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_125"
+            android:textColor="@color/navi_color_000000_70"
+            android:textSize="@dimen/sp_26"
+            android:text="@string/driven_dist"
+            tools:text="导航里程"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/driven_dist"
+            app:layout_constraintBottom_toTopOf="@+id/driven_dist"
+            android:text="@{ViewModel.mDrivenDist}"
+            android:textSize="@dimen/sp_29"
+            android:textColor="@color/navi_color_000000_100"
+            tools:text="99.12km"/>
+
+        <TextView
+            android:id="@+id/driven_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_125"
+            android:layout_marginStart="@dimen/dp_309"
+            android:textColor="@color/navi_color_000000_70"
+            android:textSize="@dimen/sp_26"
+            android:text="@string/driven_time"
+            tools:text="驾驶时长"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/driven_time"
+            app:layout_constraintBottom_toTopOf="@+id/driven_time"
+            android:textSize="@dimen/sp_29"
+            android:textColor="@color/navi_color_000000_100"
+            android:text="@{ViewModel.mDrivenTime}"
+            tools:text="1:08:09"/>
+
+        <TextView
+            android:id="@+id/estim_consum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_34"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:textColor="@color/navi_color_000000_70"
+            android:textSize="@dimen/sp_26"
+            android:text="@string/estim_consum"
+            tools:text="预计节油"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/estim_consum"
+            app:layout_constraintBottom_toTopOf="@+id/estim_consum"
+            android:textColor="@color/navi_color_000000_100"
+            android:textSize="@dimen/sp_26"
+            android:text="@{ViewModel.mEstimateFuelConsume}"
+            tools:text="106L/100km"/>
+
+
+        <TextView
+            android:id="@+id/total_consum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/dp_309"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/dp_34"
+            android:textColor="@color/navi_color_000000_70"
+            android:textSize="@dimen/sp_26"
+            android:text="@string/total_consum"
+            tools:text="累积节油"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/total_consum"
+            app:layout_constraintBottom_toTopOf="@+id/total_consum"
+            android:textColor="@color/navi_color_000000_100"
+            android:textSize="@dimen/sp_26"
+            android:text="@{ViewModel.mTotalFuelConsume}"
+            tools:text="126L"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

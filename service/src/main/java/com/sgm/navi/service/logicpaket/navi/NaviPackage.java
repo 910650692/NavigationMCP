@@ -43,6 +43,7 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.NaviCongestionInfoEntity;
+import com.sgm.navi.service.define.navi.NaviDriveReportEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviExchangeEntity;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
@@ -141,6 +142,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private boolean hasSetCrossRect = false;
     @Setter
     private boolean mIsNaviViewActive = false; // 记录引导页面是否存在
+    @Getter
+    private NaviDriveReportEntity mNaviDriveReportEntity;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -217,6 +220,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         final boolean result = mNaviAdapter.startNavigation(isSimulate ?
                 NaviStartType.NAVI_TYPE_SIMULATION : NaviStartType.NAVI_TYPE_GPS);
         if (result) {
+            mNaviDriveReportEntity = null;
             if (isSimulate) {
                 mCurrentNaviType = NumberUtils.NUM_1;
                 mNaviAdapter.setSimulationSpeed(40);
@@ -1081,6 +1085,19 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 }
             }
         });
+    }
+
+    @Override
+    public void onDriveReport(NaviDriveReportEntity report) {
+        List<RouteParam> routeParams = mRouteAdapter.
+                getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (!ConvertUtils.isEmpty(routeParams)) {
+            report.setStartPos(routeParams.get(0).getName());
+            report.setEndPos(routeParams.get(routeParams.size() - 1).getName());
+        }
+        report.setEstimateFuelConsume(mSignalAdapter.getPredictedFuelSavingPer100km());
+        report.setTotalFuelConsume(mSignalAdapter.getTotalFuelSaving());
+        mNaviDriveReportEntity = report;
     }
 
     /**

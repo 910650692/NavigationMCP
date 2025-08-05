@@ -136,6 +136,7 @@ public interface MapDefaultFinalTag {
     /*** NaviApp_Navi_Scene_Cross **/
     String NAVI_SCENE_CROSS = DEFAULT_TAG + "_Navi" + SCENE_TAG + "_Cross";
     String NAVI_HMI_MODEL = NAVI_HMI_TAG + "_Model";
+    String NAVI_HMI_MODEL_DRIVE_REPORT = NAVI_HMI_TAG + "_Drive_Report_Model";
     String NAVI_HMI_VIEW_MODEL = NAVI_HMI_TAG + "_ViewModel";
     String NAVI_HMI_VIEW = NAVI_HMI_TAG + "_Fragment";
     /*** NaviApp_Navi_Bury_Point **/

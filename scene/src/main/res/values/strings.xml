@@ -176,6 +176,10 @@
     <string name="tip_msg_12">抵达终点后剩余电量低</string>
     <string name="tip_msg_12_sub_title">是否打开补能规划？</string>
     <string name="tbt_loading">请求路线信息中</string>
+    <string name="driven_dist">导航里程</string>
+    <string name="driven_time">驾驶时长</string>
+    <string name="estim_consum">预计节油</string>
+    <string name="total_consum">累积节油</string>
 
     <!--算路相关-->
     <string name="route_search_loading">路线规划中…</string>
