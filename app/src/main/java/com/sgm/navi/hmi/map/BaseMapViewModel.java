@@ -63,6 +63,7 @@ import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
@@ -1435,7 +1436,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void startNaviForRouteOver() {
         if (NaviStatus.NaviStatusType.SELECT_ROUTE == NaviStatusPackage.getInstance().getCurrentNaviStatus()) {
-            Logger.i(TAG, "startNaviForRouteOver addNaviFragment");
+            SearchPackage.getInstance().clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
+            if (Logger.openLog) {
+                Logger.i(TAG, "startNaviForRouteOver addNaviFragment");
+            }
             Bundle bundle = new Bundle();
             bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, AutoMapConstant.NaviType.NAVI_GPS);
             closeAllFragment();
