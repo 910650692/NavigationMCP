@@ -3,6 +3,7 @@ package com.sgm.navi.hmi.traffic;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.utils.ScreenUtils;
+import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.DialogTrafficBigPicBinding;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.service.define.map.MapType;
@@ -64,7 +66,11 @@ public class BigPicDetailDialog extends BaseFullScreenDialog<DialogTrafficBigPic
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.width = dialogWidth;
         layoutParams.height = dialogHeight;
-        layoutParams.gravity = Gravity.CENTER;
+        if(TextUtils.equals("cadi", BuildConfig.FLAVOR)){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.START;
+        } else {
+            layoutParams.gravity = Gravity.CENTER;
+        }
         getWindow().setAttributes(layoutParams);
     }
 
