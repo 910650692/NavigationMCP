@@ -2157,11 +2157,25 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onMultiRoundExit(final String type) {
         Logger.d(IVrBridgeConstant.TAG, "onMultiRoundExit: type = " + type);
+        final CallResponse response;
         if (ConvertUtils.equals("CONFIRM_NO", type)) {
-            VoiceSearchManager.getInstance().sendClosePage();
-            return CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.CANCLE_SUCCESS);
+            if (MapStateManager.getInstance().isNaviStatus()) {
+                if (null != mNewRoute) {
+                    response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
+                    response.setNeedPlayMessage(true);
+                    mNewRoute = null;
+                } else {
+                    response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.UN_SUPPORT_IN_NAVI);
+                }
+            } else {
+                VoiceSearchManager.getInstance().sendClosePage();
+                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
+                response.setNeedPlayMessage(true);
+            }
+        } else {
+            response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
         }
-        return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
+        return response;
     }
 
     /**

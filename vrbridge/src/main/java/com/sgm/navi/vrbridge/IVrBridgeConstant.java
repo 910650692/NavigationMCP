@@ -468,6 +468,8 @@ public interface IVrBridgeConstant {
         String ROUTE_CHARGE_REFRESH = "已刷新路线";
 
         String UN_SUPPORT_SORT = "当前搜索结果不支持排序";
+
+        String UN_SUPPORT_IN_NAVI = "导航态不支持此指令";
     }
 
     interface PoiPageType {

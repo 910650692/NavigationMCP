@@ -8,6 +8,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.StringUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.baidu.oneos.protocol.bean.ArrivalBean;
 import com.baidu.oneos.protocol.bean.CallResponse;
 import com.baidu.oneos.protocol.bean.PoiBean;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 语音搜索处理类，用于多轮交互
@@ -519,8 +521,14 @@ public final class VoiceSearchManager {
         if (count == 1) {
             final PoiInfoEntity poiInfoEntity = mSearchResultList.get(0);
             if (null != poiInfoEntity && poiInfoEntity.isIsLocres()) {
-                //搜索结果为行政区域，直接回复HUGE，提示用户继续选择下一级或具体poi点
-                responsePoiHuge();
+                //当前Feature，行政区划直接发起路线规划
+                mPlanRouteResult = 0;
+                ThreadManager.getInstance().asyncDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        planRoute(poiInfoEntity, null);
+                    }
+                }, 300, TimeUnit.MILLISECONDS);
             } else {
                 //关键字搜结果只有一个，需要poi详情搜结果返回后再发起算路
                 mWaitPoiSearch = true;
@@ -1344,7 +1352,7 @@ public final class VoiceSearchManager {
         if (NaviStatus.NaviStatusType.NAVING.equals(curStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(curStatus)
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
-            bundle.putBoolean("IS_END", true);
+            bundle.putBoolean(IVrBridgeConstant.VoiceIntentParams.IS_END, true);
         }
     }
 
