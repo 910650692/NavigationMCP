@@ -50,6 +50,7 @@ import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
+import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
@@ -520,6 +521,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mViewModel.stopCruise();
         setMapFocusable(false);
         FloatViewManager.getInstance().showAllCardWidgetsAfterFragmentSizeChanged();
+        if (mViewModel != null) {
+            MessageCenterType messageCenterType = mViewModel.getCurrentMsgType();
+            if (MessageCenterType.CONTINUE_NAVI.equals(messageCenterType)) {
+                mViewModel.closeMessageCenter(false);
+            }
+        }
     }
 
     public void setMapFocusable(boolean b) {
