@@ -14,6 +14,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_route_secondary_poi"
+        android:paddingHorizontal="@dimen/dp_7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -22,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_65"
             android:maxLines="1"
-            android:layout_marginEnd="@dimen/dp_14"
             android:background="@drawable/bg_route_secondary_poi_selected"
             android:ellipsize="end"
             android:gravity="center"
