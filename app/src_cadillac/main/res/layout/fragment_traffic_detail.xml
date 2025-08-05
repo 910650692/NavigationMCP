@@ -21,6 +21,7 @@
         clickCommand="@{ViewModel.rootClick}"
         android:layout_width="@dimen/dp_922"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_259"
         android:background="@drawable/bg_shadow_navi_cadillac"
         android:minHeight="@dimen/dp_1102"
         android:paddingHorizontal="@dimen/dp_51"
