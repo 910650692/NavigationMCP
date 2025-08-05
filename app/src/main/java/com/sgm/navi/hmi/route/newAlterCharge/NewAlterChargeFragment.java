@@ -378,7 +378,7 @@ public class NewAlterChargeFragment extends BaseFragment<FragmentNewAlterChargeB
                 mBinding.stlFunction.setVisibility(View.GONE);
             } else {
                 mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone.setVisibility(View.VISIBLE);
-                mBinding.stlFunction.setVisibility(View.VISIBLE);
+                mBinding.stlFunction.setVisibility(View.GONE);
                 mBinding.scenePoiDetailsChargingStationView.poiChargeAreaPhone
                         .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + poiInfoEntities.getPhone());
             }

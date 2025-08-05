@@ -228,7 +228,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:visibility="visible">
+                    android:visibility="gone">
 
                     <com.sgm.navi.ui.view.SkinImageView
                         android:id="@+id/siv_phone"

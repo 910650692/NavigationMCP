@@ -227,6 +227,7 @@
                     clickCommand="@{ViewModel.getRouteSearchPhoneClick()}"
                     android:layout_width="@dimen/dp_114"
                     android:layout_height="match_parent"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent">

@@ -302,7 +302,7 @@ public class BaseNewAlterChargeViewModel extends BaseViewModel<NewAlterChargeFra
     public void showChargeStationDetail(final PoiInfoEntity poiInfoEntities) {
         mDetailsEntry = poiInfoEntities;
         if (!ConvertUtils.isEmpty(mDetailsEntry) && !ConvertUtils.isEmpty(mDetailsEntry.getPhone())) {
-            mRoutePhoneVisibility.set(true);
+            mRoutePhoneVisibility.set(false);
         } else {
             mRoutePhoneVisibility.set(false);
         }

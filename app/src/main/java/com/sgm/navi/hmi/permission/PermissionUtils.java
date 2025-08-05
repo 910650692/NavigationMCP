@@ -47,7 +47,6 @@ public class PermissionUtils {
     private final String[] permissionArray = new String[]{Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-            Manifest.permission.CALL_PHONE,
             Manifest.permission.GET_ACCOUNTS,
             Settings.ACTION_MANAGE_OVERLAY_PERMISSION};
 

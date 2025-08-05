@@ -98,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="@dimen/dp_114"
                 tools:visibility="gone"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/stl_around_search"
                 app:layout_constraintStart_toStartOf="parent"

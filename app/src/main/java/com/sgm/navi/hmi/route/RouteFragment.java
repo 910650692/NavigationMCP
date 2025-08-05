@@ -988,7 +988,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             stlPhone.setVisibility(View.GONE);
         } else {
             poiServiceAreaPhone.setVisibility(View.VISIBLE);
-            stlPhone.setVisibility(View.VISIBLE);
+            stlPhone.setVisibility(View.GONE);
             poiServiceAreaPhone
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + info.getPhone());
         }
@@ -1141,7 +1141,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mRoutePoiDetailsPageView.stlPhone.setVisibility(View.GONE);
         } else {
             poiChargeAreaPhone.setVisibility(View.VISIBLE);
-            mRoutePoiDetailsPageView.stlPhone.setVisibility(View.VISIBLE);
+            mRoutePoiDetailsPageView.stlPhone.setVisibility(View.GONE);
             poiChargeAreaPhone
                     .setText(ResourceUtils.Companion.getInstance().getString(R.string.route_poi_details_phone) + info.getPhone());
         }
