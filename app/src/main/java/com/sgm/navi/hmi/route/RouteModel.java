@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
@@ -84,11 +85,13 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResultObserver, ILayerPackageCallBack
-        , ImmersiveStatusScene.IImmersiveStatusCallBack, SearchResultCallback {
+        , ImmersiveStatusScene.IImmersiveStatusCallBack, SearchResultCallback , NetWorkUtils.NetworkObserver{
     private static final String TAG = RouteModel.class.getSimpleName();
+    private static final long NETWORK_STABLE_DELAY = 3000; // 3秒，延时路线刷新时间，防止网络波动
     private final SearchPackage mSearchPackage;
     private RoutePackage mRoutePackage;
     private LayerPackage mLayerPackage;
+    private NetWorkUtils mNetWorkUtils;
     private List<RouteLineInfo> mRouteLineInfos;
     private List<RouteWeatherInfo> mRouteWeatherInfos;
     private RouteChargeStationParam mRouteChargeStationParam;
@@ -118,11 +121,33 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     private int mSearchLoadingType = AutoMapConstant.RouteSearchType.NULL;
     //是否需要更改子节点数据
     private boolean mChildChange = true;
+    //是否在线算路0：离线 1：在线
+    private int mOnlineRoute = -1;
+    private Runnable mReRouteByNetChange = new Runnable() {
+
+        @Override
+        public void run() {
+            if (Boolean.TRUE.equals(mNetWorkUtils.checkNetwork())) {
+                //处于算路态并且为离线算路自动刷新
+                if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE)
+                        && mOnlineRoute == 0 && mViewModel != null) {
+                    Logger.d(TAG, "Automatic conversion to online route");
+                    cancelTimer();
+                    final RouteRequestParam param = new RouteRequestParam();
+                    param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
+                    param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_MANUAL_REFRESH);
+                    requestRouteMode(param);
+                    mViewModel.showSecondaryPoi();
+                }
+            }
+        }
+    };
 
     public RouteModel() {
         mLayerPackage = LayerPackage.getInstance();
         mRoutePackage = RoutePackage.getInstance();
         mSearchPackage = SearchPackage.getInstance();
+        mNetWorkUtils = NetWorkUtils.Companion.getInstance();
     }
 
     @Override
@@ -133,6 +158,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mLayerPackage.registerCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.registerCallBack(TAG, this);
         mRoutePackage.registerRouteObserver(TAG, this);
+        mNetWorkUtils.registerNetworkObserver(this);
         MapPackage.getInstance().setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP, MapStateStyle.MAP_ROUTING);
     }
 
@@ -150,6 +176,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.unRegisterCallBack(TAG);
+        mNetWorkUtils.unRegisterNetworkObserver(this);
     }
 
     /**
@@ -798,6 +825,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             NaviStatusPackage.getInstance().setNaviStatus(NaviStatus.NaviStatusType.SELECT_ROUTE);
         }
         showUIOnlineOffline(requestRouteResult.isMIsOnlineRoute());
+        mOnlineRoute = requestRouteResult.isMIsOnlineRoute() ? 1 : 0;
         if (endRouteParam == null) {
             Logger.e(TAG, "error endParam");
             return;
@@ -1557,5 +1585,36 @@ public void setPoint() {
         if (null != mViewModel) {
             mViewModel.getStartNaviClick().call();
         }
+    }
+
+    @Override
+    public void onNetConnectSuccess() {
+        ThreadManager.getInstance().removeHandleTask(mReRouteByNetChange);
+        ThreadManager.getInstance().postDelay(mReRouteByNetChange, NETWORK_STABLE_DELAY);
+    }
+
+    @Override
+    public void onNetUnavailable() {
+
+    }
+
+    @Override
+    public void onNetBlockedStatusChanged() {
+
+    }
+
+    @Override
+    public void onNetLosing() {
+
+    }
+
+    @Override
+    public void onNetLinkPropertiesChanged() {
+
+    }
+
+    @Override
+    public void onNetDisConnect() {
+
     }
 }
