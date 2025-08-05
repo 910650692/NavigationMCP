@@ -391,7 +391,7 @@
     <string name="setting_guide_plate_number_car_type">动力类型</string>
     <string name="setting_guide_plate_number_car_type_oil">燃油车</string>
     <string name="setting_guide_plate_number_car_type_ev">电动车</string>
-    <string name="setting_guide_plate_number_clear">是否要删除车辆</string>
+    <string name="setting_guide_plate_number_clear">是否要删除车辆？</string>
     <string name="setting_guide_plate_number_clear_tip">删除后无法使用限行提醒等功能</string>
     <string name="setting_guide_plate_number_default">京</string>
     <string name="setting_guide_plate_number_input">输入车牌</string>
