@@ -35,6 +35,7 @@ public class ActivateAdapterImpl implements IActivateApi {
     public void startActivate() {
         Logger.e(TAG, "startActivate : ");
         onActivating();
+        ActivationManager.getInstance().init();
         ActivationManager.getInstance().getThirdPartyUUID();
     }
 

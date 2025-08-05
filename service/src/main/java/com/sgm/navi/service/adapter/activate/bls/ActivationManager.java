@@ -56,15 +56,6 @@ public final class ActivationManager {
     private boolean mIsInit = false;
 
     private ActivationManager() {
-        resetVar();
-        mActivationService = ActivationModule.getInstance();
-        DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
-        Logger.e(TAG, "ActivationManager: devicesId = ", DEVICES_ID);
-        Logger.e(TAG, "                  sysVersion = ", SYS_VERSION);
-
-        final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
-        Logger.e(TAG, "当前车机环境 : "
-                , releaseStatus, " : ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**
@@ -78,6 +69,16 @@ public final class ActivationManager {
         APP_KEY = "";
         UUID = "";
         ORDER_ID = "";
+    }
+
+    public void init() {
+        resetVar();
+        mActivationService = ActivationModule.getInstance();
+        DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
+        Logger.e(TAG, "ActivationManager: devicesId = ", DEVICES_ID);
+        Logger.e(TAG, "                  sysVersion = ", SYS_VERSION);
+        final int releaseStatus = SystemProperties.getInt(RELEASE_STATUS, 0);
+        Logger.e(TAG, "                   当前车机环境 = ", (releaseStatus == 1 ? "生产环境" : "测试环境"));
     }
 
     /**
@@ -288,9 +289,9 @@ public final class ActivationManager {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
-                AutoMapConstant.DELAY_SECOND,
-                AutoMapConstant.DELAY_SECOND,
-                AutoMapConstant.DELAY_SECOND
+                AutoMapConstant.DELAY_SEVENTY_SECOND,
+                AutoMapConstant.DELAY_SEVENTY_SECOND,
+                AutoMapConstant.DELAY_SEVENTY_SECOND
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
 

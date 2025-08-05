@@ -29,6 +29,7 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 public class NetQueryManager implements NetMethodExportApi {
+    private final static String TAG = NetQueryManager.class.getSimpleName();
 
     private final static String EXCEPTION_CODE = "Exception code : ";
     private final static String EXCEPTION_MSG = "Exception msg : ";
@@ -83,6 +84,11 @@ public class NetQueryManager implements NetMethodExportApi {
      */
     public void queryAppKey(final AppKeyRequest req, final INetResultCallBack<AppKeyResponse> callBack) {
 
+        if (callBack == null || req == null) {
+            Logger.e(TAG, "queryAppKey error: ", "callBack =", (callBack == null), "req =", (req == null));
+            return;
+        }
+
         final AppKeyReq appKeyReq = new AppKeyReq(req.getMApiVersion());
 
         final NetDisposableObserver<AppKeyResponse> appKeyObserver = new NetDisposableObserver<AppKeyResponse>() {
@@ -93,8 +99,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE, e.getCode());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG, e.getMessage());
                 callBack.onFailed(e.getCode());
             }
         };
@@ -113,6 +119,10 @@ public class NetQueryManager implements NetMethodExportApi {
      * @param callBack 结果callBack
      */
     public void queryUuid(final UuidRequest req, final INetResultCallBack<UuidResponse> callBack) {
+        if (callBack == null || req == null) {
+            Logger.e(TAG, "queryUuid error: ", "callBack =", (callBack == null), "req =", (req == null));
+            return;
+        }
         NetConfigUtils.getInstance().setDeviceId(req.getMDeviceId());
         final UuidReq uuidReq = new UuidReq(
                 req.getMApiVersion(),
@@ -129,8 +139,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE, e.getCode());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG, e.getMessage());
                 callBack.onFailed(e.getCode());
             }
         };
@@ -149,7 +159,10 @@ public class NetQueryManager implements NetMethodExportApi {
      * @param callBack 结果callBack
      */
     public void createOrder(final CreateOrderRequest req, final INetResultCallBack<CreateOrderResponse> callBack) {
-
+        if (callBack == null || req == null) {
+            Logger.e(TAG, "createOrder error: ", "callBack =", (callBack == null), "req =", (req == null));
+            return;
+        }
         final CreateOrderReq createOrderReq = new CreateOrderReq(
                 req.getMApiVersion(),
                 req.getMAppId(),
@@ -165,8 +178,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE, e.getCode());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG, e.getMessage());
                 callBack.onFailed(e.getCode());
             }
         };
@@ -185,6 +198,10 @@ public class NetQueryManager implements NetMethodExportApi {
      * @param callBack 结果callBack
      */
     public void queryOrder(final QueryOrderRequest req, final INetResultCallBack<QueryOrderResponse> callBack) {
+        if (callBack == null || req == null) {
+            Logger.e(TAG, "queryOrder error: ", "callBack =", (callBack == null), "req =", (req == null));
+            return;
+        }
         final QueryOrderReq queryOrderReq = new QueryOrderReq(
                 req.getMApiVersion(),
                 req.getMAppId(),
@@ -200,8 +217,8 @@ public class NetQueryManager implements NetMethodExportApi {
 
             @Override
             public void onFailed(final ApiException e) {
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE , e.getCode());
-                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG , e.getMessage());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_CODE, e.getCode());
+                Logger.e(NetApiHelper.ACTIVATE_TAG, EXCEPTION_MSG, e.getMessage());
                 callBack.onFailed(e.getCode());
             }
         };

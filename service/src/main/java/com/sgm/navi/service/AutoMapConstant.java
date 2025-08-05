@@ -3,10 +3,6 @@ package com.sgm.navi.service;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
-import com.android.utils.file.FileUtils;
-
-import java.io.File;
-
 public interface AutoMapConstant {
     float MAP_ZOOM_LEVEL_MAX = 20F;
     float MAP_ZOOM_LEVEL_MIN = 3F;
@@ -23,7 +19,8 @@ public interface AutoMapConstant {
     int PLUG_TYPE_FAST = 9;
 
     int DELAY_MINUTE = 1;
-    int DELAY_SECOND = 70;
+    int DELAY_SEVENTY_SECOND = 70;
+    int DELAY_TEN_SECONDS = 10;
 
     int CANCEL_AUTO_PROTOCOL = 1;
     int CANCEL_LOCATION_PROTOCOL = 2;

@@ -15,8 +15,8 @@
     <string name="reminder_page_service">《高德服务条款》</string>
     <string name="reminder_page_privacy">《高德隐私权政策》</string>
     <string name="loading_url">加载中</string>
-    <string name="load_failed">未能成功获取协议内容</string>
-    <string name="load_retry">重试</string>
+    <string name="load_url_failed">未能成功获取协议内容</string>
+    <string name="load_url_retry">重试</string>
 
     <string name="service_terms_url_light">https://cache.amap.com/h5/h5/publish/241/index.html</string>
     <string name="service_terms_url_dark">https://cache.amap.com/h5/h5/publish/241/index.html</string>
