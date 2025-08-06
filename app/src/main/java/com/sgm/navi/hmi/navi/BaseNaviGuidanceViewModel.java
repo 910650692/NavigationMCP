@@ -687,6 +687,7 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     public void onUpdateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
+        mModelSaveEntity.setFyElecVehicleETAInfos(infos);
         if (null != mView) {
             mView.onUpdateElectVehicleETAInfo(infos);
         }
@@ -840,6 +841,12 @@ public class BaseNaviGuidanceViewModel extends
                 mView.restoreHandingCardView(
                         mModelSaveEntity.getHangingCardPoiList(),
                         mModelSaveEntity.getHandCardType());
+            }
+        }
+        if (Boolean.TRUE.equals(mNaviViaListVisibility.get())) {
+            List<FyElecVehicleETAInfo> infos = mModelSaveEntity.getFyElecVehicleETAInfos();
+            if (!ConvertUtils.isEmpty(infos)) {
+                onUpdateElectVehicleETAInfo(infos);
             }
         }
     }

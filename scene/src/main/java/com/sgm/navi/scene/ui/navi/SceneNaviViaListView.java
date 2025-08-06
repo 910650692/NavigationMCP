@@ -263,10 +263,12 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     }
 
     public void updateElectVehicleETAInfo(final List<FyElecVehicleETAInfo> infos) {
-        mElectVehicleETAInfoList.clear();
-        mElectVehicleETAInfoList.addAll(infos);
-        addBatteryLeftData(mNaviViaEntityList);
-        notifyList();
+        if (mElectVehicleETAInfoList != null) {
+            mElectVehicleETAInfoList.clear();
+            mElectVehicleETAInfoList.addAll(infos);
+            addBatteryLeftData(mNaviViaEntityList);
+            notifyList();
+        }
     }
 
     private void notifyList() {
