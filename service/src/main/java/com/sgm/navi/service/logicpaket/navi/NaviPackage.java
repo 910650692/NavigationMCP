@@ -1398,18 +1398,25 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     /**
-     * 显示当前主路线的路径
+     * 高亮显示当前主路线的路径
      */
-    public void onlyShowCurrentPath() {
-        Logger.i(TAG, "onlyShowCurrentPath");
-        PathInfo pathInfo = OpenApiHelper.getCurrentPathInfo(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (null == pathInfo) {
-            Logger.i(TAG, "onlyShowCurrentPath pathInfo is null");
-            return;
+    public void showCurrentPath() {
+        Logger.i(TAG, "showCurrentPath");
+        long currentPathId = OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP);
+        ArrayList<PathInfo> pathInfoList = new ArrayList<>(OpenApiHelper.getCurrentPathInfos());
+        int selectIndex = NumberUtils.NUM_ERROR;
+        for (int i = 0; i < pathInfoList.size(); i++) {
+            if (pathInfoList.get(i).getPathID() == currentPathId) {
+                selectIndex = i;
+                break;
+            }
         }
-        ArrayList<PathInfo> pathInfoList = new ArrayList<>();
-        pathInfoList.add(pathInfo);
-        mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, 0);
+        if (selectIndex != NumberUtils.NUM_ERROR) {
+            Logger.i(TAG, "showCurrentPath selectIndex = " + selectIndex);
+            mNaviAdapter.updatePathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathInfoList, selectIndex);
+        } else {
+            Logger.i(TAG, "showCurrentPath currentPathId not found");
+        }
     }
 
     public void showSelectPatch(final long newPathId) {

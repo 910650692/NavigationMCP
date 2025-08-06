@@ -689,7 +689,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onSelectMainPathStatus(final long pathID, final int result) {
         Logger.i(TAG, "onSelectMainPathStatus pathID = ", pathID, " result = ", result);
         if (result == NaviConstant.ChangeNaviPathResult.CHANGE_NAVI_PATH_RESULT_SUCCESS) {
-            mNaviPackage.onlyShowCurrentPath();
+            mNaviPackage.showCurrentPath();
         }
     }
 
