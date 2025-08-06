@@ -4068,5 +4068,4 @@
     <dimen name="phone_address_dialog_main_show_margin_start">417dp</dimen>
     <dimen name="phone_address_dialog_main_not_show_margin_start">600dp</dimen>
     <dimen name="phone_address_dialog_setting_show_margin_start">1062dp</dimen>
-    <dimen name="phone_address_dialog_setting_show_margin_top">85dp</dimen>
 </resources>
