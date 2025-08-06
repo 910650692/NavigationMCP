@@ -798,6 +798,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mModel.checkPopGuideLogin()) {
             mPopGuideLoginShow.set(true);
         }
+        mModel.refreshMapMode();
         Logger.i(TAG, "resetMapCenterInScreen mainBTNVisibility: ", mainBTNVisibility
                 , " bottomNaviVisibility: ", bottomNaviVisibility);
     }
