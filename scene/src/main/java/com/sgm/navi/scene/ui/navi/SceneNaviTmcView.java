@@ -159,9 +159,11 @@ public class SceneNaviTmcView extends NaviSceneBase<SceneNaviTmcViewBinding, Sce
      */
     public void updateTmcContainerNew(final List<NaviTmcInfo.NaviTmcInfoData> tbitem,
                                       final long distanceHasPassed, final long totalDistance) {
-        if (mInvalidateCount > 2 || isViaChange(totalDistance)) {
-            mInvalidateCount = 0;
-        }
+//        if (mInvalidateCount > 2 || isViaChange(totalDistance)) {
+//            mInvalidateCount = 0;
+//        }
+        // todo 长山使用新方案刷新tmc
+        mInvalidateCount = 0;
         setTmcContainerDataNew(tbitem, distanceHasPassed, totalDistance);
         if (mInvalidateCount == 0) {
             updateTmcAreaNew(tbitem, distanceHasPassed, totalDistance);

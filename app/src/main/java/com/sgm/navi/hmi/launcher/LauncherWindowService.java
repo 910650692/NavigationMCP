@@ -205,14 +205,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         updateLanInfo(isShowLane, laneInfo);
     }
 
+    private NaviTmcInfo mLastTmcInfo;
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isNull(mBinding)) {
-                mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
-                mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
-            }
-        });
+        Logger.d(TAG,"onUpdateTMCLightBar");
+        mLastTmcInfo = naviTmcInfo;
+        if (!ConvertUtils.isNull(mBinding)) {
+            mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
+            mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+        }
     }
 
     @SuppressWarnings("FORWARD_NULL")
@@ -463,6 +464,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         ThreadManager.getInstance().postUi(() -> {
             mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
             mBinding.cardNaviView.setVisibility((isNavigating || FloatViewManager.getInstance().isBiZhiDeskBg()) ? View.GONE : View.VISIBLE);
+            if (isNavigating && mLastTmcInfo != null) {
+                mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
+                mBinding.sceneNaviTmc.onUpdateTMCLightBar(mLastTmcInfo);
+                Logger.d(TAG,"重新绘制光柱图最新数据");
+            }
         });
     }
 
