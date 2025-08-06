@@ -139,10 +139,14 @@ public final class SearchResultMapper {
                 .collect(Collectors.toList());
 
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "mapSuggestionPoiTip childList: " + suggestionPoiTip.basicInfo.childInfoList);
+        String address = suggestionPoiTip.basicInfo.address;
+        if(!ConvertUtils.isEmpty(address) && address.startsWith("-")){
+            address = address.substring(1);
+        }
         return new PoiInfoEntity()
                 .setPid(suggestionPoiTip.basicInfo.poiId)
                 .setName(suggestionPoiTip.basicInfo.name)
-                .setAddress(suggestionPoiTip.basicInfo.address)
+                .setAddress(address)
                 .setDistance(formatDistanceArrayInternal(ConvertUtils.double2int(suggestionPoiTip.basicInfo.distance)))
                 .setSort_distance(ConvertUtils.double2int(suggestionPoiTip.basicInfo.distance))
                 .setChildInfoList(childInfoList)

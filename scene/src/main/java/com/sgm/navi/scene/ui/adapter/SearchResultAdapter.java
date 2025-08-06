@@ -198,8 +198,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.poiNum.setVisibility(GONE);
             holder.mResultItemBinding.poiIcon.setVisibility(VISIBLE);
         }
-        if (mPoiInfoEntity != null && ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())) {
-            holder.mResultItemBinding.subLineView.setVisibility(GONE);
+        if (mPoiInfoEntity != null) {
+            if(ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())){
+                holder.mResultItemBinding.subLineView.setVisibility(GONE);
+            }else{
+                holder.mResultItemBinding.subLineView.setVisibility(VISIBLE);
+            }
         }
         if(mPoiInfoEntity != null && (mPoiInfoEntity.isClosest() || mPoiInfoEntity.isFastest())){
             holder.mResultItemBinding.searchLabel.setVisibility(VISIBLE);

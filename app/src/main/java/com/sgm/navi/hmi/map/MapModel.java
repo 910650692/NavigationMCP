@@ -2368,6 +2368,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (mViewModel.getTopFragment(TerminalParkingFragment.class)) {
             return;
         }
+        if(ConvertUtils.isNull(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP))){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getEndPoint is null");
+            return;
+        }
         final Bundle bundle = new Bundle();
         final GeoPoint point = new GeoPoint(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getRealPos().getLon()
                 , mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getRealPos().getLat());
