@@ -557,8 +557,9 @@ public final class VoiceSearchManager {
      * @param poiInfo PoiInfoEntity，poi详情信息.
      */
     private void dealPoiDetailResult(final PoiInfoEntity poiInfo) {
+        Logger.w(IVrBridgeConstant.TAG, "process poiDetailSearch", mSearchType);
         if (null == poiInfo) {
-            Logger.w(IVrBridgeConstant.TAG, "poiDetailSearch result is empty");
+            Logger.w(IVrBridgeConstant.TAG, "poiDetailSearchResult is empty");
             if (null != mPoiCallback) {
                 final CallResponse poiDetailResponse = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.DETAIL_SEARCH_NO_RESULT);
                 poiDetailResponse.setNeedPlayMessage(true);
@@ -1561,7 +1562,7 @@ public final class VoiceSearchManager {
      * @param poiInfo PoiInfoEntity，选择的Poi信息.
      */
     private void updateHomeCompany(final PoiInfoEntity poiInfo) {
-        if (null == poiInfo || null == poiInfo.getPid()) {
+        if (null == poiInfo || null == poiInfo.getPoint()) {
             return;
         }
 
