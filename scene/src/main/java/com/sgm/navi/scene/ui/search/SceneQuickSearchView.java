@@ -194,7 +194,7 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                 final Fragment fragment;
                 switch (mSearchType) {
                     case AutoMapConstant.SearchType.AROUND_SEARCH:
-                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Around search - Type: " , mSearchType);
+                        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Around search - Type: " , mSearchType," Name: ", name);
                          fragment= (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                                 .navigation();
                          String realName = name;
@@ -205,6 +205,8 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                         addFragment((BaseFragment) fragment,SearchFragmentFactory.createKeywordFragment(
                                 AutoMapConstant.SourceFragment.FRAGMENT_AROUND, mSearchType, realName, mPoiInfoEntity));
 
+                        //For Bury Point
+                        sendBurySearchLocationType(realName);
                         break;
                     case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Along way search - Type: " , mSearchType);
@@ -224,6 +226,14 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "quickSearchListAdapter is null");
         }
+    }
+
+    @HookMethod(eventName = BuryConstant.EventName.AMAP_MAP_SEARCH_LOCATIONTYPE)
+    private void sendBurySearchLocationType(String name) {
+        BuryProperty buryParam = new BuryProperty.Builder()
+                .setParams(BuryConstant.ProperType.BURY_KEY_SEARCH_CONTENTS, name)
+                .build();
+        BuryPointController.getInstance().setBuryProps(buryParam);
     }
 
     /**
