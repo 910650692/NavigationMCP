@@ -376,6 +376,9 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
                 ThreadManager.getInstance().postUi(() ->
                         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_ROAD_CONDITION, Boolean.parseBoolean(value)));
                 break;
+            case SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE_BY_PHONE:
+                ThreadManager.getInstance().postUi(() -> mViewModel.notifyRoutePreference());
+                break;
             default:
                 break;
         }

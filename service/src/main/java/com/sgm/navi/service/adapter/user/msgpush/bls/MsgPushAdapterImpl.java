@@ -24,6 +24,7 @@ import com.autonavi.gbl.user.msgpush.model.AimRoutePushInfo;
 import com.autonavi.gbl.user.msgpush.model.AimRoutePushMsg;
 import com.autonavi.gbl.user.msgpush.model.AutoPushInfo;
 import com.autonavi.gbl.user.msgpush.model.AutoPushMsg;
+import com.autonavi.gbl.user.msgpush.model.DestinationPushMsg;
 import com.autonavi.gbl.user.msgpush.model.LinkStatusPushMsg;
 import com.autonavi.gbl.user.msgpush.model.MobileDestination;
 import com.autonavi.gbl.user.msgpush.model.MobileLinkPushMsg;
@@ -32,6 +33,7 @@ import com.autonavi.gbl.user.msgpush.model.MobileRouteParam;
 import com.autonavi.gbl.user.msgpush.model.MobileRouteViaPoint;
 import com.autonavi.gbl.user.msgpush.model.MsgPushInitParam;
 import com.autonavi.gbl.user.msgpush.model.MsgPushItem;
+import com.autonavi.gbl.user.msgpush.model.PlanPrefPushMsg;
 import com.autonavi.gbl.user.msgpush.model.QuitNaviPushMsg;
 import com.autonavi.gbl.user.msgpush.observer.IMobileLinkObserver;
 import com.autonavi.gbl.user.msgpush.observer.IMsgPushServiceObserver;
@@ -454,7 +456,7 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             return;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "notifyMessage: ", msg.id);
+            Logger.d(TAG, "notifyMessage: QuitNaviPushMsg ", msg.id);
         }
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyQuitNaviPushMessage();
@@ -467,7 +469,13 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
      */
     // @Override
     public void notifyMessage(final AutoPushMsg msg) {
-
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: AutoPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: AutoPushMsg ", msg.id);
+        }
         MsgPushInfo autoPushMsgInfo = getMsgPushInfo(msg);
 
         final AutoPushInfo autoPushInfo = msg.content;
@@ -482,12 +490,19 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     }
 
     /**
-     * AIMPOI(send2car)推送消息通知
+     * AIMPOI(send2car)推送消息通知(和高德确认：手车互联画面下，更改目的地也会走到这里)
      * @param msg AIMPOI(send2car)推送消息
      */
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_FROM)
     public void notifyMessage(final AimPoiPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: AimPoiPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: AimPoiPushMsg ", msg.id);
+        }
         MsgPushInfo aimPoiPushMsgInfo = getMsgPushInfo(msg);
 
         final AimPoiInfo aimPoiInfo = msg.content;
@@ -513,11 +528,11 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     @HookMethod(eventName = BuryConstant.EventName.AMAP_PHONE_DESTINATION_FROM)
     public void notifyMessage(final AimRoutePushMsg msg) {
         if (msg == null) {
-            Logger.e(TAG,"msg is null");
+            Logger.e(TAG, "notifyMessage: AimRoutePushMsg is null");
             return;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "notifyMessage: ", msg.content);
+            Logger.d(TAG, "notifyMessage: AimRoutePushMsg ", msg.id);
         }
 
         final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
@@ -602,11 +617,56 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
     }
 
     /**
+     * 手机发送路线偏好推送消息通知
+     * 路线偏好 0:无，2:躲避拥堵, 4:避免收费, 8:不走高速, 16:高速优先, 32:大路优先, 64:速度最快; 支持按位组合
+     *
+     * @param msg 手机发送路线偏好推送消息
+     */
+    @Override
+    public void notifyMessage(PlanPrefPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: PlanPrefPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: PlanPrefPushMsg ", msg.content.planPrefs.size());
+        }
+        ArrayList<Integer> planPrefs = msg.content.planPrefs;
+        if (planPrefs != null && planPrefs.size() > 0) {
+            for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+                callBack.notifyPlanPrefPushMessage(planPrefs);
+            }
+        }
+    }
+
+    /**
+     * 手机发送目的地推送消息通知(和高德确认，只有Poi详情页点击【导航】按钮才会发送目的地信息，别的操作都不会)
+     * @param msg 手机发送目的地推送消息
+     */
+    @Override
+    public void notifyMessage(DestinationPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: DestinationPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: DestinationPushMsg ", msg.content.endPoi.name);
+        }
+    }
+
+    /**
      * 手机端推送发现可连接车机消息
      * @param msg 消息数据
      */
     @Override
     public void notifyMessage(final MobileLinkPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: MobileLinkPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: MobileLinkPushMsg ", msg.id);
+        }
 
         final MsgPushInfo mobileLinkPushMsgInfo = getMsgPushInfo(msg);
 
@@ -673,6 +733,13 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
 
     @Override
     public void notifyMessage(LinkStatusPushMsg msg) {
+        if (msg == null) {
+            Logger.e(TAG, "notifyMessage: LinkStatusPushMsg is null");
+            return;
+        }
+        if (Logger.openLog) {
+            Logger.d(TAG, "notifyMessage: LinkStatusPushMsg ", msg.id);
+        }
         int status = msg.status;
         for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
             callBack.notifyDisconnectFromMobileMessage(status);

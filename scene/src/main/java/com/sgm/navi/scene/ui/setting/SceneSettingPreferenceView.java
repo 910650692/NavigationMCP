@@ -89,6 +89,13 @@ public class SceneSettingPreferenceView extends BaseSceneView<SceneSettingPrefer
         });
     }
 
+    public void updateRoutePreference() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.clearPreference();
+            mScreenViewModel.setDefaultPreference();
+        }
+    }
+
     /**
      * 获取网络状态
      * @return 网络状态

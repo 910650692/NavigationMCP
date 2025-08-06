@@ -13,6 +13,7 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSettingNaviBinding;
+import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.Objects;
@@ -110,6 +111,18 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
             mBinding.naviAvoidLimit.setEnabled(isTrue);
             mBinding.naviAvoidLimitOffline.setVisibility(isTrue? View.GONE : View.VISIBLE);
             mBinding.naviAvoidLimitOffline.setEnabled(!isTrue);
+        });
+    }
+
+    /**
+     * 更新导航偏好
+     */
+    public void notifyRoutePreference() {
+        ThreadManager.getInstance().postUi(() -> {
+            Logger.i(TAG, "updatePreference");
+            if (mBinding != null && mBinding.settingRoutePreference != null) {
+                mBinding.settingRoutePreference.updateRoutePreference();
+            }
         });
     }
 }

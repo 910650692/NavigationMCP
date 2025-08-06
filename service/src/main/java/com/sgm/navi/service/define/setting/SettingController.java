@@ -24,6 +24,7 @@ public interface SettingController {
     String VALUE_MAP_MODE_CAR_3D = "navi_map_mode_car_3d"; // 3D车头向上
     // 路线偏好
     String KEY_SETTING_GUIDE_ROUTE_PREFERENCE = "setting_guide_route_preference";
+    String KEY_SETTING_GUIDE_ROUTE_PREFERENCE_BY_PHONE = "setting_guide_route_preference_by_phone";
     String VALUE_ROUTE_PREFERENCE_RECOMMEND = "recommend"; //高德推荐
     String VALUE_ROUTE_PREFERENCE_AVOID_CONGESTION = "avoid_congestion";//躲避拥堵
     String VALUE_ROUTE_PREFERENCE_LESS_CHARGE = "less_charge";//少收费

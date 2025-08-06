@@ -150,6 +150,20 @@ public final class SettingPackage implements SettingAdapterCallback {
     }
 
     /**
+     * 手机推送设置算路偏好
+     *
+     * @param routePreferenceID 算路偏好
+     */
+    public void setRoutePreferenceByPhone(final RoutePreferenceID routePreferenceID) {
+        if (mSettingAdapter.setConfigKeyPlanPref(routePreferenceID) == 0) {
+            mSettingManager.insertOrReplace(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE, formatPreferenceToDB(routePreferenceID));
+            for (SettingChangeCallback callback : mChangeCallbackList.values()) {
+                callback.onSettingChanged(SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE_BY_PHONE, formatPreferenceToDB(routePreferenceID));
+            }
+        }
+    }
+
+    /**
      * 提供给语音--设置偏好
      * @param routePreferenceID 偏好ID
      */

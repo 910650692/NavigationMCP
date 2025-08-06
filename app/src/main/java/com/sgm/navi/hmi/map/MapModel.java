@@ -101,6 +101,7 @@ import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RoutePoiType;
+import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.route.RouteRestrictionParam;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
 import com.sgm.navi.service.define.route.RouteTMCParam;
@@ -1552,6 +1553,66 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     break;
             }
         });
+    }
+
+    /**
+     * 更新路线偏好 0:无，2:躲避拥堵, 4:避免收费, 8:不走高速, 16:高速优先, 32:大路优先, 64:速度最快; 支持按位组合
+     */
+    @Override
+    public void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs) {
+        if (planPrefs != null && planPrefs.size() > 0) {
+            int planPref = 0;
+            for (Integer pref : planPrefs) {
+                planPref += pref;
+            }
+            switch (planPref) {
+                case 0://高德推荐
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_RECOMMEND);
+                    break;
+                case 2://躲避拥堵
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION);
+                    break;
+                case 4://避免收费
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_LESSCHARGE);
+                    break;
+                case 6://躲避拥堵+少收费
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE);
+                    break;
+                case 8://不走高速
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_NOTHIGHWAY);
+                    break;
+                case 10://躲避拥堵+不走高速
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_NOTHIGHWAY);
+                    break;
+                case 12://少收费+不走高速
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_LESSCHARGE_AND_NOTHIGHWAY);
+                    break;
+                case 14://躲避拥堵+少收费+不走高速
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_LESSCHARGE_AND_NOTHIGHWAY);
+                    break;
+                case 16://高速优先
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY);
+                    break;
+                case 18://躲避拥堵+高速优先
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FIRSTHIGHWAY);
+                    break;
+                case 32://大路优先
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_FIRSTMAINROAD);
+                    break;
+                case 34://躲避拥堵+大路优先
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FIRSTMAINROAD);
+                    break;
+                case 64://速度最快
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_FASTESTSPEED);
+                    break;
+                case 66://躲避拥堵+速度最快
+                    mSettingPackage.setRoutePreferenceByPhone(RoutePreferenceID.PREFERENCE_AVOIDCONGESTION_AND_FASTESTSPEED);
+                    break;
+                default:
+                    break;
+            }
+            Logger.i(TAG, "notifyPlanPrefPushMessage ", planPref);
+        }
     }
 
     @Override

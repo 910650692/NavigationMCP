@@ -169,6 +169,13 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     }
 
     /**
+     * 更新导航偏好
+     */
+    public void notifyRoutePreference() {
+        mView.notifyRoutePreference();
+    }
+
+    /**
      * Dual choice controller.
      * @param key    control key
      * @param isTrue is true

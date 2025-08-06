@@ -4,6 +4,8 @@ import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
 
+import java.util.ArrayList;
+
 public interface MsgPushCallBack {
 
     default void notifyAutoPushMessage(MsgPushInfo msg) {
@@ -13,6 +15,9 @@ public interface MsgPushCallBack {
     }
 
     default void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+    }
+
+    default void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs) {
     }
 
     default void notifyQuitNaviPushMessage() {

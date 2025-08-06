@@ -4,6 +4,8 @@ import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgPushResponseInfo;
 
+import java.util.ArrayList;
+
 public interface MsgPushAdapterCallback {
 
     /**
@@ -25,9 +27,15 @@ public interface MsgPushAdapterCallback {
 
     /**
      * 手机发送路线推送消息通知
-      * @param routeMsgPushInfo
+     * @param routeMsgPushInfo
      */
     void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo);
+
+    /**
+     * 手机发送路线偏好推送消息通知
+     * @param planPrefs
+     */
+    void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs);
 
     /**
      * 手机发送退出路线
@@ -52,7 +60,7 @@ public interface MsgPushAdapterCallback {
 
     /**
      * 网络库线程中回调业务应答类
-      * @param gwsTserviceInternalLinkAutoReportResponseParam
+     * @param gwsTserviceInternalLinkAutoReportResponseParam
      */
     void onRecvAckGWsTserviceInternalLinkAutoReportResponse(MsgPushResponseInfo gwsTserviceInternalLinkAutoReportResponseParam);
 }

@@ -110,6 +110,13 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
     }
 
     @Override
+    public void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs) {
+        for (MsgPushCallBack callBack : callBacks.values()) {
+            callBack.notifyPlanPrefPushMessage(planPrefs);
+        }
+    }
+
+    @Override
     public void notifyQuitNaviPushMessage() {
         for (MsgPushCallBack callBack : callBacks.values()) {
             callBack.notifyQuitNaviPushMessage();

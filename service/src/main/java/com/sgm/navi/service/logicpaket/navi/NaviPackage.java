@@ -517,6 +517,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
+    public void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs) {
+
+    }
+
+    @Override
     public void notifyQuitNaviPushMessage() {
         Logger.i(TAG, "notifyQuitNaviPushMessage");
         // 因为退出后台页面可能会被kill，所以如果页面在通过页面关闭导航，如果页面不存在了直接关闭导航
