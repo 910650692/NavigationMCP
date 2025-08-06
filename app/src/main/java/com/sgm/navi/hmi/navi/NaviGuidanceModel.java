@@ -712,7 +712,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 routeWayID.equals(RouteWayID.ROUTE_WAY_ADD_ALL_VIA) ||
                 routeWayID.equals(RouteWayID.ROUTE_WAY_DELETE_VIA) ||
                 routeWayID.equals(RouteWayID.ROUTE_WAY_SORT_VIA)) {
-            ThreadManager.getInstance().postDelay(mUpdateViaList, NumberUtils.NUM_500);
+            ThreadManager.getInstance().postUi(mUpdateViaList);
         }
     }
 
