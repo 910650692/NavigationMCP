@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -21,7 +23,7 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogUseReminderBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
+import com.sgm.navi.ui.dialog.BaseDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
@@ -29,7 +31,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  * @Author lvww
  * @date 2024/12/31
  */
-public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBinding> {
+public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
 
     private WebView mWebView;
     private Animation mRotateAnim;
@@ -50,12 +52,27 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     }
 
     @Override
+    protected void initListener() {
+
+    }
+
+    @Override
+    public void show() {
+        Window window = getWindow();
+        if (window != null) {
+            Logger.d("ReminderDialog", "show getWindow: ", window.getAttributes().type);
+            window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+        }
+        super.show();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWebView = mViewBinding.reminderDetail.reminderWebView;
         configureWebView();
-
-        setCancelable(false);
+        setOnCancelListener(null);
+        setCanceledOnTouchOutside(false);
         mViewBinding.reminderIndex.reminderTermsService.setOnClickListener(new View.OnClickListener() {
             @Override
             @HookMethod(eventName = BuryConstant.EventName.AMAP_SERVICEAGREEMENT_CHECK)

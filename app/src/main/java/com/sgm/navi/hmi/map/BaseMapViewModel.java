@@ -216,7 +216,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onResume() {
         super.onResume();
-        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
+        if (mModel.isFirstLauncher()) {
+            popAgreementDialog();
+        } else if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
         }
     }
@@ -275,6 +277,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
+        if (reminderDialog != null && reminderDialog.isShowing()) {
+            return;
+        }
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
@@ -309,6 +314,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void dismissAuthorizationDialog() {
         mModel.dismissAuthorizationRequestDialog();
+    }
+
+    public void dismissReminderDialog() {
+        if (reminderDialog != null && reminderDialog.isShowing()) {
+            reminderDialog.dismiss();
+            reminderDialog = null;
+            mRemindDialogShow = false;
+        }
     }
 
     public void reminderDialogReCreate() {

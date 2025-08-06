@@ -239,6 +239,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     protected void onStop() {
         Logger.i(TAG, "onStop");
         mViewModel.dismissAuthorizationDialog();
+        mViewModel.dismissReminderDialog();
         super.onStop();
     }
 
