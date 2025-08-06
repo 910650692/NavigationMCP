@@ -1532,6 +1532,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
+        mSearchPackage.abortSearch();
         mViewModel.onNaviStop();
         mRoutePackage.removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
         clearAllViaChargeStation();
