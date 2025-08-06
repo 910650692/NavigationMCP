@@ -1635,6 +1635,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Logger.e(IVrBridgeConstant.TAG, "session or passBy is empty");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PASS_BY_PARAM_EMPTY);
         }
+        MapStateManager.getInstance().openMapWhenBackground();
 
         if (!MapStateManager.getInstance().isNaviStatus()) {
             //非导航态不支持沿途搜
