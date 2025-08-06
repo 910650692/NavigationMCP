@@ -104,21 +104,22 @@
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/sk_poi_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_34"
                 android:ellipsize="end"
-                android:maxWidth="@dimen/dp_390"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="@{viewModel.routeSearchName}"
                 android:textColor="@color/text_route_detail_title"
                 android:textSize="@dimen/sp_32"
                 app:layout_goneMarginStart="@dimen/dp_30"
                 app:layout_constraintStart_toEndOf="@+id/sk_poi_status"
+                app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 tool:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
             <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/poi_type_icon"
                 clickCommand="@{viewModel.closePage}"
                 android:layout_width="@dimen/dp_49"
                 android:layout_height="@dimen/dp_49"
@@ -156,6 +157,7 @@
                         android:textColor="@color/text_route_defult"
                         android:textSize="@dimen/sp_26"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tool:text="世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号世纪大道1号" />
 

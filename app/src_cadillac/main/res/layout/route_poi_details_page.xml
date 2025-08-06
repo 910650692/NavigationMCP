@@ -48,17 +48,18 @@
             android:layout_marginTop="@dimen/dp_35"
             android:ellipsize="end"
             android:focusable="false"
-            android:maxWidth="@dimen/dp_360"
-            android:maxLines="1"
+            android:maxLines="2"
             android:paddingBottom="@dimen/dp_30"
             android:text="@{ViewModel.getRouteSearchName()}"
             android:textColor="@color/text_route_detail_title"
             android:textSize="@dimen/sp_52"
             app:layout_constraintStart_toEndOf="@+id/sk_poi_status"
+            app:layout_constraintEnd_toStartOf="@+id/poi_type_icon"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠东方明珠" />
 
         <com.sgm.navi.ui.view.SkinImageView
+            android:id="@+id/poi_type_icon"
             style="@style/style_mfc_config"
             clickCommand="@{ViewModel.getCloseRouteSearchDetailClick()}"
             android:layout_width="@dimen/dp_74"
