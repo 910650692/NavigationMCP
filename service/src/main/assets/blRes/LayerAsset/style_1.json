@@ -8196,14 +8196,14 @@
     "point_search_parent_no_number": {
       "point_layer_item_style": {
         "focus_style": {
-          "bubble_marker_info": "marker_info_search_parent_name",
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "bubble_marker_info": "-1",
+          "poi_marker_id": "global_image_child_parent_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_id": "id_static",
-          "bubble_marker_id": "search_parent_name.xml"
+          "bubble_marker_id": "-1"
         },
         "normal_style": {
-          "poi_marker_id": "global_image_b_child_poi_hl_day_night",
+          "poi_marker_id": "global_image_child_parent_hi_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_id": "id_static"
         }
@@ -10285,10 +10285,10 @@
     "point_search_parent_car_wash": {
       "point_layer_item_style": {
         "focus_style": {
-          "bubble_marker_info": "marker_info_search_alongroute_name",
+          "bubble_marker_info": "-1",
           "poi_marker_id": "global_image_navi_along_search_wash_big_icon_day_night",
           "poi_marker_info": "marker_info_search_parent_deep_info_focus",
-          "bubble_marker_id": "search_alongroute_name.xml"
+          "bubble_marker_id": "-1"
         },
         "normal_style": {
           "poi_marker_id": "global_image_navi_along_search_wash_icon_day_night",
@@ -11080,10 +11080,10 @@
     "point_search_alongroute_gas_discounts": {
       "point_layer_item_style": {
         "focus_style": {
-          "bubble_marker_info": "marker_info_search_alongroute_name",
+          "bubble_marker_info": "-1",
           "poi_marker_id": "global_image_navi_along_search_gas_station_big_icon_day_night",
           "poi_marker_info": "marker_info_search_parent_deep_info_focus",
-          "bubble_marker_id": "search_alongroute_name.xml"
+          "bubble_marker_id": "-1"
         },
         "normal_style": {
           "poi_marker_id": "global_image_navi_along_search_gas_station_icon_day_night",
@@ -12197,10 +12197,10 @@
     "point_search_alongroute_gas_default": {
       "point_layer_item_style": {
         "focus_style": {
-          "bubble_marker_info": "marker_info_search_alongroute_name",
+          "bubble_marker_info": "-1",
           "poi_marker_id": "global_image_navi_along_search_gas_station_big_icon_day_night",
           "poi_marker_info": "marker_info_point_center_up",
-          "bubble_marker_id": "search_alongroute_name.xml"
+          "bubble_marker_id": "-1"
         },
         "normal_style": {
           "poi_marker_id": "global_image_navi_along_search_gas_station_icon_day_night",
@@ -12318,10 +12318,10 @@
     "point_search_parent_delicious_food": {
       "point_layer_item_style": {
         "focus_style": {
-          "bubble_marker_info": "marker_info_search_alongroute_name",
+          "bubble_marker_info": "-1",
           "poi_marker_id": "global_image_navi_delicacy_big_icon_day_night",
           "poi_marker_info": "marker_info_search_parent_deep_info_focus",
-          "bubble_marker_id": "search_alongroute_name.xml"
+          "bubble_marker_id": "-1"
         },
         "normal_style": {
           "poi_marker_id": "global_image_navi_delicacy_icon_day_night",
