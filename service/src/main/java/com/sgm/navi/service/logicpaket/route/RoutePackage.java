@@ -280,13 +280,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         final int size = mViaRouteParams.get(mapTypeId).size();
         String cityName = "";
         String endName = "";
-        if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId)) && getEndPoint(mapTypeId).getName() != null) {
-            endName = getEndPoint(mapTypeId).getName();
+        RouteParam endParam = getEndPoint(mapTypeId);
+        if (!ConvertUtils.isEmpty(endParam) && endParam.getName() != null) {
+            endName = endParam.getName();
         }
-        if (!ConvertUtils.isEmpty(getEndPoint(mapTypeId))
-                && getEndPoint(mapTypeId).getAdCode() != 0
-                && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getCityInfo(getEndPoint(mapTypeId).getAdCode()))) {
-            cityName = MapDataPackage.getInstance().getCityInfo(getEndPoint(mapTypeId).getAdCode()).getName();
+        if (!ConvertUtils.isEmpty(endParam)
+                && endParam.getAdCode() != 0
+                && !ConvertUtils.isEmpty(MapDataPackage.getInstance().getCityInfo(endParam.getAdCode()))) {
+            cityName = MapDataPackage.getInstance().getCityInfo(endParam.getAdCode()).getName();
         }
         if (ConvertUtils.isEmpty(mRouteResultObserverMap)) {
             return;
