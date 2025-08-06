@@ -240,7 +240,7 @@
     <string name="charge_remain_arrive">15%到达</string>
     <string name="add_via_failure">途经点添加失败：最多只能添加5个途径点</string>
     <string name="route_expected_battery_depletion">预计电量耗尽</string>
-    <string name="route_error_add_start_end">途经点删除失败：无法移除起点和终点</string>
+    <string name="route_error_add_start_end">行程起终点不可添加为途经点</string>
 
     <!--设置相关 -->
     <string name="navi_setting_offline_toast">该功能需要联网后使用</string>

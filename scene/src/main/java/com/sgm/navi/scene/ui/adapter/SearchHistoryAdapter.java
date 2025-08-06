@@ -185,7 +185,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if (!ConvertUtils.isEmpty(mPoiEntities.get(position).getMEndPoint())) {
                     poiInfoEntity.setPoint(parseGeoPoint(mPoiEntities.get(position).getMEndPoint()));
                 }
-                if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)
+                        && !RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
                     resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                     resultHolder.resultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_005CFF));
                     resultHolder.resultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()

@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneView;
@@ -161,7 +163,12 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                 } else {
                     if (SearchPackage.getInstance().isAlongWaySearch()) {
                         if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
-                            RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                            if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                                ToastUtils.Companion.getInstance().showCustomToastView(
+                                        ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+                            } else {
+                                RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                            }
                         } else {
                             RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
                         }

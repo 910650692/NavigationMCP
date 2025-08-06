@@ -174,7 +174,16 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
             @Override
             public void onNaviClick(final int position, final PoiInfoEntity poiInfoEntity) {
                 if (SearchPackage.getInstance().isAlongWaySearch()) {
-                    RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    if (RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP,poiInfoEntity)) {
+                        ToastUtils.Companion.getInstance().showCustomToastView(
+                                ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+                        return;
+                    }
+                    if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity)) {
+                        RoutePackage.getInstance().removeVia(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity, true);
+                    } else {
+                        RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfoEntity);
+                    }
                 } else {
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Route.ROUTE_FRAGMENT)

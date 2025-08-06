@@ -133,7 +133,8 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 .getDrawable(R.drawable.img_basic_ic_navi));
         holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.search_quick_tab_view_color));
         if (mSearchPackage.isAlongWaySearch()) {
-            if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
+            if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))
+                    && !RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
                 holder.mResultItemBinding.textNavi.setText(R.string.route_service_details_remove_via_charge);
                 holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.color_005CFF));
                 holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()

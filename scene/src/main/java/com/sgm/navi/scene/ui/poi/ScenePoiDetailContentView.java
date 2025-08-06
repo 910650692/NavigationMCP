@@ -195,6 +195,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "handleRouteClick isMaxRouteParam");
                     return;
                 }
+                if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                    ToastUtils.Companion.getInstance().showCustomToastView(
+                            ResourceUtils.Companion.getInstance().getString(R.string.route_error_add_start_end));
+                    return;
+                }
                 if (mRoutePackage.isRouteAlongSearch() && mJumpPoiInfo != null
                         && mPoiType != AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     mScreenViewModel.closeFragment();
@@ -1966,7 +1971,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         poiInfo = mPoiInfoEntity;
                     }
                     if (mRoutePackage.isRouteAlongSearch()) {
-                        if (mRoutePackage.isBelongRouteAlong(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                        if (mRoutePackage.isBelongRouteAlong(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)
+                                && !mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                             mViaAddType = false;
                             if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
@@ -1987,7 +1993,8 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                             }
                         }
                     } else {
-                        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
+                        if (mRoutePackage.isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)
+                                && !mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                             mViaAddType = false;
                             if (mRoutePackage.isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo)) {
                                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setAlpha(0.5f);
