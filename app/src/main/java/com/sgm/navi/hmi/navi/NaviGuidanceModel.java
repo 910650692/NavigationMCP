@@ -1748,6 +1748,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
     }
 
+    @Override
+    public void onResetSettingConfig() {
+        if (mViewModel != null) {
+            mViewModel.closeNavi();
+        }
+    }
+
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
         if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {

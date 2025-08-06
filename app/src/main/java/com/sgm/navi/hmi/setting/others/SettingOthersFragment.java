@@ -222,7 +222,6 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @Override
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
-                        NaviPackage.getInstance().stopNavigation(true);
                         CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         mViewModel.clearAll();
