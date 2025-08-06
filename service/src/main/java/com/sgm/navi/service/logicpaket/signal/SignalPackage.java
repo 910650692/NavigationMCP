@@ -330,9 +330,8 @@ public final class SignalPackage implements SignalAdapterCallback {
     /**
      * l2++ nop播报开关
      *
-     * @return 2:开启 other:关闭
      */
-    public int getNavigationOnAdasTextToSpeachStatus() {
+    public boolean getNavigationOnAdasTextToSpeachStatus() {
         return mSignalAdapter.getNavigationOnAdasTextToSpeachStatus();
     }
 

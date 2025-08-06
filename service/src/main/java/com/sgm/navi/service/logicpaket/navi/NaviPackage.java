@@ -728,9 +728,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (info == null) {
             return;
         }
-        final int nop = SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus();
+        final boolean nopOpen = SignalPackage.getInstance().getNavigationOnAdasTextToSpeachStatus();
         Logger.i(TAG, "onPlayTTS: ", info.getText(), " rangeType:", info.getRangeType(), " isHighPriority:", info.isHighPriority(),
-                " isRingType:", info.isRingType(), " NOP:", nop, " 导航状态:", NaviStatusPackage.getInstance().getCurrentNaviStatus(),
+                " isRingType:", info.isRingType(), " NOP:", nopOpen, " 导航状态:", NaviStatusPackage.getInstance().getCurrentNaviStatus(),
                 " 巡航开关:", mCruiseVoiceIsOpen, " 静音:", mIsMute);
         ThreadManager.getInstance().postUi(() -> {
             try {
@@ -747,7 +747,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                     return; // 静音开关
                 }
                 //如果NOP打开并且是不播报的类型则不播报  soundType废弃 换成rangeType
-                if (nop == 2 && !TTSPlayHelper.allowToPlayWithNopOpen(info.getRangeType())) {
+                if (nopOpen && !TTSPlayHelper.allowToPlayWithNopOpen(info.getRangeType())) {
                     Logger.d(TAG, "此类型下不支持播报");
                     return;
                 }

@@ -10,6 +10,11 @@ import android.os.Handler;
 import android.os.HandlerThread;
 
 import com.android.utils.log.Logger;
+import com.patac.vehicle.DriveAssistController;
+import com.patac.vehicle.HvacController;
+import com.patac.vehicle.PowertainController;
+import com.patac.vehicle.VehicleController;
+import com.patac.vehicle.VehicleStatusController;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.signal.SignalAdapterCallback;
@@ -17,11 +22,6 @@ import com.sgm.navi.service.adapter.signal.SignalApi;
 import com.sgm.navi.service.define.signal.RoadConditionGroup;
 import com.sgm.navi.service.define.signal.SdNavigationStatusGroup;
 import com.sgm.navi.service.define.signal.SignalConst;
-import com.patac.vehicle.DriveAssistController;
-import com.patac.vehicle.HvacController;
-import com.patac.vehicle.PowertainController;
-import com.patac.vehicle.VehicleController;
-import com.patac.vehicle.VehicleStatusController;
 
 import java.util.List;
 import java.util.Objects;
@@ -716,9 +716,9 @@ public class SignalAdapterImpl implements SignalApi {
     }
 
     @Override
-    public int getNavigationOnAdasTextToSpeachStatus() {
+    public boolean getGmcNopTtsEnabled() {
         if (!VehicleController.isCleaArch()) {
-            return -1;
+            return false;
         }
         final Integer result;
         try {
@@ -726,11 +726,29 @@ public class SignalAdapterImpl implements SignalApi {
                     , VehicleArea.GLOBAL);
             result = property.getValue();
         } catch (Exception e) {
-            Logger.i(TAG, "getNavigationOnAdasTextToSpeachStatus: " + e.getMessage());
-            return -1;
+            Logger.i(TAG, "getGmcNopTtsEnabled: " + e.getMessage());
+            return false;
         }
-        Logger.d(TAG, "getNavigationOnAdasTextToSpeachStatus: " + result);
-        return result;
+        Logger.d(TAG, "getGmcNopTtsEnabled: " + result);
+        return result == 2;
+    }
+
+    @Override
+    public boolean getPatacNopTtsEnabled() {
+        if (!VehicleController.isCleaArch()) {
+            return false;
+        }
+        final Integer result;
+        try {
+            CarPropertyValue<Integer> property = mPropertyManager.getProperty(Integer.class, VendorProperty.LANE_CENTERING_CONTROL_INDICATION_REQUEST
+                    , VehicleArea.GLOBAL);
+            result = property.getValue();
+        } catch (Exception e) {
+            Logger.i(TAG, "getPatacNopTtsEnabled: " + e.getMessage());
+            return false;
+        }
+        Logger.d(TAG, "getPatacNopTtsEnabled: " + result);
+        return result == 2;
     }
 
     //region 音量相关接口

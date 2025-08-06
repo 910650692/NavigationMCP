@@ -6,6 +6,7 @@ import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AdapterConfig;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.define.signal.RoadConditionGroup;
 import com.sgm.navi.service.define.signal.SdNavigationStatusGroup;
 
@@ -136,11 +137,17 @@ public final class SignalAdapter {
         mSignalApi.setNextChargingDestination(powerLevel, status, timeToArrival, distToArrival);
     }
 
-    public int getNavigationOnAdasTextToSpeachStatus() {
+    public boolean getNavigationOnAdasTextToSpeachStatus() {
         if (mSignalApi == null) {
-            return -1;
+            return false;
         }
-        return mSignalApi.getNavigationOnAdasTextToSpeachStatus();
+        int type = CalibrationAdapter.getInstance().adasConfigurationType();
+        if (type == 8) {
+            return mSignalApi.getGmcNopTtsEnabled();
+        } else if (type == 9) {
+            return mSignalApi.getPatacNopTtsEnabled();
+        }
+        return false;
     }
 
     public void setNaviVolume(int volume) {

@@ -117,9 +117,10 @@ public interface SignalApi {
 
     /**
      * 获取智慧领航播报开关
-     * @return 0:关闭 1:开启
      */
-    int getNavigationOnAdasTextToSpeachStatus();
+    boolean getGmcNopTtsEnabled();
+
+    boolean getPatacNopTtsEnabled();
 
     /**
      * 设置导航音量
