@@ -2071,8 +2071,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
 
     @Override
     public void onCancelClick() {
-        mModel.cancelRoute();
-        mView.progressUIClose();
+        boolean success = mModel.cancelRoute();
+        //取消算路成功走算路失败逻辑关闭界面
+        if (!success) {
+            mView.progressUIClose();
+        }
     }
 
     @Override
