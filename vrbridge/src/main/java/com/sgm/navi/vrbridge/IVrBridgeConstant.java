@@ -494,4 +494,7 @@ public interface IVrBridgeConstant {
         int REFRESH = 5;
     }
 
+    String HIDE_OVERLAY_ACTION = "patac.intent.ACTION_BROADCAST_HIDE_ALLAPPS";
+    String PKG_SUSTEMUI = "com.android.systemui";
+
 }

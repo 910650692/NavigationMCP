@@ -1,5 +1,6 @@
 package com.sgm.navi.vrbridge;
 
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.android.utils.log.Logger;
@@ -8,7 +9,6 @@ import com.android.utils.process.ProcessStatus;
 import com.android.utils.thread.ThreadManager;
 import com.baidu.bridge.BridgeSdk;
 import com.baidu.oneos.protocol.IStateManager;
-import com.baidu.oneos.protocol.SystemStateCons;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.map.MapMode;
@@ -804,6 +804,11 @@ public final class MapStateManager {
             if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus) {
                 saveCommand = true;
             }
+        } else if (null != AppCache.getInstance().getMContext()) {
+            Intent hideOverlayIntent = new Intent();
+            hideOverlayIntent.setAction(IVrBridgeConstant.HIDE_OVERLAY_ACTION);
+            hideOverlayIntent.setPackage(IVrBridgeConstant.PKG_SUSTEMUI);
+            AppCache.getInstance().getMContext().sendBroadcast(hideOverlayIntent);
         }
 
         return saveCommand;
@@ -824,6 +829,11 @@ public final class MapStateManager {
                 || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
             openMap(appRunStatus);
             saveCommand = true;
+        } else if (null != AppCache.getInstance().getMContext()) {
+            Intent hideOverlayIntent = new Intent();
+            hideOverlayIntent.setAction(IVrBridgeConstant.HIDE_OVERLAY_ACTION);
+            hideOverlayIntent.setPackage(IVrBridgeConstant.PKG_SUSTEMUI);
+            AppCache.getInstance().getMContext().sendBroadcast(hideOverlayIntent);
         }
 
         return saveCommand;
