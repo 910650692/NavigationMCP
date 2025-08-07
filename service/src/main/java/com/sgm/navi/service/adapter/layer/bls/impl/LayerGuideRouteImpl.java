@@ -105,6 +105,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     private void dispatchItemClick(LayerItem item) {
+        if (ConvertUtils.isEmpty(item)) {
+            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            return;
+        }
         LayerPointItemType type = LayerPointItemType.NULL;
         final LayerItemRoutePointClickResult result = new LayerItemRoutePointClickResult();
         switch (item.getBusinessType()) {
@@ -460,6 +464,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             routePoint.mType = 2;
             routePoint.mIsDraw = true;
             routePoint.mPathId = isChargeStation(poiInfoEntity) ? LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal() : 0;
+            if (Logger.openLog) {
+                Logger.d(TAG, getMapType(), " isChargeStation ", isChargeStation(poiInfoEntity));
+            }
             if (ConvertUtils.isEmpty(poiInfoEntity) || ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
                 Logger.e(TAG, getMapType(), "via point is null");
                 continue;
@@ -471,6 +478,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getStyleAdapter().updateViaPointList(viaPointList);
         getLayerGuideRouteControl().setPathPoints(mPathPoints);
         updatePaths();
+        if (Logger.openLog) {
+            Logger.d(TAG, getMapType(), " viaPointList ", viaPointList.size(), " mViaList ", mViaList.size(), " mPathPoints ", mPathPoints.mViaPoints.size());
+        }
     }
 
     /**
