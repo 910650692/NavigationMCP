@@ -17,13 +17,14 @@ import android.webkit.WebViewClient;
 
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.DialogUseReminderBinding;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.service.AppCache;
-import com.sgm.navi.ui.dialog.BaseDialog;
+import com.sgm.navi.ui.dialog.BaseFullScreenDialog;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 /**
@@ -31,7 +32,7 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
  * @Author lvww
  * @date 2024/12/31
  */
-public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
+public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBinding> {
 
     private WebView mWebView;
     private Animation mRotateAnim;
@@ -49,11 +50,6 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
     @Override
     protected DialogUseReminderBinding initLayout() {
         return DialogUseReminderBinding.inflate(getLayoutInflater());
-    }
-
-    @Override
-    protected void initListener() {
-
     }
 
     @Override
@@ -128,6 +124,9 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.INVISIBLE);
             mViewBinding.reminderDetail.reminderRootDetail.setVisibility(View.VISIBLE);
         } else {
+            mWebView.setBackgroundColor(0x00000000);
+            mWebView.setBackgroundResource(android.R.color.transparent);
+            mWebView.setAlpha(0f);
             mWebView.setVisibility(View.INVISIBLE);
             mWebView.stopLoading();
             mViewBinding.reminderIndex.reminderRootIndex.setVisibility(View.VISIBLE);
@@ -152,7 +151,7 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
 
     private void hideLoadingUI() {
         // 先设置透明度为0，避免闪烁
-        mViewBinding.reminderDetail.imgLoading.animate().alpha(0f).setDuration(100)
+        mViewBinding.reminderDetail.imgLoading.animate().alpha(0f).setDuration(200)
                 .withEndAction(() -> {
                     mViewBinding.reminderDetail.imgLoading.setVisibility(View.GONE);
                     if (mRotateAnim != null) {
@@ -167,6 +166,9 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        mWebView.setBackgroundColor(0x00000000);
+        mWebView.setBackgroundResource(android.R.color.transparent);
+        mWebView.setAlpha(0f);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -180,6 +182,13 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
                 super.onPageStarted(view, url, favicon);
                 view.setVisibility(View.INVISIBLE);
                 mHasError = false;
+                mWebView.setAlpha(0f);
+                view.evaluateJavascript(
+                        "javascript:" +
+                                "document.documentElement.style.background='transparent !important';" +
+                                "document.body.style.background='transparent !important';" +
+                                "document.body.style.backgroundColor='transparent !important';",
+                        null);
             }
 
             @Override
@@ -189,16 +198,21 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
                     return;
                 }
                 applyCustomStyles(view);
-                hideLoadingUI();
                 mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
                 mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                ThreadManager.getInstance().postDelay(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideLoadingUI();
+                    }
+                }, 700);
                 view.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         view.setVisibility(View.VISIBLE);
-                        view.animate().alpha(1f).setDuration(200).start();
+                        view.animate().alpha(1f).setDuration(300).start();
                     }
-                }, 350);
+                }, 1000);
             }
 
             @Override
@@ -219,6 +233,7 @@ public class ReminderDialog extends BaseDialog<DialogUseReminderBinding> {
                             view.loadUrl(failedUrl);
                             mViewBinding.reminderDetail.btnRetry.setVisibility(View.GONE);
                             mViewBinding.reminderDetail.loadFailedHint.setVisibility(View.GONE);
+                            mViewBinding.reminderDetail.imgLoading.setAlpha(1f);
                             mViewBinding.reminderDetail.imgLoading.startAnimation(mRotateAnim);
                             mViewBinding.reminderDetail.imgLoading.setVisibility(View.VISIBLE);
                             mViewBinding.reminderDetail.loadingHint.setVisibility(View.VISIBLE);
