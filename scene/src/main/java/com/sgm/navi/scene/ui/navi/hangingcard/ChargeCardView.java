@@ -93,9 +93,11 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             mBinding.layoutChargeDesc.root.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvQuickUse.setText(String.valueOf(chargeInfo.getFast_free()));
             mBinding.layoutChargeDesc.tvQuickTotal.setText("/" + chargeInfo.getFast_total());
+            mBinding.layoutChargeDesc.tvLogoQuick.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvQuickUse.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvQuickTotal.setVisibility(View.VISIBLE);
         } else {
+            mBinding.layoutChargeDesc.tvLogoQuick.setVisibility(View.GONE);
             mBinding.layoutChargeDesc.tvQuickUse.setVisibility(View.GONE);
             mBinding.layoutChargeDesc.tvQuickTotal.setVisibility(View.GONE);
         }
@@ -104,9 +106,11 @@ public class ChargeCardView extends CardView<NaviSceneNearProvideStationChargeBi
             mBinding.layoutChargeDesc.root.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvSlowUse.setText(String.valueOf(chargeInfo.getSlow_free()));
             mBinding.layoutChargeDesc.tvSlowTotal.setText("/" + chargeInfo.getSlow_total());
+            mBinding.layoutChargeDesc.tvLogoSlow.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvSlowUse.setVisibility(View.VISIBLE);
             mBinding.layoutChargeDesc.tvSlowTotal.setVisibility(View.VISIBLE);
         } else {
+            mBinding.layoutChargeDesc.tvLogoSlow.setVisibility(View.GONE);
             mBinding.layoutChargeDesc.tvSlowUse.setVisibility(View.GONE);
             mBinding.layoutChargeDesc.tvSlowTotal.setVisibility(View.GONE);
         }
