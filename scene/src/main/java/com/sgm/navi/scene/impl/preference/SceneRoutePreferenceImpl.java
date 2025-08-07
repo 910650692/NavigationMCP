@@ -17,9 +17,11 @@ import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
+import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 
 import java.util.Hashtable;
+import java.util.Objects;
 
 
 /**
@@ -242,6 +244,14 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
      * 设置默认
      * */
     public void setDefaultPreference() {
+        setDefaultPreference(true);
+    }
+
+    /**
+     * 设置默认
+     * @param isFirstChange 是否首次变更
+     * */
+    public void setDefaultPreference(final boolean isFirstChange) {
         switch (mSettingPackage.getRoutePreference()) {
             case PREFERENCE_RECOMMEND:
                 mISRECOMMENDSELECT = true;
@@ -301,10 +311,11 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
             return;
         }
         for (IRoutePreferenceChangeListener listener : mRoutePreferenceChangeListenerMap.values()) {
-            listener.onPreferenceChange(mSettingPackage.getRoutePreference(), true);
+            listener.onPreferenceChange(mSettingPackage.getRoutePreference(), isFirstChange);
         }
         mLastRoutePreferenceID = mSettingPackage.getRoutePreference();
     }
+
     /**
      * 格式化偏好
      * @param mode 模式
@@ -522,5 +533,14 @@ public class SceneRoutePreferenceImpl extends BaseSceneModel<BaseSceneView>
     public void closeScene() {
         NaviSceneManager.getInstance().notifySceneStateChangeReset(
                 INaviSceneEvent.SceneStateChangeType.SceneCloseState, NaviSceneId.NAVI_SCENE_PREFERENCE, true);
+    }
+
+    @Override
+    public void onSettingChanged(String key, String value) {
+        if (Objects.equals(key, SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE_BY_PHONE)) {
+            Logger.d(TAG, "onSettingChanged PREFERENCE_BY_PHONE");
+            clearPreference();
+            setDefaultPreference(false);
+        }
     }
 }
