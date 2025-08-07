@@ -254,6 +254,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
         mTipVisibility.set(false);
         mDataVisibility.set(false);
         mAddVisibility.set(false);
+        mView.updateFavoriteView(new ArrayList<>(), 0);
         mModel.queryCollectStation(mView.getActivity());
     }
 
