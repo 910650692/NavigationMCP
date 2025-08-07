@@ -754,11 +754,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (baseFragment instanceof MainSearchFragment ||
                 (baseFragment instanceof SettingFragment &&
                         !NaviPackage.getInstance().getFixedOverViewStatus() &&
-                        !NaviPackage.getInstance().getClusterFixOverViewStatus()) ||
-                ((baseFragment instanceof NaviGuidanceFragment) &&
-                        !NaviPackage.getInstance().getPreviewStatus()) &&
-                        !NaviPackage.getInstance().getClusterFixOverViewStatus()) {
+                        !NaviPackage.getInstance().getClusterFixOverViewStatus())) {
             mModel.goToCarPosition();
+            mModel.setMapCenterInScreen();
+            mModel.refreshMapMode();
+        } else if ((baseFragment instanceof NaviGuidanceFragment) &&
+                !NaviPackage.getInstance().getPreviewStatus() &&
+                !NaviPackage.getInstance().getClusterFixOverViewStatus()) {
             mModel.setMapCenterInScreen();
             mModel.refreshMapMode();
         }
