@@ -248,4 +248,10 @@ public class MapViewModel extends BaseMapViewModel {
             dialog.showDialog(Gravity.START | Gravity.BOTTOM);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView = null;
+    }
 }
