@@ -415,17 +415,24 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         if (TextUtils.isEmpty(fastTotalNumber)) {
             safetySetText(fastText, "");
         } else {
-            final String fastString = context.getString(R.string.layer_route_replace_charge_fast, info.getMFastPlugInfo().getMTotalNumber());
-            safetySetText(fastText, fastString);
+            String fastString = getValidChargeNumber(fastTotalNumber);
+            final String result = context.getString(R.string.layer_route_replace_charge_fast, fastString);
+            safetySetText(fastText, result);
+            if (Logger.openLog) {
+                Logger.d(TAG, "fastTotalNumber ", fastTotalNumber, " result ", result);
+            }
         }
         final String slowTotalNumber = info.getMSlowPlugInfo().getMTotalNumber();
         if (TextUtils.isEmpty(slowTotalNumber)) {
             safetySetText(slowText, "");
         } else {
-            final String slowString = context.getString(R.string.layer_route_replace_charge_slow, info.getMSlowPlugInfo().getMTotalNumber());
-            safetySetText(slowText, slowString);
+            String slowString = getValidChargeNumber(slowTotalNumber);
+            final String result = context.getString(R.string.layer_route_replace_charge_slow, slowString);
+            safetySetText(slowText, result);
+            if (Logger.openLog) {
+                Logger.d(TAG, "slowTotalNumber ", slowTotalNumber, " result ", result);
+            }
         }
-
     }
 
     private void safetySetText(TextView textView, String string) {
@@ -438,6 +445,28 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             textView.setVisibility(GONE);
         }
         textView.setText(string);
+    }
+
+    // 去除结果中的动态数据为-1 eg:原始返回数据为"-1/18"
+    private String getValidChargeNumber(String number) {
+        String[] split = number.split("/");
+        String fastString = "";
+        if (split.length > 1) {
+            try {
+                int firstNumber = Integer.parseInt(split[0].trim());
+                if (firstNumber > 0) {
+                    fastString = number;
+                } else {
+                    int secondNumber = Integer.parseInt(split[1].trim());
+                    fastString = secondNumber + "";
+                }
+            } catch (Exception e) {
+                return number;
+            }
+        } else {
+            fastString = number;
+        }
+        return fastString;
     }
 
     /**

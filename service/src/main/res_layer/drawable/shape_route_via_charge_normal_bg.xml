@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:topLeftRadius="@dimen/dp_18" android:topRightRadius="@dimen/dp_18" android:bottomRightRadius="@dimen/dp_18" android:bottomLeftRadius="@dimen/dp_18"/>
+    <corners android:topLeftRadius="@dimen/dp_0" android:topRightRadius="@dimen/dp_18" android:bottomRightRadius="@dimen/dp_18" android:bottomLeftRadius="@dimen/dp_0"/>
     <solid android:color="@color/layer_custom_point_bg_fill_color"/>
-    <padding android:left="@dimen/dp_29" android:right="@dimen/dp_24" android:bottom="@dimen/dp_5" android:top="@dimen/dp_5"/>
+    <padding android:left="@dimen/dp_29" android:right="@dimen/dp_19" android:bottom="@dimen/dp_5" android:top="@dimen/dp_5"/>
 </shape>
