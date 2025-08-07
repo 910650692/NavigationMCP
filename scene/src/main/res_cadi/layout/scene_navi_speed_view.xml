@@ -44,8 +44,9 @@
             android:focusable="false"
             android:gravity="center"
             android:text="@{naviSpeedLimit.mCurrentSpeedTxt}"
-            android:textColor="@color/navi_color_000000_100_only"
+            android:textColor="@color/navi_color_2461EA_100"
             android:textSize="@dimen/sp_52"
+            android:fontFamily="@font/buick_medium"
             app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
             app:layout_constraintStart_toStartOf="@id/sv_current_speed"
             app:layout_constraintTop_toTopOf="@id/sv_current_speed"
@@ -58,7 +59,7 @@
             android:focusable="false"
             android:gravity="center"
             android:text="km/h"
-            android:textColor="@color/navi_color_000000_100_only"
+            android:textColor="@color/navi_color_2461EA_100"
             android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="@id/sv_current_speed"
             app:layout_constraintStart_toStartOf="@id/sv_current_speed"
@@ -93,19 +94,36 @@
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
             app:layout_constraintTop_toBottomOf="@id/stv_speed_limit" />
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/stv_distance"
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:id="@+id/slv_distance_and_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_18"
-            android:focusable="false"
-            android:singleLine="true"
-            android:textColor="@color/navi_color_FFFFFF_100"
-            android:textSize="@dimen/sp_46"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
-            app:layout_constraintTop_toBottomOf="@id/stv_speed_limit_key"
-            tools:text="8.5" />
+            app:layout_constraintTop_toBottomOf="@id/stv_speed_limit_key">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/siv_light"
+                android:layout_width="@dimen/dp_38"
+                android:layout_height="@dimen/dp_38"
+                android:src="@drawable/img_speed_light"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/stv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:singleLine="true"
+                android:textColor="@color/navi_color_FFFFFF_100"
+                android:textSize="@dimen/sp_46"
+                tools:text="8.5" />
+
+        </com.sgm.navi.ui.view.SkinLinearLayout>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/stv_distance_key"
@@ -119,7 +137,7 @@
             android:textSize="@dimen/sp_32"
             app:layout_constraintEnd_toEndOf="@id/sv_overall_speed"
             app:layout_constraintStart_toStartOf="@id/sv_overall_speed"
-            app:layout_constraintTop_toBottomOf="@id/stv_distance" />
+            app:layout_constraintTop_toBottomOf="@id/slv_distance_and_light" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

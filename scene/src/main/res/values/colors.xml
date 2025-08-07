@@ -148,6 +148,7 @@
     <color name="navi_color_FF2C2D36">#FF2C2D36</color>
     <color name="navi_color_icon_park">#99383839</color>
     <color name="navi_delete_icon_color">#FFFFFF</color>
+    <color name="navi_color_40CBA_100">#FF40CBA2</color>
 
     <!--柱状图-->
     <color name="auto_color_727577">#727476</color>

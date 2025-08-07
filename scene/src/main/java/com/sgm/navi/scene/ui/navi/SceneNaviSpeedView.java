@@ -91,7 +91,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
         mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(currentSpeed > speedLimit ?
-                R.color.navi_color_C73333_100 : R.color.navi_color_000000_100_only));
+                R.color.navi_color_C73333_100 : R.color.navi_color_2461EA_100));
         mViewBinding.stvCurrentSpeedKey.setTextColor(
                 getContext().getColor(currentSpeed > speedLimit ? R.color.navi_color_C73333_100 :
                         R.color.navi_color_2461EA_100));
@@ -110,6 +110,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
             if (remainDistance < 0) {
                 remainDistance = 0;
             }
+            mViewBinding.sivLight.setVisibility(GONE);
             mViewBinding.stvDistance.setText(String.valueOf(remainDistance) +
                     getContext().getString(R.string.m));
             mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_distance));
@@ -123,11 +124,16 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
     public void updateGreenWaveInfo(final SpeedOverallEntity entity, int currentSpeed) {
         Logger.i(TAG, "updateGreenWaveInfo mCurrentRoadLimitSpeed:",
                 mCurrentRoadLimitSpeed, " currentSpeed:", currentSpeed);
-        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(
-                R.color.navi_color_000000_100_only));
+        mViewBinding.sivLight.setVisibility(VISIBLE);
+        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(currentSpeed > mCurrentRoadLimitSpeed ?
+                R.color.navi_color_C73333_100 : R.color.navi_color_40CBA_100));
+        mViewBinding.stvCurrentSpeedKey.setTextColor(
+                getContext().getColor(currentSpeed > mCurrentRoadLimitSpeed ? R.color.navi_color_C73333_100 :
+                        R.color.navi_color_40CBA_100));
         mViewBinding.svCurrentSpeed.setBackground(
                 getContext().getDrawable(currentSpeed > mCurrentRoadLimitSpeed ?
-                        R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed));
+                        R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed_stroke_green));
+        mViewBinding.svOverallSpeed.setBackground(getContext().getDrawable(R.drawable.bg_speed_green));
         mViewBinding.stvSpeedLimit.setText(entity.getMinSpeed() + "-" + entity.getMaxSpeed());
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_suggest));
         mViewBinding.stvDistance.setText(String.valueOf(entity.getLightCount()));
