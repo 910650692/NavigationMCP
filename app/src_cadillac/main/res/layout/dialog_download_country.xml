@@ -42,6 +42,7 @@
 
                 <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_commit"
+                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
                     android:background="@drawable/bg_setting_dialog_confirm"
@@ -52,6 +53,7 @@
 
                 <com.sgm.navi.ui.view.SkinButton
                     android:id="@+id/dialog_cancel"
+                    style="?android:attr/borderlessButtonStyle"
                     android:layout_width="@dimen/dp_432"
                     android:layout_height="@dimen/dp_100"
                     android:layout_marginStart="@dimen/dp_40"
