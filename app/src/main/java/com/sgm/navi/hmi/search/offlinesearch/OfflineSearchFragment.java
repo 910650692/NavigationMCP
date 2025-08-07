@@ -50,9 +50,9 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
     @Override
     public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
-//        if (!hidden) {
-//            mBinding.offlineCityList.requestFocusAndShowKeyboard();
-//        }
+        if (hidden) {
+            mBinding.offlineCityList.hideInput();
+        }
     }
 
     /**

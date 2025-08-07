@@ -280,6 +280,12 @@ public class OfflineSearchPoiList extends BaseSceneView<OfflineSearchResultViewB
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        hideInput();
+    }
+
     /**
      * 获取输入框内容
      *

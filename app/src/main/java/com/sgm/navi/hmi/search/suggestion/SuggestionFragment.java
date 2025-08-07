@@ -78,9 +78,9 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
     @Override
     public void onHiddenChanged(final boolean hidden) {
         super.onHiddenChanged(hidden);
-//        if (!hidden) {
-//            mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
-//        }
+        if (hidden) {
+            mBinding.sceneSugPoiList.hideInput();
+        }
     }
 
     /**

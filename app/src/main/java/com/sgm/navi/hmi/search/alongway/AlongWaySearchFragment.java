@@ -89,6 +89,14 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
         mBinding.sceneQuickSearchView.setTextView(getString(R.string.along_way_search_hint));
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if(hidden){
+            mBinding.sceneQuickSearchView.hideInput();
+        }
+    }
+
     /**
      * 搜索结果回调
      * @param taskId 任务id

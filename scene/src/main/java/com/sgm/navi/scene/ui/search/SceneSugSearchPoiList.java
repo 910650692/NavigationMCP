@@ -615,6 +615,7 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
         if (!ConvertUtils.isNull(mAnimator)) {
             mAnimator.cancel();
         }
+        hideInput();
     }
 
     public void onBackPressed() {

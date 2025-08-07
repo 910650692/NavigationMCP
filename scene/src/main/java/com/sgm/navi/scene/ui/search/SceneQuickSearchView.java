@@ -389,6 +389,12 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        hideInput();
+    }
+
     /**
      * 执行预搜索
      * @param keyword 搜索关键字
