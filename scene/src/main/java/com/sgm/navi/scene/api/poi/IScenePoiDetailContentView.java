@@ -18,5 +18,6 @@ public interface IScenePoiDetailContentView {
      * 搜索
      * @param poiInfoEntity poi信息实体类
      */
-    void doSearch(PoiInfoEntity poiInfoEntity);
+    void doSearch(PoiInfoEntity poiInfoEntity,int index);
+
 }

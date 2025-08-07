@@ -672,6 +672,22 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * Geo 搜索
      *
      * @param geoPoint GeoPoint
+     * @return taskId
+     */
+    public int geoSearch(final GeoPoint geoPoint,final boolean isViaPoint,final boolean isSilent) {
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing geoSearch search.");
+        final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
+                .isViaPoint(isViaPoint)
+                .searchType(AutoMapConstant.SearchType.GEO_SEARCH)
+                .poiLoc(geoPoint)
+                .build();
+        return mSearchAdapter.geoSearch(requestParameterBuilder);
+    }
+
+    /**
+     * Geo 搜索
+     *
+     * @param geoPoint GeoPoint
      * @param isSilent 是否静默
      * @return taskId
      */
@@ -1389,7 +1405,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
             case AutoMapConstant.SearchType.POI_SEARCH:
-                createLabelMarker(searchResultEntity);
+                if(!requestParameter.isViaPoint()){
+                    createLabelMarker(searchResultEntity);
+                }
                 showPreview(searchResultEntity.getPoiList());
                 break;
             case AutoMapConstant.SearchType.PID_EN_ROUTE_SEARCH:

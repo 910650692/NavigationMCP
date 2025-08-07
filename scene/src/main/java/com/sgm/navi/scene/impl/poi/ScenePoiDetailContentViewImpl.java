@@ -23,9 +23,6 @@ import com.sgm.navi.service.define.map.MapNotifyType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.mapdata.CityDataInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
-import com.sgm.navi.service.define.route.RoutePriorityType;
-import com.sgm.navi.service.define.route.RouteRequestParam;
-import com.sgm.navi.service.define.route.RouteWayID;
 import com.sgm.navi.service.define.search.ChildInfo;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -37,7 +34,6 @@ import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.mapdata.MapDataPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
-import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
@@ -45,7 +41,6 @@ import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -147,7 +142,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
 
 
     @Override
-    public void doSearch(final PoiInfoEntity poiInfoEntity) {
+    public void doSearch(final PoiInfoEntity poiInfoEntity, int index) {
         if (null == poiInfoEntity) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "doSearch: poiInfoEntity is null");
             return;
@@ -167,7 +162,7 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             //POI详情搜索测试代码，正式版本sdk时放开
 //            mSearchPackage.poiDetailSearch(poiInfoEntity, poiInfoEntity.getRetainParam());
         } else {
-            mTaskId = mSearchPackage.geoSearch(poiInfoEntity.getPoint());
+            mTaskId = mSearchPackage.geoSearch(poiInfoEntity.getPoint(),index > -1,false);
         }
     }
 

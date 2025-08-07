@@ -58,8 +58,8 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         super.onGetFragmentData();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onGetFragmentData " );
         try {
-            getSearchPoiInfo();
             getBundleData();
+            getSearchPoiInfo();
         } catch (Exception e) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getBundleData error: " + e.getMessage());
         }

@@ -1892,7 +1892,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             }else if(!ConvertUtils.isEmpty(poiInfo.getPid()) && poiInfo.getPid().startsWith("C")){
                 mScreenViewModel.keywordSearch(poiInfo);
             }else{
-                mScreenViewModel.doSearch(poiInfo);
+                mScreenViewModel.doSearch(poiInfo,mViaType);
             }
         }else{
             mScreenViewModel.doSearchByNet(poiInfo);

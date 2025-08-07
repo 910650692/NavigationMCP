@@ -23,6 +23,7 @@ import lombok.experimental.Accessors;
 public final class SearchRequestParameter {
     // 是否是静默搜索，默认非静默搜索
     private boolean mIsSilentSearch = false;
+    private boolean mIsViaPoint = false;
     // 搜索关键字,预搜索，关键字搜索必传
     private String mKeyword;
     // 分页
@@ -108,6 +109,9 @@ public final class SearchRequestParameter {
 
     public boolean isSilentSearch() {
         return mIsSilentSearch;
+    }
+    public boolean isViaPoint() {
+        return mIsViaPoint;
     }
 
     public String getKeyword() {
@@ -240,6 +244,7 @@ public final class SearchRequestParameter {
 
     private SearchRequestParameter(final Builder builder) {
         this.mIsSilentSearch = builder.mIsSilentSearch;
+        this.mIsViaPoint = builder.mIsViaPoint;
         this.mKeyword = builder.mKeyword;
         this.mPage = builder.mPage;
         this.mSize = builder.mSize;
@@ -388,6 +393,7 @@ public final class SearchRequestParameter {
 
     public static class Builder {
         private boolean mIsSilentSearch = false;
+        private boolean mIsViaPoint = false;
         private String mKeyword;
         private int mPage = 1;
         private int mSize = 10;
@@ -441,6 +447,16 @@ public final class SearchRequestParameter {
          */
         public Builder isSilentSearch(final boolean isSilentSearch) {
             this.mIsSilentSearch = isSilentSearch;
+            return this;
+        }
+
+        /**
+         * 是否是途径点
+         * @param isViaPoint 是否是途径点
+         * @return Builder
+         */
+        public Builder isViaPoint(final boolean isViaPoint) {
+            this.mIsViaPoint = isViaPoint;
             return this;
         }
 
