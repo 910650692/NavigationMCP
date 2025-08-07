@@ -78,6 +78,8 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         NaviPackage.getInstance().unregisterObserver(mViewModel.mScreenId);
         SettingPackage.getInstance().unRegisterSettingChangeCallback(getMapId().name());
         LayerPackage.getInstance().unInitLayer(mViewModel.getMapView().provideMapTypeId());
+        MapAdapter.getInstance().unBindMapView(mViewModel.getMapView());
+        MapAdapter.getInstance().destroyMapView(MapType.CLUSTER_MAP);
     }
 
     private MapType getMapId() {

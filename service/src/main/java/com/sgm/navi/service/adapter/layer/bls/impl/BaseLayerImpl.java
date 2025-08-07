@@ -235,6 +235,11 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public int getMarkerId(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo) {
         int markerId = super.getMarkerId(layer, item, styleInfo);
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
+        if (Logger.openLog) {
+            Logger.i(TAG, "CurrentMapView:" + getMapType(),
+                    "已使用纹理/支持最大纹理数:" + layer.getMapView().getUsedTextureCount()
+                            + "/" + layer.getMapView().getCapacityTextureCount());
+        }
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
             String markerRes = styleInfo.markerId;
             if (!(TextUtils.isEmpty(markerRes) || "-1".equals(markerRes) || "id_static".equals(markerRes) || markerRes.endsWith(".xml"))) {
