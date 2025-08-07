@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -87,6 +88,11 @@ public class BaseSettingOthersViewModel extends BaseViewModel<SettingOthersFragm
         if (!mModel.getIsLogin()) {
             addFragment(new AccountQRCodeLoginFragment(), null);
         } else {
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(R.string.setting_qr_code_load_offline_toast));
+                return;
+            }
             mView.showLogoutAccountDialog();
             setLogoutAccountDialogShown(true);
         }
