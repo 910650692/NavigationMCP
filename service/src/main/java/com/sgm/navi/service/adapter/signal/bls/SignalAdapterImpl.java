@@ -501,6 +501,7 @@ public class SignalAdapterImpl implements SignalApi {
                     }
                     Integer value = (Integer) carPropertyValue.getValue();
                     Logger.i(TAG, "PREDICTED_FUEL_SAVING_PER_100_KM", value);
+                    mPredictedFuelSavingPer100km = value;
                     for (SignalAdapterCallback callback : mCallbacks) {
                         callback.onPredictedFuelSavingPer100km(value);
                     }
@@ -520,6 +521,7 @@ public class SignalAdapterImpl implements SignalApi {
                     }
                     Integer value = (Integer) carPropertyValue.getValue();
                     Logger.i(TAG, "TOTAL_FUEL_SAVING", value);
+                    mTotalFuelSaving = value;
                     for (SignalAdapterCallback callback : mCallbacks) {
                         callback.onTotalFuelSaving(value);
                     }
