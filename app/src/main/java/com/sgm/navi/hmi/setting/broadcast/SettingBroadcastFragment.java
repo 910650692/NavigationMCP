@@ -109,11 +109,17 @@ public class SettingBroadcastFragment extends BaseFragment<FragmentSettingBroadc
 
     }
 
-    public void setVoiceIcons(){
+    public void setVoiceIcons() {
         List<String> mVoiceIcon = mViewModel.setVoiceIcons();
-        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers1, mVoiceIcon.get(0), R.mipmap.default_voice, R.mipmap.default_voice);
-        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers2, mVoiceIcon.get(1), R.mipmap.default_voice, R.mipmap.default_voice);
-        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers3, mVoiceIcon.get(2), R.mipmap.default_voice, R.mipmap.default_voice);
-        ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers4, mVoiceIcon.get(3), R.mipmap.default_voice, R.mipmap.default_voice);
+        if (mVoiceIcon != null) {
+            ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers1, mVoiceIcon.size() > 0
+                    ? mVoiceIcon.get(0) : "", R.mipmap.default_voice, R.mipmap.default_voice);
+            ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers2, mVoiceIcon.size() > 1
+                    ? mVoiceIcon.get(1) : "", R.mipmap.default_voice, R.mipmap.default_voice);
+            ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers3, mVoiceIcon.size() > 2
+                    ? mVoiceIcon.get(2) : "", R.mipmap.default_voice, R.mipmap.default_voice);
+            ViewAdapterKt.loadImageUrl(mBinding.naviBroadcastVoiceOthers4, mVoiceIcon.size() > 3
+                    ? mVoiceIcon.get(3) : "", R.mipmap.default_voice, R.mipmap.default_voice);
+        }
     }
 }

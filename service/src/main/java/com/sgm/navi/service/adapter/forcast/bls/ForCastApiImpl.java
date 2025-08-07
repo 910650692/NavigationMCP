@@ -57,8 +57,10 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
 
     @Override
     public void destroyService() {
-        mForcastService.removeObserver(this);
-        mForcastService.unInit();
+        if (mForcastService != null) {
+            mForcastService.removeObserver(this);
+            mForcastService.unInit();
+        }
     }
 
     @Override
@@ -76,7 +78,11 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
         param.userLoc.lon = 118.185962;
         param.userLoc.lat = 24.489438;
         param.userId = ""; // 登录用户UID
-        mForcastService.getOnlineForcastArrivedData(param);
+        int result = Integer.MIN_VALUE;
+        if (mForcastService != null) {
+            result = mForcastService.getOnlineForcastArrivedData(param);
+        }
+        Logger.i(TAG, "onlineForCastArrive：result = " + result);
     }
 
     @Override
@@ -127,8 +133,12 @@ public class ForCastApiImpl implements IForCastApi, IForcastServiceObserver {
     }
 
     private int initService() {
-        if(null == mForcastService)
+        if (mForcastService == null && ServiceMgr.getServiceMgrInstance() != null) {
             mForcastService = (ForcastService) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.ForcastSingleServiceID);
+        }
+        if (mForcastService == null) {
+            return Integer.MIN_VALUE;
+        }
         ForcastInitParam forcastInitParam = new ForcastInitParam();
         forcastInitParam.stCurTime = TimeUtil.getLocalTime2(); // 当前时间 com.autonavi.gbl.util.model.DateTime
         forcastInitParam.dbPath = GBLCacheFilePath.BEHAVIOR_WSTR_DB_FILE_DIR; // 预测数据库文件保存目录路径

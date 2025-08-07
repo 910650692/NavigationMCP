@@ -129,7 +129,6 @@ public class BlAosAdapterImpl implements IBlAosApi, ICallBackReStrictedArea, ICa
         Logger.d(TAG, "请求结果", gReStrictedAreaResponseParam.code, gReStrictedAreaResponseParam.mHttpAckCode, gReStrictedAreaResponseParam.message);
         if (200 != gReStrictedAreaResponseParam.mHttpAckCode) return;
         long taskId = gReStrictedAreaResponseParam.mReqHandle;
-        restrictedAreaDetailMap.get(taskId);
         Logger.d(TAG, "start callBack to hmi:" , (restrictedObserver.size()));
         RouteRestrictionParam param = new RouteRestrictionParam();
         param.setMRestrictedArea(getRestrictedAreaDetail(gReStrictedAreaResponseParam, taskId));
