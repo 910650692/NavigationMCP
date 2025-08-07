@@ -1,6 +1,7 @@
 package com.sgm.navi.service.logicpaket.layer;
 
 
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
@@ -325,17 +326,17 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     private void notifyCrossImageVisibleChanged(MapType mapTypeId, boolean visible) {
         if (callbacks.containsKey(mapTypeId)) {
-            ThreadManager.getInstance().execute(() -> {
-                List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
-                if (callBacks != null && !callBacks.isEmpty()) {
-                    callBacks.forEach(callBack -> {
-                        if (Logger.openLog) {
-                            Logger.d(TAG, mapTypeId, " visible ", visible);
-                        }
-                        callBack.onCrossImageVisibleChanged(mapTypeId, visible);
-                    });
+            List<ILayerPackageCallBack> callBacks = callbacks.get(mapTypeId);
+            if (ConvertUtils.isEmpty(callBacks)) {
+                if (Logger.openLog) {
+                    Logger.e(TAG, mapTypeId, " callBacks is empty, visible ", visible);
                 }
-            });
+                return;
+            }
+            //创建副本并遍历 不影响原始集合数据
+            for (ILayerPackageCallBack callBack : new ArrayList<>(callBacks)) {
+                callBack.onCrossImageVisibleChanged(mapTypeId, visible);
+            }
         }
     }
 }
