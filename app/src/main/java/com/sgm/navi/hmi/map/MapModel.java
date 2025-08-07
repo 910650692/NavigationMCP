@@ -888,6 +888,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 LimitDriveFragment limitDriveFragment = (LimitDriveFragment) currentFragment;
                 limitDriveFragment.showLimitDriveView();
             }
+            mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
+                    ThemeUtils.INSTANCE.isNightModeEnabled(mViewModel.getView().getApplicationContext()) ? ThemeType.NIGHT : ThemeType.DAY);
         }
     }
 
