@@ -58,6 +58,7 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
+import com.sgm.navi.service.define.navi.NaviDriveReportEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
@@ -186,6 +187,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private long mLastRefreshTime = 0;
     private RouteWayID mRouteWayID;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
+    private int mGeoSearchId;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -401,6 +403,16 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mNaviPackage.setClusterFixOverViewStatus(true);
                 mNaviPackage.setPreviewStatus(true);
                 ThreadManager.getInstance().postDelay(mShowPreView, NumberUtils.NUM_100);
+            }
+            if (OpenApiHelper.powerType() == NumberUtils.NUM_2) {
+                List<RouteParam> routeParams = RoutePackage.getInstance().
+                        getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
+                if (!ConvertUtils.isEmpty(routeParams)) {
+                    RouteParam start = routeParams.get(0);
+                    GeoPoint geoPoint = start.getRealPos();
+                    mGeoSearchId = SearchPackage.getInstance().geoSearch(geoPoint, true);
+                    Logger.i(TAG, "startNavigation mGeoSearchId = ", mGeoSearchId);
+                }
             }
         }
     }
@@ -1080,6 +1092,21 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             if (null != searchResultEntity &&
                     !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
                 drawEndPoint(searchResultEntity.getPoiList().get(0));
+            }
+        }
+        if (mGeoSearchId == taskId && searchResultEntity != null) {
+            NaviDriveReportEntity naviDriveReportEntity = mNaviPackage.getMNaviDriveReportEntity();
+            if (ConvertUtils.isEmpty(searchResultEntity.getMPoiList())) {
+                return;
+            }
+            String name = searchResultEntity.getMPoiList().get(0).getName();
+            Logger.i(TAG, "起点 = " + name);
+            if (naviDriveReportEntity == null) {
+                naviDriveReportEntity = new NaviDriveReportEntity();
+                naviDriveReportEntity.setStartPos(name);
+                mNaviPackage.setMNaviDriveReportEntity(naviDriveReportEntity);
+            } else {
+                naviDriveReportEntity.setStartPos(name);
             }
         }
         if (mTipManager != null) {

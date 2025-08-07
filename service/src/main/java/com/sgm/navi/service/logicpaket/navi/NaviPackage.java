@@ -143,6 +143,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Setter
     private boolean mIsNaviViewActive = false; // 记录引导页面是否存在
     @Getter
+    @Setter
     private NaviDriveReportEntity mNaviDriveReportEntity;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
@@ -1096,13 +1097,25 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onDriveReport(NaviDriveReportEntity report) {
         List<RouteParam> routeParams = mRouteAdapter.
                 getAllPoiParamList(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (!ConvertUtils.isEmpty(routeParams)) {
-            report.setStartPos(routeParams.get(0).getName());
-            report.setEndPos(routeParams.get(routeParams.size() - 1).getName());
+        if (mNaviDriveReportEntity == null) {
+            mNaviDriveReportEntity = new NaviDriveReportEntity();
         }
-        report.setEstimateFuelConsume(mSignalAdapter.getPredictedFuelSavingPer100km());
-        report.setTotalFuelConsume(mSignalAdapter.getTotalFuelSaving());
-        mNaviDriveReportEntity = report;
+        if (!ConvertUtils.isEmpty(routeParams)) {
+            mNaviDriveReportEntity.setEndPos(routeParams.get(routeParams.size() - 1).getName());
+        }
+        mNaviDriveReportEntity.setEstimateFuelConsume(mSignalAdapter.getPredictedFuelSavingPer100km());
+        mNaviDriveReportEntity.setTotalFuelConsume(mSignalAdapter.getTotalFuelSaving());
+        mNaviDriveReportEntity.setDrivenDist(report.getDrivenDist());
+        mNaviDriveReportEntity.setDrivenTime(report.getDrivenTime());
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onDriveReport(mNaviDriveReportEntity);
+                    }
+                }
+            }
+        });
     }
 
     /**

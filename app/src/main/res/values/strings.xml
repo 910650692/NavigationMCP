@@ -635,6 +635,7 @@
     <string name="navi_quick">快</string>
     <string name="navi_slow">慢</string>
     <string name="slash">/</string>
+    <string name="start_pos">起点</string>
 
     <!--主图消息中心相关-->
     <string name="message_center_check">查看</string>

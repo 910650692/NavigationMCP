@@ -2,10 +2,13 @@ package com.sgm.navi.hmi.navi;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.android.utils.ResourceUtils;
+import com.sgm.navi.hmi.R;
 import com.sgm.navi.service.define.navi.NaviDriveReportEntity;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.ui.base.BaseViewModel;
@@ -44,7 +47,12 @@ public class NaviDriveReportViewModel extends BaseViewModel<NaviDriveReportFragm
 
     public void setData(NaviDriveReportEntity naviDriveReportEntity) {
         if (naviDriveReportEntity != null) {
-            mStartPos.set(naviDriveReportEntity.getStartPos());
+            String startPos = naviDriveReportEntity.getStartPos();
+            if (TextUtils.isEmpty(startPos)) {
+                mStartPos.set(ResourceUtils.Companion.getInstance().getString(R.string.start_pos));
+            } else {
+                mStartPos.set(startPos);
+            }
             mEndPos.set(naviDriveReportEntity.getEndPos());
             mDrivenTime.set(formatSecondsToTime(naviDriveReportEntity.getDrivenTime()));
             mDrivenDist.set(formatDistance(naviDriveReportEntity.getDrivenDist()));
