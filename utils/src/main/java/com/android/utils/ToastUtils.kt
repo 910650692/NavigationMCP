@@ -3,6 +3,7 @@ package com.android.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +93,10 @@ class ToastUtils private constructor() {
         val toastText = view.findViewById<TextView>(R.id.toast_text)
         if (mToast == null) mToast = Toast.makeText(mContext, msg, time)
         mToast?.view = view
+        val metrics: DisplayMetrics? = mContext?.resources?.displayMetrics
+        if (metrics != null) {
+            view.minimumWidth = metrics.widthPixels - 100
+        }
         mToast!!.setGravity(Gravity.BOTTOM or Gravity.CENTER, SplitScreenManager.getInstance().toastOffsetX, ResourceUtils.getInstance().getDimensionPixelSize(R.dimen.navi_toast_base_offset_y))
         mToast?.setDuration(time)
         toastText.text = msg
