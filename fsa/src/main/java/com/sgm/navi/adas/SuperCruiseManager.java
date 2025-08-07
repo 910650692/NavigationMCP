@@ -89,7 +89,8 @@ public final class SuperCruiseManager {
 
     //region 初始化
     public void init(final AdasManager adasManager) {
-        if (CalibrationPackage.getInstance().adasConfigurationType() != 7) {
+        int type = CalibrationPackage.getInstance().adasConfigurationType();
+        if (type != 6 && type != 7) {
             Logger.i(TAG, "not GB Arch ACP3.1 configuration");
             return;
         }
