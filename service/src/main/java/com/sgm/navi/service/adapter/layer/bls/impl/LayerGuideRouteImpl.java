@@ -294,6 +294,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         setPathPoints(routeResult);
         //设置路线样式风格
         setMainMapPathDrawStyle(false, false, true);
+        //同算路侧沟通 补能点信息异步解析 单独调用接口更新 绘制路线时先隐藏补能点图层
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeViaChargeStationPoint, false);
         String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         boolean isNaving = currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING);
         //设置全览  只对主屏生效 偏航重算不全览
@@ -537,6 +539,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         Logger.d(TAG, "updateRouteChargeStation");
         getStyleAdapter().updateRouteChargeStation(routeChargeStation);
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).updateStyle();
+        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeViaChargeStationPoint, true);
     }
 
     //转换替换补能扎标数据
