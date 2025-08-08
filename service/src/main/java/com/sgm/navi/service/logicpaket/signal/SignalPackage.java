@@ -214,9 +214,9 @@ public final class SignalPackage implements SignalAdapterCallback {
     }
 
     /**
-     * 车速
+     * 仪表车速
      *
-     * @return 单位m/s
+     * @return 单位km/h
      */
     public float getSpeedOfVehicle() {
         return mSignalAdapter.getSpeedOfVehicle();

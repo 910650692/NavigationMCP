@@ -50,7 +50,7 @@ public class SignalAdapterImpl implements SignalApi {
     private int mBatteryEnergyPercent = -1;
     private int mPredictedFuelSavingPer100km = -1;
     private int mTotalFuelSaving = -1;
-
+    private float mMeterSpeed = 0;
 
     public SignalAdapterImpl() {
     }
@@ -374,8 +374,10 @@ public class SignalAdapterImpl implements SignalApi {
             initRangeRemaining();
             try {
                 registerDYN(190, 1, value -> { // 仪表车速
+                    float speed = (float) value / 1024;
+                    mMeterSpeed = speed;
                     for (SignalAdapterCallback callback : mCallbacks) {
-                        callback.onSpeedChanged((float) value / 1024);
+                        callback.onSpeedChanged(mMeterSpeed);
                     }
                 });
                 if (VehicleController.isCleaArch()) {
@@ -651,16 +653,8 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public float getSpeedOfVehicle() {
-        final VehicleController.Result<Float> result;
-        try {
-            result = PowertainController.getInstance().getSpeedOfVehicle();
-        } catch (Exception e) {
-            Logger.e(TAG, "getSpeedOfVehicle: " + e.getMessage());
-            return -1;
-        }
-        final Float value = result.getValue(-1f);
-        Logger.d(TAG, "getSpeedOfVehicle: " + value);
-        return value;
+        Logger.d(TAG, "getSpeedOfVehicle: ", mMeterSpeed);
+        return mMeterSpeed;
     }
 
     @Override
