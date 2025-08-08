@@ -44,7 +44,6 @@ public class SignalAdapterImpl implements SignalApi {
     private float maxBatteryEnergy = -1;
     private float mBatteryEnergy = -1;
     private int mChargeSystemStatus = -1;
-    private float mOutsideTemperature = -1;
     private float mHighVoltageBatteryPropulsionRange = -1;
     private float mRangeRemaining = -1;
     private int mBatteryEnergyPercent = -1;
@@ -64,14 +63,6 @@ public class SignalAdapterImpl implements SignalApi {
             public void onHighVoltageChargeSystemStatusChanged(Integer value) {
                 Logger.d(TAG, "onHighVoltageChargeSystemStatusChanged: ", value);
                 mChargeSystemStatus = value;
-            }
-        });
-        VehicleStatusController.getInstance().registerOutsideTemperatureListener(new VehicleStatusController.OutsideTemperatureListener() {
-            @Override
-            public void onOutsideTemperatureSignalChanged(Float value) {
-                // 1hz
-                Logger.d(TAG, "onOutsideTemperatureSignalChanged: ", value);
-                mOutsideTemperature = value;
             }
         });
         PowertainController.getInstance().registerFuelLevelPercentListener(new PowertainController.FuelLevelPercentListener() {
@@ -98,9 +89,6 @@ public class SignalAdapterImpl implements SignalApi {
                     public void onHighVoltageBatteryPropulsionRangeChanged(final float value) {
                         Logger.d(TAG, "onHighVoltageBatteryPropulsionRangeChanged: " + value);
                         mHighVoltageBatteryPropulsionRange = value;
-                        for (SignalAdapterCallback callback : mCallbacks) {
-                            callback.onHighVoltageBatteryPropulsionRangeChanged(value);
-                        }
                     }
                 });
         PowerModeManager.getInstance().registerSystemStateListener((newMode, oldMode) -> {
@@ -319,17 +307,6 @@ public class SignalAdapterImpl implements SignalApi {
         }
     }
 
-    private void initOutsideTemperature() {
-        final VehicleController.Result<Float> result;
-        try {
-            result = VehicleStatusController.getInstance().getOutsideTemperature();
-            mOutsideTemperature = result.getValue(-1f);
-        } catch (Exception e) {
-            Logger.e(TAG, "initOutsideTemperature: " + e.getMessage());
-            mOutsideTemperature = -1;
-        }
-    }
-
     private void initHighVoltageBatteryPropulsionRange() {
         final VehicleController.Result<Float> result;
         try {
@@ -369,7 +346,6 @@ public class SignalAdapterImpl implements SignalApi {
             initMaxBatteryEnergy();
             initBatteryEnergy();
             initChargeSystemStatus();
-            initOutsideTemperature();
             initHighVoltageBatteryPropulsionRange();
             initRangeRemaining();
             try {
@@ -647,8 +623,16 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public float getOutsideTemperature() {
-        if (Logger.isDebugLevel()) Logger.d(TAG, "getOutsideTemperature: " + mOutsideTemperature);
-        return mOutsideTemperature;
+        final VehicleController.Result<Float> result;
+        try {
+            result = VehicleStatusController.getInstance().getOutsideTemperature();
+        } catch (Exception e) {
+            Logger.e(TAG, "getOutsideTemperature: " + e.getMessage());
+            return -1;
+        }
+        final Float value = result.getValue(-1f);
+        Logger.d(TAG, "getOutsideTemperature: " + value);
+        return value;
     }
 
     @Override
