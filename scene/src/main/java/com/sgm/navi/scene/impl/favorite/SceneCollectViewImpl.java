@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.impl.favorite;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.utils.ConvertUtils;
@@ -51,6 +53,9 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
 
     public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
         ArrayList<PoiInfoEntity> list = BehaviorPackage.getInstance().getFavoritePoiData();
+        if (ConvertUtils.isNull(list)) {
+            return new ArrayList<>();
+        }
         // 过滤掉无详细地址的收藏info
         list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
         return list;
@@ -58,7 +63,22 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
 
     public void startSGMLogin(){
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"startSGMLogin");
-        AccountPackage.getInstance().sendSGMLoginRequest(mScreenView.getContext());
+        if (ConvertUtils.isNull(mScreenView)) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "ScreenView is null, cannot start SGM login");
+            return;
+        }
+
+        Context context = mScreenView.getContext();
+        if (ConvertUtils.isNull(context)) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Context is null, cannot start SGM login");
+            return;
+        }
+
+        try {
+            AccountPackage.getInstance().sendSGMLoginRequest(context);
+        } catch (Exception e) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "SGM login request failed", e);
+        }
     }
 
     public void queryCollectStation(AccessTokenParam param){
@@ -75,7 +95,9 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
             String idpUserId = AccountPackage.getInstance().getUserId();
             String accessToken = AccountPackage.getInstance().getAccessToken(param);
             String vehicleBrand = mSearchPackage.getBrandName(CalibrationPackage.getInstance().brand());
-            poiInfoEntity.setIsCollect(true);
+            if(!ConvertUtils.isNull(poiInfoEntity)){
+                poiInfoEntity.setIsCollect(true);
+            }
             mTaskId = mSearchPackage.updateCollectStatus(idpUserId,accessToken,vehicleBrand,poiInfoEntity);
         });
     }
