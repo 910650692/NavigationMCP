@@ -11,6 +11,7 @@ import com.autonavi.gbl.common.path.model.CameraSpeedLimit;
 import com.autonavi.gbl.common.path.model.Formway;
 import com.autonavi.gbl.common.path.model.LinkType;
 import com.autonavi.gbl.common.path.model.SubCameraExt;
+import com.autonavi.gbl.common.path.model.SubCameraExtType;
 import com.autonavi.gbl.common.path.option.LinkInfo;
 import com.autonavi.gbl.common.path.option.PathInfo;
 import com.autonavi.gbl.common.path.option.SegmentInfo;
@@ -318,56 +319,38 @@ public class L2Adapter {
         @Override
         public void onNaviCameraInfo(CameraInfoEntity cameraInfo) {
             L2NaviBean.LimitCameraDataBean limitCameraData = l2NaviBean.getLimitCameraData();
+            L2NaviBean.IntervalCameraDataBean intervalCameraDataBean = l2NaviBean.getIntervalCameraData();
             if (ConvertUtils.isEmpty(cameraInfo)) {
                 Logger.i(TAG, PREFIX + "电子眼 cameraInfo null");
                 limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                setIntervalCameraData(0xFFFF, 0xFFFF, 0);
                 return;
             }
             if (cameraInfo.getDistance() > 2000) { // 超过2km无需返回
                 Logger.i(TAG, PREFIX + "电子眼 over 2km");
                 limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                setIntervalCameraData(0xFFFF, 0xFFFF, 0);
                 return;
             }
             if (cameraInfo.getSpeed() == 0) {
                 Logger.i(TAG, PREFIX + "电子眼 speed 0");
                 limitCameraData.setSpdLmtEleEyeDist(0xFFFF);
                 limitCameraData.setSpdLmtEleEyeSpeedValue(0xFF);
+                setIntervalCameraData(0xFFFF, 0xFFFF, 0);
                 return;
             }
             limitCameraData.setSpdLmtEleEyeDist(cameraInfo.getDistance());
             limitCameraData.setSpdLmtEleEyeSpeedValue(cameraInfo.getSpeed());
-            Logger.i(TAG, PREFIX + "电子眼", limitCameraData);
-        }
-
-        /**
-         * 区间测速
-         *
-         * @param speedEntity 车速实体
-         */
-        @Override
-        public void onNaviSpeedOverallInfo(SpeedOverallEntity speedEntity) {
-            if (ConvertUtils.isEmpty(speedEntity)) {
-                Logger.i(TAG, PREFIX + "区间测速 speedEntity null");
-                l2NaviBean.setIntervalCameraData(new L2NaviBean.IntervalCameraDataBean());
-                return;
+            Logger.i(TAG, PREFIX + "电子眼", limitCameraData, cameraInfo.getSubType());
+            if (cameraInfo.getSubType() == SubCameraExtType.SubCameraExtTypeIntervalvelocityStart) {
+                setIntervalCameraData(cameraInfo.getDistance(), 0xFFFF, cameraInfo.getSpeed());
+            } else if (cameraInfo.getSubType() == SubCameraExtType.SubCameraExtTypeIntervalvelocityEnd) {
+                setIntervalCameraData(0xFFFF, cameraInfo.getDistance(), cameraInfo.getSpeed());
+            } else {
+                setIntervalCameraData(0xFFFF, 0xFFFF, 0);
             }
-            L2NaviBean.IntervalCameraDataBean intervalCameraDataBean = l2NaviBean.getIntervalCameraData();
-            // 区间测速总距离 - 区间测速剩余距离 = 区间测速起点距离
-            intervalCameraDataBean.setIntervalCameraStartPointDist(speedEntity.getDistance() - speedEntity.getRemainDistance());
-            intervalCameraDataBean.setIntervalCameraEndPointDist(speedEntity.getRemainDistance());
-            ArrayList<Short> speedList = speedEntity.getLimitSpeedList();
-            short speed = 0;
-            // 获取第一个有效值
-            for (Short i : speedList) {
-                if (i != 0 && i != 0xFF) {
-                    speed = i;
-                    break;
-                }
-            }
-            intervalCameraDataBean.setIntervalCameraSpeedValue(speed);
-            l2NaviBean.setIntervalCameraData(intervalCameraDataBean);
             Logger.i(TAG, PREFIX + "区间测速", intervalCameraDataBean);
         }
 
@@ -628,6 +611,13 @@ public class L2Adapter {
 
         }
     };
+
+    private void setIntervalCameraData(int startDist, int endDist, int speed) {
+        L2NaviBean.IntervalCameraDataBean intervalCameraDataBean = l2NaviBean.getIntervalCameraData();
+        intervalCameraDataBean.setIntervalCameraStartPointDist(startDist);
+        intervalCameraDataBean.setIntervalCameraEndPointDist(endDist);
+        intervalCameraDataBean.setIntervalCameraSpeedValue(speed);
+    }
 
     private final Runnable mTask = new Runnable() {
         @Override
