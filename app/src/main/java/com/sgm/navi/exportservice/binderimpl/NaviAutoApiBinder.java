@@ -1773,6 +1773,9 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
 
         if (!isNaviStatus(INNER_CLIENT)) {
             BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+            if (RoutePackage.getInstance().isRouteState()) {
+                RoutePackage.getInstance().clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            }
             if (!ConvertUtils.isNull(baseActivity)) {
                 baseActivity.closeAllFragment();
             }

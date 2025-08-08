@@ -312,6 +312,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeResultObserver.onRouteDrawLine(routeLineLayerParam);
         }
+        //如果依旧处于算路中态，表示没有界面响应算路结果，导航态已经异常异常，需要恢复导航态兜底
+        if (mNaviStatusAdapter.getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING)) {
+            Logger.i(TAG, "error navigation state");
+            mNaviStatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
+        }
     }
 
     @Override
