@@ -146,7 +146,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter(bundle);
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(fragment.getClass().getSimpleName().equals("SplitFragment"));
     }
 
     @Override
@@ -158,7 +158,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter(bundle);
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -170,7 +170,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -190,7 +190,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(fragment.getClass().getSimpleName().equals("SplitFragment"));
     }
 
     @Override
@@ -211,7 +211,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -220,7 +220,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapTabFromDetail();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -229,7 +229,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         if (mStackManager.isFragmentStackNull(mScreenId)) {
             onResetMapTabFromDetail();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -240,13 +240,13 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
     public void closeAllFragmentUpRoute() {
         FragmentIntent.closeAllFragmentUpRoute(mScreenId, getSupportFragmentManager());
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -267,7 +267,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -278,14 +278,14 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         } else {
             onMoveMapCenter();
         }
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
     public void closeAllFragmentAndSearchView() {
         FragmentIntent.closeAllFragment(mScreenId, getSupportFragmentManager());
         onMoveMapCenter();
-        onFragmentSizeChanged();
+        onFragmentSizeChanged(false);
     }
 
     @Override
@@ -360,7 +360,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     /***
      * fragment 容器发生变化的时候触发
      */
-    protected void onFragmentSizeChanged() {
+    protected void onFragmentSizeChanged(boolean isSpiltFragment) {
 
     }
 

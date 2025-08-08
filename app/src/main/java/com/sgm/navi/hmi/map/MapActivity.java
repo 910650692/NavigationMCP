@@ -516,9 +516,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     @Override
-    protected void onFragmentSizeChanged() {
-        super.onFragmentSizeChanged();
-        mViewModel.stopCruise();
+    protected void onFragmentSizeChanged(boolean isSpiltFragment) {
+        super.onFragmentSizeChanged(isSpiltFragment);
+        if (!isSpiltFragment) {
+            mViewModel.stopCruise();
+        }
         setMapFocusable(false);
         FloatViewManager.getInstance().showAllCardWidgetsAfterFragmentSizeChanged();
         if (mViewModel != null) {

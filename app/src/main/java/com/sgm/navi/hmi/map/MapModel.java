@@ -304,14 +304,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         settingManager = SettingManager.getInstance();
         settingManager.init();
         cruisePackage = CruisePackage.getInstance();
-        cruisePackage.setFocusLostCallback(new CruisePackage.OnFocusLostCallback() {
-            @Override
-            public void onCruiseStopByFocusLost() {
-                ThreadManager.getInstance().postUi(() -> {
-                    stopCruise();
-                });
-            }
-        });
+        cruisePackage.setFocusLostCallback(() -> ThreadManager.getInstance().postUi(() -> {
+            stopCruise();
+        }));
         signalPackage = SignalPackage.getInstance();
         msgPushPackage = MsgPushPackage.getInstance();
         speedMonitor = new SpeedMonitor();
