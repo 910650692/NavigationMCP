@@ -93,7 +93,7 @@ public class GnssManager implements LocationListener, IUsedSatelliteNumCallback,
         try {
             mLocationManager.removeUpdates(this);
             mLocationManager.requestLocationUpdates(selectProvider(),
-                    1000L, // 更新间隔时间（毫秒）
+                    100L, // 更新间隔时间（毫秒）
                     0.0F,            // 最小距离变化（米）
                     this,
                     mGnssHandler.getLooper());
