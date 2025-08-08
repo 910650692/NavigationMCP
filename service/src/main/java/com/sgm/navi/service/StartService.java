@@ -478,6 +478,8 @@ public class StartService {
             EnginePackage.getInstance().switchLog(SpUtils.getInstance().
                     getBoolean(SpUtils.SP_KEY_GAO_DE_LOG_SWITCH, false) ?
                     GaodeLogLevel.LOG_DEBUG : GaodeLogLevel.LOG_NONE);
+            PositionPackage.getInstance().locationLogSwitch(SpUtils.getInstance().
+                    getBoolean(SpUtils.SP_KEY_POSITION_LOG_SWITCH, false));
         }
 
         @Override

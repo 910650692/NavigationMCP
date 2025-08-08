@@ -295,8 +295,10 @@ public class TestWindow {
             if (buttonView.isPressed()) {
                 if (checked) {
                     PositionPackage.getInstance().locationLogSwitch(true);
+                    SpUtils.getInstance().putBoolean(SpUtils.SP_KEY_POSITION_LOG_SWITCH, true);
                 } else {
                     PositionPackage.getInstance().locationLogSwitch(false);
+                    SpUtils.getInstance().putBoolean(SpUtils.SP_KEY_POSITION_LOG_SWITCH, false);
                 }
             }
         });
