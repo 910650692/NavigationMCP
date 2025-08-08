@@ -776,21 +776,25 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
 //                    ToastUtils.Companion.getInstance().showCustomToastView(getContext().getString(R.string.search_charge_self_filter_hint));
                 }else{
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"value: "+info.getValue());
+                    String retain = "";
+                    if(!ConvertUtils.isNull(mResultEntity)){
+                        retain = mResultEntity.getRetain();
+                    }
                     mQuickValue = info.getValue();
                     if(info.getValue().contains("_")){
                         if("searchlist_charging_mode_fast".equals(info.getValue())){
                             refreshLocalInfoListCheckedState(1, 2);
                         }
                         if(mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH){
-                            mScreenViewModel.aroundSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false,mPoiInfoEntity);
+                            mScreenViewModel.aroundSearch(mPageNum,mSearchText,retain,info.getValue(),false,mPoiInfoEntity);
                         }else{
-                            mScreenViewModel.keywordSearch(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                            mScreenViewModel.keywordSearch(mPageNum,mSearchText,retain,info.getValue(),false);
                         }
                     }else{
                         if(mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH){
-                            mScreenViewModel.aroundSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false,mPoiInfoEntity);
+                            mScreenViewModel.aroundSearchByQuickFilter(mPageNum,mSearchText,retain,info.getValue(),false,mPoiInfoEntity);
                         }else{
-                            mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,mResultEntity.getRetain(),info.getValue(),false);
+                            mScreenViewModel.keywordSearchByQuickFilter(mPageNum,mSearchText,retain,info.getValue(),false);
                         }
                     }
                 }
