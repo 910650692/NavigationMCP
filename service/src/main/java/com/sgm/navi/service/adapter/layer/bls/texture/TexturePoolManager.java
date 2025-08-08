@@ -73,9 +73,15 @@ public final class TexturePoolManager {
     }
 
     public boolean containsKey(String key) {
+        if (ConvertUtils.isEmpty(key)) {
+            return false;
+        }
         return textureMap.containsKey(key);
     }
     public int getValueAsInt(String key) {
+        if (ConvertUtils.isEmpty(key)) {
+            return DEF_ERROR_ID;
+        }
         Integer i = textureMap.get(key);
         return i == null ? DEF_ERROR_ID : i;
     }
@@ -90,6 +96,9 @@ public final class TexturePoolManager {
 
     public List<Integer> removeKeys(String name) {
         List<Integer> ids = new ArrayList<>();
+        if (ConvertUtils.isEmpty(name)) {
+            return ids;
+        }
         List<String> keys = new ArrayList<>();
         for (String key : textureMap.keySet()) {
             if (key.startsWith(name)) {

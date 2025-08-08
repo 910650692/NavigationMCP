@@ -29,7 +29,6 @@ import com.autonavi.gbl.map.layer.model.CustomUpdateParam;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.autonavi.gbl.map.layer.model.Layer3DModel;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
-import com.autonavi.gbl.map.layer.model.RouteLayerParam;
 import com.autonavi.gbl.map.layer.model.RouteLayerStyle;
 import com.autonavi.gbl.map.layer.observer.ICarObserver;
 import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
@@ -37,17 +36,13 @@ import com.autonavi.gbl.map.model.MapStyleTime;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
-import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.bls.style.BaseStyleAdapter;
 import com.sgm.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.sgm.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
 import com.sgm.navi.service.define.map.MapType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import lombok.Getter;
 
@@ -313,7 +308,9 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         String key = layer.getName() + item.getBusinessType() + item.getID();
         if (TexturePoolManager.get().containsKey(key)) {
             int markerId = TexturePoolManager.get().getValueAsInt(key);
-            layer.getMapView().destroyTexture(markerId);
+            if (markerId > 0) {
+                layer.getMapView().destroyTexture(markerId);
+            }
             TexturePoolManager.get().removeKey(key);
             Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
         }
