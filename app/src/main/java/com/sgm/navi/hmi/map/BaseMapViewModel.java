@@ -65,6 +65,7 @@ import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
+import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.message.MessageCenterInfo;
@@ -966,6 +967,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             }
             final String result = String.format(format, kilometer);
             mView.updateOnMapScaleChanged(result, MapPackage.getInstance().getScaleLineLength(MapType.MAIN_SCREEN_MAIN_MAP));
+            if (mModel.getCarMode() == MapMode.UP_3D) {
+                if (scale >= 200) {
+                    mModel.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,0);
+                } else {
+                    mModel.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE);
+                }
+            }
             Logger.d(TAG, "scale: ", scale, ", result: ", result);
         } catch (Exception exception) {
             Logger.e(TAG, "updateOnMapScaleChanged, format error:" + exception.getMessage());

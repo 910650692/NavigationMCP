@@ -1075,7 +1075,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
-        mapPackage.updateUiStyle(mapTypeId, type);
+        if (mapPackage != null) {
+            mapPackage.updateUiStyle(mapTypeId, type);
+        }
     }
 
     public void saveLastLocationInfo() {
@@ -2532,5 +2534,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onNetDisConnect() {
         Logger.i(TAG, "onNetDisConnect");
+    }
+
+    public void setPitchAngle(MapType mapType , float pitchAngle) {
+        mapPackage.setPitchAngle(mapType, pitchAngle);
+    }
+
+    public MapMode getCarMode() {
+        MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+        return currentMode;
     }
 }
