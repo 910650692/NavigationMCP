@@ -23,9 +23,9 @@ public class ViaListManager {
     //途经点充电站信息请求控制
     private int mViaUpdateCount;
     private int mChargeStationTaskId;
-    private List<String> viaIdList;
-    private List<NaviViaEntity> naviViaList;
-    private List<PoiInfoEntity> guideRouteViaList;
+    private List<String> mViaIdList;
+    private List<NaviViaEntity> mNaviViaList;
+    private List<PoiInfoEntity> mGuideRouteViaList;
 
     public ViaListManager(final NaviGuidanceModel naviGuidanceModel) {
         mGuidanceModel = naviGuidanceModel;
@@ -35,10 +35,10 @@ public class ViaListManager {
 
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         if (mViaUpdateCount == 0) {
-            naviViaList = mGuidanceModel.getViaList();
-            viaIdList = getViaIdList(naviViaList);
-            if (!ConvertUtils.isEmpty(viaIdList)) {
-                mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
+            mNaviViaList = mGuidanceModel.getViaList();
+            mViaIdList = getViaIdList(mNaviViaList);
+            if (!ConvertUtils.isEmpty(mViaIdList)) {
+                mChargeStationTaskId = mSearchPackage.poiListSearch(mViaIdList, 4, true);
             }
         }
         mViaUpdateCount++;
@@ -68,14 +68,28 @@ public class ViaListManager {
             Logger.i(TAG, "errorCode:", errorCode, "message:", message, " 搜索结果:isEmpty(poiInfos)");
             return;
         }
-        List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, viaIdList, naviViaList);
-        guideRouteViaList = tempPoiInfos;
-        mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
+        mNaviViaList = mGuidanceModel.getViaList();
+        mViaIdList = getViaIdList(mNaviViaList);
+        List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(poiInfos, mViaIdList, mNaviViaList);
+        mGuideRouteViaList = tempPoiInfos;
+        if (Logger.openLog) {
+            Logger.d(TAG, " poiInfos:", tempPoiInfos.size(), " viaIdList:", mViaIdList == null ? "null" : mViaIdList.size(),
+                    " naviViaList:", mNaviViaList == null ? "null" : mNaviViaList.size());
+        }
+        if (!ConvertUtils.isEmpty(tempPoiInfos)) {
+            mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
+        }
     }
 
     public void updateViaPointList() {
-        if (guideRouteViaList != null) {
-            mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, guideRouteViaList);
+        if (!ConvertUtils.isEmpty(mGuideRouteViaList)) {
+            mNaviViaList = mGuidanceModel.getViaList();
+            mViaIdList = getViaIdList(mNaviViaList);
+            List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(mGuideRouteViaList, mViaIdList, mNaviViaList);
+            mGuideRouteViaList = tempPoiInfos;
+            if (!ConvertUtils.isEmpty(tempPoiInfos)) {
+                mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
+            }
         }
     }
 
@@ -89,10 +103,10 @@ public class ViaListManager {
         if (ConvertUtils.isEmpty(viaList)) {
             return;
         }
-        naviViaList = viaList;
-        viaIdList = getViaIdList(viaList);
-        if (!ConvertUtils.isEmpty(viaIdList)) {
-            mChargeStationTaskId = mSearchPackage.poiListSearch(viaIdList, 4, true);
+        mNaviViaList = viaList;
+        mViaIdList = getViaIdList(viaList);
+        if (!ConvertUtils.isEmpty(mViaIdList)) {
+            mChargeStationTaskId = mSearchPackage.poiListSearch(mViaIdList, 4, true);
         }
     }
 
@@ -102,10 +116,10 @@ public class ViaListManager {
      * @return
      */
     private List<String> getViaIdList(List<NaviViaEntity> viaList) {
-        if (ConvertUtils.isEmpty(viaList)) {
-            return null;
-        }
         List<String> viaIdList = new ArrayList<>();
+        if (ConvertUtils.isEmpty(viaList)) {
+            return viaIdList;
+        }
         for (int i = 0; i < viaList.size(); i++) {
             NaviViaEntity naviViaEntity = viaList.get(i);
             if (naviViaEntity != null && naviViaEntity.isUserAdd() && !naviViaEntity.isEndPoi()) {
