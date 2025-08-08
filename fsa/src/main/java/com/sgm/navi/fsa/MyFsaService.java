@@ -121,6 +121,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private static final int IS_BUICK = 1;
     private static final int IS_CADILLAC = 2;
     private boolean isInitSuccess = false;
+    private int powerType;
 
     public boolean isShowHud = false;
     private ExportEventCallBack mEventCallBack;
@@ -622,6 +623,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         SearchPackage.getInstance().registerCallBack(FsaConstant.FSA_TAG, mSearchResultCallback);
         SignalPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mSignalCallback);
         ThreeFingerFlyingScreenManager.getInstance().addOnCloseListener(this);
+        powerType = CalibrationPackage.getInstance().powerType();
     }
 
     /**
@@ -1103,7 +1105,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onFuelLevelPercentSignalChanged(float value) {
-            if (value <= 15) {
+            if (powerType == 1 || mChargeStationSF != null) {
+                return;
+            }
+            if (value < 7) {
                 if (mGasStationSF != null) {
                     return;
                 }
@@ -1172,6 +1177,9 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                                 endPoint.getRealPos(), "2000", true);
                     }
                 }, 0, 15, TimeUnit.SECONDS);
+            }
+            if (powerType == 0) {
+                return;
             }
             if (getRemainDistance() < 50 * 1000) {
                 String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
