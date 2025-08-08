@@ -369,11 +369,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             public void onSearchResult(final int taskId, final int errorCode, final String message,
                                        final SearchResultEntity searchResultEntity) {
 
-                String keyword = null;
+                String keyword = "";
                 if (null != searchResultEntity) {
                     keyword = searchResultEntity.getKeyword();
                 }
-                if (Objects.equals(keyword, mSearchKeyword)) {
+                if (!TextUtils.isEmpty(keyword) && (keyword.equals(mSearchKeyword) || keyword.contains(mSearchKeyword))) {
                     //jumpToSearchPage 结果通过keyword匹配
                     mSearchKeyword = "";
                     final boolean searchSuccess = null != searchResultEntity && null != searchResultEntity.getPoiList()
@@ -1200,20 +1200,15 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
      * 分发引导到达目的地信息信息.
      */
     private void dispatchArrival() {
-        if (mInCallback) {
-            Logger.e(TAG, "already in broadcast, can't process onNaviArrival");
-            return;
-        }
 
         try {
-            mInCallback = true;
             Logger.d(TAG, "onNaviArrival inCallback");
-            final int count = mNaviAutoCallbackList.beginBroadcast();
+            final int count = mCountDownLightCallbackList.beginBroadcast();
             for (int i = 0; i < count; i++) {
-                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                if (null != naviAutoApiCallback) {
+                final INaviAutoCountDownLightCallback countDownLightCallback = mCountDownLightCallbackList.getBroadcastItem(i);
+                if (null != countDownLightCallback) {
                     try {
-                        naviAutoApiCallback.onNaviArrival();
+                        countDownLightCallback.onNaviArrival();
                     } catch (RemoteException exception) {
                         Logger.e(TAG, "dispatch onNaviArrival error:" + exception.getMessage());
                     }
@@ -1222,7 +1217,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
             Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
-            closeNavigationList();
+            closeCountDownLightCallback();
         }
     }
 
@@ -1230,20 +1225,14 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
      * 分发导航停止信息.
      */
     private void dispatchNaviStop() {
-        if (mInCallback) {
-            Logger.e(TAG, "already in broadcast, can't process onNaviStop");
-            return;
-        }
-
         try {
-            mInCallback = true;
             Logger.d(TAG, "onNaviStop inCallback");
-            final int count = mNaviAutoCallbackList.beginBroadcast();
+            final int count = mCountDownLightCallbackList.beginBroadcast();
             for (int i = 0; i < count; i++) {
-                final INaviAutoApiCallback naviAutoApiCallback = mNaviAutoCallbackList.getRegisteredCallbackItem(i);
-                if (null != naviAutoApiCallback) {
+                final INaviAutoCountDownLightCallback countDownLightCallback = mCountDownLightCallbackList.getBroadcastItem(i);
+                if (null != countDownLightCallback) {
                     try {
-                        naviAutoApiCallback.onNaviStop();
+                        countDownLightCallback.onNaviStop();
                     } catch (RemoteException exception) {
                         Logger.e(TAG, "dispatch onNaviArrival error:" + exception.getMessage());
                     }
@@ -1252,7 +1241,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         } catch (IllegalStateException | ArrayIndexOutOfBoundsException exception) {
             Logger.e(exception.getMessage() + Arrays.toString(exception.getStackTrace()));
         } finally {
-            closeNavigationList();
+            closeCountDownLightCallback();
         }
     }
 
@@ -1490,10 +1479,10 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             return;
         }
 
+        mSearchKeyword = keyword;
         final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
         if (appForeGroundStatus) {
             //App已经打开 ，打开地图并通过Package回调打开对应界面
-            mSearchKeyword = keyword;
             final Bundle bundle = new Bundle();
             bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.KEYWORD_SEARCH);
             bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, mSearchKeyword);

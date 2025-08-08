@@ -1,6 +1,8 @@
 package com.sgm.navi.mapservice.util;
 
 
+import android.text.TextUtils;
+
 import java.util.Objects;
 
 public class ConvertUtils {
@@ -80,6 +82,9 @@ public class ConvertUtils {
      * @return true/false
      */
     public static boolean equalsIgnoreCase(String args, String args1) {
+        if (TextUtils.isEmpty(args) || TextUtils.isEmpty(args1)) {
+            return false;
+        }
         return !args.equalsIgnoreCase(args1);
     }
 

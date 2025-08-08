@@ -44,24 +44,31 @@ import java.util.List;
 public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     private static final String TAG = NaviAutoAPIManager.class.getSimpleName();
+    private static final String CLIENT_SR = "com.sgm.hmi.sr";
     private INaviAutoApiBinder mBinder;
     private String mPkgName = "default";
     private String mVersionInfo = "";
     private boolean mInitStatus = false;
     private Context mContext;
+    private boolean mShowSrTbt = false;
 
     private final List<OnInitStateChangeListener> mInitStateListenerList = new ArrayList<>();
+
     private final List<OnLocationChangeListener> mLocationListenerList = new ArrayList<>();
     private final List<OnDistrictInfoChangeListener> mDistrictInfoList = new ArrayList<>();
+
     private final List<OnNaviStatusChangeListener> mNaviStatusListenerList = new ArrayList<>();
-    private final List<OnSearchResultListener> mSearchResultListenerList = new ArrayList<>();
-    private final List<OnRoutePlanResultListener> mRoutePlanListenerList = new ArrayList<>();
     private final List<OnGuidePanelDataListener> mGuidePanelDataListenerList = new ArrayList<>();
+    private final List<OnNaviBroadcastStateListener> mNaviBroadcastListenerList = new ArrayList<>();
+
+    private final List<OnSearchResultListener> mSearchResultListenerList = new ArrayList<>();
+
+    private final List<OnRoutePlanResultListener> mRoutePlanListenerList = new ArrayList<>();
+    private final List<OnDestChangeListener> mDestChangeListenerList = new ArrayList<>();
+
     private final List<OnSpeedLimitChangeListener> mSpeedLimitListenerList = new ArrayList<>();
     private final List<OnTurnInfoChangeListener> mTurnInfoListenerList = new ArrayList<>();
     private final List<OnSrNaviInfoChangeListener> mSrNaviInfoListenerList = new ArrayList<>();
-    private final List<OnNaviBroadcastStateListener> mNaviBroadcastListenerList = new ArrayList<>();
-    private final List<OnDestChangeListener> mDestChangeListenerList = new ArrayList<>();
     private final List<OnPoiInformListener> mPoiInfoListenerList = new ArrayList<>();
 
     public static NaviAutoAPIManager getInstance() {
@@ -83,8 +90,6 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 mBinder = updateBinder();
                 if (null != mBinder) {
                     mBinder.asBinder().linkToDeath(mDeathRecipient, 0);
-                    unRegisterBinderResultCallback();
-                    registerBinderResultCallback();
                     onEngineInit(true);
                 } else {
                     onEngineInit(false);
@@ -147,37 +152,12 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
 
     @Override
     protected void registerBinderResultCallback() {
-        if (checkBinder()) {
-            try {
-                mBinder.addNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
-                mBinder.addNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
-                mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
-                mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
-                mBinder.addNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
-                mBinder.addNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
-                mBinder.addNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
-            } catch (RemoteException exception) {
-                Logger.e(TAG, "registerNaviAutoApiCallback error: " + exception.getMessage());
-            }
-        }
+
     }
 
     @Override
     protected void unRegisterBinderResultCallback() {
-        if (checkBinder()) {
-            try {
-                mBinder.removeNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
-                mBinder.removeNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
-                mBinder.removeNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
-                mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
-                mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
-                mBinder.removeNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
-                mBinder.removeNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
-                mBinder.removeNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
-            } catch (RemoteException exception) {
-                Logger.e(TAG, "unRegisterNaviAutoApiCallback error: " + exception.getMessage());
-            }
-        }
+
     }
 
     //Map状态
@@ -480,25 +460,6 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                 }
             }
         }
-    };
-
-    //引导信息
-    private final INaviAutoApiCallback mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
-
-        @Override
-        public void onTurnInfoChange(final String turnInfo) {
-            Logger.d(TAG, mVersionInfo, "-->  onTurnInfoChange: ");
-            for (OnTurnInfoChangeListener listener : mTurnInfoListenerList) {
-                if (null != listener) {
-                    try {
-                        listener.onTurnInfoUpdated(turnInfo);
-                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
-                             | IllegalStateException exception) {
-                        Logger.e(TAG, "dispatch turnInfo error: " + exception.getMessage());
-                    }
-                }
-            }
-        }
 
         @Override
         public void onNaviArrival() {
@@ -523,6 +484,25 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
                         srNaviInfoChangeListener.onNaviStop();
                     } catch (NullPointerException | IllegalStateException exception) {
                         Logger.e(TAG, "dispatch onNaviStop error: " + exception.getMessage());
+                    }
+                }
+            }
+        }
+    };
+
+    //引导信息
+    private final INaviAutoApiCallback mNaviAutoCallback = new INaviAutoApiCallback.Stub() {
+
+        @Override
+        public void onTurnInfoChange(final String turnInfo) {
+            Logger.d(TAG, mVersionInfo, "-->  onTurnInfoChange: ");
+            for (OnTurnInfoChangeListener listener : mTurnInfoListenerList) {
+                if (null != listener) {
+                    try {
+                        listener.onTurnInfoUpdated(turnInfo);
+                    } catch (NullPointerException | IllegalArgumentException | ClassCastException
+                             | IllegalStateException exception) {
+                        Logger.e(TAG, "dispatch turnInfo error: " + exception.getMessage());
                     }
                 }
             }
@@ -601,14 +581,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void setOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
         if (mInitStatus && null != locationChangeListener && !mLocationListenerList.contains(locationChangeListener)) {
-            if (checkBinder()) {
-                try {
-                    Logger.d(TAG, mVersionInfo, "--> registerLocationCallback");
-                    mBinder.addNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
-                } catch (RemoteException exception) {
-                    Logger.e(TAG, "registerLocationCallback error: " + exception.getMessage());
-                }
-            }
+            checkRemoteLocationCallback(true);
             mLocationListenerList.add(locationChangeListener);
         }
     }
@@ -621,15 +594,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeOnLocationChangeListener(final OnLocationChangeListener locationChangeListener) {
         if (mInitStatus && null != locationChangeListener) {
             mLocationListenerList.remove(locationChangeListener);
-            if (checkBinder() && checkCloseLocCallBack()) {
-                try {
-                    Logger.d(TAG, mVersionInfo, "--> unregisterLocationCallback");
-                    mBinder.removeNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
-                } catch (RemoteException exception) {
-                    Logger.e(TAG, "unRegisterLocationCallback error: " + exception.getMessage());
-                }
-            }
-
+            checkRemoteLocationCallback(false);
         }
     }
 
@@ -640,14 +605,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void setOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
         if (mInitStatus && null != districtInfoChangeListener && !mDistrictInfoList.contains(districtInfoChangeListener)) {
-            if (checkBinder()) {
-                try {
-                    Logger.d(TAG, mVersionInfo, "--> registerDistrictCallback");
-                    mBinder.addNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
-                } catch (RemoteException exception) {
-                    Logger.e(TAG, "registerDistrictCallback error: " + exception.getMessage());
-                }
-            }
+            checkRemoteLocationCallback(true);
             mDistrictInfoList.add(districtInfoChangeListener);
         }
     }
@@ -660,25 +618,28 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeOnDistrictInfoChangeListener(final OnDistrictInfoChangeListener districtInfoChangeListener) {
         if (mInitStatus && null != districtInfoChangeListener) {
             mDistrictInfoList.remove(districtInfoChangeListener);
-            if (checkBinder() && checkCloseLocCallBack()) {
-                try {
-                    Logger.d(TAG, mVersionInfo, "--> unregisterDistrictCallback");
-                    mBinder.removeNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
-                } catch (RemoteException exception) {
-                    Logger.e(TAG, "unRegisterDistrictCallback error: " + exception.getMessage());
-                }
-            }
-
+            checkRemoteLocationCallback(false);
         }
     }
 
-    private boolean checkCloseLocCallBack() {
-        if (mLocationListenerList.isEmpty() && mDistrictInfoList.isEmpty()) {
-            Logger.d(TAG, "cancel Loc Remote CallBack");
-            return true;
-        } else {
-            Logger.w(TAG, "can't cancel binder callback");
-            return false;
+    /**
+     * 检查定位相关两个接口集合是否都为空.
+     * LocationInfo和DistrictInfo使用INaviAutoLocationCallback
+     *
+     * @param add  true:添加RemoteCallback  false:移除RemoteCallback.
+     */
+    private void checkRemoteLocationCallback(final boolean add) {
+        final boolean empty = mLocationListenerList.isEmpty() && mDistrictInfoList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
+                } else {
+                    mBinder.removeNaviAutoLocationCallback(mPkgName, mNaviAutoLocationCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkRemoteLocationCallback error: " + exception.getMessage());
+            }
         }
     }
 
@@ -689,6 +650,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void setOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
         if (mInitStatus && null != naviStatusChangeListener && !mNaviStatusListenerList.contains(naviStatusChangeListener)) {
+            checkNaviStatusEmpty(true);
             mNaviStatusListenerList.add(naviStatusChangeListener);
         }
     }
@@ -701,50 +663,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeOnNaviStatusChangeListener(final OnNaviStatusChangeListener naviStatusChangeListener) {
         if (mInitStatus && null != naviStatusChangeListener) {
             mNaviStatusListenerList.remove(naviStatusChangeListener);
-        }
-    }
-
-    /**
-     * 设置搜索结果回调监听.
-     *
-     * @param searchResultListener OnSearchResultListener.
-     */
-    public void setOnSearchResultListener(final OnSearchResultListener searchResultListener) {
-        if (mInitStatus && null != searchResultListener && !mSearchResultListenerList.contains(searchResultListener)) {
-            mSearchResultListenerList.add(searchResultListener);
-        }
-    }
-
-    /**
-     * 移除搜索结果回调监听.
-     *
-     * @param searchResultListener OnSearchResultListener.
-     */
-    public void removeOnSearchResultListener(final OnSearchResultListener searchResultListener) {
-        if (mInitStatus && null != searchResultListener) {
-            mSearchResultListenerList.remove(searchResultListener);
-        }
-    }
-
-    /**
-     * 设置算路结果监听.
-     *
-     * @param routePlanResultListener OnRoutePlanResultListener.
-     */
-    public void addRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
-        if (mInitStatus && null != routePlanResultListener && !mRoutePlanListenerList.contains(routePlanResultListener)) {
-            mRoutePlanListenerList.add(routePlanResultListener);
-        }
-    }
-
-    /**
-     * 移除算路结果监听.
-     *
-     * @param routePlanResultListener OnRoutePlanResultListener.
-     */
-    public void removeRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
-        if (mInitStatus && null != routePlanResultListener) {
-            mRoutePlanListenerList.remove(routePlanResultListener);
+            checkNaviStatusEmpty(false);
         }
     }
 
@@ -755,6 +674,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void setGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
         if (mInitStatus && null != guidePanelDataListener && !mGuidePanelDataListenerList.contains(guidePanelDataListener)) {
+            checkNaviStatusEmpty(true);
             mGuidePanelDataListenerList.add(guidePanelDataListener);
         }
     }
@@ -767,72 +687,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeGuidePanelDataChangeListener(final OnGuidePanelDataListener guidePanelDataListener) {
         if (mInitStatus && null != guidePanelDataListener) {
             mGuidePanelDataListenerList.remove(guidePanelDataListener);
-        }
-    }
-
-    /**
-     * 设置限速回调.
-     *
-     * @param speedLimitChangeListener OnSpeedLimitChangeListener.
-     */
-    public void setOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
-        if (mInitStatus && null != speedLimitChangeListener && !mSpeedLimitListenerList.contains(speedLimitChangeListener)) {
-            mSpeedLimitListenerList.add(speedLimitChangeListener);
-        }
-    }
-
-    /**
-     * 移除当前限速监听.
-     *
-     * @param speedLimitChangeListener OnSpeedLimitChangeListener.
-     */
-    public void removeOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
-        if (mInitStatus && null != speedLimitChangeListener) {
-            mSpeedLimitListenerList.remove(speedLimitChangeListener);
-        }
-    }
-
-    /**
-     * 设置TBT信息监听.
-     *
-     * @param turnInfoChangeListener OnTurnInfoChangeListener.
-     */
-    public void addOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
-        if (mInitStatus && null != turnInfoChangeListener && !mTurnInfoListenerList.contains(turnInfoChangeListener)) {
-            mTurnInfoListenerList.add(turnInfoChangeListener);
-        }
-    }
-
-    /**
-     * 移除TBT信息监听.
-     *
-     * @param turnInfoChangeListener OnTurnInfoChangeListener.
-     */
-    public void removeOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
-        if (mInitStatus && null != turnInfoChangeListener) {
-            mTurnInfoListenerList.remove(turnInfoChangeListener);
-        }
-    }
-
-    /**
-     * 添加SR引导信息变更监听.
-     *
-     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
-     */
-    public void addOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
-        if (mInitStatus && null != srNaviInfoChangeListener && !mSrNaviInfoListenerList.contains(srNaviInfoChangeListener)) {
-            mSrNaviInfoListenerList.add(srNaviInfoChangeListener);
-        }
-    }
-
-    /**
-     * 移除SR引导信息监听.
-     *
-     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
-     */
-    public void removeOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
-        if (mInitStatus && null != srNaviInfoChangeListener) {
-            mSrNaviInfoListenerList.remove(srNaviInfoChangeListener);
+            checkNaviStatusEmpty(false);
         }
     }
 
@@ -843,6 +698,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void addNaviBroadcastChangeListener(final OnNaviBroadcastStateListener naviBroadcastStateListener) {
         if (mInitStatus && null != naviBroadcastStateListener && !mNaviBroadcastListenerList.contains(naviBroadcastStateListener)) {
+            checkNaviStatusEmpty(true);
             mNaviBroadcastListenerList.add(naviBroadcastStateListener);
         }
     }
@@ -855,6 +711,100 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeNaviBroadcastChangeListener(final OnNaviBroadcastStateListener naviBroadcastStateListener) {
         if (mInitStatus && null != naviBroadcastStateListener) {
             mNaviBroadcastListenerList.remove(naviBroadcastStateListener);
+            checkNaviStatusEmpty(false);
+        }
+    }
+
+    /**
+     * 检查Map状态相关接口集合是否为空
+     * NaviStatusListener、GuidePanelDataListener和NaviBroadcastListener同时使用INaviAutoStatusCallback
+     *
+     * @param add  true:添加Remote接口  false:移除Remote接口.
+     */
+    private void checkNaviStatusEmpty(final boolean add) {
+        final boolean empty = mNaviStatusListenerList.isEmpty() && mGuidePanelDataListenerList.isEmpty()
+                && mNaviBroadcastListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
+                } else {
+                    mBinder.removeNaviAutoStatusCallback(mPkgName, mNaviApiStatusCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkNaviStatusEmpty error: " + exception.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     * 设置搜索结果回调监听.
+     *
+     * @param searchResultListener OnSearchResultListener.
+     */
+    public void setOnSearchResultListener(final OnSearchResultListener searchResultListener) {
+        if (mInitStatus && null != searchResultListener && !mSearchResultListenerList.contains(searchResultListener)) {
+            checkSearchAboutEmpty(true);
+            mSearchResultListenerList.add(searchResultListener);
+        }
+    }
+
+    /**
+     * 移除搜索结果回调监听.
+     *
+     * @param searchResultListener OnSearchResultListener.
+     */
+    public void removeOnSearchResultListener(final OnSearchResultListener searchResultListener) {
+        if (mInitStatus && null != searchResultListener) {
+            mSearchResultListenerList.remove(searchResultListener);
+            checkSearchAboutEmpty(false);
+        }
+    }
+
+    /**
+     * 检查搜索相关Listener集合是否为空
+     * 当前只有SearchResultListener使用INaviAutoSearchCallback.
+     *
+     * @param add  true:添加Remote接口  false:移除Remote接口.
+     */
+    private void checkSearchAboutEmpty(final boolean add) {
+        final boolean empty = mSearchResultListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
+                } else {
+                    mBinder.removeNaviAutoSearchCallback(mPkgName, mNaviAutoSearchCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkSearchAboutEmpty error: " + exception.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     * 设置算路结果监听.
+     *
+     * @param routePlanResultListener OnRoutePlanResultListener.
+     */
+    public void addRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
+        if (mInitStatus && null != routePlanResultListener && !mRoutePlanListenerList.contains(routePlanResultListener)) {
+            checkRouteAboutEmpty(true);
+            mRoutePlanListenerList.add(routePlanResultListener);
+        }
+    }
+
+    /**
+     * 移除算路结果监听.
+     *
+     * @param routePlanResultListener OnRoutePlanResultListener.
+     */
+    public void removeRoutePlanResultListener(final OnRoutePlanResultListener routePlanResultListener) {
+        if (mInitStatus && null != routePlanResultListener) {
+            mRoutePlanListenerList.remove(routePlanResultListener);
+            checkRouteAboutEmpty(false);
         }
     }
 
@@ -865,6 +815,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void addDestChangeListener(final OnDestChangeListener listener) {
         if (mInitStatus && null != listener && !mDestChangeListenerList.contains(listener)) {
+            checkRouteAboutEmpty(true);
             mDestChangeListenerList.add(listener);
         }
     }
@@ -877,6 +828,162 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removeDestChangeListener(final OnDestChangeListener listener) {
         if (mInitStatus && null != listener) {
             mDestChangeListenerList.remove(listener);
+            checkRouteAboutEmpty(false);
+        }
+    }
+
+    /**
+     * 检查路线规划相关接口集合是否为空.
+     * RoutePlanListener和DestChangeListener都通过INaviAutoRouteCallback
+     *
+     * @param add  true:添加RemoteCallback  false:移除RemoteCallback.
+     */
+    private void checkRouteAboutEmpty(final boolean add) {
+        final boolean empty = mRoutePlanListenerList.isEmpty() && mDestChangeListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
+                } else {
+                    mBinder.removeNaviAutoRouteCallback(mPkgName, mNaviAutoRouteCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkNaviAutoRouteCallback error: " + exception.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     * 设置限速回调.
+     *
+     * @param speedLimitChangeListener OnSpeedLimitChangeListener.
+     */
+    public void setOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
+        if (mInitStatus && null != speedLimitChangeListener && !mSpeedLimitListenerList.contains(speedLimitChangeListener)) {
+            checkSpeedLimitEmpty(true);
+            mSpeedLimitListenerList.add(speedLimitChangeListener);
+        }
+    }
+
+    /**
+     * 移除当前限速监听.
+     *
+     * @param speedLimitChangeListener OnSpeedLimitChangeListener.
+     */
+    public void removeOnSpeedLimitChangeListener(final OnSpeedLimitChangeListener speedLimitChangeListener) {
+        if (mInitStatus && null != speedLimitChangeListener) {
+            mSpeedLimitListenerList.remove(speedLimitChangeListener);
+            checkSpeedLimitEmpty(false);
+        }
+    }
+
+    /**
+     * 检查SpeedLimitChangeListener集合是否为空.
+     *
+     * @param add  true:添加RemoteCallback  false:移除RemoteCallback.
+     */
+    private void checkSpeedLimitEmpty(final boolean add) {
+        final boolean empty = mSpeedLimitListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                } else {
+                    mBinder.removeNaviAutoSpeedCallBack(mPkgName, mNaviAutoSpeedCallBack);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkSpeedLimitEmpty error: " + exception.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 设置TBT信息监听.
+     *
+     * @param turnInfoChangeListener OnTurnInfoChangeListener.
+     */
+    public void addOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
+        if (mInitStatus && null != turnInfoChangeListener && !mTurnInfoListenerList.contains(turnInfoChangeListener)) {
+            checkTurnInfoListenerEmpty(true);
+            mTurnInfoListenerList.add(turnInfoChangeListener);
+        }
+    }
+
+    /**
+     * 移除TBT信息监听.
+     *
+     * @param turnInfoChangeListener OnTurnInfoChangeListener.
+     */
+    public void removeOnTurnInfoChangeListener(final OnTurnInfoChangeListener turnInfoChangeListener) {
+        if (mInitStatus && null != turnInfoChangeListener) {
+            mTurnInfoListenerList.remove(turnInfoChangeListener);
+            checkTurnInfoListenerEmpty(false);
+        }
+    }
+
+    /**
+     * 检查TurnInfoListener集合是否为空.
+     *
+     * @param add true:添加RemoteCallback  false:移除RemoteCallback
+     */
+    private void checkTurnInfoListenerEmpty(final boolean add) {
+        final boolean empty = mTurnInfoListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
+                } else {
+                    mBinder.removeNaviAutoApiCallback(mPkgName, mNaviAutoCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkTurnInfoListenerEmpty error: " + exception.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     * 添加SR引导信息变更监听.
+     *
+     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
+     */
+    public void addOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
+        if (mInitStatus && null != srNaviInfoChangeListener && !mSrNaviInfoListenerList.contains(srNaviInfoChangeListener)) {
+            checkSrInfoEmpty(true);
+            mSrNaviInfoListenerList.add(srNaviInfoChangeListener);
+        }
+    }
+
+    /**
+     * 移除SR引导信息监听.
+     *
+     * @param srNaviInfoChangeListener OnSrNaviInfoChangeListener.
+     */
+    public void removeOnSrNaviInfoChangeListener(final OnSrNaviInfoChangeListener srNaviInfoChangeListener) {
+        if (mInitStatus && null != srNaviInfoChangeListener) {
+            mSrNaviInfoListenerList.remove(srNaviInfoChangeListener);
+            checkSrInfoEmpty(false);
+        }
+    }
+
+    /**
+     * 检查SrInfoListener集合是否为空.
+     *
+     * @param add  true:添加RemoteCallback  false:移除RemoteCallback
+     */
+    private void checkSrInfoEmpty(final boolean add) {
+        final boolean empty = mSrNaviInfoListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
+                } else {
+                    mBinder.removeNaviAutoCountDownLightCallback(mPkgName, mCountDownLightCallback);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkSrInfoEmpty error: " + exception.getMessage());
+            }
         }
     }
 
@@ -887,6 +994,7 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      */
     public void addPoiInformListener(final OnPoiInformListener listener) {
         if (mInitStatus && null != listener && !mPoiInfoListenerList.contains(listener)) {
+            checkPoiInformEmpty(true);
             mPoiInfoListenerList.add(listener);
         }
     }
@@ -899,6 +1007,27 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
     public void removePoiInformListener(final OnPoiInformListener listener) {
         if (mInitStatus && null != listener) {
             mPoiInfoListenerList.remove(listener);
+            checkPoiInformEmpty(false);
+        }
+    }
+
+    /**
+     * 检查PoiInformListener集合是否为空.
+     *
+     * @param add true:添加RemoteCallback  false:移除RemoteCallback
+     */
+    private void checkPoiInformEmpty(final boolean add) {
+        final boolean empty = mPoiInfoListenerList.isEmpty();
+        if (checkBinder() && empty) {
+            try {
+                if (add) {
+                    mBinder.addNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
+                } else {
+                    mBinder.removeNaviAutoPoiCallBack(mPkgName, mNaviAutoPoiCallBack);
+                }
+            } catch (RemoteException exception) {
+                Logger.e(TAG, "checkPoiInformEmpty error: " + exception.getMessage());
+            }
         }
     }
 
@@ -913,6 +1042,8 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
             } catch (RemoteException exception) {
                 Logger.e(TAG, "openMap error: " + exception.getMessage());
             }
+        } else {
+            startMapActivityFallback();
         }
     }
 
@@ -1169,7 +1300,15 @@ public final class NaviAutoAPIManager extends BaseManager<INaviAutoApiBinder> {
      * @param open 执行工作 true:显示  false:隐藏.
      */
     public void openSrTbt(final boolean open) {
+        if (!CLIENT_SR.equals(mPkgName)) {
+            return;
+        }
+        if (open == mShowSrTbt) {
+            return;
+        }
+
         if (mInitStatus && checkBinder()) {
+            mShowSrTbt = open;
             Logger.d(TAG, mVersionInfo, "-->  openSrTbt:");
             try {
                 mBinder.openSrTbt(mPkgName, open);
