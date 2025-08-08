@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -1738,8 +1737,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private long mRouteTotalDistance;
     private long mExhaustDistance;
     private long mRouteExhaustDistance;
-    private final int viewWidth = getResources().getDimensionPixelSize(R.dimen.route_supplement_width);
-    private final int totalWidth = getResources().getDimensionPixelSize(R.dimen.route_charge_progress_total);
+    private final int mViewWidth = getResources().getDimensionPixelSize(R.dimen.route_supplement_width);
+    private final int mTotalWidth = getResources().getDimensionPixelSize(R.dimen.route_charge_progress_total);
+    private int mEndWidth;
 
     public void setRouteAround(boolean routeAround) {
         mRouteAround = routeAround;
@@ -1755,6 +1755,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     return;
                 }
                 mViewBinding.routeChargeTotalMileage.setText(TimeUtils.getInstance().getDistanceMsg(routeLineInfo.getMDistance()));
+                mViewBinding.routeChargeTotalMileage.post(() -> {
+                   mEndWidth = mViewBinding.routeChargeTotalMileage.getWidth() + mViewWidth/2;
+                });
                 final EvRangeOnRouteInfo evRangeOnRouteInfo = getRangeOnRouteInfo(getCurrentIndex());
                 mRouteTotalDistance = routeLineInfo.getMDistance();
                 if (evRangeOnRouteInfo == null || evRangeOnRouteInfo.isMCanArrived()) {
@@ -2240,10 +2243,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         ThreadManager.getInstance().postUi(() -> {
             List<Integer> viewCollisionList = new ArrayList<>(mChargePoiDistanceList);
-            final float displayProgress = ((float) viewWidth /totalWidth) * mRouteTotalDistance;
+            final float displayProgress = ((float) mViewWidth / mTotalWidth) * mRouteTotalDistance;
             float totalDisplayProgress = mRouteTotalDistance;
-            if (totalWidth - viewWidth > 0) {
-                totalDisplayProgress  = ((float) (totalWidth - viewWidth)/totalWidth) * mRouteTotalDistance;
+            if (mEndWidth == 0) {
+                mEndWidth = mViewWidth + mViewWidth/2;
+            }
+            if (mTotalWidth - mEndWidth > 0) {
+                totalDisplayProgress  = ((float) (mTotalWidth - mEndWidth)/ mTotalWidth) * mRouteTotalDistance;
             }
 
             for (Map.Entry<PoiInfoEntity, View> entry : mRouteChargeProgressViews.entrySet()) {
