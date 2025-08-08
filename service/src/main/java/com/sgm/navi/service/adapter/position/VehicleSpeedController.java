@@ -23,6 +23,7 @@ public class VehicleSpeedController {
     public static final double MPS_TO_KPH_FACTOR = 3.6;
 
     private long lastTime = 0;
+    private float lastSpeed = 0.0f;
     private static final long TIME = 1000;
 
     public VehicleSpeedController(Context context, ISpeedCallback callback) {
@@ -78,10 +79,14 @@ public class VehicleSpeedController {
      */
     private void onSpeedChanged(float speed) {
         // 更新 UI 或处理车速数据
-        long currentTime = SystemClock.elapsedRealtime();
-        if (currentTime - lastTime >= TIME) {
-            Logger.d(TAG, "Current speed: %f m/s", speed);
-            lastTime = currentTime;
+        if(Logger.openLog){
+            long currentTime = SystemClock.elapsedRealtime();
+            if (currentTime - lastTime >= TIME && lastSpeed != speed) {
+                // 只有速度发生变化时才打印日志
+                Logger.d(TAG, "Current speed: %f m/s", speed);
+                lastTime = currentTime;
+                lastSpeed = speed;
+            }
         }
         if (mISpeedCallback != null) {
             mISpeedCallback.onPulseSpeedChanged((float) (speed * MPS_TO_KPH_FACTOR));
