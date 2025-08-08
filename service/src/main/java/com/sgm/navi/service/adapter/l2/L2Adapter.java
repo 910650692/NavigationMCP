@@ -452,9 +452,11 @@ public class L2Adapter {
                 if (mNaviStatus.equals(naviStatus)) {
                     return;
                 }
+                if (Objects.equals(NaviStatus.NaviStatusType.NAVING, mNaviStatus) || Objects.equals(NaviStatus.NaviStatusType.CRUISE, mNaviStatus)) {
+                    l2NaviBean.clear();
+                    mNaviEtaInfo = null;
+                }
                 mNaviStatus = naviStatus;
-                l2NaviBean.clear();
-                mNaviEtaInfo = null;
                 Logger.i(TAG, PREFIX + "引导状态", naviStatus);
             }
         }
