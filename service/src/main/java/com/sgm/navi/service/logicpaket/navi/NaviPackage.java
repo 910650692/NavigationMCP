@@ -701,6 +701,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onNaviArrive(final long traceId, final int naviType) {
         Logger.i(TAG, "onNaviArrive: traceId = " + traceId + ", naviType = " + naviType);
+        stopNavigation(false);
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

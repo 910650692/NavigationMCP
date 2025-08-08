@@ -237,9 +237,6 @@ public class SceneNaviTbtImpl extends BaseSceneModel<SceneNaviTbtView> implement
      * @param naviType 导航类型
      */
     public void onNaviArrive(final long traceId, final int naviType) {
-        mLayerPackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
-        mNaviPackage.stopNavigation(false);
-//        StackManager.getInstance().getCurrentFragment(mMapTypeId.name()).closeFragment(true);
     }
 
     /**
