@@ -101,6 +101,7 @@ public class L2Adapter {
         mNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         mScheduler = Executors.newScheduledThreadPool(1);
         mScheduler.scheduleWithFixedDelay(mTask, 0, 1, TimeUnit.SECONDS);
+        mScheduler.scheduleWithFixedDelay(mQueryAppointLanesTask, 0, 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -182,6 +183,7 @@ public class L2Adapter {
                 l2NaviBean.setAheadIntersections(new ArrayList<>());
                 return;
             }
+            long timestamp = System.currentTimeMillis();
             long linkIndexDist = -1;
             List<L2NaviBean.AheadIntersectionsBean> aheadIntersections = new ArrayList<>();
             for (int i = 0; i < laneInfoList.size(); i++) {
@@ -194,7 +196,7 @@ public class L2Adapter {
                 aheadIntersectionsBean.setLaneNum(laneInfoEntity.getBackLane().size()); // 下个路口车道数
                 aheadIntersectionsBean.setSegmentIndex(laneInfoEntity.getSegmentIdx()); // 与link_index结合使用，用于映射到导航路径上
                 aheadIntersectionsBean.setLinkIndex(laneInfoEntity.getLinkIdx()); // 与segment_index结合使用，用于映射到导航路径上
-                aheadIntersectionsBean.setTimestamp(System.currentTimeMillis());
+                aheadIntersectionsBean.setTimestamp(timestamp);
                 aheadIntersectionsBean.setLaneTypes(laneInfoEntity.getBackLane()); // 下个路口所有车道通行方向
                 aheadIntersectionsBean.setHighLightLaneTypes(laneInfoEntity.getFrontLane()); // 表达的是每个车道可以通行的方向，比如自车直行过路口的时候，直行加右转车道对应的就是直行
                 aheadIntersectionsBean.setFrontLaneType(laneInfoEntity.getFrontLaneType()); // 引导点处可通行车道的类型信息
@@ -205,7 +207,7 @@ public class L2Adapter {
                 }
             }
             l2NaviBean.setAheadIntersections(aheadIntersections);
-            Logger.d(TAG, PREFIX , "后续车道信息", aheadIntersections.size(), linkIndexDist);
+            Logger.d(TAG, PREFIX , "后续车道信息", aheadIntersections.size(), linkIndexDist, laneInfoList.size());
         }
 
         @Override
@@ -638,6 +640,15 @@ public class L2Adapter {
         }
     };
 
+    private final Runnable mQueryAppointLanesTask = new Runnable() {
+        @Override
+        public void run() {
+            if (mNaviEtaInfo != null) {
+                NaviAdapter.getInstance().queryAppointLanesInfo(-1, -1);
+            }
+        }
+    };
+
     public void registerCallback(L2DriveObserver driveObserver) {
         this.l2DriveObserver = driveObserver;
     }
@@ -675,9 +686,6 @@ public class L2Adapter {
             Logger.v(TAG, "l2++回调接口未注册");
         } else {
             long startTime = System.nanoTime();
-            if (mNaviEtaInfo != null) {
-                NaviAdapter.getInstance().queryAppointLanesInfo(mNaviEtaInfo.curSegIdx, mNaviEtaInfo.curLinkIdx);
-            }
             switch (mNaviStatus) {
                 case NaviStatus.NaviStatusType.NAVING:
                 case NaviStatus.NaviStatusType.LIGHT_NAVING:
