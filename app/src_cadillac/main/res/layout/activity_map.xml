@@ -137,7 +137,7 @@
                         android:background="@drawable/bg_shadow_navi_cadillac"
                         android:paddingHorizontal="@dimen/dp_51"
                         android:paddingVertical="@dimen/dp_51"
-                        android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
+                        android:visibility="gone"
                         android:clickable="false"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

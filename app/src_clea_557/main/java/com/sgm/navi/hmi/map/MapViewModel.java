@@ -22,7 +22,7 @@ public class MapViewModel extends BaseMapViewModel {
     }
 
     public boolean showNdGoHomeView(){
-        return false;
+        return true;
     }
 
 

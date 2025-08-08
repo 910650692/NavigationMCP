@@ -113,7 +113,7 @@
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="@dimen/dp_591"
                 android:layout_height="@dimen/dp_95"
-                android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -301,7 +301,7 @@
             android:orientation="horizontal"
             app:layout_goneMarginStart="@dimen/navi_main_parking_gone_margin_start"
             app:layout_constraintStart_toEndOf="@id/search_main_tab_bottom"
-            app:layout_constraintEnd_toStartOf="@id/scene_scale_view"
+            app:layout_constraintEnd_toEndOf="parent"
             android:visibility="@{ViewModel.backToParkingVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent">
 
