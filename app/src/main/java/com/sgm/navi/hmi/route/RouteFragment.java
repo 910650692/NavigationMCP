@@ -1647,6 +1647,10 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mSearchLoadingDialog.dismiss();
             mSearchLoadingDialog = null;
         }
+        if (mRouteChargeProgressViews != null) {
+            mRouteChargeProgressViews.clear();
+            mRouteChargeProgressViews = null;
+        }
         super.onDestroy();
     }
 
