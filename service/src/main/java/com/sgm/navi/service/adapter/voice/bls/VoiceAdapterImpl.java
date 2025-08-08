@@ -176,6 +176,11 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
         return recommendVoiceList;
     }
 
+    @Override
+    public void resetVoiceList() {
+        recommendVoiceList = null;
+    }
+
     /**
      * 根据语音包id获取语音信息
      * @param voiceId 语音包id

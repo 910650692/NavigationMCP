@@ -46,6 +46,8 @@ public interface VoiceApi {
 
     HashMap<Integer, VoiceInfo> getRecommendVoiceList();
 
+    void resetVoiceList();
+
     /**
      * 根据语音包id获取语音信息
      *

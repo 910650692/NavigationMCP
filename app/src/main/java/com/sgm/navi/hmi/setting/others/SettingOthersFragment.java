@@ -19,6 +19,7 @@ import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.speech.SpeechPackage;
+import com.sgm.navi.service.logicpaket.voice.VoicePackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
@@ -217,6 +218,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
                         SpeechPackage.getInstance().setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
+                        VoicePackage.getInstance().resetVoiceList();
                         CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         mViewModel.clearAll();

@@ -81,6 +81,10 @@ public class VoicePackage implements VoiceAdapterCallback {
         return voiceAdapter.getRecommendVoiceList();
     }
 
+    public void resetVoiceList() {
+        voiceAdapter.resetVoiceList();
+    }
+
     @Override
     public void onInit(int downLoadMode, int dataType, int opCode) {
         for (VoiceCallback callback : callBack) {

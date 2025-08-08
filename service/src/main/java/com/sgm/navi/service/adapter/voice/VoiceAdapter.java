@@ -54,6 +54,10 @@ public class VoiceAdapter {
         return mVoiceApi.getRecommendVoiceList();
     }
 
+    public void resetVoiceList() {
+        mVoiceApi.resetVoiceList();
+    }
+
     public VoiceInfo getVoice(int	downloadMode, int voiceId) {
         return mVoiceApi.getVoice(downloadMode, voiceId);
     }
