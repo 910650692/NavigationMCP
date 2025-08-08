@@ -25,11 +25,20 @@ public class DeviceUtil {
      */
     public static List<String> getUSBPath(Context context) {
         List<String> usbPaths = new ArrayList<>();
+        if (context == null) {
+            Logger.w(TAG, "Context is null, cannot get USB paths");
+            return usbPaths;
+        }
         try {
-            StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+            Object storageObj = context.getSystemService(Context.STORAGE_SERVICE);
+            if (storageObj == null) {
+                Logger.w(TAG, "StorageManager is null, cannot get USB paths");
+                return usbPaths;
+            }
+            StorageManager storageManager = (StorageManager) storageObj;
             List<StorageVolume> volumeList = storageManager.getStorageVolumes();
             if (volumeList.isEmpty()) {
-                Logger.e(TAG, "没有找到USB存储设备");
+                Logger.w(TAG, "没有找到USB存储设备");
                 return usbPaths;
             }
             for (StorageVolume volume : volumeList) {
