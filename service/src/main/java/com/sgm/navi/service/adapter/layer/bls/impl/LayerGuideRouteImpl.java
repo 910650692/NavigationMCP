@@ -61,8 +61,11 @@ import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
 import com.android.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.route.RouteSupplementInfo;
+import com.sgm.navi.service.define.route.RouteSupplementParams;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
@@ -146,6 +149,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
                     //途经点点击-充电站扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA_CHARGE;
+                } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION.ordinal()) {
+                    //途经点点击-替换补能点扎标
+                    type = LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION;
                 } else {
                     //途经点点击-默认扎标
                     type = LayerPointItemType.ROUTE_POINT_VIA;
@@ -536,10 +542,91 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /*自动添加的补能站数据*/
     public void updateRouteChargeStation(RouteChargeStationParam routeChargeStation) {
-        Logger.d(TAG, "updateRouteChargeStation");
-        getStyleAdapter().updateRouteChargeStation(routeChargeStation);
-        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).updateStyle();
-        getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeViaChargeStationPoint, true);
+        if (!ConvertUtils.isEmpty(routeChargeStation)) {
+            Logger.d(TAG, getMapType(), " updateRouteChargeStation");
+            RouteChargeStationParam param = handleCheckViaPoint(routeChargeStation);
+            getStyleAdapter().updateRouteChargeStation(param);
+            getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaChargeStationPoint).updateStyle();
+            getLayerGuideRouteControl().setVisible(BizRouteType.BizRouteTypeViaChargeStationPoint, true);
+        }
+    }
+
+    //判断是否替换补能点后转为途经点
+    private RouteChargeStationParam handleCheckViaPoint(RouteChargeStationParam routeChargeStation) {
+        ArrayList<RouteSupplementParams> mRouteSupplementParams = routeChargeStation.getMRouteSupplementParams();
+        if (ConvertUtils.isEmpty(mRouteSupplementParams)) {
+            Logger.e(TAG, "mRouteSupplementParams is empty");
+            return routeChargeStation;
+        }
+        if (ConvertUtils.isEmpty(getLayerGuideRouteControl())) {
+            Logger.e(TAG, "mRouteControl == null");
+            return routeChargeStation;
+        }
+        int selectedPathIndex = getLayerGuideRouteControl().getSelectedPathIndex();
+        Logger.d(TAG, "selectedPathIndex " + selectedPathIndex, " mRouteSupplementParams ", mRouteSupplementParams.size());
+        if (selectedPathIndex >= NumberUtils.NUM_0 && selectedPathIndex < mRouteSupplementParams.size()) {
+            RouteSupplementParams routeSupplementParams = mRouteSupplementParams.get(selectedPathIndex);
+            if (ConvertUtils.isNull(routeSupplementParams)) {
+                Logger.e(TAG, "routeSupplementParams == null");
+                return routeChargeStation;
+            }
+            ArrayList<RouteSupplementInfo> mRouteSupplementInfos = routeSupplementParams.getMRouteSupplementInfos();
+            if (ConvertUtils.isEmpty(mRouteSupplementInfos)) {
+                Logger.e(TAG, "mRouteSupplementInfos is Empty");
+                return routeChargeStation;
+            }
+            boolean hasVia = false;
+            ArrayList<RouteSupplementInfo> viaList = new ArrayList<>();
+            ArrayList<RouteSupplementInfo> chargeList = new ArrayList<>();
+            for (int i = 0; i < mRouteSupplementInfos.size(); i++) {
+                RouteSupplementInfo routeSupplementInfo = mRouteSupplementInfos.get(i);
+                if (!ConvertUtils.isEmpty(routeSupplementInfo)) {
+                    Logger.d(TAG, "index ", i, " mType ", routeSupplementInfo.getMType());
+                    if (routeSupplementInfo.getMType() != 0) {
+                        hasVia = true;
+                        viaList.add(routeSupplementInfo);
+                        //更新途经点
+                        final RoutePoint routePoint = new RoutePoint();
+                        routePoint.mType = 2;
+                        routePoint.mIsDraw = true;
+                        routePoint.mPathId = LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION.ordinal();
+                        if (ConvertUtils.isEmpty(routeSupplementInfo) || ConvertUtils.isEmpty(routeSupplementInfo.getMShow())) {
+                            Logger.e(TAG, getMapType(), "via point is null");
+                            continue;
+                        }
+                        routePoint.mPos = new Coord3DDouble(routeSupplementInfo.getMShow().getLon(), routeSupplementInfo.getMShow().getLat(), 0);
+                        mPathPoints.mViaPoints.add(routePoint);
+                        continue;
+                    }
+                }
+                chargeList.add(routeSupplementInfo);
+            }
+            Logger.d(TAG, "hasVia ", hasVia, " viaList ", viaList.size(), " chargeList ", chargeList.size());
+            if (hasVia) {
+                //更新数据
+                getStyleAdapter().updateRouteReplaceChargeToViaPointList(viaList);
+
+                //避免引用传递
+                RouteChargeStationParam param = new RouteChargeStationParam();
+                ArrayList<RouteSupplementParams> params = new ArrayList<>(mRouteSupplementParams);
+                ArrayList<RouteSupplementInfo> mRouteSupplementInfos1 = new ArrayList<>(mRouteSupplementInfos);
+                RouteSupplementParams routeSupplementParams1 = new RouteSupplementParams();
+                routeSupplementParams1.setMRouteSupplementInfos(chargeList);
+                params.set(selectedPathIndex, routeSupplementParams1);
+                param.setMRouteSupplementParams(params);
+
+                Logger.d(TAG, "viaPoints ", mPathPoints.mViaPoints.size(), " mRouteSupplementInfos1 ", mRouteSupplementInfos1.size());
+                mViaList.clear();
+                mViaList = new ArrayList<>(mPathPoints.mViaPoints);
+                getLayerGuideRouteControl().setPathPoints(mPathPoints);
+                updatePaths();
+                return param;
+            } else {
+                return routeChargeStation;
+            }
+        } else {
+            return routeChargeStation;
+        }
     }
 
     //转换替换补能扎标数据
@@ -553,14 +640,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         //途径点扎标添加
         if (!ConvertUtils.isEmpty(mViaList)) {
             Logger.d(TAG, getMapType(), "getRouteViaReplaceChargePoints size ", mViaList.size());
-            for (RoutePoint routePoint : mViaList) {
-                RoutePoint point = new RoutePoint();
-                point.mType = 2;
-                point.mPos = new Coord3DDouble(routePoint.mPos.lon
-                        , routePoint.mPos.lat
-                        , routePoint.mPos.z);
-                via.add(point);
-            }
+            via.addAll(mViaList);
         }
         for (int t = 0; t < info.size(); t++) {
             RoutePoint point = new RoutePoint();

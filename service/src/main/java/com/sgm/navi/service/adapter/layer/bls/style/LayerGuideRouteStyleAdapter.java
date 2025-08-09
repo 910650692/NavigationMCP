@@ -91,6 +91,8 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     private RouteChargeStationParam mRouteChargeStation = new RouteChargeStationParam();
     //途径点信息
     private List<PoiInfoEntity> mViaPointList = new ArrayList<>();
+    //替换补能点转为途经点
+    private ArrayList<RouteSupplementInfo> mReplaceChargeToViaPointList = new ArrayList<>();
 
     public LayerGuideRouteStyleAdapter(int engineID, BizRoadCrossControl bizRoadCrossControl, BizGuideRouteControl bizGuideRouteControl, BizRoadFacilityControl roadFacilityControl, BizLabelControl bizLabelControl) {
         super(engineID);
@@ -126,10 +128,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return KEY_ROAD_ENERGY_EMPTY;
             }
             case BizRouteType.BizRouteTypeViaChargeStationPoint -> {
-                if (ConvertUtils.isEmpty(mRouteChargeStation.getMRouteSupplementParams())) {
-                    Logger.d(TAG, "默认补能规划扎标");
-                    return super.provideLayerItemStyleJson(layer, item);
-                }
                 Logger.d(TAG, "自定义补能规划扎标");
                 return KEY_ROAD_VIA_CHARGE_STATION;
             }
@@ -137,11 +135,14 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 if (item instanceof RoutePathPointItem viaPoint) {
                     long pathId = viaPoint.getPathId();
                     if (pathId == LayerPointItemType.ROUTE_POINT_VIA_REPLACE_CHARGE.ordinal()) {
-                        Logger.d(TAG, "途经点扎标-自定义扎标");
+                        Logger.d(TAG, "途经点扎标-替换补能点");
                         return KEY_SEARCH_REPLACE_CHARGE;
                     } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
                         Logger.d(TAG, "途经点扎标-充电站");
                         return KEY_ROAD_ROUTE_VIA_CHARGE_STATION;
+                    } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION.ordinal()) {
+                        Logger.d(TAG, "途经点扎标-自定义补能规划扎标");
+                        return KEY_ROAD_VIA_CHARGE_STATION;
                     }
                     Logger.d(TAG, "途经点扎标-默认扎标");
                     return KEY_ROAD_VIA_DEFAULT_POINT;
@@ -181,6 +182,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                         return getRouteReplaceChargePoint(item);
                     } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal()) {
                         return getRouteViaChargePoint(item);
+                    } else if (pathId == LayerPointItemType.ROUTE_POINT_VIA_CHARGE_STATION.ordinal()) {
+                        //补能规划数据
+                        return getRouteChargeToViaPointInfo(item);
                     } else {
                         return super.provideLayerItemData(item);
                     }
@@ -279,7 +283,38 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     new IUpdateBitmapViewProcessor<LayerItemRouteViaChargeInfo>() {
                         @Override
                         public void onNormalProcess(LayerItem layerItem, View rootView, LayerItemRouteViaChargeInfo data) {
-                            Logger.d(TAG, "更新补能规划扎标信息");
+                            Logger.d(TAG, "更新补能规划扎标信息 normal");
+                            TextView position = rootView.findViewById(R.id.route_via_charge_position);
+                            TextView time = rootView.findViewById(R.id.route_via_charge_time);
+                            TextView distance = rootView.findViewById(R.id.route_via_charge_distance);
+                            if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getMRouteChargeStationInfo())) {
+                                Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
+                                return;
+                            }
+                            if (Logger.openLog) {
+                                Logger.d(TAG, "更新补能规划扎标信息 ", data.getMRouteChargeStationInfo());
+                            }
+                            safetySetText(position, String.valueOf(data.getIndex() + 1));
+                            RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
+
+                            if (!ConvertUtils.isEmpty(chargeStationInfo)) {
+                                int chargeTime = chargeStationInfo.getMChargeTime() / 60;
+                                int intervalDistance = chargeStationInfo.getMInterval() / 1000;
+                                Context rootViewContext = rootView.getContext();
+                                String timeStr = rootViewContext.getString(R.string.layer_route_via_charge_time, String.valueOf(chargeTime > 0 ? chargeTime : "-"));
+                                safetySetText(time, timeStr);
+
+                                String firstString = rootViewContext.getString(R.string.layer_route_via_charge_distance_first);
+                                String behindString = rootViewContext.getString(R.string.layer_route_via_charge_distance_behind);
+                                String distanceStringTitle = data.getIndex() == 0 ? firstString : behindString;
+                                String distanceString = rootViewContext.getString(R.string.layer_route_via_charge_distance, distanceStringTitle, String.valueOf(intervalDistance > 0 ? intervalDistance : "-"));
+                                safetySetText(distance, distanceString);
+                            }
+                        }
+
+                        @Override
+                        public void onFocusProcess(View rootView, LayerItemRouteViaChargeInfo data) {
+                            Logger.d(TAG, "更新补能规划扎标信息 focus");
                             TextView position = rootView.findViewById(R.id.route_via_charge_position);
                             TextView time = rootView.findViewById(R.id.route_via_charge_time);
                             TextView distance = rootView.findViewById(R.id.route_via_charge_distance);
@@ -325,6 +360,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
                             if (data.getType() == 1) {
                                 setViaChargeStationInfo(rootView, data);
+                                return;
+                            } else if (data.getType() == 2) {
+                                setReplaceChargeToViaPoint(rootView, data);
                                 return;
                             }
                             Context context = rootView.getContext();
@@ -389,11 +427,40 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             if (data.getType() == 1) {
                                 setViaChargeStationInfo(rootView, data);
+                            } else if (data.getType() == 2) {
+                                setReplaceChargeToViaPoint(rootView, data);
                             }
                         }
                     };
             default -> super.provideUpdateBitmapViewProcessor(item);
         };
+    }
+
+    /* 替换补能点替换后转使用途径点Type的补能点 */
+    private void setReplaceChargeToViaPoint(View rootView, LayerItemRouteReplaceChargePoint data) {
+        Logger.d(TAG, "替换补能点替换后转使用途径点Type的补能点");
+        if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getViaInfo())) {
+            Logger.e(TAG, "getMRouteChargeStationInfos is null");
+            return;
+        }
+        TextView position = rootView.findViewById(R.id.route_via_charge_position);
+        TextView time = rootView.findViewById(R.id.route_via_charge_time);
+        TextView distance = rootView.findViewById(R.id.route_via_charge_distance);
+
+        safetySetText(position, String.valueOf(data.getIndex() + 1));
+        RouteSupplementInfo viaInfo = data.getViaInfo();
+
+        int chargeTime = viaInfo.getMChargeTime() / 60;
+        int intervalDistance = viaInfo.getMInterval() / 1000;
+        Context rootViewContext = rootView.getContext();
+        String timeStr = rootViewContext.getString(R.string.layer_route_via_charge_time, String.valueOf(chargeTime > 0 ? chargeTime : "-"));
+        safetySetText(time, timeStr);
+
+        String firstString = rootViewContext.getString(R.string.layer_route_via_charge_distance_first);
+        String behindString = rootViewContext.getString(R.string.layer_route_via_charge_distance_behind);
+        String distanceStringTitle = data.getIndex() == 0 ? firstString : behindString;
+        String distanceString = rootViewContext.getString(R.string.layer_route_via_charge_distance, distanceStringTitle, String.valueOf(intervalDistance > 0 ? intervalDistance : "-"));
+        safetySetText(distance, distanceString);
     }
 
     /**
@@ -476,6 +543,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
      */
     public void updateViaPointList(List<PoiInfoEntity> viaPointList) {
         mViaPointList = new ArrayList<>(viaPointList);
+    }
+
+    /* 更新替换补能点转为途经点数据 */
+    public void updateRouteReplaceChargeToViaPointList(ArrayList<RouteSupplementInfo> chargeStationInfos) {
+        if (ConvertUtils.isNull(chargeStationInfos)) {
+            Logger.d(TAG, "chargeStationInfos is null");
+            return;
+        }
+        mReplaceChargeToViaPointList = new ArrayList<>(chargeStationInfos);
     }
 
     /**
@@ -661,6 +737,24 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     }
 
     //转换补能规划数据
+    private LayerItemRouteReplaceChargePoint getRouteChargeToViaPointInfo(LayerItem item) {
+        LayerItemRouteReplaceChargePoint chargeInfo = new LayerItemRouteReplaceChargePoint();
+        Logger.d(TAG, "getRouteChargeToViaPointInfo ");
+        if (!ConvertUtils.isEmpty(mReplaceChargeToViaPointList)) {
+            String id = item.getID();
+            int index = Integer.parseInt(id);
+            Logger.d(TAG, "id ", index, " mReplaceChargeToViaPointList.size ", mReplaceChargeToViaPointList.size());
+            if (index >= 0 && index < mReplaceChargeToViaPointList.size()) {
+                RouteSupplementInfo info = mReplaceChargeToViaPointList.get(index);
+                chargeInfo.setViaInfo(info);
+                chargeInfo.setIndex(info.getMSupplementIndex());
+                chargeInfo.setType(2);
+            }
+        }
+        return chargeInfo;
+    }
+
+    //转换补能规划数据
     private LayerItemRouteViaChargeInfo getRouteChargeInfo(LayerItem item) {
         Logger.d(TAG, "getRouteChargeInfo start");
         LayerItemRouteViaChargeInfo chargeInfo = new LayerItemRouteViaChargeInfo();
@@ -677,7 +771,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return chargeInfo;
             }
             int selectedPathIndex = mRouteControl.getSelectedPathIndex();
-            Logger.d(TAG, "getRouteChargeInfo selectedPathIndex " + selectedPathIndex);
+            Logger.d(TAG, "getRouteChargeInfo selectedPathIndex " + selectedPathIndex, " mRouteSupplementParams ", mRouteSupplementParams.size());
             if (selectedPathIndex >= NumberUtils.NUM_0 && selectedPathIndex < mRouteSupplementParams.size()) {
                 RouteSupplementParams routeSupplementParams = mRouteSupplementParams.get(selectedPathIndex);
                 if (ConvertUtils.isNull(routeSupplementParams)) {
@@ -689,13 +783,20 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     Logger.e(TAG, "getRouteChargeInfo mRouteSupplementInfos is Empty");
                     return chargeInfo;
                 }
+                Logger.d(TAG, "getRouteChargeInfo mRouteSupplementInfos ", mRouteSupplementInfos.size(), " index ", index);
                 if (index >= NumberUtils.NUM_0 && index < mRouteSupplementInfos.size()) {
                     final RouteSupplementInfo routeSupplementInfo = mRouteSupplementInfos.get(index);
-                    if (ConvertUtils.isEmpty(routeSupplementInfo)) {
+                    if (ConvertUtils.isEmpty(routeSupplementInfo) || routeSupplementInfo.getMType() != 0) {
                         Logger.e(TAG, "getRouteChargeInfo routeSupplementInfo == null");
                         return chargeInfo;
                     }
-                    chargeInfo.setIndex(index);
+                    int mSupplementIndex = routeSupplementInfo.getMSupplementIndex();
+                    Logger.d(TAG, "mSupplementIndex ", mSupplementIndex, " index ", index);
+                    if (mSupplementIndex != -1 && index != mSupplementIndex) {
+                        chargeInfo.setIndex(mSupplementIndex);
+                    } else {
+                        chargeInfo.setIndex(index);
+                    }
                     final RouteChargeStationDetailInfo routeChargeStationDetailInfo = new RouteChargeStationDetailInfo();
                     routeChargeStationDetailInfo.setMChargeTime(routeSupplementInfo.getMChargeTime());
                     routeChargeStationDetailInfo.setMInterval(routeSupplementInfo.getMInterval());

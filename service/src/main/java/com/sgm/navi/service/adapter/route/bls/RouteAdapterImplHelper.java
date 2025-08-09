@@ -1106,6 +1106,7 @@ public class RouteAdapterImplHelper {
             RouteParam routeParam = routeParams.get(i);
             if (isTheSamePoi(routeParam, routeSupplementParam)) {
                 routeParam.setMAddressType(AutoMapConstant.ParamPoiType.SUPPLEMENT_POINT);
+                routeSupplementParam.setMType(AutoMapConstant.SupplementType.REPLACE_SUPPLEMENT_POINT);
                 routeSupplementParam.setMViaIndex(i);
                 return;
             }
