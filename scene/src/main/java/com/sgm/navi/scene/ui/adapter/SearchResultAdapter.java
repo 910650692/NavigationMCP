@@ -369,6 +369,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         final int pointTypeCode = mSearchPackage.getPointTypeCode(mPoiInfoEntity.getPointTypeCode());
         ScenePoiItemScenicSpotViewBinding binding = resultHolder.getScenicSpotViewBinding();
         if (binding != null) {
+            if(!ConvertUtils.isNull(resultHolder.getGasViewBinding())){
+                resultHolder.getGasViewBinding().poiGasRoot.setVisibility(GONE);
+            }
+            binding.poiScenicSpotRoot.setVisibility(VISIBLE);
             if (pointTypeCode == AutoMapConstant.PointTypeCode.OTHERS) {
                 binding.poiScenicSpotPrice.setVisibility(GONE);
                 binding.poiScenicSpotPriceIcon.setVisibility(GONE);
@@ -655,6 +659,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private void refreshGasStationView(final ResultHolder resultHolder) {
         ScenePoiItemGasViewBinding binding = resultHolder.getGasViewBinding();
         if (binding != null) {
+            if(!ConvertUtils.isNull(resultHolder.getScenicSpotViewBinding())){
+                resultHolder.getScenicSpotViewBinding().poiScenicSpotRoot.setVisibility(GONE);
+            }
+            binding.poiGasRoot.setVisibility(VISIBLE);
             final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
             for (GasStationInfo gasStationInfo : gasStationInfos) {
                 if (!gasStationInfo.getPrice().contains("升")) {

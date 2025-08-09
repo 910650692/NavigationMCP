@@ -763,7 +763,12 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         mAdapter.setQuickLabel(new ArrayList<>());
                     }
                     mQuickValue = "";
-                    mScreenViewModel.keywordSearch(mPageNum,mSearchText);
+                    if(mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH){
+                        mScreenViewModel.aroundSearch(mPageNum,mSearchText,"","",false,mPoiInfoEntity);
+                    }else {
+                        mScreenViewModel.keywordSearch(mPageNum,mSearchText);
+                    }
+
                     return;
                 }
                 mCurrentSelectedQuick = position;

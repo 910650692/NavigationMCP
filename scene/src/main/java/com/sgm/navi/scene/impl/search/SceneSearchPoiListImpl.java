@@ -232,7 +232,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     public void aroundSearch(final int pageNum, final String keyword, final String retain,
                              final String classifyData, final boolean isSilentSearch, final PoiInfoEntity poiInfoEntity) {
         logSearch("keywordSearch classifyData: ", classifyData);
-        if (poiInfoEntity == null || poiInfoEntity.getPoint() == null) {
+        if (poiInfoEntity == null || poiInfoEntity.getPoint() == null || mListSearchType == 1) {
             final GeoPoint userLoc = new GeoPoint();
             userLoc.setLon(PositionPackage.getInstance().getLastCarLocation().getLongitude());
             userLoc.setLat(PositionPackage.getInstance().getLastCarLocation().getLatitude());
