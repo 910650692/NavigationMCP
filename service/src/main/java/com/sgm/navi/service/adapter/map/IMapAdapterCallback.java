@@ -19,6 +19,9 @@ public interface IMapAdapterCallback {
     default void onMapLoadSuccess(MapType mapTypeId) {
     }
 
+    default void onSurfaceChanged(MapType mapTypeId) {
+    }
+
     default void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {
     }
 

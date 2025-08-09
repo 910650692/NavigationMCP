@@ -444,6 +444,18 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     }
 
     @Override
+    public void onSurfaceChanged(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.onSurfaceChanged(mapTypeId);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {

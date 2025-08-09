@@ -170,6 +170,18 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
     }
 
     @Override
+    public void onSurfaceChanged(MapType mapTypeId) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {
+                @Override
+                public void accept(IMapAdapterCallback callback) {
+                    callback.onSurfaceChanged(mapTypeId);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onMapCenterChanged(MapType mapTypeId, double lon, double lat) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapAdapterCallback>() {

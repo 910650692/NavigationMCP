@@ -35,6 +35,8 @@ public interface IMapPackageCallback {
 
     default void onMapLoadSuccess(MapType mapTypeId) {}
 
+    default void onSurfaceChanged(MapType mapTypeId) {}
+
     default void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {}
 
     default void onMapClickPoi(MapType mapTypeId, PoiInfoEntity poiInfo) {}

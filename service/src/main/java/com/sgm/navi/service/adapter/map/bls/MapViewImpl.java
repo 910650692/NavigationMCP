@@ -123,8 +123,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private IMapAdapterCallback callback;
     private Rect crossImgScreenshotRect;
     private boolean screenShotSwitch = false;
-    private int saveX = -1;
-    private int saveY = -1;
 
     public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
@@ -294,8 +292,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void setMapCenterInScreen(int x, int y) {
-        saveX = x;
-        saveY = y;
         getMapview().setMapLeftTop(x, y);
         Logger.d(TAG, mapType, " setMapCenterInScreen");
     }
@@ -726,9 +722,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             getMapview().getOperatorBusiness().setMapZoomScaleAdaptive((int) mapViewParams.getScreenWidth(), (int)mapViewParams.getScreenHeight(),mapViewParams.getDensityDpi());
         }
         //防止设置中心点过早，导致设置位置不对
-        if (saveX != -1 && saveY != -1) {
-            getMapview().setMapLeftTop(saveX, saveY);
-            goToCarPosition(false, true);
+        if (callback != null) {
+            callback.onSurfaceChanged(mapType);
         }
     }
 

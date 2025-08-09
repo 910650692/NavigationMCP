@@ -284,6 +284,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         }
     };
+    private double mSaveScreenSize = -1;
 
     public MapModel() {
         mCallbackId = UUID.randomUUID().toString();
@@ -889,6 +890,43 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             mViewModel.updateUiStyle(MapType.MAIN_SCREEN_MAIN_MAP,
                     ThemeUtils.INSTANCE.isNightModeEnabled(mViewModel.getView().getApplicationContext()) ? ThemeType.NIGHT : ThemeType.DAY);
         }
+    }
+
+    @Override
+    public void onSurfaceChanged(MapType mapTypeId) {
+        if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            updateCarPosition();
+        }
+    }
+
+    public void updateCarPosition() {
+        if (mSaveScreenSize == checkScreenSizeChanged()) {
+            Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸没有发生变化，不重新设置自车位置");
+            return;
+        }
+        if (naviPackage == null) {
+            Logger.e(TAG, "updateCarPosition: ", "naviPackage is null");
+            return;
+        }
+        mSaveScreenSize = checkScreenSizeChanged();
+        if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())) {
+            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，全揽");
+        } else {
+            goToCarPosition();
+            Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，重新设置自车位置");
+        }
+
+    }
+
+    private int checkScreenSizeChanged() {
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            return 0;
+        }
+        if (ScreenTypeUtils.getInstance().isTwoThirdScreen()) {
+            return 1;
+        }
+        return 2;
     }
 
     @Override
