@@ -9,13 +9,21 @@ import androidx.appcompat.widget.AppCompatEditText;
 public class SkinEditText extends AppCompatEditText {
     public SkinEditText(final Context context) {
         super(context);
+        disableTextSelection();
     }
 
     public SkinEditText(final Context context, final AttributeSet attrs) {
         super(context, attrs);
+        disableTextSelection();
     }
 
     public SkinEditText(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        disableTextSelection();
+    }
+    private void disableTextSelection() {
+        // 禁用水滴选择器
+        setLongClickable(false);
+        setTextIsSelectable(false);
     }
 }
