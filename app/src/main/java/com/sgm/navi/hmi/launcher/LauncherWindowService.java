@@ -400,9 +400,16 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     public void changeCrossVisible(boolean isVisible) {
         Logger.i(TAG, "changeCrossVisible:" + isVisible);
         mCrossImgIsOnShowing = isVisible;
-        if (!isVisible && !ConvertUtils.isNull(mBinding)) {
+        if (!ConvertUtils.isNull(mBinding)) {
             ThreadManager.getInstance().postUi(() -> {
-                mBinding.ivCross.setVisibility(View.GONE);
+                if (!isVisible) {
+                    mBinding.ivCross.setVisibility(View.GONE);
+                }
+
+                // 大图显示后隐藏车道线
+                if (isVisible && mBinding.sceneNaviLanes != null) {
+                    mBinding.sceneNaviLanes.setVisibility(View.GONE);
+                }
             });
         }
     }
@@ -469,6 +476,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 mBinding.sceneNaviTmc.onUpdateTMCLightBar(mLastTmcInfo);
                 Logger.d(TAG,"重新绘制光柱图最新数据");
             }
+            // 3. 新增逻辑：如果路口大图正在显示，强制隐藏车道线（首次进入时也生效）
+            if (mCrossImgIsOnShowing) {
+                mBinding.sceneNaviLanes.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -477,7 +488,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         this.mIsShowLane = isShowLane;
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
-                mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
+                if (mCrossImgIsOnShowing) {
+                    mBinding.sceneNaviLanes.setVisibility(View.GONE);
+                }else {
+                    mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
+                }
                 mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
             }
         });
