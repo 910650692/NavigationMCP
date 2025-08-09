@@ -11,7 +11,7 @@ import com.sgm.navi.service.BuildConfig;
  */
 public class MapViewModel extends BaseMapViewModel {
 
-    private String jsonPath = BuildConfig.MAP_SDK + "/buick_maparea.json";
+    private String jsonPath = BuildConfig.MAP_SDK + "/557_maparea.json";
 
     public MapViewModel(@NonNull Application application) {
         super(application);

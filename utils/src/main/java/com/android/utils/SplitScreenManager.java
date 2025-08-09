@@ -255,7 +255,6 @@ public class SplitScreenManager {
     }
 
     public int getToastOffsetX() {
-        int offsetX = 0;
         if (ScreenTypeUtils.getInstance().isFullScreen()) {
             return 0;
         }
@@ -273,12 +272,14 @@ public class SplitScreenManager {
         }
         boolean isLeft = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitLeft);
         boolean isRight = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitRight);
+        int offsetOneThreeX = ScreenTypeUtils.getInstance().getToastXOneThree();
+        int offsetTwoThreeX = ScreenTypeUtils.getInstance().getToastXTwoThree();
         if (!isLeft && !isRight) {
             return 0;
         } else if (isLeft) {
-            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? -855 : -435;
+            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? -offsetOneThreeX : -offsetTwoThreeX;
         } else {
-            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? 855 : 435;
+            return ScreenTypeUtils.getInstance().isOneThirdScreen() ? offsetOneThreeX : offsetTwoThreeX;
         }
     }
 }

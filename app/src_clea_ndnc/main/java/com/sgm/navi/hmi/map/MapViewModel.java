@@ -20,6 +20,8 @@ public class MapViewModel extends BaseMapViewModel {
     private final String TWO_THIRD_JSON_PATH = BuildConfig.MAP_SDK + "/nd_2_3_maparea.json";
     private final String ONE_THIRD_JSON_PATH = BuildConfig.MAP_SDK + "/nd_1_3_maparea.json";
     private final String CAR_557_FULL_SCREEN_JSON_PATH = BuildConfig.MAP_SDK + "/557_maparea.json";
+    private final String CAR_557_ONE_THIRD_SCREEN_JSON_PATH = BuildConfig.MAP_SDK + "/557_1_3_maparea.json";
+    private final String CAR_557_Two_THIRD_SCREEN_JSON_PATH = BuildConfig.MAP_SDK + "/557_2_3_maparea.json";
 
     public MapViewModel(@NonNull Application application) {
         super(application);
@@ -28,15 +30,22 @@ public class MapViewModel extends BaseMapViewModel {
     public void initVisibleAreaPoint() {
         Logger.d("screen_change_used", "设置屏幕投影位置");
         String json;
-        if (ScreenTypeUtils.getInstance().isFullScreen()) {
-            json = FULL_SCREEN_JSON_PATH;
-        } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()) {
-            json = TWO_THIRD_JSON_PATH;
-        } else {
-            json = ONE_THIRD_JSON_PATH;
-        }
         if (ScreenTypeUtils.getInstance().is557CarMode()) {
-            json = CAR_557_FULL_SCREEN_JSON_PATH;
+            if (ScreenTypeUtils.getInstance().isFullScreen()) {
+                json = CAR_557_FULL_SCREEN_JSON_PATH;
+            } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()) {
+                json = CAR_557_Two_THIRD_SCREEN_JSON_PATH;
+            } else {
+                json = CAR_557_ONE_THIRD_SCREEN_JSON_PATH;
+            }
+        } else {
+            if (ScreenTypeUtils.getInstance().isFullScreen()) {
+                json = FULL_SCREEN_JSON_PATH;
+            } else if (ScreenTypeUtils.getInstance().isTwoThirdScreen()) {
+                json = TWO_THIRD_JSON_PATH;
+            } else {
+                json = ONE_THIRD_JSON_PATH;
+            }
         }
         Logger.d("screen_change_used", "设置屏幕投影位置 json:" + json);
         mModel.loadVisibleAreaJson(json);

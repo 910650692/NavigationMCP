@@ -711,8 +711,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         Logger.i(TAG, "setMapCenterInScreen");
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
         if (baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment) {
-            mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
+            mModel.goToCarPosition();
             mModel.refreshMapMode();
         }
         final String state = NavistatusAdapter.getInstance().getCurrentNaviStatus();
@@ -756,8 +756,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 (baseFragment instanceof SettingFragment &&
                         !NaviPackage.getInstance().getFixedOverViewStatus() &&
                         !NaviPackage.getInstance().getClusterFixOverViewStatus())) {
-            mModel.goToCarPosition();
             mModel.setMapCenterInScreen();
+            mModel.goToCarPosition();
             mModel.refreshMapMode();
         } else if ((baseFragment instanceof NaviGuidanceFragment) &&
                 !NaviPackage.getInstance().getPreviewStatus() &&

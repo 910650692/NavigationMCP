@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--引导全览的时候距离屏幕两边的距离-->
+    <dimen name="margin_screen_left">@dimen/dp_681</dimen>
+    <dimen name="margin_screen_right">@dimen/dp_204</dimen>
+    <dimen name="margin_screen_top">@dimen/dp_140</dimen>
+    <dimen name="margin_screen_bottom">@dimen/dp_140</dimen>
+
+    <!--ND分屏-->
+    <dimen name="margin_screen_left_one_to_three">@dimen/dp_20</dimen>
+    <dimen name="margin_screen_right_one_to_three">@dimen/dp_20</dimen>
+    <dimen name="margin_screen_top_one_to_three">@dimen/dp_425</dimen>
+    <dimen name="margin_screen_bottom_one_to_three">@dimen/dp_300</dimen>
+
+    <!--算路全览的时候距离屏幕两边的距离-->
+    <dimen name="route_margin_screen_left">@dimen/dp_681</dimen>
+    <dimen name="route_margin_screen_right">@dimen/dp_204</dimen>
+    <dimen name="route_margin_screen_top">@dimen/dp_140</dimen>
+    <dimen name="route_margin_screen_bottom">@dimen/dp_140</dimen>
+
+</resources>
