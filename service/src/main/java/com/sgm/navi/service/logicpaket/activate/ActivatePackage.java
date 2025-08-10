@@ -8,13 +8,12 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.activate.ActivateAdapter;
 import com.sgm.navi.service.adapter.activate.ActivateObserver;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ActivatePackage implements ActivateObserver {
     private static final String TAG = MapDefaultFinalTag.ACTIVATE_SERVICE_TAG;
     private ActivateAdapter mActivateAdapter;
-    private List<IActivateObserver> mActObserverList;
+    private CopyOnWriteArrayList<IActivateObserver> mActObserverList;
 
     private ActivatePackage() {
         Logger.i(TAG, "ActivatePackage init");
@@ -37,7 +36,7 @@ public final class ActivatePackage implements ActivateObserver {
      */
     public void init() {
         mActivateAdapter = ActivateAdapter.getInstance();
-        mActObserverList = new ArrayList<>();
+        mActObserverList = new CopyOnWriteArrayList<>();
         mActivateAdapter.init();
         mActivateAdapter.addActivateObserver(this);
     }
