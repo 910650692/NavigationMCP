@@ -1104,8 +1104,16 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (!ConvertUtils.isEmpty(routeParams)) {
             mNaviDriveReportEntity.setEndPos(routeParams.get(routeParams.size() - 1).getName());
         }
-        mNaviDriveReportEntity.setEstimateFuelConsume(mSignalAdapter.getPredictedFuelSavingPer100km());
-        mNaviDriveReportEntity.setTotalFuelConsume(mSignalAdapter.getTotalFuelSaving());
+        int predictedFuelSavingPer100km = mSignalAdapter.getPredictedFuelSavingPer100km();
+        if(predictedFuelSavingPer100km < 0){
+            predictedFuelSavingPer100km = 0;
+        }
+        mNaviDriveReportEntity.setEstimateFuelConsume(predictedFuelSavingPer100km);
+        int totalFuelSaving = mSignalAdapter.getTotalFuelSaving();
+        if(totalFuelSaving < 0){
+            totalFuelSaving = 0;
+        }
+        mNaviDriveReportEntity.setTotalFuelConsume(totalFuelSaving);
         mNaviDriveReportEntity.setDrivenDist(report.getDrivenDist());
         mNaviDriveReportEntity.setDrivenTime(report.getDrivenTime());
         ThreadManager.getInstance().postUi(() -> {
