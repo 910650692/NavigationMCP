@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.mapdata.CityDownLoadInfo;
@@ -17,7 +18,7 @@ import com.sgm.navi.ui.view.SkinConstraintLayout;
 import com.sgm.navi.ui.view.SkinLinearLayout;
 
 public class DownloadBtnView extends SkinConstraintLayout {
-
+    private static final String TAG = DownloadBtnView.class.getSimpleName();
     private SkinLinearLayout mLinearLayout;
     private ImageView mDownloadViewIcon;
     private TextView mDownloadViewText;
@@ -99,12 +100,14 @@ public class DownloadBtnView extends SkinConstraintLayout {
                     setDownloadViewIcon(R.drawable.img_untop_bwhite_42);
                     mLinearLayout.setGravity(Gravity.CENTER);
                 }
+                Logger.i(TAG, "更新/下载 设置背景蓝色");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
                 setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
                 break;
             case UserDataCode.TASK_STATUS_CODE_WAITING:
                 setDownloadViewText("等待中");
+                Logger.i(TAG, "等待中 设置背景蓝色");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
                 setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
@@ -112,6 +115,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
                 break;
             case UserDataCode.TASK_STATUS_CODE_PAUSE: // 继续
                 setDownloadViewText("继续");
+                Logger.i(TAG, "继续 设置背景蓝色");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
                 setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(true);
@@ -123,6 +127,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
 //                String formatted = String.format("%.2f", data.getPercent());// 输出: 123.46
                 // Math.floor 四舍五入，向下取整
                 setDownloadViewText((int) Math.floor(data.getPercent()) + "%");
+                Logger.i(TAG, "更新中 设置背景透明");
                 setDownloadViewBackground(R.color.transparent);
                 setDownloadViewTextColor(R.color.setting_downloading_color);
                 setDownloadViewIconVisible(true);
@@ -136,6 +141,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
                 break;
             case UserDataCode.TASK_STATUS_CODE_UNZIPPING:
                 setDownloadViewText("解压中" + (int) Math.floor(data.getPercent()) + "%");
+                Logger.i(TAG, "解压中 设置背景透明");
                 setDownloadViewBackground(R.color.transparent);
                 setDownloadViewTextColor(R.color.setting_downloading_color);
                 setDownloadViewIconVisible(false);
@@ -145,6 +151,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
                 break;
             case UserDataCode.TASK_STATUS_CODE_SUCCESS:
                 setDownloadViewText("已下载");
+                Logger.i(TAG, "已下载 设置背景无色");
                 setDownloadViewBackground(0);
                 setDownloadViewTextColor(R.color.setting_bg_tab_text_unselect);
                 setDownloadViewIconVisible(false);
@@ -153,6 +160,7 @@ public class DownloadBtnView extends SkinConstraintLayout {
             case UserDataCode.TASK_STATUS_CODE_ERR:
             case UserDataCode.TASK_STATUS_CODE_MAX:
                 setDownloadViewText("重试");
+                Logger.i(TAG, "重试 设置背景蓝色");
                 setDownloadViewBackground(R.drawable.shape_bg_download_data);
                 setDownloadViewTextColor(R.color.setting_white);
                 setDownloadViewIconVisible(false);

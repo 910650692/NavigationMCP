@@ -358,7 +358,6 @@
                                     style="@style/style_mfc_config_no_bg"
                                     android:id="@+id/country_download_view"
                                     clickCommand="@{ViewModel.mStartDownload}"
-                                    android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
                                     android:layout_width="@dimen/dp_240"
                                     android:layout_height="@dimen/dp_96"
                                     android:layout_marginEnd="@dimen/dp_40"

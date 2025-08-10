@@ -4,7 +4,7 @@
     android:id="@+id/download_status"
     android:layout_width="@dimen/dp_240"
     android:layout_height="@dimen/dp_96"
-    >
+    android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector">
 
     <com.sgm.navi.ui.view.SkinLinearLayout
         style="@style/style_mfc_config"
@@ -13,8 +13,6 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:focusable="true"
-        android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
