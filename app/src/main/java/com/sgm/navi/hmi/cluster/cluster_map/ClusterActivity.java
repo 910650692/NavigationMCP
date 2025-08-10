@@ -147,7 +147,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onConfigurationChanged(newConfig);
         Logger.d(TAG, "onConfigurationChanged");
         initViewTheme();
-        updateMapThemeType();
+        ThreadManager.getInstance().runAsync(this::updateMapThemeType);
     }
 
     private void updateMapThemeType() {
