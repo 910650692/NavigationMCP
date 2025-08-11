@@ -15,10 +15,11 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_root"
-        android:layout_width="@dimen/dp_820"
-        android:layout_height="@dimen/dp_168"
+        android:layout_width="@dimen/dp_922"
+        android:layout_height="@dimen/dp_270"
+        android:padding="@dimen/dp_51"
         android:focusable="false"
-        android:background="@drawable/bg_scene_charge_tip"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         >
 
         <com.sgm.navi.ui.view.SkinTextView
