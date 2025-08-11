@@ -201,6 +201,12 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
         ThreadManager.getInstance().postUi(() -> {
             this.mDataList = dataList;
             mDrivingRecordAdapter.setDrivingRecordList(dataList);
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_others_sync_success));
+            if (mBinding != null) {
+                mBinding.pullRefreshLayout.finishRefresh();
+                mBinding.pullRefreshLayout.finishLoadMore();
+            }
         });
     }
 
@@ -212,18 +218,20 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
         mBinding.pullRefreshLayout.setRefreshListener(new RefreshListener() {
             @Override
             public void refresh() {
-                updateDrivingRecordData();
-                if (mBinding != null) {
-                    mBinding.pullRefreshLayout.finishRefresh();
+                if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                    ToastUtils.Companion.getInstance().showCustomToastView(
+                            ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_no_net));
+                    if (mBinding != null) {
+                        mBinding.pullRefreshLayout.finishRefresh();
+                    }
+                    return;
                 }
+                updateDrivingRecordData();
             }
 
             @Override
             public void loadMore() {
                 updateDrivingRecordData();
-                if (mBinding != null) {
-                    mBinding.pullRefreshLayout.finishLoadMore();
-                }
             }
         });
     }

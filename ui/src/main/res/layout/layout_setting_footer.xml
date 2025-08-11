@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sgm.navi.ui.view.SkinRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.sgm.navi.ui.view.SkinImageView
+        android:id="@+id/header_arrow"
+        android:layout_width="@dimen/dp_49"
+        android:layout_height="@dimen/dp_49"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/img_glide_up" />
+
+    <com.sgm.navi.ui.view.SkinTextView
+        android:id="@+id/header_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_59"
+        android:alpha="0.7"
+        android:text="@string/st_pull_down_refresh"
+        android:textColor="@color/dialog_buick_title_color"
+        android:textSize="@dimen/sp_29" />
+
+</com.sgm.navi.ui.view.SkinRelativeLayout>

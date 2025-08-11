@@ -86,7 +86,7 @@
                 android:textColor="@color/setting_bg_to_login_text"
                 android:textSize="@dimen/sp_25" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
-        <com.sgm.navi.ui.view.PullToRefreshLayout
+        <com.sgm.navi.ui.view.SettingPullToRefreshLayout
             android:id="@+id/pull_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -98,7 +98,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_40" />
-        </com.sgm.navi.ui.view.PullToRefreshLayout>
+        </com.sgm.navi.ui.view.SettingPullToRefreshLayout>
 
     </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>
