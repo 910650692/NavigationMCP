@@ -655,6 +655,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     };
 
     public boolean getTopFragment(Class<? extends Fragment> targetClass) {
+        if (mView == null) {
+            Logger.w(TAG, "mView is null");
+            return false;
+        }
         Fragment fragment = mView.getSupportFragmentManager().findFragmentById(R.id.layout_fragment);
         if (fragment != null) {
             return targetClass.isInstance(fragment);
