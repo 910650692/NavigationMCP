@@ -172,6 +172,12 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
      * 地图触摸,隐藏小卡片
      */
     public void hideWidgetsOnMapTouch(MotionEvent touchEvent) {
+        if (touchEvent == null) {
+            //MFC移动地图
+            hideAllCardWidgets(true);
+            return;
+
+        }
         if (!isNaviDeskBg()) return;
         if (!ScreenTypeUtils.getInstance().isFullScreen()) return;
         if (touchEvent.getAction() == MotionEvent.ACTION_DOWN || touchEvent.getAction() == MotionEvent.ACTION_CANCEL) {
