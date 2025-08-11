@@ -35,6 +35,19 @@ public final class CalibrationPackage {
     }
 
     /**
+     * Type of fuel vehicle uses for propulsion
+     * -1 无效值
+     * 0 CeOCD_VehPrplsnType_Gas
+     * 1 CeOCD_VehPrplsnType_BEV
+     * 2 CeOCD_VehPrplsnType_PHEV
+     * 3 CeOCD_VehPrplsnType_HEV
+     * @return int
+     */
+    public int vehiclePropulsionType() {
+        return mCalibrationAdapter.vehiclePropulsionType();
+    }
+
+    /**
      * 品牌标定
      * 1 Buick
      * 2 Cadillac

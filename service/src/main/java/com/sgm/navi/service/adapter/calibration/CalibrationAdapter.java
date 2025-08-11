@@ -53,6 +53,13 @@ public final class CalibrationAdapter {
         return mCalibrationApi.powerType();
     }
 
+    public int vehiclePropulsionType() {
+        if (mCalibrationApi == null) {
+            return -1;
+        }
+        return mCalibrationApi.vehiclePropulsionType();
+    }
+
     /**
      * brand
      * @return int

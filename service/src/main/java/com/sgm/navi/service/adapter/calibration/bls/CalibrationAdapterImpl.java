@@ -9,6 +9,7 @@ import com.sgm.navi.service.adapter.calibration.CalibrationApi;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import gm.calibrations.CalId;
@@ -30,6 +31,7 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     private boolean mSnowMode;
 
     private int powerType;
+    private int vehiclePropulsionType = -1;
     private int GMBrand;
     private int GMModel;
     private boolean ENABLE_APPLICATION_NAVIGATION;
@@ -68,18 +70,32 @@ public class CalibrationAdapterImpl implements CalibrationApi {
     public void init() {
         Logger.d(TAG, "init start");
         mCalibrationManager = new CalibrationManager();
-        final boolean isPetrol = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_PETROL, false);
-        final boolean isElectric = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_ELECTRIC, false);
-        final boolean isHybrid = mCalibrationManager.getBoolean(CalId.VEHICLE_FUEL_TYPE_HYBRID, false);
-        Logger.d(TAG, "s powerType: isPetrol = " + isPetrol + ", isElectric = " + isElectric + ", isHybrid = " + isHybrid);
-        if (isPetrol && !isElectric && !isHybrid) {
-            powerType = 0;
-        } else if (!isPetrol && isElectric && !isHybrid) {
-            powerType = 1;
-        } else if (!isPetrol && !isElectric && isHybrid) {
-            powerType = 2;
+        if (Objects.equals(BuildConfig.FLAVOR, "cadi") || Objects.equals(BuildConfig.FLAVOR, "buick")) {
+            vehiclePropulsionType = mCalibrationManager.getEnumeration("KeOCD_int_VEHICLE_PROPULSION_TYPE", -1);
         } else {
-            powerType = 1;
+            vehiclePropulsionType = mCalibrationManager.getEnumeration("P_VEHICLE_PROPULSION_TYPE", -1);
+        }
+        Logger.d(TAG, "s vehiclePropulsionType: ", vehiclePropulsionType);
+        switch (vehiclePropulsionType) {
+            case 0: // CeOCD_VehPrplsnType_Gas
+                ADAS_Configuration_Type = 0;
+                powerType = 0;
+                break;
+            case 3: // CeOCD_VehPrplsnType_BEV
+                ADAS_Configuration_Type = 1;
+                powerType = 1;
+                break;
+            case 5: // CeOCD_VehPrplsnType_PHEV
+                ADAS_Configuration_Type = 2;
+                powerType = 2;
+                break;
+            case 6: // CeOCD_VehPrplsnType_HEV(48V重混)
+                ADAS_Configuration_Type = 3;
+                powerType = 0;
+                break;
+            default:
+                powerType = 1;
+                break;
         }
         GMBrand = mCalibrationManager.getEnumeration(CalId.GMBrand, -1);
         GMModel = mCalibrationManager.getEnumeration(CalId.GMModel, -1);
@@ -146,8 +162,14 @@ public class CalibrationAdapterImpl implements CalibrationApi {
 
     @Override
     public int powerType() {
-        if (BuildConfig.DEBUG) Logger.d(TAG, "s powerType: ", powerType);
+        Logger.d(TAG, "s powerType: ", powerType);
         return powerType;
+    }
+
+    @Override
+    public int vehiclePropulsionType() {
+        Logger.d(TAG, "s vehiclePropulsionType: ", vehiclePropulsionType);
+        return vehiclePropulsionType;
     }
 
     @Override

@@ -16,6 +16,8 @@ public interface CalibrationApi {
      */
     int powerType();
 
+    int vehiclePropulsionType();
+
     /**
      * brand
      * @return int
