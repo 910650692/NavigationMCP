@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:id="@+id/route_via_charge_bg"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_56"
         android:layout_marginStart="@dimen/dp_32"

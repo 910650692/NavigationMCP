@@ -477,6 +477,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         }
         final TextView fastText = rootView.findViewById(R.id.route_charge_station_fast);
         final TextView slowText = rootView.findViewById(R.id.route_charge_station_slow);
+        final LinearLayout linearLayout = rootView.findViewById(R.id.route_via_charge_bg);
         final Context context = rootView.getContext();
         final String fastTotalNumber = info.getMFastPlugInfo().getMTotalNumber();
         if (TextUtils.isEmpty(fastTotalNumber)) {
@@ -499,6 +500,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             if (Logger.openLog) {
                 Logger.d(TAG, "slowTotalNumber ", slowTotalNumber, " result ", result);
             }
+        }
+        if (ConvertUtils.isEmpty(fastTotalNumber) && ConvertUtils.isEmpty(slowTotalNumber) && null != linearLayout) {
+            linearLayout.setVisibility(GONE);
         }
     }
 
