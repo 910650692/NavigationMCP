@@ -231,6 +231,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             reminderDialog.dismiss();
             mRemindDialogShow = false;
         }
+        mView = null;
     }
 
     public boolean getSdkInitStatus() {
