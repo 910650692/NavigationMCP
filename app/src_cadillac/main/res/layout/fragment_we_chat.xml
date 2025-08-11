@@ -227,7 +227,7 @@
                         android:layout_height="@dimen/dp_112"
                         android:layout_marginStart="@dimen/dp_225"
                         android:focusable="false"
-                        android:src="@drawable/img_user_default"/>
+                        android:src="@drawable/img_default_user_icon"/>
 
                     <com.sgm.navi.ui.view.SkinLinearLayout
                         android:layout_width="wrap_content"
