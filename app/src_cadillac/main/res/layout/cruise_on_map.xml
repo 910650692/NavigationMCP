@@ -62,11 +62,12 @@
             android:textColor="@color/cruise_title_color"
             android:textSize="@dimen/sp_38"
             android:focusable="false"
+            android:text="@string/cruise_mute"
             app:layout_constraintBottom_toBottomOf="@id/view_bg"
             app:layout_constraintEnd_toEndOf="@id/view_bg"
             app:layout_constraintStart_toStartOf="@id/view_bg"
             app:layout_constraintTop_toBottomOf="@id/iv_voice"
-            tools:text="播报" />
+            tools:text="静音" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_current_road_name"
