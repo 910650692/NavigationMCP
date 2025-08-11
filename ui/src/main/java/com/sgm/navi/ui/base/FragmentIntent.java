@@ -141,6 +141,14 @@ public class FragmentIntent {
                     break;
                 }
             }
+            if (existingFragment == null) {
+                for (Fragment fragment : StackManager.getInstance().getBaseFragmentStack(screenId)) {
+                    if (fragment.getClass().getName().equals(toFragment.getClass().getName())) {
+                        existingFragment = fragment;
+                        break;
+                    }
+                }
+            }
             // 如果已存在相同类型的 Fragment，则移除
             if (existingFragment != null) {
                 if (Logger.openLog) {
