@@ -255,7 +255,7 @@
                         android:id="@+id/setting_others_about_version_value"
                         android:layout_width="@dimen/dp_300"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.mSdkVersion}"
+                        android:text="@{viewModel.getVersionName()}"
                         android:layout_marginTop="@dimen/dp_2"
                         android:autoSizeTextType="uniform"
                         android:maxLines="1"
