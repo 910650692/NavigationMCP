@@ -203,7 +203,7 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
      */
     public void setViewClick() {
         mViewBinding.collectTitleBarView.ivClose.setOnClickListener(view -> mScreenViewModel.closeSearch());
-        mViewBinding.collectTitleBarView.collectBarTextAdd.setOnClickListener(view -> {
+        mViewBinding.collectTitleBarView.sclCollectAdd.setOnClickListener(view -> {
             final Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.HOME_COMPANY_FRAGMENT)
                     .navigation();

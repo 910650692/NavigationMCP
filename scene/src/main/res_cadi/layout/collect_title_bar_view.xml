@@ -40,7 +40,7 @@
             style="@style/style_mfc_config"
             android:id="@+id/scl_collect_add"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
