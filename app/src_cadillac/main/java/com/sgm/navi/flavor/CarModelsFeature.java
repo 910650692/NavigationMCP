@@ -18,11 +18,6 @@ public class CarModelsFeature extends BaseCarModelsFeature {
 
     @Override
     public void initComponent() {
-        if (!LauncherWindowService.isServiceInitialized()) {
-            LauncherWindowService.startService();
-        } else {
-            Logger.d("CarModelsFeature", "LauncherWindowService is already initialized");
-        }
     }
 
     @Override

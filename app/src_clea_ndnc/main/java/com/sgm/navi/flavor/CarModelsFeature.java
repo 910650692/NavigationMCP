@@ -24,7 +24,6 @@ public class CarModelsFeature extends BaseCarModelsFeature {
     @Override
     public void initComponent() {
         SplitScreenManager.getInstance().init(AppCache.getInstance().getMContext());
-        LauncherWindowService.startService();
         HomeActionBroadcastReceiver.registerHomeActionReceiver();
     }
 

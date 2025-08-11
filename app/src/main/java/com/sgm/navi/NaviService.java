@@ -26,6 +26,8 @@ import com.sgm.navi.adas.AdasClient;
 import com.sgm.navi.flavor.BaseCarModelsFeature;
 import com.sgm.navi.flavor.CarModelsFeature;
 import com.sgm.navi.hmi.activate.ActivateUiStateManager;
+import com.sgm.navi.hmi.launcher.LauncherWindowService;
+import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
 import com.sgm.navi.l2pp.PatacL2ppManager;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.navisender.NaviSender;
@@ -67,6 +69,13 @@ public class NaviService extends Service {
                 .addTag("VrBridge init")
                 .build();
         initSdkLogSwitch = SpUtils.getInstance().getBoolean(SpUtils.SP_KEY_LOG_SWITCH, false);
+        startInitWhenApplicationCreate();
+    }
+
+    private void startInitWhenApplicationCreate() {
+        ThreadManager.getInstance().execute(() -> {
+            LauncherWindowService.startService();
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
