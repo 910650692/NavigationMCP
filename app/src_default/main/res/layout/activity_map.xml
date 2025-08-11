@@ -440,6 +440,7 @@
 
             <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/btn_guide_login_bind"
+                style="?android:attr/borderlessButtonStyle"
                 clickCommand="@{ViewModel.guideLoginBind}"
                 android:layout_width="@dimen/dp_228"
                 android:layout_height="@dimen/dp_77"
@@ -457,6 +458,7 @@
 
             <com.sgm.navi.ui.view.SkinButton
                 android:id="@+id/btn_guide_login_cancel"
+                style="?android:attr/borderlessButtonStyle"
                 clickCommand="@{ViewModel.guideLoginCancel}"
                 android:layout_width="@dimen/dp_228"
                 android:layout_height="@dimen/dp_77"
