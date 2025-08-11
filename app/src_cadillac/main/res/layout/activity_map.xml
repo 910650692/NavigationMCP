@@ -300,7 +300,7 @@
                     android:id="@+id/scene_go_home"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_17"
+                    android:layout_marginTop="@dimen/dp_m_82"
                     android:visibility="@{ViewModel.mGoHomeVisible ? View.VISIBLE : View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/search_main_tab"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"

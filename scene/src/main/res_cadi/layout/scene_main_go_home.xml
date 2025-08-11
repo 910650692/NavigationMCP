@@ -5,13 +5,12 @@
     tools:ignore="MissingDefaultResource">
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_600"
+        android:layout_width="@dimen/dp_702"
         android:clickable="true"
-        android:layout_height="@dimen/dp_189"
-        android:background="@drawable/bg_search_main_tab"
-        android:paddingStart="@dimen/dp_52"
-        android:paddingTop="@dimen/dp_32"
-        android:paddingEnd="@dimen/dp_52">
+        android:layout_height="@dimen/dp_291"
+        android:background="@drawable/bg_shadow_navi_cadillac"
+        android:paddingHorizontal="@dimen/dp_103"
+        android:paddingVertical="@dimen/dp_83">
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewTimeRemaining"
@@ -39,7 +38,7 @@
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@drawable/bg_navi_to_home_bg"
-            android:textColor="@color/white"
+            android:textColor="@color/white_always"
             android:textSize="@dimen/sp_30"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
