@@ -205,6 +205,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (mHomeCompanyType != -1) {
                 // 1:家 2:公司 3:常用地址 0:收藏夹
                 resultHolder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
+                resultHolder.resultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.search_quick_tab_view_color));
                 switch (mHomeCompanyType) {
                     case 3:
                         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();

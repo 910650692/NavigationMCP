@@ -525,7 +525,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         FloatViewManager.getInstance().showAllCardWidgetsAfterFragmentSizeChanged();
         if (mViewModel != null) {
             MessageCenterType messageCenterType = mViewModel.getCurrentMsgType();
-            if (MessageCenterType.CONTINUE_NAVI.equals(messageCenterType)) {
+            if (messageCenterType != null) {
                 mViewModel.closeMessageCenter(false);
             }
         }
