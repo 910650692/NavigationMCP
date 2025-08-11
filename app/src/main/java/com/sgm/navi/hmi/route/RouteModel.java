@@ -1109,12 +1109,10 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                             && !mRouteLineInfos.get(routeIndex).isMRestoration() && powerType() == 1) {
                         mViewModel.showTripDialog(ResourceUtils.Companion.getInstance().getString(R.string.route_trip_title)
                                 , ResourceUtils.Companion.getInstance().getString(R.string.route_trip_elec_not_arrive));
-                        mRoutePackage.setRouteTips(true);
                     } else if (mRouteLineInfos.get(routeIndex).getMRemainPercent() < 20
                             && !mRouteLineInfos.get(routeIndex).isMRestoration() && powerType() == 1) {
                         mViewModel.showTripDialog(ResourceUtils.Companion.getInstance().getString(R.string.route_trip_title)
                                 , ResourceUtils.Companion.getInstance().getString(R.string.route_trip_elec_small));
-                        mRoutePackage.setRouteTips(true);
                     }
                     final boolean atLeastDistance = !ConvertUtils.isEmpty(mRouteLineInfos)
                             && mRouteLineInfos.size() > routeIndex

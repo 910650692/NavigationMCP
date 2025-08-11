@@ -2136,4 +2136,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mView.hideTrip();
         closeFragment(true);
     }
+
+    public void setRouteTips(boolean b) {
+        mModel.setRouteTips(b);
+    }
 }

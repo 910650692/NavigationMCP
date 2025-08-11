@@ -518,6 +518,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             });
             mMsgTopDialog.showDialog();
             ThreadManager.getInstance().postDelay(this::hideTrip, TIPS_DELAY);
+            mViewModel.setRouteTips(true);
         }
     }
 
