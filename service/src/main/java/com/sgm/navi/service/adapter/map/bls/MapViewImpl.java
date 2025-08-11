@@ -29,6 +29,7 @@ import com.autonavi.gbl.map.OperatorPosture;
 import com.autonavi.gbl.map.adapter.MapHelper;
 import com.autonavi.gbl.map.adapter.MapSurfaceView;
 import com.autonavi.gbl.map.layer.model.OpenLayerID;
+import com.autonavi.gbl.map.layer.model.ScaleInfo;
 import com.autonavi.gbl.map.model.BusinessDeviceThreadMode;
 import com.autonavi.gbl.map.model.DeviceAttribute;
 import com.autonavi.gbl.map.model.EGLDeviceWorkMode;
@@ -135,6 +136,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         initOperatorBusiness();
         initTheme(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
         initSkyBox(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
+        if (mapType == MapType.HUD_MAP) {
+            initLayerItemsScale();
+        }
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapType, " 初始化 底图成功");
     }
 
@@ -179,6 +183,22 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             mapView = mapService.createMapView(mapViewParam, this, this, null, null);
         }
         return ConvertUtils.isNullRequire(mapView, "获取对应的 MapView 失败 : " + mapType);
+    }
+
+    /* 初始化HUD屏图层图元显示大小 */
+    private void initLayerItemsScale() {
+        if (null == getMapview()) {
+            Logger.e(TAG, "mapView == null");
+            return;
+        }
+        ScaleInfo scaleInfo = new ScaleInfo();
+        scaleInfo.bgScale = 0.7;
+        scaleInfo.poiScale = 0.7;
+        scaleInfo.bubbleScale = 0.7;
+        if (null != getMapview().getLayerMgr()) {
+            Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.7");
+            getMapview().getLayerMgr().setAllPointLayerItemsScale(scaleInfo);
+        }
     }
 
     /**
