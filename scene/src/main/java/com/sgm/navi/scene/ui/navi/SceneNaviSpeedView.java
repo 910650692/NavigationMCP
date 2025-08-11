@@ -87,6 +87,7 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         Logger.i(TAG, "updateOverallInfo speedLimit:", speedLimit,
                 " averageSpeed:", averageSpeed, " currentSpeed:",
                 currentSpeed, " remain:", remain);
+        mViewBinding.sivLight.setVisibility(GONE);
         mViewBinding.stvSpeedLimit.setText(String.valueOf(speedLimit));
         mViewBinding.stvSpeedLimitKey.setText(getContext().getText(R.string.navi_speed_overall));
         // 超速时更换背景
@@ -110,11 +111,10 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
             if (remainDistance < 0) {
                 remainDistance = 0;
             }
-            mViewBinding.sivLight.setVisibility(GONE);
             mViewBinding.stvDistance.setText(String.valueOf(remainDistance) +
                     getContext().getString(R.string.m));
-            mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_distance));
         }
+        mViewBinding.stvDistanceKey.setText(getContext().getText(R.string.navi_remaining_distance));
     }
 
     /**
