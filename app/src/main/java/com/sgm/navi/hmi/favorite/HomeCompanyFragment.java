@@ -89,7 +89,7 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
                 mHomeCompany + "sourceFragmentTag:" + sourceFragmentTag + "keyword:" + mKeyword);
 
         ThreadManager.getInstance().postUi(() -> {
-            if (mBinding.homeCompanyView == null) {
+            if (mBinding == null || mBinding.homeCompanyView == null) {
                 return;
             }
             mBinding.homeCompanyView.setViewVisibility(mHomeCompany);
