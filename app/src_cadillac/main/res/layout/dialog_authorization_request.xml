@@ -5,6 +5,7 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="wrap_content"
+        android:focusable="false"
         android:layout_height="wrap_content">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -14,6 +15,7 @@
             android:paddingVertical="@dimen/dp_39"
             android:layout_marginStart="@dimen/dp_263"
             android:layout_marginBottom="@dimen/dp_129"
+            android:focusable="false"
             android:background="@drawable/bg_shadow_system_cadillac"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -25,6 +27,7 @@
                 android:layout_marginStart="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_80"
                 android:text="@string/authorization_request_title"
+                android:focusable="false"
                 android:textColor="@color/dialog_authorization_request_title"
                 android:textSize="@dimen/sp_52"
                 android:textStyle="bold"
@@ -38,6 +41,7 @@
                 android:layout_marginStart="@dimen/dp_100"
                 android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_100"
+                android:focusable="false"
                 android:textColor="@color/dialog_authorization_request_content"
                 android:textSize="@dimen/sp_46"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,12 +55,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_30"
                 android:gravity="center_vertical"
+                android:focusable="false"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="@+id/dialog_content"
                 app:layout_constraintTop_toBottomOf="@id/dialog_content">
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_14"
+                    android:focusable="false"
                     android:layout_height="@dimen/dp_14"
                     android:background="@drawable/shape_round_black" />
 
@@ -64,6 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:focusable="false"
                     android:layout_marginStart="@dimen/dp_27"
                     android:text="@string/setting_others_privacy_location"
                     android:textColor="@color/dialog_authorization_request_title"
@@ -76,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_80"
                 android:layout_marginBottom="@dimen/dp_80"
+                android:focusable="false"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/dialog_location"
@@ -84,6 +92,7 @@
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/dialog_confirm"
                     android:layout_width="@dimen/dp_438"
+                    android:focusable="false"
                     android:layout_height="@dimen/dp_110"
                     android:background="@drawable/bg_shape_commit_button"
                     android:gravity="center"
@@ -93,6 +102,7 @@
 
                 <View
                     android:layout_width="@dimen/dp_2"
+                    android:focusable="false"
                     android:layout_height="match_parent"
                     android:background="#4D818199"
                     android:visibility="invisible"/>
@@ -101,6 +111,7 @@
                     android:id="@+id/dialog_cancel"
                     android:layout_width="@dimen/dp_438"
                     android:layout_height="@dimen/dp_110"
+                    android:focusable="false"
                     android:layout_marginStart="@dimen/dp_22"
                     android:background="@drawable/bg_shape_cancel_button"
                     android:gravity="center"

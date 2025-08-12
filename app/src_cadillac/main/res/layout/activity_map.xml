@@ -301,6 +301,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_m_82"
+                    android:focusable="false"
                     android:visibility="@{ViewModel.mGoHomeVisible ? View.VISIBLE : View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/search_main_tab"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"
@@ -481,7 +482,7 @@
                         android:layout_marginTop="@dimen/dp_48"
                         android:layout_marginEnd="@dimen/dp_36"
                         android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
-                        android:focusable="true"
+                        android:focusable="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/guide_login_close" />
@@ -525,6 +526,7 @@
                         android:layout_marginEnd="@dimen/dp_52"
                         android:background="@drawable/bg_guide_login_cancel"
                         android:text="@string/guide_login_cancel"
+                        android:focusable="false"
                         android:textColor="@color/guide_login_cancel_text"
                         android:textSize="@dimen/sp_46"
                         app:layout_constraintBottom_toBottomOf="@id/btn_guide_login_bind"
@@ -553,6 +555,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:visibility="gone"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -575,6 +578,7 @@
             android:background="@drawable/bg_shadow_navi_cadillac"
             android:paddingVertical="@dimen/dp_51"
             android:paddingHorizontal="@dimen/dp_51"
+            android:focusable="false"
             android:visibility="@{ViewModel.getMFCImgVisibility() ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -588,6 +592,7 @@
                 android:text="@string/map_mfc_text"
                 android:textColor="@color/guide_login_title"
                 android:textSize="@dimen/sp_45"
+                android:focusable="false"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -600,6 +605,7 @@
                 android:layout_marginStart="@dimen/dp_1065"
                 android:layout_marginEnd="@dimen/dp_157"
                 android:src="@drawable/img_map_mfc_default"
+                android:focusable="false"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -612,6 +618,7 @@
                 android:layout_height="@dimen/dp_310"
                 android:layout_marginStart="@dimen/dp_157"
                 android:layout_marginEnd="@dimen/dp_157"
+                android:focusable="false"
                 android:src="@{ViewModel.getMFCImgDrawable()}"
                 android:visibility="@{ViewModel.getMFCDModeVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -626,6 +633,7 @@
             android:id="@+id/main_start"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:visibility="@{ViewModel.startIconVisibility ? View.VISIBLE : View.GONE}">
 
             <com.sgm.navi.ui.view.SkinImageView
@@ -633,6 +641,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:focusable="false"
                 android:src="@drawable/logo_startup"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -643,6 +652,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#80000000"
+                android:focusable="false"
                 android:visibility="gone"/>
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/activating_img"
@@ -651,6 +661,7 @@
                 android:layout_marginBottom="@dimen/dp_67"
                 android:src="@drawable/icon_limit_loading"
                 android:visibility="gone"
+                android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -662,6 +673,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_30"
                 android:text="@string/activating"
+                android:focusable="false"
                 android:textColor="@color/auto_color_ffffff"
                 android:textSize="@dimen/sp_36"
                 android:visibility="gone"
@@ -675,6 +687,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="yy:mm:dd"
+            android:focusable="false"
             android:textSize="58sp"
             android:textStyle="bold"
             android:layout_marginBottom="50dp"
@@ -688,6 +701,7 @@
             android:id="@+id/protect_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:background="@color/transparent"
             android:visibility="gone"/>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

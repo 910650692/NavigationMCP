@@ -38,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
+                android:focusable="false"
                 android:text="@{ViewModel.messageCenterOperate}"
                 android:textColor="@color/message_center_operate"
                 android:textSize="@dimen/sp_52" />
@@ -115,6 +116,7 @@
             style="@style/style_mfc_config"
             android:id="@+id/message_center_close"
             clickCommand="@{ViewModel.messageCenterGone}"
+            android:focusable="false"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_65"

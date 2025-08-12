@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.android.utils.ToastUtils;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -22,6 +25,7 @@ import com.sgm.navi.scene.databinding.SceneMainSearchBarBinding;
 import com.sgm.navi.scene.impl.search.SceneMainSearchViewImpl;
 import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.view.SkinImageView;
 import com.sgm.navi.ui.view.SkinTextView;
@@ -71,6 +75,18 @@ public class SceneMainSearchTopPartView extends BaseSceneView<SceneMainSearchBar
             addFragment((BaseFragment) fragment, SearchFragmentFactory.createSugFragment(
                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.SearchType.SEARCH_KEYWORD));
         });
+        if (BuildConfig.FLAVOR.equals("cadi")) {
+            mViewBinding.searchBarTextView.setOnKeyListener((view, keyCode, keyEvent) -> {
+                boolean isActionUp = keyEvent.getAction() == KeyEvent.ACTION_UP;
+                if (KeyEvent.KEYCODE_DPAD_CENTER == keyCode && isActionUp) {
+                    // 处理搜索栏的点击事件
+                    ToastUtils.Companion.getInstance().showCustomToastView("键盘不支持用旋钮操作");
+                    return true;
+
+                }
+                return false;
+            });
+        }
     }
 
     /**

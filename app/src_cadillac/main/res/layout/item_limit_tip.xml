@@ -66,6 +66,7 @@
             android:text="@{ViewModel.limitDriverTitle}"
             android:textColor="@color/main_map_limit_text_color"
             android:textSize="@dimen/sp_32"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
