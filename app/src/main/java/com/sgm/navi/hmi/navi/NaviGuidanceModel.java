@@ -1586,6 +1586,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
         if (Objects.equals(mapTypeId, MapType.MAIN_SCREEN_MAIN_MAP)) {
+            if (touchEvent == null) {
+                //MFC移动地图
+                if (mViewModel != null) {
+                    mViewModel.onMapSwipe();
+                }
+                return;
+            }
             switch (touchEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mDownX = touchEvent.getX();
