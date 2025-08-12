@@ -112,7 +112,7 @@
     <string name="navi_remaining_distance">剩余距离</string>
     <string name="navi_speed_overall">区间限速</string>
     <string name="navi_add_via">途径点</string>
-    <string name="navi_add_via_hint">请输入途径点</string>
+    <string name="navi_add_via_hint">请输入简体中文，拼音和字母</string>
     <string name="navi_del">删除</string>
     <string name="navi_recommend">推荐</string>
     <string name="navi_via_item_pass">经</string>
