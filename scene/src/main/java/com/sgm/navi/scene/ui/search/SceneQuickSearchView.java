@@ -126,10 +126,10 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
         final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 4);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
         mViewBinding.skRcvQuick.setLayoutManager(layoutManager);
-
-        mQuickSearchListAdapter = new QuickSearchListAdapter();
+        if (mQuickSearchListAdapter == null) {
+            mQuickSearchListAdapter = new QuickSearchListAdapter();
+        }
         mViewBinding.skRcvQuick.setAdapter(mQuickSearchListAdapter);
-
         final LinearLayoutManager layoutManagerSug = new LinearLayoutManager(getContext());
         layoutManagerSug.setOrientation(LinearLayoutManager.VERTICAL);
         mViewBinding.skRcvSuggestion.setLayoutManager(layoutManagerSug);
@@ -254,6 +254,8 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
         if (mQuickSearchListAdapter != null) {
             mQuickSearchListAdapter.setCategories(iconArray, categories);
         } else {
+            mQuickSearchListAdapter = new QuickSearchListAdapter();
+            mQuickSearchListAdapter.setCategories(iconArray, categories);
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "quickSearchListAdapter is null");
         }
     }
