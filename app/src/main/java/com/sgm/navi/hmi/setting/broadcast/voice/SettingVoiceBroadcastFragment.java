@@ -1,9 +1,8 @@
 package com.sgm.navi.hmi.setting.broadcast.voice;
 
-import android.util.Log;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
@@ -136,12 +135,22 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
     }
 
     @Override
-    public void toUseAllTask(final VoiceInfo voiceInfo) {
-        Logger.d(TAG, "toUseAllTask: ", mIsUsingAllTask, voiceInfo.getId());
+    public void toUseTask(final VoiceInfo voiceInfo) {
+        Logger.d(TAG, "toUseTask: ", mIsUsingAllTask, voiceInfo.getId());
         if (!mIsUsingAllTask && mVoiceId != voiceInfo.getId()) {
             mIsUsingAllTask = true;
             mVoiceId = voiceInfo.getId();
-            mViewModel.toUseAllTask(voiceInfo);
+            mViewModel.toUseTask(voiceInfo);
+        }
+    }
+
+    @Override
+    public void toDeleteTask(VoiceInfo voiceInfo) {
+        Logger.i(TAG, "toDeleteTask: ", voiceInfo.getId());
+        if (mVoiceId != voiceInfo.getId()) {
+            mViewModel.toDeleteTask(voiceInfo);
+        } else {
+            ToastUtils.Companion.getInstance().showCustomToastView("不能删除当前使用的语音");
         }
     }
 

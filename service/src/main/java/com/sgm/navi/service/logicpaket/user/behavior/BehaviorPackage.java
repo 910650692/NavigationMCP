@@ -258,7 +258,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             return itemId;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "add favorite ", poiInfo);
+            Logger.d(TAG, "add favorite ", poiInfo, type);
         }
         PoiInfoEntity savedPoiInfo = null;
         if (type == 1) {

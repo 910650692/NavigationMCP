@@ -553,7 +553,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
             }
             if (Logger.openLog) {
-                Logger.i(TAG, "guideDataBeans -> ", mGuideDataBeans);
+                Logger.i(TAG, "guideDataBeans -> ", mGuideDataBeans.size());
             }
         }
         return mGuideDataBeans;
@@ -586,7 +586,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
             }
             if (Logger.openLog) {
-                Logger.i(TAG, "cruiseDataBeans -> ", mCruiseDataBeans);
+                Logger.i(TAG, "cruiseDataBeans -> ", mCruiseDataBeans.size());
             }
         }
         return mCruiseDataBeans;
@@ -684,6 +684,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 continue;
             }
             final GpsTrackDepthBean info = getGpsTrackDepthBean(depInfo);
+            Logger.i(TAG, "onCloseGpsTrack: ", depInfo.distance, depInfo.trackPoints.get(0).n64TickTime);
             callBack.onCloseGpsTrack(n32SuccessTag, psSavePath, psFileName, info);
         }
     }

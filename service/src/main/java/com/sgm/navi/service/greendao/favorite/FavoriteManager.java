@@ -67,6 +67,7 @@ public class FavoriteManager {
      */
     public void insertOrReplace(final Favorite info) {
         final Favorite favorite = GsonUtils.convertToT(info, Favorite.class);
+        Logger.d(TAG, "insertOrReplace: ", info.getMCommonName(), info.getMName());
         mFavoriteDao.insertOrReplace(favorite);
     }
 
@@ -162,6 +163,11 @@ public class FavoriteManager {
         final List<Favorite> saveData = mFavoriteDao.queryBuilder()
                 .where(FavoriteDao.Properties.MCommonName.eq(commonName))
                 .list();
+        if (saveData != null && saveData.size() > 0) {
+            Logger.d(TAG, "getValueByCommonName: ", commonName, saveData.get(0).getMName());
+        } else {
+            Logger.d(TAG, "getValueByCommonName: null", commonName);
+        }
         return saveData;
     }
 

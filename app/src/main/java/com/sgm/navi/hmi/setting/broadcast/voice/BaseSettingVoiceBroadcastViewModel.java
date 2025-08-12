@@ -149,8 +149,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * 操作
      * @param voiceInfo
      */
-    public void toUseAllTask(final VoiceInfo voiceInfo){
-        Logger.e(TAG, "toUseAllTask: " + voiceInfo.getId());
+    public void toUseTask(final VoiceInfo voiceInfo){
+        Logger.e(TAG, "toUseTask: " + voiceInfo.getId());
         mIsDefaultVoiceUsed.setValue(false);
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
         SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());
@@ -161,6 +161,18 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         mView.setSingleChoice(voiceInfo.getId());
 
         sendBuryPointForSetVoice(voiceInfo.getName());
+    }
+
+    /**
+     * 操作
+     * @param voiceInfo
+     */
+    public void toDeleteTask(final VoiceInfo voiceInfo) {
+        Logger.i(TAG, "toDeleteTask: " + voiceInfo.getId());
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(voiceInfo.getId());
+        int result = mModel.operate(UserDataCode.OPERATION_TYPE_DELETE, list);
+        Logger.i(TAG, "toDeleteTask: ", result);
     }
 
     /**

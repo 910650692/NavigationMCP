@@ -120,6 +120,31 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
         holder.mVoiceBroadcastBinding.setModel(voiceInfo);
         holder.mVoiceBroadcastBinding.recommendVoiceProgress.setProgressDrawable(
                 ResourceUtils.Companion.getInstance().getDrawable(R.drawable.progress_bar_style));
+        holder.mVoiceBroadcastBinding.itemVoiceDelete.setOnClickListener(v -> {
+            mOnItemClickListener.toDeleteTask(voiceInfo);
+            voiceInfo.getOperateText();
+            holder.mVoiceBroadcastBinding.swipeMenuLayout.quickClose();
+        });
+        switch (voiceInfo.getTaskState()) {
+            case OperationStatus.TASK_STATUS_CODE_SUCCESS:
+                holder.mVoiceBroadcastBinding.swipeMenuLayout.setSwipeEnabled(true);
+                break;
+            case OperationStatus.TASK_STATUS_CODE_READY:
+            case OperationStatus.TASK_STATUS_CODE_PAUSE:
+            case OperationStatus.TASK_STATUS_CODE_ERR:
+            case OperationStatus.TASK_STATUS_CODE_MAX:
+            case OperationStatus.TASK_STATUS_CODE_CHECKED:
+            case OperationStatus.TASK_STATUS_CODE_UNZIPPED:
+            case OperationStatus.TASK_STATUS_CODE_DOING:
+            case OperationStatus.TASK_STATUS_CODE_DONE:
+            case OperationStatus.TASK_STATUS_CODE_CHECKING:
+            case OperationStatus.TASK_STATUS_CODE_UNZIPPING:
+            case OperationStatus.TASK_STATUS_CODE_WAITING:
+                holder.mVoiceBroadcastBinding.swipeMenuLayout.setSwipeEnabled(false);
+                break;
+            default:
+                break;
+        }
 
         holder.mVoiceBroadcastBinding.recommendVoiceItem.setOnClickListener(v -> {
             if (mOnItemClickListener != null) {
@@ -140,7 +165,7 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
                         ToastUtils.Companion.getInstance().showCustomToastView("解压完成");
                         break;
                     case OperationStatus.TASK_STATUS_CODE_SUCCESS: // 去使用
-                        mOnItemClickListener.toUseAllTask(voiceInfo);
+                        mOnItemClickListener.toUseTask(voiceInfo);
                         ToastUtils.Companion.getInstance().showCustomToastView(voiceInfo.getName() +"语音设置成功");
                         break;
                     case OperationStatus.TASK_STATUS_CODE_DOING:
@@ -192,7 +217,13 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
          * 去使用
          * @param voiceInfo
          */
-        void toUseAllTask(final VoiceInfo voiceInfo);
+        void toUseTask(final VoiceInfo voiceInfo);
+
+        /**
+         * 去使用
+         * @param voiceInfo
+         */
+        void toDeleteTask(final VoiceInfo voiceInfo);
 
     }
 }
