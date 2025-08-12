@@ -2318,19 +2318,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 bundle.putBoolean(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAP_OPEN_ROUTE_TYPE, true);
                 addFragment((BaseFragment) fragment, bundle);
             } else {
-                if (mViewModel.getTopFragment(SplitFragment.class)) {
-                    Logger.i(TAG, " Top SplitFragment");
-                } else if (mViewModel.getTopFragment(NaviGuidanceFragment.class)) {
-                    Logger.i(TAG, " Top NaviGuidanceFragment");
-                } else if (mViewModel.getTopFragment(RouteFragment.class)){
-                    Logger.i(TAG, " Top RouteFragment");
-                } else {
-                    Logger.i(TAG, " Stack Not Null, Not SplitFragment");
-                    Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MAP_OPEN_ROUTE_TYPE, true);
-                    addFragment((BaseFragment) fragment, bundle);
-                }
+                Logger.i(TAG, " Stack Not Null");
             }
         } else {
             Logger.i(TAG, " NaviStatus is not Route");
