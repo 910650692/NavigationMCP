@@ -11,10 +11,10 @@
             android:layout_width="@dimen/dp_1200"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_system_ndlc_8155"
-            android:layout_marginTop="@dimen/dp_426"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/forecast_title"
