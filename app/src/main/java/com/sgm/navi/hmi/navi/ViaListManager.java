@@ -81,18 +81,6 @@ public class ViaListManager {
         }
     }
 
-    public void updateViaPointList() {
-        if (!ConvertUtils.isEmpty(mGuideRouteViaList)) {
-            mNaviViaList = mGuidanceModel.getViaList();
-            mViaIdList = getViaIdList(mNaviViaList);
-            List<PoiInfoEntity> tempPoiInfos = sortPoiInfosByIds(mGuideRouteViaList, mViaIdList, mNaviViaList);
-            mGuideRouteViaList = tempPoiInfos;
-            if (!ConvertUtils.isEmpty(tempPoiInfos)) {
-                mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, tempPoiInfos);
-            }
-        }
-    }
-
     /**
      * 途经点信息更新
      *
@@ -141,10 +129,29 @@ public class ViaListManager {
      */
     private List<PoiInfoEntity> sortPoiInfosByIds(List<PoiInfoEntity> poiInfoEntityList, List<String> poiIdList,
                                                   List<NaviViaEntity> naviViaList) {
-        if (ConvertUtils.isEmpty(poiInfoEntityList) || ConvertUtils.isEmpty(poiIdList)
+        if (ConvertUtils.isEmpty(poiIdList)
                 || ConvertUtils.isEmpty(naviViaList)) {
             Logger.d(TAG, "poiInfoEntityList poiIdList naviViaList长度都不能为空");
             return new ArrayList<>(poiInfoEntityList);
+        } else if (ConvertUtils.isEmpty(poiInfoEntityList)) {
+            Map<String, NaviViaEntity> idToNaviViaEntity= new HashMap<>();
+            for(NaviViaEntity naviViaEntity: naviViaList) {
+                idToNaviViaEntity.put(naviViaEntity.getPid(), naviViaEntity);
+            }
+            List<PoiInfoEntity> resultList = new ArrayList<>();
+            for(int i = 0; i < poiIdList.size(); i++) {
+                // 解决poi id不正确的途径点
+                NaviViaEntity naviViaEntity = idToNaviViaEntity.get(poiIdList.get(i));
+                PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+                if (!ConvertUtils.isEmpty(naviViaEntity)) {
+                    poiInfoEntity.setPid(naviViaEntity.getPid());
+                    poiInfoEntity.setMName(naviViaEntity.getName());
+                    poiInfoEntity.setAddress(naviViaEntity.getAddress());
+                    poiInfoEntity.setMPoint(naviViaEntity.getRealPos());
+                }
+                resultList.add(poiInfoEntity);
+            }
+            return resultList;
         }
         Map<String, PoiInfoEntity> idToObject = new HashMap<>();
         for(PoiInfoEntity poiInfoEntity: poiInfoEntityList) {

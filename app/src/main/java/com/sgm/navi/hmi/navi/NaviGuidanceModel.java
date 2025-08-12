@@ -583,6 +583,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     PoiInfoEntity poiInfo = currentAllPoiParamList.get(1).getMPoiInfoEntity();
                     boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             poiInfo, false);
+                    if (mViaListManager != null) {
+                        mViaListManager.updateViaList(getViaList());
+                    }
                     Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
                 }
                 // 删除后更新途经点列表信息
@@ -1675,7 +1678,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         }
         if (mViaListManager != null) {
-            mViaListManager.updateViaPointList();
+            mViaListManager.updateViaList(getViaList());
         }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);

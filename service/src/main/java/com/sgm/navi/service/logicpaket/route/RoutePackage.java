@@ -1396,6 +1396,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     /*更新终点扎标数据*/
     public void updateViaPointList(MapType mapTypeId, List<PoiInfoEntity> viaPointList) {
+        Logger.i(TAG, "updateViaPointList size = ", viaPointList.size());
         mLayerAdapter.updateViaPointList(mapTypeId, viaPointList);
     }
 
