@@ -104,7 +104,9 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
 
     @Override
     public void addPoiDetailsFragment(BaseFragment fragment, Bundle bundle) {
-        mView.addPoiDetailsFragment(fragment, bundle);
+        if (mView != null) {
+            mView.addPoiDetailsFragment(fragment, bundle);
+        }
     }
 
     @Override
