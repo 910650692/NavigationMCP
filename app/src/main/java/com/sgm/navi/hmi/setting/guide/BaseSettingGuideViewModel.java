@@ -83,20 +83,8 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
         mModel.initView();
     }
 
-    public Action mOfflineAvoidLimitClick = () -> {
-        ToastUtils.Companion.getInstance().showCustomToastView(
-                ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
-    };
     // 避开限行
     public Action mAvoidLimitClick = () -> {
-        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())
-                && Boolean.FALSE.equals(mIsAvoidLimit.getValue())) {
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(
-                            com.sgm.navi.scene.R.string.navi_setting_offline_toast));
-            mIsAvoidLimit.setValue(false);
-            return;
-        }
         if (Boolean.FALSE.equals(mIsAvoidLimit.getValue()) &&
                 TextUtils.isEmpty(mModel.getConfigKeyPlateNumber())) {
             mIsAvoidLimit.setValue(false);
@@ -152,11 +140,6 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     };
 
     public Action mModifyPlateNumber = () -> {
-        if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.navi_setting_offline_toast));
-            return;
-        }
         addFragment(new SettingPlateNumberFragment(), null);
     };
 

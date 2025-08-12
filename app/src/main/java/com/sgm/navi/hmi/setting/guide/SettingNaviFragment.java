@@ -109,8 +109,6 @@ public class SettingNaviFragment extends BaseFragment<FragmentSettingNaviBinding
     public void setAvoidStatus(final boolean isTrue) {
         ThreadManager.getInstance().postUi(() -> {
             mBinding.naviAvoidLimit.setEnabled(isTrue);
-            mBinding.naviAvoidLimitOffline.setVisibility(isTrue? View.GONE : View.VISIBLE);
-            mBinding.naviAvoidLimitOffline.setEnabled(!isTrue);
         });
     }
 

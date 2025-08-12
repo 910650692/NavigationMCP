@@ -70,15 +70,6 @@
                     android:textSize="@dimen/sp_29" />
             </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            <com.sgm.navi.ui.view.SkinView
-                clickCommand="@{viewModel.mOfflineAvoidLimitClick}"
-                android:id="@+id/navi_avoid_limit_offline"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_106"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@id/setting_route_preference"
-                app:layout_constraintTop_toBottomOf="@id/setting_route_preference"/>
-
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 clickCommand="@{viewModel.mModifyPlateNumber}"
                 android:id="@+id/navi_car_number_layout"
