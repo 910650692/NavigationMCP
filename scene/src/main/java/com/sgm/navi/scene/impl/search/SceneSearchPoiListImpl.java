@@ -522,7 +522,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
                     @Override
                     public void onSuccess(AppKeyResponse response) {
                         if(ConvertUtils.isNull(response)) return;
-                        if(BuildConfig.DEBUG){
+                        if(Logger.openLog){
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"AppKey: "+response.getMAppKey());
                         }
                         NetQueryManager.getInstance().saveAppSecurity(response.getMAppKey());
@@ -531,20 +531,20 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
 
                     @Override
                     public void onFailed(final String errorCode) {
-                        if(BuildConfig.DEBUG){
+                        if(Logger.openLog){
                             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getAppKeyFromNet onFailed");
                         }
                         ThreadManager.getInstance().postUi(() -> mScreenView.showLoading(false));
                     }
                 });
             }else{
-                if(BuildConfig.DEBUG){
+                if(Logger.openLog){
                     Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"getAppKeyFromDB: "+mActivatePackage.getAppKeyFromDB());
-                    queryStationNewResult(searchResultEntity);
                 }
+                queryStationNewResult(searchResultEntity);
             }
         }else{
-            if(BuildConfig.DEBUG){
+            if(Logger.openLog){
                 Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mActivatePackage is null");
             }
             mScreenView.showLoading(false);
