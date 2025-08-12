@@ -2036,6 +2036,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(VISIBLE);
                     mViewBinding.scenePoiDetailsBottomView.stlAroundSearch.setVisibility(VISIBLE);
                     mViewBinding.scenePoiDetailsBottomView.stlPoiFavorites.setVisibility(VISIBLE);
+                    mViewBinding.scenePoiDetailsBottomView.stlGoFirst.setVisibility(GONE);
                 }
                 if (poiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
                     //地图选点不需要展示电话和营业时间界面
