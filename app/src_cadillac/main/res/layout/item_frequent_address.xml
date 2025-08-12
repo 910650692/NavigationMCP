@@ -4,6 +4,7 @@
     android:id="@+id/item_view"
     android:layout_width="@dimen/dp_536"
     android:layout_height="@dimen/dp_168"
+    android:focusable="false"
     android:layout_marginEnd="@dimen/dp_30"
     android:layout_marginBottom="@dimen/dp_20">
 
@@ -11,15 +12,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:focusable="false"
             android:orientation="horizontal"
             android:background="@drawable/bg_setting_voice">
 
                 <com.sgm.navi.ui.view.SkinTextView
+                    style="@style/style_mfc_config"
                     android:id="@+id/tv_frequent_address_text"
-                    android:layout_width="@dimen/dp_400"
+                    android:layout_width="@dimen/dp_462"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_marginStart="@dimen/dp_40"
+                    android:paddingStart="@dimen/dp_40"
                     android:text="@string/favorite_frequent_address_title"
                     android:visibility="visible"
                     android:background="@null"
@@ -47,6 +50,7 @@
                     android:id="@+id/tv_frequent_address_more"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:focusable="false"
                     android:src="@drawable/img_basic_ic_more" />
         </com.sgm.navi.ui.view.SkinLinearLayout>
 

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/dp_168"
     android:layout_height="@dimen/dp_168"
+    style="@style/style_mfc_config"
     android:background="@drawable/bg_setting_voice">
 
     <com.sgm.navi.ui.view.SkinImageView
@@ -10,6 +11,7 @@
         android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_74"
         android:src="@drawable/img_basic_ic_add"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

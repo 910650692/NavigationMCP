@@ -14,15 +14,7 @@
         android:focusable="false"
         android:fillViewport="true">
 
-        <com.android.car.ui.FocusArea
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <com.android.car.ui.FocusParkingView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-            <com.sgm.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/setting_others"
                 android:focusable="false"
                 app:click_color_change="false"
@@ -368,8 +360,6 @@
                         app:layout_constraintEnd_toEndOf="parent"/>
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
             </com.sgm.navi.ui.view.SkinConstraintLayout>
-        </com.android.car.ui.FocusArea>
-
 
     </com.sgm.navi.ui.view.SkinScrollView>
 </layout>
