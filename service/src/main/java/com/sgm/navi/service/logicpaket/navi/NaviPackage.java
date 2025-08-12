@@ -238,6 +238,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 mAppFocusHelper.startCarMapNavigation();
             }
         } else {
+            Logger.e(TAG, "###Fatal### startNavi fail");
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
