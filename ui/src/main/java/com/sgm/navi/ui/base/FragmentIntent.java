@@ -141,7 +141,7 @@ public class FragmentIntent {
                     break;
                 }
             }
-            if (existingFragment == null) {
+            if (existingFragment == null && !ConvertUtils.isNull(StackManager.getInstance().getBaseFragmentStack(screenId))) {
                 for (Fragment fragment : StackManager.getInstance().getBaseFragmentStack(screenId)) {
                     if (fragment.getClass().getName().equals(toFragment.getClass().getName())) {
                         existingFragment = fragment;
