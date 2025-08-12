@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.google.android.material.tabs.TabLayout;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
@@ -99,6 +100,15 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
 
             }
         });
+    }
+
+    @Override
+    public void refreshFragment(Bundle bundle) {
+        super.refreshFragment(bundle);
+        int position = bundle.getInt(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_SETTING_TAB);
+        Logger.d("VrBridgeHandle", "voice open position: ", position);
+        mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(position));
+        showFragment(position);
     }
 
     private void showFragment(int position) {
