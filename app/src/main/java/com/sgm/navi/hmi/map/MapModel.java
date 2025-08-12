@@ -471,7 +471,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSdkInitSuccess() {
         Logger.e(TAG, "onSdkInitSuccess");
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         setPackageAfterSdkInit();
         FloatViewManager.getInstance().showAllCardWidgets();
         BroadcastManager.getInstance().init();

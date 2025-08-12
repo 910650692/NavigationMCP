@@ -622,7 +622,11 @@ public class ConvertUtils {
      */
     public static <T> List<T> push(List<T> list, T... args) {
         if (isNull(list)) list = new ArrayList<>();
-        list.addAll(Arrays.asList(args));
+        for (T t : args) {
+            if (isEmpty(t)) continue;
+            if (isContain(list, t)) list.remove(t);
+            list.add(t);
+        }
         return list;
     }
 

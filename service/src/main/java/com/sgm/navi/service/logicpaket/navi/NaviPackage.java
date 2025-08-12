@@ -159,7 +159,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (muteStatus == NumberUtils.NUM_1) {
             SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
         }
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.d("AppFocusHelper", "汽车环境，开启导航互斥");
             mAppFocusHelper = AppFocusHelper.getInstance();

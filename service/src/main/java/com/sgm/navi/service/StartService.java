@@ -74,10 +74,13 @@ public class StartService {
     public void registerSdkCallback(String key, ISdkInitCallback callback) {
         Logger.e(TAG, "call path name : ", key);
         ConvertUtils.push(sdkInitCallbacks, callback);
+        Logger.e(TAG, "sdkInitCallbacks.size ", sdkInitCallbacks.size());
     }
 
-    public void unregisterSdkCallback(ISdkInitCallback callback) {
+    public void unregisterSdkCallback(String key, ISdkInitCallback callback) {
+        Logger.i(TAG, "call path name : ", key);
         ConvertUtils.remove(sdkInitCallbacks, callback);
+        Logger.e(TAG, "sdkInitCallbacks.size ", sdkInitCallbacks.size());
     }
 
     public void startInitSdk() {

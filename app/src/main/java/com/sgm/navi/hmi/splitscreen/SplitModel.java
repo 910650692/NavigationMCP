@@ -149,7 +149,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
                 mCruisePackage.unregisterObserver(TAG);
             }
         }
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(CALLBACK_KEY, this);
     }
 
     @Override

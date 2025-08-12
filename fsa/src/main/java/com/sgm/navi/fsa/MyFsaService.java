@@ -287,7 +287,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             mService.shutdown();
             mServiceInitSuccess = false;
         }
-        StartService.getInstance().unregisterSdkCallback(mEngineObserver);
+        StartService.getInstance().unregisterSdkCallback(TAG, mEngineObserver);
     }
 
     /**

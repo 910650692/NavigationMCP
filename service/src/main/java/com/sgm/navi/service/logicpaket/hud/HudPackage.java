@@ -182,7 +182,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onSdkInitSuccess() {
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         ThreadManager.getInstance().postUi(() -> MapPackage.getInstance().createMapView(MapType.HUD_MAP));
         MapPackage.getInstance().bindMapView(mMapSurfaceView);
     }

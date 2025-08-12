@@ -181,7 +181,7 @@ public class NaviService extends Service {
     private static final StartService.ISdkInitCallback sdkInitCallback = new StartService.ISdkInitCallback() {
         @Override
         public void onSdkInitSuccess() {
-            StartService.getInstance().unregisterSdkCallback(sdkInitCallback);
+            StartService.getInstance().unregisterSdkCallback(TAG, sdkInitCallback);
             WorkManager.getInstance(AppCache.getInstance().getMContext())
                     .beginWith(fsaInitWorkRequest)
                     .then(vrBridgeWorkRequest)

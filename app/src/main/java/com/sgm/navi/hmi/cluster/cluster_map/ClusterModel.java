@@ -74,7 +74,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         MapPackage.getInstance().unRegisterCallback(getMapId(), this);
         RoutePackage.getInstance().unRegisterRouteObserver(mViewModel.mScreenId);
         CruisePackage.getInstance().unregisterObserver(mViewModel.mScreenId);
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         NaviPackage.getInstance().unregisterObserver(mViewModel.mScreenId);
         SettingPackage.getInstance().unRegisterSettingChangeCallback(getMapId().name());
         LayerPackage.getInstance().unInitLayer(mViewModel.getMapView().provideMapTypeId());

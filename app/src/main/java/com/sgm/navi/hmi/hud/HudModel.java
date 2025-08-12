@@ -29,7 +29,7 @@ public class HudModel extends BaseModel<BaseHudViewModel> implements StartServic
     @Override
     public void onSdkInitSuccess() {
         Logger.d(TAG, "Sdk init success");
-        StartService.getInstance().unregisterSdkCallback(this);
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         HudPackage.getInstance().initHudService();
         HudPackage.getInstance().createHudView(mViewModel.getMapView());
     }
