@@ -32,10 +32,8 @@ public class ScreenTypeUtils {
 
     public void init(Context context) {
         mContext = context;
-        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-        int densityDpi = dm.densityDpi;
-        Logger.d("DPI",String.valueOf(densityDpi));
-        is557CarMode = 200 == densityDpi;
+        Logger.d("DPI",String.valueOf(ScreenUtils.Companion.getInstance().densityDpi()));
+        is557CarMode = 200 == ScreenUtils.Companion.getInstance().densityDpi();
         carWidthOneThree = is557CarMode ? 993 : 850;
         carWidthTwoThree = is557CarMode ? 1978 : 1691;
         carWidthFull = is557CarMode ? 2992 : 2560;
@@ -146,9 +144,7 @@ public class ScreenTypeUtils {
     }
 
     public boolean is557CarMode() {
-        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-        int densityDpi = dm.densityDpi;
-        Logger.d("DPI",String.valueOf(densityDpi));
+        Logger.d("DPI",String.valueOf(ScreenUtils.Companion.getInstance().densityDpi()));
         return is557CarMode;
     }
 

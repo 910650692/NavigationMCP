@@ -313,7 +313,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public void setMapCenterInScreen(int x, int y) {
         getMapview().setMapLeftTop(x, y);
-        Logger.d(TAG, mapType, " setMapCenterInScreen");
+        Logger.d(TAG, mapType, " setMapCenterInScreen", x);
     }
 
     public void setHudMapCenterInScreen(int x, int y) {
@@ -501,7 +501,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         } else {
             pos.maplevel = getCurrentZoomLevel();
         }
-        Logger.d(TAG, mapType, "goToCarPosition ", changeLevel);
+        Logger.d(TAG, mapType, "goToCarPosition ", getMapview().getMapLeftTop().x);
         getMapview().goToPosition(pos, bAnimation);
     }
 

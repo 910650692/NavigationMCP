@@ -1778,7 +1778,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (ScreenTypeUtils.getInstance().isOneThirdScreen() && backToParkingVisibility.get()) {
             backToParkingVisibility.set(false);
         }
-        mModel.setMapCenterInScreen();
     }
 
     /**

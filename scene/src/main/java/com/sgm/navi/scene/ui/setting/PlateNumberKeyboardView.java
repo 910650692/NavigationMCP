@@ -15,6 +15,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
 import com.android.utils.ResourceUtils;
+import com.android.utils.ScreenUtils;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.ui.view.SkinCheckBox;
 
@@ -124,7 +125,7 @@ public class PlateNumberKeyboardView extends GridLayout {
                 final Drawable drawable = ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_plate_number_delete);
                 final LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{drawable});
                 layerDrawable.setLayerGravity(0, Gravity.CENTER);
-                final int inset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mInsertWidth, getResources().getDisplayMetrics());
+                final int inset = ScreenUtils.Companion.getInstance().dp2px(mInsertWidth);
                 layerDrawable.setLayerInset(0, inset, 0, 0, 0);
                 keyView.setPadding(0, 0, 0, 0);
                 keyView.setButtonDrawable(layerDrawable);

@@ -22,6 +22,7 @@ import androidx.databinding.ObservableBoolean;
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;

@@ -121,7 +121,7 @@ public class OneThirdScreenMapActivity extends BaseActivity<ActivityOneThirdScre
             mBinding.sceneNaviTbt.getGlobalVisibleRect(rectTbt);
             // 这个高度和xml里面保持一致
             float dpHeight = getResources().getDimension(com.sgm.navi.ui.R.dimen.one_third_screen_cross_pic_height);
-            int crossHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpHeight, getResources().getDisplayMetrics());
+            int crossHeight = ScreenUtils.Companion.getInstance().dp2px(dpHeight);
             final int tbtHeight = DeviceUtils.isCar(this) ? mBinding.sceneNaviTbt.getHeight() : 0;
             Logger.d(TAG, "rectTbt:" + rectTbt.toShortString(), "height:" + mBinding.sceneNaviTbt.getHeight());
             Rect rectCross = new Rect(rectTbt.left, rectTbt.bottom + tbtHeight, rectTbt.right, rectTbt.bottom + crossHeight + tbtHeight);

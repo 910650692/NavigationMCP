@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
-import com.android.utils.ResourceUtils;
+import com.android.utils.ScreenUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
@@ -370,12 +370,12 @@ public class EngineAdapterImpl implements IEngineApi {
 
         @Override
         public float getDensity(final int i) {
-            return ResourceUtils.Companion.getInstance().getDisplayMetrics().density;
+            return ScreenUtils.Companion.getInstance().density();
         }
 
         @Override
         public int getDensityDpi(final int i) {
-            return ResourceUtils.Companion.getInstance().getDisplayMetrics().densityDpi;
+            return ScreenUtils.Companion.getInstance().densityDpi();
         }
 
         @Override

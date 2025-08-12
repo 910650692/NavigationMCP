@@ -11,8 +11,16 @@
     "mleftscreenoffer": 1505,
     "mtopscreenoffer": 816
   },
+  "map_main_car_window": {
+    "mleftscreenoffer": 1514,
+    "mtopscreenoffer": 816
+  },
   "map_main_naving_window": {
     "mleftscreenoffer": 1630,
+    "mtopscreenoffer": 816
+  },
+  "map_main_setting_window": {
+    "mleftscreenoffer": 1804,
     "mtopscreenoffer": 816
   }
 }

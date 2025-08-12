@@ -27,7 +27,7 @@ public class MapViewParams {
         this.screenHeight = ScreenUtils.Companion.getInstance().getRealScreenHeight(AppCache.getInstance().getMContext());
         this.width = screenWidth;
         this.height = screenHeight;
-        this.densityDpi = AppCache.getInstance().getMContext().getResources().getDisplayMetrics().densityDpi;
+        this.densityDpi = ScreenUtils.Companion.getInstance().densityDpi();
         this.isOpenScreen = false;
     }
 

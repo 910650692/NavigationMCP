@@ -56,7 +56,7 @@ public abstract class FullScreenMapView extends FrameLayout implements IBaseScre
 
     @Override
     public int getScreenDensityDpi() {
-        return getResources().getDisplayMetrics().densityDpi;
+        return ScreenUtils.Companion.getInstance().densityDpi();
     }
 
     @Override

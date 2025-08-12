@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 
 import androidx.annotation.Nullable;
 
+import com.android.utils.ScreenUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.fsa.R;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
@@ -85,9 +86,8 @@ public class ScreenRecorder extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
         Logger.i(TAG, "mMediaProjection created: " + mMediaProjection);
-
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
-        mDensity = metrics.densityDpi;
+        mDensity = ScreenUtils.Companion.getInstance().densityDpi();
 
         //可以通过修改mWidth和mHeight控制屏幕大小，上面注释的代码是获取屏幕默认大小
         //由于virtualdisplay限制，mWidth只能取部分值，mHeight需要时4的倍数，泛亚提供的屏幕代销

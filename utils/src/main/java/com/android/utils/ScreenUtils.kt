@@ -13,7 +13,7 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.getSystemService
+import com.android.utils.log.Logger
 import java.io.BufferedOutputStream
 import java.io.PrintStream
 
@@ -24,8 +24,25 @@ import java.io.PrintStream
  */
 class ScreenUtils private constructor() {
     private var mContext: Context? = null
+    private var mDensity: Float? = null
+    private var mDensityDpi: Int? = null
     fun init(context: Context?) {
         mContext = context
+        val wm = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        val realMetrics = DisplayMetrics()
+        display.getRealMetrics(realMetrics)
+        mDensity = realMetrics.density
+        mDensityDpi = realMetrics.densityDpi
+        Logger.d("ScreenUtils", "init: mDensity=$mDensity, mDensityDpi=$mDensityDpi")
+    }
+
+    fun density(): Float {
+        return mDensity!!
+    }
+
+    fun densityDpi(): Int {
+        return mDensityDpi!!
     }
 
     fun clearCache() {
@@ -47,7 +64,7 @@ class ScreenUtils private constructor() {
      * dp转px.
      */
     fun dp2px(dpVal: Int): Int {
-        return ConvertUtils.float2int(mContext!!.resources.displayMetrics.density * dpVal)
+        return ConvertUtils.float2int(mDensity!! * dpVal)
     }
 
     /**
@@ -64,7 +81,7 @@ class ScreenUtils private constructor() {
      * px转dp.
      */
     fun px2dp(pxVal: Float): Float {
-        val scale = mContext!!.resources.displayMetrics.density
+        val scale = mDensity!!
         return pxVal / scale
     }
 
@@ -72,7 +89,7 @@ class ScreenUtils private constructor() {
      * px转dp.
      */
     fun px2dp(pxVal: Int): Int {
-        return ConvertUtils.float2int(pxVal / mContext!!.resources.displayMetrics.density)
+        return ConvertUtils.float2int(pxVal / mDensity!!)
     }
 
     /**

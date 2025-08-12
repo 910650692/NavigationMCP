@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 
+import com.android.utils.ScreenUtils;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.ui.view.SkinScrollView;
 
@@ -83,6 +84,6 @@ public class MaxHeightScrollView extends SkinScrollView {
 
     private int getMaxDefaultHeight() {
         // 这里可以设置默认的最大高度，例如 420dp 转换成像素值
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 420, getResources().getDisplayMetrics());
+        return ScreenUtils.Companion.getInstance().dp2px(420);
     }
 }

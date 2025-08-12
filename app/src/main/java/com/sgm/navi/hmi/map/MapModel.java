@@ -747,15 +747,30 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
      */
     public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
-        MapVisibleAreaInfo mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
-        if(!mViewModel.isFragmentStackNull()){
-            if (mViewModel.getTopFragment(SettingFragment.class)){
-                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
+        MapVisibleAreaInfo mapVisibleAreaInfo;
+        String naviStatus = mNaviStatusPackage.getCurrentNaviStatus();
+        if (isShowMusicTab) {
+            if (naviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING_WINDOW);
+                if (mViewModel.getTopFragment(SettingFragment.class)) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING_WINDOW);
+                }
             } else {
-                if (isShowMusicTab) {
-                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING_WINDOW);
-                } else {
-                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR_WINDOW);
+                if (mViewModel.getTopFragment(SettingFragment.class)) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING_WINDOW);
+                }
+            }
+        } else {
+            if (naviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_NAVING);
+                if (mViewModel.getTopFragment(SettingFragment.class)) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
+                }
+            } else {
+                mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_CAR);
+                if (mViewModel.getTopFragment(SettingFragment.class)) {
+                    mapVisibleAreaInfo = getVisibleArea(MapVisibleAreaType.MAIN_AREA_SETTING);
                 }
             }
         }
@@ -895,6 +910,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSurfaceChanged(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            setMapCenterInScreen();
             updateCarPosition();
         }
     }
@@ -2469,6 +2485,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onWindowSideChanged(boolean isOpenFloat) {
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
         isShowMusicTab = isOpenFloat;
+        setMapCenterInScreen();
         if (mViewModel != null) {
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
         }

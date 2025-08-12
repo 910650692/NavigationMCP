@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ScreenUtils;
+
 public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int mSpanCount; // 列数
@@ -58,7 +60,7 @@ public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
      * @return px值
      */
     private int dpToPx(final int dp) {
-        final float density = mContext.getResources().getDisplayMetrics().density;
+        final float density = ScreenUtils.Companion.getInstance().density();
         return Math.round(dp * density);
     }
 }
