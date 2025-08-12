@@ -85,7 +85,6 @@ public class NaviCommandImpl implements NaviCommandListener {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OFFLINE_NOT_SUPPORT);
         }
 
-        VoiceSearchManager.getInstance().handlePassBy(sessionId, passBy, poiType, poiCallback);
-        return CallResponse.createSuccessResponse();
+        return VoiceSearchManager.getInstance().handlePassBy(sessionId, passBy, poiType, poiCallback);
     }
 }

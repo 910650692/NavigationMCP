@@ -1387,7 +1387,26 @@ public final class VoiceSearchManager {
      * @param poiType     沿途点类型.
      * @param poiCallback 执行结果回调.
      */
-    public void handlePassBy(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
+    public CallResponse handlePassBy(final String sessionId, final String passBy, final String poiType, final PoiCallback poiCallback) {
+        final int type = getDestType(passBy);
+        if (type == 1 || type == 2) {
+            final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
+            if (null != homeCompanyInfo) {
+                RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, homeCompanyInfo);
+                return CallResponse.createSuccessResponse();
+            } else {
+                CallResponse callResponse;
+                callResponse = CallResponse.createFailResponse("");
+                if (type == 1) {
+                    callResponse.setSubCallResult(NaviSubCallResult.TRAFFIC_QUERY_NO_HOME);
+                } else {
+                    callResponse.setSubCallResult(NaviSubCallResult.TRAFFIC_QUERY_NO_COMPANY);
+                }
+                poiCallback.onResponse(callResponse);
+                return callResponse;
+            }
+        }
+
         mAlongToAround = false;
         mSessionId = sessionId;
         mPoiCallback = poiCallback;
@@ -1398,6 +1417,7 @@ public final class VoiceSearchManager {
         bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH);
         bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, passBy);
         MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
+        return CallResponse.createSuccessResponse();
     }
 
     /**
