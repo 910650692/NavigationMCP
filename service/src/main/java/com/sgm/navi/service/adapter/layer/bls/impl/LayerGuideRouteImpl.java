@@ -61,6 +61,7 @@ import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLinePoints;
 import com.android.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RouteSupplementInfo;
 import com.sgm.navi.service.define.route.RouteSupplementParams;
 import com.sgm.navi.service.define.search.ChargeInfo;
@@ -391,8 +392,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         RouteLinePoints routeLinePoints = routeResult.getMLineLayerParam().getMRouteLinePoints();
-        Logger.i(TAG, getMapType(), "设置路线行程点的信息 -> ", routeLinePoints);
-        mPathPoints = getRoutePoints(routeLinePoints);
+        List<RouteParam> viaList = routeResult.getMRouteParams();
+        if (!ConvertUtils.isEmpty(viaList)) {
+            Logger.i(TAG, getMapType(), "设置起终点途经点数据 途经点数量 ", viaList.size());
+        }
+        mPathPoints = getRoutePoints(routeLinePoints, viaList);
         int points = getLayerGuideRouteControl().setPathPoints(mPathPoints);
         Logger.d(TAG, getMapType(), "setPathPoints points ", points);
     }
@@ -688,7 +692,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeViaPoint).removeItem(pid);
     }
 
-    private RoutePoints getRoutePoints(RouteLinePoints info) {
+    private RoutePoints getRoutePoints(RouteLinePoints info, List<RouteParam> viaList) {
         RoutePoints infos = new RoutePoints();
         if (!ConvertUtils.isEmpty(info.getMStartPoints())) {
             int size = info.getMStartPoints().size();
@@ -703,19 +707,39 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 infos.mStartPoints.add(point);
             }
         }
-        if (!ConvertUtils.isEmpty(info.getMViaPoints())) {
-            int size = info.getMViaPoints().size();
-            for (int t = 0; t < size; t++) {
-                com.sgm.navi.service.define.route.RoutePoint routePoint = info.getMViaPoints().get(t);
-                if (routePoint != null && routePoint.mAddressType != 1) {
-                    RoutePoint point = new RoutePoint();
-                    point.mIsDraw = routePoint.isMIsDraw();
-                    point.mPathId = routePoint.getMPathId();
-                    point.mType = routePoint.getMType();
-                    point.mPos = new Coord3DDouble(routePoint.getMPos().getLon()
-                            , routePoint.getMPos().getLat()
-                            , routePoint.getMPos().getZ());
-                    infos.mViaPoints.add(point);
+        List<PoiInfoEntity> updateViaList = new ArrayList<>();
+        if (!ConvertUtils.isEmpty(viaList)) {
+            for (RouteParam viaPoint : viaList) {
+                int type = viaPoint.getMAddressType();
+                RoutePoint point = new RoutePoint();
+                point.mIsDraw = true;
+                //充电站类型
+                if (type == 2) {
+                    updateViaList.add(viaPoint.getMPoiInfoEntity());
+                    point.mPathId = LayerPointItemType.ROUTE_POINT_VIA_CHARGE.ordinal();
+                } else {
+                    point.mPathId = 0;
+                }
+                point.mPos = new Coord3DDouble(viaPoint.getMRealPos().getLon()
+                        , viaPoint.getMRealPos().getLat()
+                        , viaPoint.getMRealPos().getZ());
+                infos.mViaPoints.add(point);
+            }
+        } else {
+            if (!ConvertUtils.isEmpty(info.getMViaPoints())) {
+                int size = info.getMViaPoints().size();
+                for (int t = 0; t < size; t++) {
+                    com.sgm.navi.service.define.route.RoutePoint routePoint = info.getMViaPoints().get(t);
+                    if (routePoint != null && routePoint.mAddressType != 1) {
+                        RoutePoint point = new RoutePoint();
+                        point.mIsDraw = routePoint.isMIsDraw();
+                        point.mPathId = routePoint.getMPathId();
+                        point.mType = routePoint.getMType();
+                        point.mPos = new Coord3DDouble(routePoint.getMPos().getLon()
+                                , routePoint.getMPos().getLat()
+                                , routePoint.getMPos().getZ());
+                        infos.mViaPoints.add(point);
+                    }
                 }
             }
         }
@@ -732,8 +756,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
         }
         mViaList = new ArrayList<>(infos.mViaPoints);
+        if (!ConvertUtils.isEmpty(updateViaList)) {
+            getStyleAdapter().updateViaPointList(updateViaList);
+        }
         if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " 途经点个数 ", mViaList.size());
+            Logger.d(TAG, getMapType(), " 途经点个数 ", mViaList.size(), " 更新途经点个数 ", updateViaList.size());
         }
         return infos;
     }
