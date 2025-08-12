@@ -175,6 +175,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
 
     @Override
     public void closeFragment(final boolean nextShow) {
+        BaseFragment currentFragment = mStackManager.getCurrentFragment(mScreenId);
         BaseFragment fragment = FragmentIntent.closeFragment(mScreenId, getSupportFragmentManager(), nextShow);
         Bundle bundle = null;
         if (fragment != null && fragment.getClass().getName().contains("NaviGuidanceFragment")) {
@@ -190,7 +191,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
             }
             onMoveMapCenter();
         }
-        onFragmentSizeChanged(fragment.getClass().getSimpleName().equals("SplitFragment"));
+        onFragmentSizeChanged(currentFragment != null && fragment.getClass().getSimpleName().equals("SplitFragment"));
     }
 
     @Override

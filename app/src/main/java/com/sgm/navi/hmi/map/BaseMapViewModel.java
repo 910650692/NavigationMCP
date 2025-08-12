@@ -798,14 +798,18 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void resetMapCenterInScreen() {
-        mView.setMapFocusable(true);
-        mModel.refreshMapMode();
-        mModel.resetMapCenterInScreen();
+        if (mView != null) {
+            mView.setMapFocusable(true);
+        }
+        if (mModel != null) {
+            mModel.refreshMapMode();
+            mModel.resetMapCenterInScreen();
+        }
         mScaleViewVisibility.set(judgedBottomNaviVisibility());
         mainBTNVisibility.set(true);
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
         sRVisible.set(judgedSRVisibility());
-        if (mModel.checkPopGuideLogin()) {
+        if (mModel != null && mModel.checkPopGuideLogin()) {
             mPopGuideLoginShow.set(true);
         }
         initTimer();
