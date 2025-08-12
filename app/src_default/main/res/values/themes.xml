@@ -13,7 +13,4 @@
     <style name="HUDTheme" parent="BaseHUDTheme" >
         <item name="android:fontFamily">@font/buick</item>
     </style>
-    <style name="RearScreenTheme" parent="BaseRearScreenTheme">
-        <item name="android:fontFamily">@font/buick</item>
-    </style>
 </resources>
