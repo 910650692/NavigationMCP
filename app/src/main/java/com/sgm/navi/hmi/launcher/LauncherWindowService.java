@@ -264,10 +264,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         layoutParams.y = top;
         mWindowManager.addView(mView, layoutParams);
         initClickListener();
+        onNetStatusChange(isConnected);
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
-        onNetStatusChange(isConnected);
     }
 
     private void registerFloatWindowReceiver() {
@@ -406,9 +406,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                     mBinding.ivCross.setVisibility(View.GONE);
                 }
 
-                // 大图显示后隐藏车道线
-                if (isVisible && mBinding.sceneNaviLanes != null) {
-                    mBinding.sceneNaviLanes.setVisibility(View.GONE);
+                // 大图显示后隐藏车道线和光柱图
+                if (isVisible && mBinding.sceneNaviLanes != null && mBinding.sceneNaviTmc != null) {
+                    mBinding.sceneNaviLanes.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+                    mBinding.sceneNaviTmc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
                 }
             });
         }
@@ -477,9 +478,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 Logger.d(TAG,"重新绘制光柱图最新数据");
             }
             // 3. 新增逻辑：如果路口大图正在显示，强制隐藏车道线（首次进入时也生效）
-            if (mCrossImgIsOnShowing) {
-                mBinding.sceneNaviLanes.setVisibility(View.GONE);
-            }
+            mBinding.sceneNaviLanes.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
+            mBinding.sceneNaviTmc.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
         });
     }
 
