@@ -21,6 +21,8 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import lombok.Getter;
+
 public class NaviAudioPlayer {
     private static final String TAG = MapDefaultFinalTag.NAVI_SERVICE_TAG;
     private final MutableLiveData<Boolean> mISSDKTTSPlaying = new MutableLiveData<>();
@@ -31,6 +33,7 @@ public class NaviAudioPlayer {
             .setInterpolatorType(VolumeShaper.Configuration.INTERPOLATOR_TYPE_LINEAR)
             .build();
     private int mGain;
+    @Getter
     private AudioManager mAudioManager;
     private AudioFocusRequest mMediaFocusRequest;
     private AudioAttributes mMediaAttributes;
@@ -101,6 +104,7 @@ public class NaviAudioPlayer {
     public void init() {
         if (null == mAudioManager) {
             mAudioManager = (AudioManager) AppCache.getInstance().getMContext().getSystemService(Context.AUDIO_SERVICE);
+            NaviMediaPlayer.getInstance().setMAudioManager(mAudioManager);
             //监听录音配置变化
             mAudioManager.registerAudioRecordingCallback(new AudioManager.AudioRecordingCallback() {
 

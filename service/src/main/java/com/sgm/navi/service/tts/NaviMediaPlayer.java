@@ -14,8 +14,11 @@ import com.autonavi.gbl.guide.model.PlayRingType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.R;
 
+import lombok.Setter;
+
 public class NaviMediaPlayer {
     private static final String TAG = NAVI_SERVICE_MEDIA;
+    @Setter
     private AudioManager mAudioManager;
     private AudioFocusRequest mMediaFocusRequest;
     private MediaPlayer mMediaPlayer;
@@ -30,7 +33,7 @@ public class NaviMediaPlayer {
 
     public void init() {
         if (null == mAudioManager) {
-            mAudioManager = (AudioManager) AppCache.getInstance().getMContext().getSystemService(Context.AUDIO_SERVICE);
+            NaviAudioPlayer.getInstance().init();
         }
         if (null == mMediaFocusRequest) {
             AudioAttributes.Builder builder = new AudioAttributes.Builder();
