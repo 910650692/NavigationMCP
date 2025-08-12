@@ -385,9 +385,10 @@ public final class FsaNaviScene {
         laneInfo.setItemList(laneItemList);
         // 遍历背景车道列表
         for (int i = 0; i < laneInfoEntity.getBackLane().size(); i++) {
-            final Integer backlaneType = laneInfoEntity.getBackLane().get(i);
+            final Integer backlane = laneInfoEntity.getBackLane().get(i);
+            final Integer backlaneType = laneInfoEntity.getBackLaneType().get(i);
             final Integer frontlaneType = laneInfoEntity.getFrontLane().get(i);
-            if (backlaneType == 0xFF) {
+            if (backlane == 0xFF) {
                 continue;
             }
             // 车道线信息
@@ -405,7 +406,7 @@ public final class FsaNaviScene {
             // 车道线方向信息
             final ArrayList<LaneDirection> directionList = new ArrayList<>();
             laneItem.setDirectionList(directionList);
-            amapLaneDirection2fsa(frontlaneType, backlaneType, directionList);
+            amapLaneDirection2fsa(frontlaneType, backlane, directionList);
         }
         mLaneLineInfo = laneLineInfo;
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
@@ -419,23 +420,18 @@ public final class FsaNaviScene {
      */
     private int amapLane2fsa(final int type) {
         switch (type) {
-            case 21: // 公交车道
+            case 0: // 普通车道
+                return FsaConstant.FsaLaneType.NORMAL;
+            case 1: // 公交专用
                 return FsaConstant.FsaLaneType.BUS_LANE;
-            case 22: // 空车道
-                return FsaConstant.FsaLaneType.NORMAL;
-            case 23: // 可变车道
-                return FsaConstant.FsaLaneType.VARIABLE_LANE;
-            case 24: // 专用车道
+            case 2: // 其他专用
                 return FsaConstant.FsaLaneType.TEXT_BUS_LANE;
-            case 25: // 潮汐车道
+            case 3: // 潮汐车道
                 return FsaConstant.FsaLaneType.TEXT_TIDAL_LANE;
-            case 13:
-            case 14:
-            case 15:
-            case 0xFF:
-                return FsaConstant.FsaLaneType.INVALID_VALUE;
+            case 4: // 可变车道
+                return FsaConstant.FsaLaneType.VARIABLE_LANE;
             default:
-                return FsaConstant.FsaLaneType.NORMAL;
+                return FsaConstant.FsaLaneType.INVALID_VALUE;
         }
     }
 
