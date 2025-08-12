@@ -98,6 +98,11 @@ public class SceneNaviSapaDetailView extends NaviSceneBase<SceneNaviSapaDetailVi
                 mViewBinding.sapaTollDetail.sivTollDetailsRemiancharge);
     }
 
+    public void hideChargeUi() {
+        mViewBinding.sapaTollDetail.sivTollRemainChargeIcon.setVisibility(GONE);
+        mViewBinding.sapaTollDetail.sivTollDetailsRemiancharge.setVisibility(GONE);
+    }
+
     @SuppressLint("SetTextI18n")
     private void setChargeUi(final int chargeLeft, final SkinImageView img,
                              final SkinTextView text) {

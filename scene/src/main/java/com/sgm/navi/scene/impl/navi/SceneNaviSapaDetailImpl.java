@@ -435,17 +435,28 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             Logger.i(TAG, "updateTollDetailInfo sapItem is null");
             return;
         }
+        powerType = OpenApiHelper.powerType();
+        Logger.i(TAG, "powerType = " + powerType);
         if (powerType == 1) {
             GeoPoint point = sapaItem.getPos();
             OpenApiHelper.getTravelTimeFutureIncludeChargeLeft(point).thenAccept(etaInfo -> {
                 ThreadManager.getInstance().postUi(() -> {
+                    if (etaInfo == null) {
+                        return;
+                    }
                     int leftCharge = etaInfo.getLeftCharge();
-                    mScreenView.updateTollChargeUi(leftCharge);
+                    if (mScreenView != null) {
+                        mScreenView.updateTollChargeUi(leftCharge);
+                    }
                 });
             }).exceptionally(error -> {
                 Logger.e(TAG, "updateTollDetailInfo getTravelTimeFuture error:", error);
                 return null;
             });
+        } else {
+            if (mScreenView != null) {
+                mScreenView.hideChargeUi();
+            }
         }
         mTollName.set(sapaItem.getName());
         tagUpdate(mTollStatusTag, sapaItem);
