@@ -1259,7 +1259,6 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             case HUD_MAP -> INaviConstant.MapType.HUD_WIDGET;
             case CLUSTER_MAP -> INaviConstant.MapType.CLUSTER_WIDGET;
             case LAUNCHER_WIDGET_MAP -> INaviConstant.MapType.LAUNCHER_WIDGET;
-            case REAR_SCREEN_MAP -> INaviConstant.MapType.REAR_SCREEN_MAP;
         };
     }
 
