@@ -126,6 +126,8 @@ public class SceneNaviSapaDetailView extends NaviSceneBase<SceneNaviSapaDetailVi
                 text.setTextColor(
                         ResourceUtils.Companion.getInstance().
                                 getColor(R.color.navi_color_C73333_100));
+                text.setText(R.string.navi_via_charge_empty);
+                return;
             }
             text.setText(getContext().getString(R.string.remain_charge, leftCharge));
         }
