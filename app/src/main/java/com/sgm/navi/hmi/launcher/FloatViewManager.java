@@ -24,6 +24,7 @@ import com.sgm.navi.service.AppCache;
 import com.patac.launcher.ILauncherCallback;
 import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
+import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
@@ -41,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListener {
     private boolean cardWidgetIsOnShowing = false;
     public boolean mRemindDialogShow = false;
+    public boolean mLocationPermissionGranted = false;
     private static final String TAG = "FloatViewManager";
     private boolean isServiceConnect = false;
     private ILauncherModeManager mLauncherModeManager;
@@ -299,6 +301,13 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             hideAllCardWidgets(false);
             Logger.d(TAG, "mRemindDialogShow");
             return;
+        }
+        if (mLocationPermissionGranted){
+            if (BuildConfig.FLAVOR.equals("cadi")){
+                hideAllCardWidgets(false);
+                Logger.d(TAG, "mLocationPermissionGranted");
+                return;
+            }
         }
         // 非无状态下不可操作显示
         if (!NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)){

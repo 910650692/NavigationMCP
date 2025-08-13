@@ -473,7 +473,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.e(TAG, "onSdkInitSuccess");
         StartService.getInstance().unregisterSdkCallback(TAG, this);
         setPackageAfterSdkInit();
-        FloatViewManager.getInstance().showAllCardWidgets();
+        if (FloatViewManager.getInstance().mLocationPermissionGranted){
+            FloatViewManager.getInstance().showAllCardWidgets();
+        }
         BroadcastManager.getInstance().init();
         BroadcastManager.getInstance().sendSpiCollectingBroadcast();
         if (isShowStartupException()) {
@@ -2155,12 +2157,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
+                FloatViewManager.getInstance().mLocationPermissionGranted = false;
                 mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                 mSettingPackage.setPrivacyStatus(true);
             }
 
             @Override
             public void onCancelClick() {
+                FloatViewManager.getInstance().mLocationPermissionGranted = false;
                 if (FloatViewManager.getInstance().isNaviDeskBg()) {
                     Logger.d(TAG, "桌面地图情况");
                     mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
@@ -2173,6 +2177,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ProcessManager.isAppInForeground()) {
             mViewModel.showAuthorizationRequestDialog(authorizationRequestDialog);
         }
+        FloatViewManager.getInstance().mLocationPermissionGranted = true;
     }
 
     public void dismissAuthorizationRequestDialog() {
