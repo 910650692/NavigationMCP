@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -43,7 +44,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     private static final String TAG = MapDefaultFinalTag.MAP_SERVICE_TAG;
     private MapAdapter mMapAdapter;
     private LayerPackage mLayerPackage;
-    private final ConcurrentHashMap<MapType, List<IMapPackageCallback>> callbacks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<MapType, CopyOnWriteArrayList<IMapPackageCallback>> callbacks = new ConcurrentHashMap<>();
 
     private Boolean isSearchPoiDetailsFragment = false;
 
@@ -130,7 +131,7 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
 
     public void registerCallback(MapType mapTypeId, IMapPackageCallback callback) {
         if (!callbacks.containsKey(mapTypeId)) {
-            callbacks.put(mapTypeId, new ArrayList<>());
+            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
         }
         if (!callbacks.get(mapTypeId).contains(callback)) {
             callbacks.get(mapTypeId).add(callback);
