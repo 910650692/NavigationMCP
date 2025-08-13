@@ -211,7 +211,7 @@ public interface FsaConstant {
 
     //turnKind转向类型
     interface FsaTurnKind {
-        int ICON_CONTINUE = 9; //直行对应的iconId
+        int ICON_CONTINUE = 20; //顺行对应的iconId
     }
 
 

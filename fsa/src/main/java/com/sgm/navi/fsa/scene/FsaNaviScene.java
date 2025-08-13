@@ -173,26 +173,28 @@ public final class FsaNaviScene {
      */
     private int convertTbtType(final int type) {
         return switch (type) {
-            case 0x2 -> 7;
-            case 0x3 -> 3;
-            case 0x4 -> 8;
-            case 0x5 -> 2;
-            case 0x6 -> 6;
-            case 0x7 -> 4;
-            case 0x8 -> 5;
-            case 0x9 -> 1;
-            case 0xA -> 25;
-            case 0xB -> 9;
-            case 0xC -> 10;
-            case 0xD -> 0;// 服务区
-            case 0xE -> 31;
-            case 0xF -> 24;
-            case 0x15 -> 75;
-            case 0x16 -> 71;
-            case 0x17 -> 69;
-            case 0x18 -> 73;
-            case 0x41 -> 11;
-            case 0x42 -> 12;
+            case 2 -> 7;
+            case 3 -> 3;
+            case 4 -> 8;
+            case 5 -> 2;
+            case 6 -> 6;
+            case 7 -> 4;
+            case 8 -> 5;
+            case 9 -> 1;
+            case 10 -> 25;
+            case 11 -> 9;
+            case 12 -> 10;
+            case 13 -> 0; // TODO 服务区
+            case 14 -> 31;
+            case 15 -> 24;
+            case 16 -> 0; // TODO 隧道
+            case 20 -> 1; // 顺行
+            case 21 -> 75;
+            case 22 -> 71;
+            case 23 -> 69;
+            case 24 -> 73;
+            case 65 -> 11;
+            case 66 -> 12;
             default -> 0;
         };
     }
