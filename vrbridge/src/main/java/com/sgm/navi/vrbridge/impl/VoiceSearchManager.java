@@ -1403,7 +1403,7 @@ public final class VoiceSearchManager {
                     callResponse.setSubCallResult(NaviSubCallResult.TRAFFIC_QUERY_NO_COMPANY);
                 }
                 poiCallback.onResponse(callResponse);
-                return callResponse;
+                return CallResponse.createSuccessResponse();
             }
         }
 

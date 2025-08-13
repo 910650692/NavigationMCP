@@ -145,7 +145,9 @@ public class ProcessManager {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_HOME);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
+                final ActivityOptions options = ActivityOptions.makeBasic();
+                options.setLaunchDisplayId(0);
+                context.startActivity(intent, options.toBundle());
             }
         } catch (ActivityNotFoundException exception) {
             Logger.e(TAG, "open map error: " + exception.getMessage());
