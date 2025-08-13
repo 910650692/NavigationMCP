@@ -49,6 +49,9 @@
                         clickCommand="@{viewModel.mOpenAccount}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxWidth="@dimen/dp_373"
+                        android:maxLines="1"
                         android:text="@string/setting_others_account"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_29" />

@@ -14,7 +14,8 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/cl_search_map"
         android:layout_width="@dimen/dp_3950"
-        android:layout_height="@dimen/dp_1320">
+        android:layout_height="@dimen/dp_1320"
+        android:layout_marginStart="@dimen/dp_259">
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="@dimen/dp_1680"
