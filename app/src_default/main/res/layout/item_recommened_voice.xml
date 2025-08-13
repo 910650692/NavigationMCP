@@ -13,112 +13,132 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/recommend_voice_item"
+    <com.sgm.navi.ui.view.CustomSwipeMenuLayout
+        android:id="@+id/swipe_menu_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_119"
-        android:background="@drawable/bg_selecting_bar"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal">
 
-        <com.sgm.navi.ui.view.SkinImageView
-            android:id="@+id/recommend_voice_header"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
-            img_url="@{model.getImageUrl()}"
-            android:layout_marginStart="@dimen/dp_26"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/recommend_voice_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{model.getName()}"
-            android:textSize="@dimen/sp_29"
-            android:textColor="@color/setting_bg_tab_text_select"
-            android:layout_marginStart="@dimen/dp_14"
-            app:layout_constraintStart_toEndOf="@+id/recommend_voice_header"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_broadcast_voice_has_update"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/setting_voice_has_update_color"
-            android:layout_marginEnd="@dimen/dp_26"
-            android:visibility="@{model.isUpdate() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/recommend_voice_size"/>
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/recommend_voice_operate"
-            android:layout_width="@dimen/dp_153"
-            android:layout_height="@dimen/dp_65"
-            android:layout_marginEnd="@dimen/dp_26"
-            visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
-            android:gravity="center"
-            android:text="@{model.getOperateText()}"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@{model.isEnabled() ? @color/setting_white : @color/setting_voice_has_update_color}"
-            android:enabled="@{model.isEnabled()}"
-            android:background="@drawable/bg_voice_operate_selector"
-            android:drawableStart="@{model.getLeftDrawable()}"
-            android:drawablePadding="@dimen/dp_7"
-            android:paddingHorizontal="@dimen/dp_30"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <com.sgm.navi.ui.view.SkinView
-            android:id="@+id/recommend_voice_operate_view"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
-            app:layout_constraintTop_toTopOf="@+id/recommend_voice_operate"
-            app:layout_constraintBottom_toBottomOf="@+id/recommend_voice_operate"
-            app:layout_constraintStart_toStartOf="@+id/recommend_voice_operate"
-            app:layout_constraintEnd_toEndOf="@+id/recommend_voice_operate"/>
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:text="@string/setting_broadcast_voice_current_download"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/setting_bg_tab_text_select"
-            android:visibility="@{model.isUsed() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/recommend_voice_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{model.getUnpackDataSize()}"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/setting_bg_tab_text_unselect"
-            visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
-            android:layout_marginEnd="@dimen/dp_16"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/recommend_voice_operate"/>
-
-        <ProgressBar
-            android:id="@+id/recommend_voice_progress"
-            style="?android:attr/progressBarStyleHorizontal"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recommend_voice_item"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_4"
-            android:visibility="@{model.isEnabled() ? View.GONE : View.VISIBLE}"
-            android:progress="@{model.getPercent()}"
-            android:max="100"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_height="@dimen/dp_119"
+            android:background="@drawable/bg_selecting_bar">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/recommend_voice_header"
+                android:layout_width="@dimen/dp_68"
+                android:layout_height="@dimen/dp_68"
+                img_url="@{model.getImageUrl()}"
+                android:layout_marginStart="@dimen/dp_26"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/recommend_voice_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{model.getName()}"
+                android:textSize="@dimen/sp_29"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:layout_marginStart="@dimen/dp_14"
+                app:layout_constraintStart_toEndOf="@+id/recommend_voice_header"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setting_broadcast_voice_has_update"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/setting_voice_has_update_color"
+                android:layout_marginEnd="@dimen/dp_26"
+                android:visibility="@{model.isUpdate() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/recommend_voice_size"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/recommend_voice_operate"
+                android:layout_width="@dimen/dp_153"
+                android:layout_height="@dimen/dp_65"
+                android:layout_marginEnd="@dimen/dp_26"
+                visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
+                android:gravity="center"
+                android:text="@{model.getOperateText()}"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@{model.isEnabled() ? @color/setting_white : @color/setting_voice_has_update_color}"
+                android:enabled="@{model.isEnabled()}"
+                android:background="@drawable/bg_voice_operate_selector"
+                android:drawableStart="@{model.getLeftDrawable()}"
+                android:drawablePadding="@dimen/dp_7"
+                android:paddingHorizontal="@dimen/dp_30"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/recommend_voice_operate_view"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                app:layout_constraintTop_toTopOf="@+id/recommend_voice_operate"
+                app:layout_constraintBottom_toBottomOf="@+id/recommend_voice_operate"
+                app:layout_constraintStart_toStartOf="@+id/recommend_voice_operate"
+                app:layout_constraintEnd_toEndOf="@+id/recommend_voice_operate"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:text="@string/setting_broadcast_voice_current_download"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/setting_bg_tab_text_select"
+                android:visibility="@{model.isUsed() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/recommend_voice_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{model.getUnpackDataSize()}"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/setting_bg_tab_text_unselect"
+                visibility="@{model.isUsed() ? View.GONE : View.VISIBLE}"
+                android:layout_marginEnd="@dimen/dp_16"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/recommend_voice_operate"/>
+
+            <ProgressBar
+                android:id="@+id/recommend_voice_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_4"
+                android:visibility="@{model.isEnabled() ? View.GONE : View.VISIBLE}"
+                android:progress="@{model.getPercent()}"
+                android:max="100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.sgm.navi.ui.view.SkinTextView
+            android:id="@+id/item_voice_delete"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_119"
+            android:drawableTop="@drawable/img_delete_58"
+            android:background="@drawable/bg_driving_item_delete"
+            android:paddingTop="@dimen/dp_10"
+            android:text="@string/driving_item_delete"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/color_80_ffffff"
+            android:gravity="center" />
+
+    </com.sgm.navi.ui.view.CustomSwipeMenuLayout>
 
 </layout>
