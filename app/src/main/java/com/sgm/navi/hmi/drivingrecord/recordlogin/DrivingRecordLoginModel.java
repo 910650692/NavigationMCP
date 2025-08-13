@@ -148,6 +148,7 @@ public class DrivingRecordLoginModel extends BaseModel<DrivingRecordLoginViewMod
                     if (mViewModel.isRecordLoginFragment()) {
                         mViewModel.showMergeDivingRecordDialog();
                     }
+                    mViewModel.closeFragment(true);
                 } else {
                     mViewModel.closeFragment(true);
                 }
