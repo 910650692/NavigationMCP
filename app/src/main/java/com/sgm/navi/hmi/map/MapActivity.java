@@ -159,10 +159,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            if (mViewModel.judgeAutoProtocol()) {
-                Logger.e(TAG, "引擎已初始化 直接渲染底图");
-                mViewModel.loadMapView(mBinding.mainMapview);
-            }
+            Logger.e(TAG, "引擎已初始化 直接渲染底图");
+            mViewModel.loadMapView(mBinding.mainMapview);
             // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
         }
     }
