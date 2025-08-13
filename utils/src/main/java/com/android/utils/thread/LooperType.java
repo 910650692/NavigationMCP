@@ -5,6 +5,7 @@ public enum LooperType {
     MAIN_SCREEN_MAIN_MAP("MAIN_SCREEN_MAIN_MAP"),
     HUD_MAP("HUD_MAP"),
     CLUSTER_MAP("CLUSTER_MAP"),
+    REAR_SCREEN_MAP("REAR_SCREEN_MAP"),
     //nmea报文解析,定位专用线程
     GNSS("GNSS_HandlerThread"),
     GSV("GSV_HandlerThread"),

@@ -109,6 +109,20 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".rearscreen.RearScreenActivity"
+            android:configChanges="uiMode|locale|layoutDirection|navigation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:taskAffinity="com.sgm.navi.hmi.rearscreen"
+            android:launchMode="singleInstance"
+            android:theme="@style/RearScreenTheme"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="com.sgm.navi.hmi.rearscreen.RearScreenActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="CAR_TYPE"
