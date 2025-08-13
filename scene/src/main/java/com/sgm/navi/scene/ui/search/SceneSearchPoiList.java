@@ -1765,7 +1765,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }
                 mViewBinding.routeChargeTotalMileage.setText(TimeUtils.getInstance().getDistanceMsg(routeLineInfo.getMDistance()));
                 mViewBinding.routeChargeTotalMileage.post(() -> {
-                   mEndWidth = mViewBinding.routeChargeTotalMileage.getWidth() + mViewWidth/2;
+                    if (mViewBinding != null) {
+                        mEndWidth = mViewBinding.routeChargeTotalMileage.getWidth() + mViewWidth/2;
+                    }
                 });
                 final EvRangeOnRouteInfo evRangeOnRouteInfo = getRangeOnRouteInfo(getCurrentIndex());
                 mRouteTotalDistance = routeLineInfo.getMDistance();
