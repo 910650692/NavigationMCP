@@ -210,14 +210,19 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     @Override
     public void onCreate() {
         super.onCreate();
-        checkAgreementRights();
         mCurrentProtectState = AutoMapConstant.ProtectState.NONE;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mModel.isFirstLauncher()) {
+        if (mModel == null) {
+            Logger.e(TAG, "mModel is null, return");
+            return;
+        }
+        if (!mModel.isAllowSGMAgreement()) {
+            checkAgreementRights();
+        } else if (mModel.isFirstLauncher()) {
             popAgreementDialog();
         } else if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
@@ -1597,10 +1602,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
         if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
-            ThreadManager.getInstance().asyncDelay(() -> {
-                Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
-                ProcessManager.restartProcess(mApplication);
-            }, 800, TimeUnit.MILLISECONDS);
+            if (mModel.isAllowSGMAgreement()) {
+                //如果未同意外部大协议，restartFlag也是空的，此时不能走重启逻辑
+                ThreadManager.getInstance().asyncDelay(() -> {
+                    Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
+                    ProcessManager.restartProcess(mApplication);
+                }, 800, TimeUnit.MILLISECONDS);
+            }
         }
         //closeAllFragment();
         moveToBack();
