@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -304,6 +305,12 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
     @Override
     public void startCruise() {
+        Logger.d(TAG, "isForeground : ", ProcessManager.isAppInForeground());
+        if (!ProcessManager.isAppInForeground()) {
+            Logger.d(TAG, "导航应用在后台，不可以进入巡航模式");
+            return;
+        }
+
         Logger.d(TAG, "准备开启巡航");
         final boolean isSuccess = mCruisePackage.startCruise();
         if (isSuccess){

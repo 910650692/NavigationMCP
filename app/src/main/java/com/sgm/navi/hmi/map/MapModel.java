@@ -1444,6 +1444,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             return;
         }
+
+        Logger.d(TAG, "isForeground : ", ProcessManager.isAppInForeground());
+        if (!ProcessManager.isAppInForeground()) {
+            Logger.d(TAG, "导航应用在后台，不可以进入巡航模式");
+            return;
+        }
+
         if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
             Logger.i(TAG, "巡航已开启，无需重复开启！");
             mViewModel.showOrHiddenCruise(true);
