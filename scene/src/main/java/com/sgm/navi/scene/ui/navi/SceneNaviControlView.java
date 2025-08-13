@@ -208,7 +208,7 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     }
 
     /**
-     * @param type 0:退出全览 1:切换全览
+     * @param type 0:退出全览 1:切换全览 2:切换全览并固定
      */
     public void naviPreviewSwitch(final int type) {
         if (mScreenViewModel == null) {

@@ -670,7 +670,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     /**
-     * @param type 0:退出全览 1:切换全览
+     * @param type 0:退出全览 1:切换全览 2:切换全览并固定
      */
     public void naviPreviewSwitch(final int type) {
         mBinding.sceneNaviControl.naviPreviewSwitch(type);

@@ -147,7 +147,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public static final String SIDE_ROAD = "SIDE";
     public static final String BRIDGE_ON = "ON";
     public static final String BRIDGE_UNDER = "UNDER";
-    public static final int ENTER_PREVIEW = 1;
+    public static final int ENTER_PREVIEW = 2;
     public static final int EXIT_PREVIEW = 0;
     private NetWorkUtils mNetWorkUtils;
     private Boolean mCurrentNetStatus;

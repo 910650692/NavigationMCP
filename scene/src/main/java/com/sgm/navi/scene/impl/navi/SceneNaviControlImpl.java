@@ -181,17 +181,22 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void backControl(){}
 
     /**
-     * @param type 0:退出全览 1:切换全览
+     * @param type 0:退出全览 1:切换全览 2:切换全览并固定
      */
     public void naviPreviewSwitch(final int type) {
         Logger.i(TAG, "naviPreviewSwitch type:", type);
+        cancelTimer();
         if (type == 0) {
             exitPreview();
             if (mNaviPackage.getFixedOverViewStatus()) {
                 mNaviPackage.setFixedOverViewStatus(false);
             }
+        } else if (type == 1){
+            enterPreview();
         } else {
             enterPreview();
+            mMapPackage.setLockMapRollAngle(mMapTypeId, true);
+            mNaviPackage.setFixedOverViewStatus(true);
         }
     }
 
