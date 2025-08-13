@@ -1858,30 +1858,18 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (!ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds())) {
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
                     searchResult, false);
-            final List<GeoPoint> totalList = new ArrayList<>();
-            for (List<GeoPoint> tempList : firstElement.getMRoadPolygonBounds()) {
-                totalList.addAll(tempList);
-            }
-            showBoundsPreview(totalList);
         }
         if (!ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds())) {
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
                     searchResult, false);
-            final List<GeoPoint> totalList = new ArrayList<>();
-            for (List<GeoPoint> tempList : firstElement.getMPoiAoiBounds()) {
-                totalList.addAll(tempList);
-            }
-            showBoundsPreview(totalList);
         }
         if (!ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
             sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, searchResult);
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     searchResult, false);
         }
-        if (ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds()) &&
-                ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds()) &&
-                ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
-            //如果没有子点，边界点，道路点，直接以poi点为中心进行展示
+        if (ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
+            //如果没有子点，直接以poi点为中心进行展示
             showPreview(searchResultEntity.getPoiList());
         }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createLabelMarker result:" + addResult);
