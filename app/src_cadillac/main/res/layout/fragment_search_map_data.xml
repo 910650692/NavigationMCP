@@ -72,7 +72,7 @@
                         android:imeOptions="actionSearch"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/black"
                         android:textColorHint="@color/setting_offline_no_search_hint"
                         android:textSize="@dimen/sp_46">
 
@@ -83,13 +83,13 @@
                         style="@style/style_mfc_config"
                         android:id="@+id/edit_clear"
                         clickCommand="@{ViewModel.mClearEdit}"
-                        android:layout_width="@dimen/dp_54"
-                        android:layout_height="@dimen/dp_54"
+                        android:layout_width="@dimen/dp_74"
+                        android:layout_height="@dimen/dp_74"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/dp_32"
-                        android:src="@drawable/img_plate_number_clear"
-                        android:visibility="visible" />
+                        android:src="@drawable/img_off58"
+                        android:visibility="gone" />
 
                 </com.sgm.navi.ui.view.SkinRelativeLayout>
 
@@ -126,14 +126,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/offline_no_search_hint"
-                            android:textColor="@color/setting_offline_no_search_hint"
+                            android:textColor="@color/setting_bg_tab_text_unselect"
                             android:textSize="@dimen/sp_46"
                             android:visibility="gone"
                             android:clickable="false"
                             android:layout_marginTop="@dimen/dp_266"
-                            app:layout_constraintTop_toBottomOf="@id/rv_search_offline"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
 
                     </com.sgm.navi.ui.view.SkinConstraintLayout>
                 </com.android.car.ui.FocusArea>

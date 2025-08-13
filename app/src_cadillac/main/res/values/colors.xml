@@ -52,5 +52,6 @@
     <color name="toast_bg_base">#FFFFFF</color>
     <color name="toast_text">#FF000000</color>
     <color name="setting_other_about_bg_btn">#26B2AFC2</color>
+    <color name="setting_offline_no_search_hint">#80000000</color>
 
 </resources>

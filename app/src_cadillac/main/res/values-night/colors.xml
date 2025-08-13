@@ -36,6 +36,6 @@
     <color name="toast_bg_base">#FF191A21</color>
     <color name="toast_text">#FFFFFFFF</color>
     <color name="setting_other_about_bg_btn">#FF1E1F26</color>
-
+    <color name="setting_offline_no_search_hint">#B3FFFFFF</color>
     <color name="setting_bg_line">#99FFFFFF</color>
 </resources>
