@@ -44,6 +44,7 @@ public class SuperCruiseJson {
     private String effectiveSpeedType;
     //速度类别
     private String speedCategory;
+    private String useDataMask;
 
     public String getDataAvailable() {
         return dataAvailable;
@@ -195,5 +196,13 @@ public class SuperCruiseJson {
 
     public void setSpeedCategory(String speedCategory) {
         this.speedCategory = speedCategory;
+    }
+
+    public String isUseDataMask() {
+        return useDataMask;
+    }
+
+    public void setUseDataMask(String useDataMask) {
+        this.useDataMask = useDataMask;
     }
 }

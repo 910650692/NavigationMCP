@@ -508,6 +508,7 @@ public final class SuperCruiseManager {
                     }
                     mSpeedLimitBuilder.setPostedSpeedLimit(minSpeedLimit);
                     mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(minSpeedLimit));
+                    mSpeedLimitBuilder.setUseDataMask(false); // 限速信息有效
                 } else {
                     mSpeedLimitDataAvailabl = false;
                     mSpeedLimitBuilder.setSpeedLimitAssured(false);
@@ -516,6 +517,7 @@ public final class SuperCruiseManager {
                     mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
                     mSpeedLimitBuilder.setPostedSpeedLimit(0);
                     mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(0));
+                    mSpeedLimitBuilder.setUseDataMask(true); // 限速信息无效
                 }
                 break;
             case NaviStatus.NaviStatusType.CRUISE://巡航
@@ -525,9 +527,17 @@ public final class SuperCruiseManager {
                 mSpeedLimitBuilder.setEffectSpeedLimit(mCruiseSpeedLimit);
                 mSpeedLimitBuilder.setEffectiveSpeedCategory(speed2EffectiveSpeedCategoryEnum(mCruiseSpeedLimit));
                 mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                mSpeedLimitBuilder.setUseDataMask(mCruiseSpeedLimit == 0);
                 break;
             default:
                 mSpeedLimitDataAvailabl = false;
+                mSpeedLimitBuilder.setSpeedLimitAssured(false);
+                mSpeedLimitBuilder.setEffectSpeedLimit(0);
+                mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);
+                mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
+                mSpeedLimitBuilder.setPostedSpeedLimit(0);
+                mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(0));
+                mSpeedLimitBuilder.setUseDataMask(true); // 限速信息无效
         }
 
         final NaviLinkProto.NaviLink.Builder builder = NaviLinkProto.NaviLink.newBuilder();
@@ -565,6 +575,7 @@ public final class SuperCruiseManager {
         superCruiseJson.setEffectiveSpeedCategory(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedCategory()));
         superCruiseJson.setEffectiveSpeedType(String.valueOf(mSpeedLimitBuilder.getEffectiveSpeedType()));
         superCruiseJson.setSpeedCategory(String.valueOf(mSpeedLimitBuilder.getSpeedCategory()));
+        superCruiseJson.setUseDataMask(String.valueOf(mSpeedLimitBuilder.getUseDataMask()));
         final String json = GsonUtils.toJson(superCruiseJson);
         JsonLog.saveJsonToCache(AppCache.getInstance().getMContext(), json, "sc.json", "sendLinkData");
         Logger.d(TAG, "sendData: ", json);
