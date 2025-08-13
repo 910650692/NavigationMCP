@@ -93,13 +93,17 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
             }
         } else if (!ConvertUtils.isNull(mView)) {
             Logger.i(getClass().getSimpleName(), "addFragment");
-            mView.addFragment(fragment, bundle);
+            if (mView != null) {
+                mView.addFragment(fragment, bundle);
+            }
         }
     }
 
     @Override
     public void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment) {
-        mView.addFragment(fragment, bundle, isHideCurFragment);
+        if (mView != null) {
+            mView.addFragment(fragment, bundle, isHideCurFragment);
+        }
     }
 
     @Override
@@ -111,27 +115,37 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
 
     @Override
     public void closeFragment(final boolean nextShow) {
-        mView.closeFragment(nextShow);
+        if (mView != null) {
+            mView.closeFragment(nextShow);
+        }
     }
 
     @Override
     public void closeAllFragment() {
-        mView.closeAllFragment();
+        if (mView != null) {
+            mView.closeAllFragment();
+        }
     }
 
     @Override
     public void closeAllFragmentUpRoute() {
-        mView.closeAllFragmentUpRoute();
+        if (mView != null) {
+            mView.closeAllFragmentUpRoute();
+        }
     }
 
     @Override
     public void closeAllFragmentsUntilTargetFragment(final String className) {
-        mView.closeAllFragmentsUntilTargetFragment(className);
+        if (mView != null) {
+            mView.closeAllFragmentsUntilTargetFragment(className);
+        }
     }
 
     @Override
     public void closeTrafficEventFragment(boolean nextShow) {
-        mView.closeTrafficEventFragment(nextShow);
+        if (mView != null) {
+            mView.closeTrafficEventFragment(nextShow);
+        }
     }
 
     protected abstract M initModel();
