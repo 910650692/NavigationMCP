@@ -4390,4 +4390,6 @@
     <dimen name="phone_address_dialog_main_show_margin_start">530dp</dimen>
     <dimen name="phone_address_dialog_main_not_show_margin_start">655dp</dimen>
     <dimen name="phone_address_dialog_setting_show_margin_start">1100dp</dimen>
+    <dimen name="scene_rcv_collect_list_switch_visible_max_height">424.65dp</dimen>
+    <dimen name="scene_rcv_collect_list_switch_gone_max_height">478.23dp</dimen>
 </resources>
