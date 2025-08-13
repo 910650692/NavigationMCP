@@ -104,11 +104,10 @@
             clickCommand="@{naviParallel.mClickMainAuxiliary}"
             android:layout_width="@dimen/dp_251"
             android:layout_height="@dimen/dp_251"
-            android:layout_marginStart="@dimen/dp_m_82"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/sv_main_auxiliary"
+            app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
+            app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
+            app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary"
             app:layout_goneMarginStart="@dimen/dp_0"
             tools:background="@color/navi_color_FF595F_100" >
             <com.sgm.navi.ui.view.SkinImageView
