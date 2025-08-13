@@ -494,7 +494,7 @@ public final class SuperCruiseManager {
                         mSpeedLimitBuilder.setSpeedLimitAssured(false); // TODO 道路限速是false，其他是true
                         mSpeedLimitBuilder.setEffectSpeedLimit(0); // TODO 道路限速是0，其他是speedLimit
                         mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);// TODO 道路限速是0，其他是speedLimit
-                        mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN); // TODO 路标限速是1，其他是7
+                        mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN); // TODO 路标限速是1，其他是7
                     } else if (mEleEyeSpeedLimit == minSpeedLimit) {
                         mSpeedLimitBuilder.setSpeedLimitAssured(true);
                         mSpeedLimitBuilder.setEffectSpeedLimit(minSpeedLimit);
@@ -513,7 +513,7 @@ public final class SuperCruiseManager {
                     mSpeedLimitBuilder.setSpeedLimitAssured(false);
                     mSpeedLimitBuilder.setEffectSpeedLimit(0);
                     mSpeedLimitBuilder.setEffectiveSpeedCategory(NaviLinkProto.SpeedLimit.EffectiveSpeedCategoryEnum.EFFECTIVE_CATEGORY_UNKNOWN);
-                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.BY_TRAFFIC_SIGN);
+                    mSpeedLimitBuilder.setEffectiveSpeedType(NaviLinkProto.SpeedLimit.EffectiveSpeedTypeEnum.EFFECTIVE_UNKNOWN);
                     mSpeedLimitBuilder.setPostedSpeedLimit(0);
                     mSpeedLimitBuilder.setSpeedCategory(speed2SpeedCategoryEnum(0));
                 }
