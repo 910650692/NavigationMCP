@@ -83,7 +83,9 @@ import com.sgm.navi.service.define.search.ServiceAreaInfo;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
+import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
@@ -181,6 +183,16 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     }
 
 
+    @Override
+    public void addFragment(BaseFragment fragment, Bundle bundle) {
+        //算路界面开启导航时要先关闭自己再拉起导航界面，避免addFragment时资源已被释放
+        BaseActivity activity = (BaseActivity) StackManager.getInstance().isContainMainActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if (activity != null) {
+            activity.addFragment(fragment, bundle);
+        } else {
+            Logger.e(TAG, "activity is null");
+        }
+    }
 
     //------------右侧Tab***************************************************/
     /**
