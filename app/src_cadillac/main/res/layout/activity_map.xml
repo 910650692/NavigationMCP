@@ -302,7 +302,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_m_82"
                     android:focusable="false"
-                    android:visibility="@{ViewModel.mGoHomeVisible ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ViewModel.mGoHomeVisible &amp;&amp; ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
                     app:layout_constraintStart_toStartOf="@id/search_main_tab"
                     app:layout_constraintTop_toBottomOf="@id/search_main_tab"
                     tools:visibility="gone"/>
