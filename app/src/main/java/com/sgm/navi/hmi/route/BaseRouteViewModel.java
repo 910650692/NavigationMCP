@@ -1526,6 +1526,8 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mDetailsResustEntry = resultPoiInfoEntity;
         mRouteSearchName.set(requestPoiInfoEntity.getName());
         mRouteSearchAddress.set(requestPoiInfoEntity.getAddress());
+        mRouteSearchTimeAndDistance.set("");
+        mRouteSearchElec.set("");
         mModel.getTravelTimeFutureIncludeChargeLeft(new GeoPoint(requestPoiInfoEntity.getPoint().getLon(),
                         requestPoiInfoEntity.getPoint().getLat()))
                 .thenAccept(etaInfo -> {
@@ -1592,11 +1594,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mRouteSearchTypeVisibility.set(1);
                 mView.showPOIDetailGas(resultPoiInfoEntity);
             }
+            if (getCurrentPageUI() != 5) {
+                mCurrentPageHistory.add("5");
+                mIncludePageVisibility.set(getCurrentPageUI());
+            }
         });
-        if (getCurrentPageUI() != 5) {
-            mCurrentPageHistory.add("5");
-            mIncludePageVisibility.set(getCurrentPageUI());
-        }
+
     }
 
     /***
