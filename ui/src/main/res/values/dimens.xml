@@ -4116,6 +4116,8 @@
     <dimen name="launcher_position_top">0px</dimen>
     <dimen name="launcher_position_left">300px</dimen>
 
+    <!-- 后排屏CarLogo距离底部高度 -->
+    <dimen name="rear_screen_car_logo_bottom">339dp</dimen>
 
     <dimen name="navi_cadillac_cluster_navi_text_size">52px</dimen>
     <dimen name="navi_cadillac_cluster_navi_unit_size">44px</dimen>

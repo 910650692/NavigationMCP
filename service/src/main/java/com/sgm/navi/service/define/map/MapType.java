@@ -9,7 +9,7 @@ public enum MapType {
     HUD_MAP(7),
     CLUSTER_MAP(9),
     LAUNCHER_WIDGET_MAP(11),
-    REAR_SCREEN_MAP(13);//后排吸顶屏
+    REAR_SCREEN_MAP(3);//后排吸顶屏,暂时复用3
 
     @Getter
     private int mapType;

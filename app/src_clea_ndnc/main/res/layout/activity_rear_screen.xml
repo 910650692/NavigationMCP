@@ -153,6 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:includeFontPadding="false"
+                    android:text="@{viewModel.arrivalDay}"
                     android:textColor="@color/common_title_purple_color"
                     android:textSize="@dimen/sp_20"
                     android:translationY="@dimen/dp_25"

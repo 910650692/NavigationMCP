@@ -120,17 +120,15 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         if (mapTypeId == MapType.REAR_SCREEN_MAP) {
             LayerAdapter.getInstance().initLayer(MapType.REAR_SCREEN_MAP);
             Logger.d(TAG, "后排屏底图加载完成", mapTypeId.name());
-            mMapPackage.setMapCenter(mapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
-                    PositionPackage.getInstance().getLastCarLocation().getLatitude()));
+            gotoCarPosition();
             mLayerPackage.setCarPosition(mapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                     PositionPackage.getInstance().getLastCarLocation().getCourse()));
-            mMapPackage.goToCarPosition(mapTypeId);
             mLayerPackage.setCarMode(mapTypeId, mLayerPackage
                     .getCarModeType(MapType.MAIN_SCREEN_MAIN_MAP));
             mLayerPackage.initCarLogoByFlavor(mapTypeId,  BuildConfig.FLAVOR);
             mLayerPackage.setFollowMode(mapTypeId, true);
-            mMapPackage.switchMapMode(MapType.REAR_SCREEN_MAP, MapMode.UP_2D,false);
+            switchMapMode();
             mMapPackage.setZoomLevel(mapTypeId, MAP_ZOOM_LEVEL_DEFAULT);
             MapAdapter.getInstance().updateUiStyle(MapType.REAR_SCREEN_MAP, ThemeUtils.INSTANCE
                     .isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
@@ -182,7 +180,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)
                 || NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.LIGHT_NAVING)){
             Logger.d(TAG, "导航中显示导航路线");
-            mRoutePackage.showRouteLine(getMapId());
+            mRoutePackage.showOnlyOneRouteLine(getMapId());
         } else {
             Logger.d(TAG, "非导航中不显示导航路线");
             mRoutePackage.clearRouteLine(getMapId());
@@ -193,7 +191,8 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
     public void onNaviStart() {
         Logger.d(TAG, "onNaviStart");
         mViewModel.updateNaviStatus(true);
-        mRoutePackage.showRouteLine(getMapId());
+        switchMapMode();
+        mRoutePackage.showOnlyOneRouteLine(getMapId());
     }
 
     @Override
@@ -213,6 +212,8 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         Logger.d(TAG, "onNaviStop");
         mRoutePackage.clearRouteLine(getMapId());
         mViewModel.updateNaviStatus(false);
+        switchMapMode();
+        gotoCarPosition();
     }
 
     /**
@@ -309,7 +310,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         Logger.d(TAG, "onRouteDrawLine", "currentNaviStatus = ", currentNaviStatus);
         if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
-            mRoutePackage.showRouteLine(getMapId());
+            mRoutePackage.showOnlyOneRouteLine(getMapId());
         }
     }
 
@@ -345,7 +346,8 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         Logger.i(TAG, "showPreview");
         isPreview = true;
 //        openOrCloseImmersive(false);
-        mNaviPackage.setPreviewStatus(true);
+//        mNaviPackage.setPreviewStatus(true);
+        switchMapMode();
         mLayerPackage.setFollowMode(getMapId(), false);
         mRoutePackage.showPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
@@ -354,9 +356,28 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         Logger.i(TAG, "closePreview");
         isPreview = false;
 //        openOrCloseImmersive(true);
-        mNaviPackage.setPreviewStatus(false);
+//        mNaviPackage.setPreviewStatus(false);
+        switchMapMode();
         mLayerPackage.setFollowMode(getMapId(), true);
         mMapPackage.exitPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+    }
+
+    // 回自车位
+    private void gotoCarPosition() {
+        mMapPackage.setMapCenter(getMapId(), new GeoPoint(PositionPackage.getInstance()
+                .getLastCarLocation().getLongitude(), PositionPackage.getInstance()
+                .getLastCarLocation().getLatitude()));
+        mMapPackage.goToCarPosition(getMapId());
+        mMapPackage.setMapCenterInScreen(getMapId(), mViewModel.getLogoPosition()[0],
+                mViewModel.getLogoPosition()[1]);
+    }
+
+    private void switchMapMode() {
+        if (isNavigating() && !isPreview) {
+            mMapPackage.switchMapMode(MapType.REAR_SCREEN_MAP, MapMode.UP_2D,false);
+        } else {
+            mMapPackage.switchMapMode(MapType.REAR_SCREEN_MAP, MapMode.NORTH_2D,false);
+        }
     }
 
 }

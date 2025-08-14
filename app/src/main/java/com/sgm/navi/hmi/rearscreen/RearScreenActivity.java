@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
+import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.BR;
@@ -177,6 +178,19 @@ public class RearScreenActivity extends BaseActivity<ActivityRearScreenBinding, 
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, boolean isShowAutoAdd) {
         mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+    }
+
+    /***
+     * 获取车标屏幕中心点
+     */
+    public int[] getCarSelfPosition() {
+        final int screenHeight = ScreenUtils.Companion.getInstance().getRealScreenHeight(this);
+        final int bottom = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.rear_screen_car_logo_bottom);
+        int[] pos = new int[2];
+        pos[0] = mBinding.getRoot().getWidth() / 2;
+        pos[1] = mViewModel.isNavigating() ? bottom : screenHeight / 2;
+        Logger.d(TAG, "pos[0]:" + pos[0], "pos[1]:" + pos[1]);
+        return pos;
     }
 
 }

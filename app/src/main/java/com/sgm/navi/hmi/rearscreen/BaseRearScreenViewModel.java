@@ -62,7 +62,7 @@ public class BaseRearScreenViewModel extends BaseViewModel<RearScreenActivity, R
 
     private void initData() {
         updatePreviewStatus(false);
-        boolean isNavigating = mModel.isNavigating();
+        boolean isNavigating = isNavigating();
         updateNaviStatus(isNavigating);
         if (isNavigating) {
             updateEta(mModel.getCurrentNaviEtaInfo());
@@ -153,4 +153,11 @@ public class BaseRearScreenViewModel extends BaseViewModel<RearScreenActivity, R
         mModel.registerRearScreenMap();
     }
 
+    public boolean isNavigating() {
+        return mModel.isNavigating();
+    }
+
+    public int[] getLogoPosition() {
+        return mView.getCarSelfPosition();
+    }
 }

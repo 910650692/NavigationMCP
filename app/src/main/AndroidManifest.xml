@@ -111,6 +111,7 @@
 
         <activity
             android:name=".rearscreen.RearScreenActivity"
+            android:windowSoftInputMode="adjustPan"
             android:configChanges="uiMode|locale|layoutDirection|navigation|keyboardHidden"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -119,9 +120,12 @@
             android:theme="@style/RearScreenTheme"
             android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="com.sgm.navi.hmi.rearscreen.RearScreenActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="displayId"
+                android:value="5" />
         </activity>
 
         <meta-data
