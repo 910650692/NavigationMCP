@@ -315,6 +315,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             restoreLazySceneStatus();
             mViewModel.restoreNavigation();
             restoreSceneStatus();
+            HashMap<NaviSceneId, Integer> sceneStatus = mViewModel.getSceneStatus();
+            Integer status = sceneStatus.get(NaviSceneId.NAVI_SCENE_LAST_MILE);
+            mViewModel.mNaviLastMileVisibility.set(status == NaviSceneBase.SCENE_STATE_SHOW ? true : false);
         }
         mIs24HourFormat = getTimeFormatIs24Hour();
     }
