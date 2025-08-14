@@ -33,7 +33,7 @@ public class SettingPlateNumberFragment extends BaseFragment<FragmentSettingPlat
     public static final String CARMATCH =
             "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领][A-Z][A-Z0-9]{4}[A-Z0-9挂学警港澳]$";
     public static final String EVCARMATCH =
-            "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[A-HJ-K]$)|([A-HJ-K][A-HJ-NP-Z0-9][0-9]{4}$))";
+            "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽赣贵粤青藏川宁琼使领]{1}[A-Z]{1}(([0-9]{5}[A-HJ-K]$)|([A-HJ-K][A-HJ-NP-Z0-9][0-9]{4}$))";
     @Override
     public int onLayoutId() {
         return R.layout.fragment_setting_plate_number;

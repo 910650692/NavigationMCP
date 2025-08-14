@@ -282,6 +282,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             }
             Logger.d(TAG, "add fav itemId is: " + itemId);
             poiInfo.getFavoriteInfo().setItemId(itemId);
+            deleteFavoriteData(itemId);
             addFavoriteData(poiInfo, type);
         }
         if (type == 1 || type == 2) {
@@ -356,6 +357,44 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
                     .build();
             BuryPointController.getInstance().setBuryProps(buryProperty);
         }
+    }
+
+    /**
+     * 是否是家/公司,是否已收藏
+     *
+     * @param poiInfo
+     * @return string 如果是非空字符串就是有添加过
+     */
+    public String isHomeOrCompanyOrFavorite(final PoiInfoEntity poiInfo) {
+        String itemId = "";
+        itemId = isFavorite(poiInfo);
+        if (!TextUtils.isEmpty(itemId)) {
+            return itemId;
+        }
+        PoiInfoEntity homeFavoriteInfo = getHomeFavoriteInfo();
+        if (homeFavoriteInfo != null && homeFavoriteInfo.getPid() == poiInfo.getPid()) {
+            if (homeFavoriteInfo.getFavoriteInfo() == null || TextUtils.isEmpty(homeFavoriteInfo
+                    .getFavoriteInfo().getItemId())) {
+                itemId = homeFavoriteInfo.getPid();
+            } else {
+                itemId = homeFavoriteInfo.getFavoriteInfo().getItemId();
+            }
+            if (!TextUtils.isEmpty(itemId)) {
+                return itemId;
+            }
+        }
+        PoiInfoEntity companyFavoriteInfo = getCompanyFavoriteInfo();
+        if (companyFavoriteInfo != null && companyFavoriteInfo.getPid() == poiInfo.getPid()) {
+            if (companyFavoriteInfo.getFavoriteInfo() == null || TextUtils.isEmpty(companyFavoriteInfo.getFavoriteInfo().getItemId())) {
+                itemId = companyFavoriteInfo.getPid();
+            } else {
+                itemId = companyFavoriteInfo.getFavoriteInfo().getItemId();
+            }
+            if (!TextUtils.isEmpty(itemId)) {
+                return itemId;
+            }
+        }
+        return itemId;
     }
 
     /**
@@ -642,7 +681,6 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
     public void deleteFavoriteDataByType(final int favoriteType) {
         mManager.deleteByFavoriteType(favoriteType);
     }
-
 
     /**
      * 查找 itemId 对应的本地数据是否为收藏点
