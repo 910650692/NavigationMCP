@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_52"
                 android:text="@string/navi_send"
-                android:textColor="@color/navi_color_000000_100"
+                android:textColor="@color/navi_color_2461EA_100"
                 android:textSize="@dimen/sp_52"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
