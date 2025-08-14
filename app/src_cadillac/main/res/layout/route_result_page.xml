@@ -478,16 +478,6 @@
                             tools:text="设置车牌，避开限行"
                             tools:textColor="#DDFF0000" />
 
-                        <com.sgm.navi.ui.view.SkinImageView
-                            android:layout_width="@dimen/dp_45"
-                            android:layout_height="@dimen/dp_45"
-                            android:focusable="false"
-                            android:src="@drawable/img_right_back"
-                            android:visibility="@{ViewModel.getRestrictionRightBackVisibility() ? View.VISIBLE : View.GONE}"
-                            app:layout_constraintBottom_toBottomOf="@+id/route_line_info_scene_route_restriction"
-                            app:layout_constraintStart_toEndOf="@+id/route_line_info_scene_route_restriction_text"
-                            app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
-
                     </com.sgm.navi.ui.view.SkinConstraintLayout>
 
                 </com.sgm.navi.ui.view.SkinConstraintLayout>
