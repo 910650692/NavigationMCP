@@ -14,8 +14,8 @@ public class HudMapConfigUtil {
     private static final int IS_CADILLAC = 2;
 
 //    private  int HUD_MAP_SIZE_WIDTH = 260;
-    private  int HUD_MAP_SIZE_WIDTH = 300;
-    private  int HUD_MAP_SIZE_HEIGHT = 226;
+    private  int HUD_MAP_SIZE_WIDTH = 210;
+    private  int HUD_MAP_SIZE_HEIGHT = 210;
 
 
     private  int HUD_MAP_ONE_SIZE_WIDTH = 328;
