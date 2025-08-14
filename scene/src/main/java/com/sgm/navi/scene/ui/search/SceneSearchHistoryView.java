@@ -198,6 +198,11 @@ public class SceneSearchHistoryView extends BaseSceneView<MainAlongWaySearchHist
                 poiInfoEntity.setAddress(history.getMAddress());
                 poiInfoEntity.setPoiType(RoutePoiType.ROUTE_POI_TYPE_END);
                 poiInfoEntity.setPid(history.getMPoiId());
+                if (ConvertUtils.isEmpty(poiInfoEntity.getPid())) {
+                    final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
+                    poiInfoEntity.setPid(historyPoint.getLon() + "_"
+                            + historyPoint.getLat());
+                }
                 final int commonName = mSearchResultAdapter.getHomeCompanyType();
                 final GeoPoint historyPoint = parseGeoPoint(history.getMEndPoint());
                 final GeoPoint geoPoint = new GeoPoint();
