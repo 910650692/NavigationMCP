@@ -10,12 +10,12 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="@dimen/dp_1600"
             android:layout_height="@dimen/dp_500"
+            android:layout_marginStart="@dimen/dp_310"
+            android:layout_marginBottom="@dimen/dp_180"
             android:background="@drawable/startup_exception_bg_dialog"
             android:elevation="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/tv_title"
