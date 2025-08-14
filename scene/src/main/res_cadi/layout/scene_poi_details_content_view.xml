@@ -43,8 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_poi_main_tab"
-                android:paddingVertical="@dimen/dp_90"
                 android:visibility="gone"
+                android:minHeight="@dimen/dp_464"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:visibility="gone">
@@ -97,7 +97,7 @@
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_48"
-                    android:layout_marginEnd="@dimen/dp_36"
+                    android:layout_marginEnd="@dimen/dp_52"
                     android:src="@drawable/icon_poi_details_close"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
