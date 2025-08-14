@@ -348,7 +348,9 @@ public interface IVrBridgeConstant {
         String CANT_OPEN_HISTORY_NAVI = "导航中无法打开收藏地址";
 
         String NOT_SUPPORT_FILTER_TYPE = "不支持的筛选类型";
-        String ALREADY_CLOSE_MAP = "已为你关闭地图";
+
+        String ALREADY_OPEN_MAP = "地图已打开";
+        String ALREADY_CLOSE_MAP = "地图已关闭";
 
         String NOT_SUPPORT_TEAM = "不支持组队相关功能";
 

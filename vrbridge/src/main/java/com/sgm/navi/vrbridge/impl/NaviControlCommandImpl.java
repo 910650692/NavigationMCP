@@ -2196,6 +2196,11 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         switch (action) {
             case IVrBridgeConstant.MapToggleAction.OPEN:
                 MapStateManager.getInstance().openMapWhenBackground();
+                if (null != respCallback) {
+                    final CallResponse response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ALREADY_OPEN_MAP);
+                    response.setNeedPlayMessage(true);
+                    respCallback.onResponse(response);
+                }
                 break;
             case IVrBridgeConstant.MapToggleAction.CLOSE:
                 closeMap(respCallback);
