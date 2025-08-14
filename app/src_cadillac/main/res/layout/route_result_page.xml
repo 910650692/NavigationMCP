@@ -571,6 +571,7 @@
                 android:layout_width="@dimen/dp_820"
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_138"
+                android:paddingBottom="@dimen/dp_34"
                 android:background="@drawable/bg_route_result_left_right"
                 android:focusable="false"
                 android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.VISIBLE : View.GONE}"
