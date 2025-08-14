@@ -75,6 +75,7 @@ public final class VoiceSearchManager {
     private SparseArray<SingleDestInfo> mGenericsDestList; //多目的地泛型点集合
     private int mProcessDestIndex = -1; //当前正在处理的多目的地下标
     private SparseArray<PoiInfoEntity> mMultiplePoiArray; //多目的地途径点和目的地集合
+    private boolean mContainGenerics = false; //是否包含泛型点触发poiSelect，不同点回复路线结果不同
 
     private String mPoiType; //地址类型，用于设置家、公司、普通点
 
@@ -155,6 +156,7 @@ public final class VoiceSearchManager {
         mGenericsDestList = new SparseArray<>();
         mMultiplePoiArray = new SparseArray<>();
         mCenterPoint = null;
+        mContainGenerics = false;
     }
 
     private final SearchResultCallback mSearchCallback = new SearchResultCallback() {
@@ -931,8 +933,13 @@ public final class VoiceSearchManager {
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "multipleDest viaSize:", size);
             }
-            //规划路线
-            mPlanRouteResult = 2;
+            //回调路线规划结果和数量
+            if (mContainGenerics) {
+                mContainGenerics = false;
+                mPlanRouteResult = 1;
+            } else {
+                mPlanRouteResult = 2;
+            }
             planRoute(endPoi, viaList);
         }
     }
@@ -1170,6 +1177,7 @@ public final class VoiceSearchManager {
                 break;
             case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
                 //选中的点为泛型poi，继续处理下一个点
+                mContainGenerics = true;
                 dealNextMultipleDest(poiInfo);
                 break;
             case IVrBridgeConstant.VoiceSearchType.ALONG_WAY:
