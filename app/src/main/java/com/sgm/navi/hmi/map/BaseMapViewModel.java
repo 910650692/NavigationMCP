@@ -5,6 +5,7 @@ import static com.sgm.navi.service.MapDefaultFinalTag.SEARCH_HMI_TAG;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.MotionEvent;
@@ -150,7 +151,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public ObservableField<Boolean> musicTabVisibility;
     public ObservableField<Boolean> sRVisible;
-    public ObservableField<Boolean> mIsFullScreen;
+    public ObservableField<Drawable> mIsFullScreen;
     public ObservableField<Boolean> mIsChangingConfigurations;
     public ObservableField<Boolean> mIsContinueNaviNotified;
 
@@ -195,7 +196,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         cruiseLanesVisibility = new ObservableField<>(false);
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
-        mIsFullScreen = new ObservableField<>(true);
+        mIsFullScreen = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(getSwitchId()));
         musicTabVisibility = new ObservableField<>(false);
         mIsChangingConfigurations = new ObservableField<>(false);
         mIsContinueNaviNotified = new ObservableField<>(false);
@@ -1775,7 +1776,19 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         );
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         sRVisible.set(judgedSRVisibility());
-        mIsFullScreen.set(ScreenTypeUtils.getInstance().isFullScreen());
+        mIsFullScreen.set(ResourceUtils.Companion.getInstance().getDrawable(getSwitchId()));
+    }
+
+    public void reSetSwitchIcon() {
+        mIsFullScreen.set(ResourceUtils.Companion.getInstance().getDrawable(getSwitchId()));
+    }
+
+    private int getSwitchId() {
+        if (ScreenTypeUtils.getInstance().is557CarMode()) {
+            return ScreenTypeUtils.getInstance().isFullScreen() ? R.drawable.map_switch_sr_557 : R.drawable.map_sr_557;
+        } else {
+            return ScreenTypeUtils.getInstance().isFullScreen() ? R.drawable.map_switch_sr : R.drawable.map_sr;
+        }
     }
 
     public void toSetCarPosition() {

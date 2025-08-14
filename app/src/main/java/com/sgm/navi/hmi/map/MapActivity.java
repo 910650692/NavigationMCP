@@ -114,6 +114,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
+        mViewModel.reSetSwitchIcon();
     }
 
     private void updateTimeText() {

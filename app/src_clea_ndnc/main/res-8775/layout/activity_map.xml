@@ -350,7 +350,7 @@
             android:gravity="center"
             android:textSize="@dimen/sp_30"
             android:textColor="@color/white_always"
-            android:background="@{ViewModel.mIsFullScreen ? @drawable/map_switch_sr : @drawable/map_sr}"
+            android:background="@{ViewModel.mIsFullScreen}"
             clickCommand="@{ViewModel.switchSr}"
             android:visibility="@{ViewModel.sRVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
