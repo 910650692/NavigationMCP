@@ -771,7 +771,20 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final String newText = getContext().getString(R.string.business_hour,
                     mIsBusinessTimeExpanded ? mPoiInfoEntity.getBusinessTime() : businessTimes[0]).replaceAll("[;；,，]","\n");
 
-            businessTime.setText(newText);
+            // 计算前缀文字宽度
+            final String prefix = getContext().getString(R.string.business_hour, "").replace("%s", "");
+            final float prefixWidth = businessTime.getPaint().measureText(prefix);
+            final SpannableString spannable = new SpannableString(newText);
+            final int newLinePos = newText.indexOf("\n");
+            if (newLinePos >= 0) {
+                spannable.setSpan(
+                        new LeadingMarginSpan.Standard((int) prefixWidth, 0),
+                        newLinePos + 1,
+                        newText.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+            businessTime.setText(spannable);
             businessTimeIconView.setImageResource(
                     mIsBusinessTimeExpanded ? R.drawable.img_up_48 : R.drawable.img_under_the_48);
         });
