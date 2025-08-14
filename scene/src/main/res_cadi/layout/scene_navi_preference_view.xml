@@ -23,20 +23,21 @@
             android:layout_width="@dimen/dp_820"
             android:layout_height="match_parent"
             android:focusable="false"
+            android:paddingBottom="@dimen/dp_32"
+            android:paddingTop="@dimen/dp_53"
             android:scrollbars="none">
             <!--算路偏好-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="false"
-                android:paddingTop="@dimen/dp_32"
-                android:paddingBottom="@dimen/dp_32">
+                android:focusable="false">
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:id="@+id/stv_route_preference_selected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:focusable="false"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="@dimen/dp_40"
@@ -49,6 +50,7 @@
                     android:id="@+id/siv_preference_close"
                     android:layout_width="@dimen/dp_54"
                     android:layout_height="@dimen/dp_54"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="@+id/stv_route_preference_selected"
                     app:layout_constraintBottom_toBottomOf="@+id/stv_route_preference_selected"
                     app:layout_constraintStart_toEndOf="@+id/stv_route_preference_selected"
@@ -62,7 +64,6 @@
                     clickCommand="@{() -> Scene.preferenceRecommend(1)}"
                     android:layout_width="@dimen/dp_740"
                     android:layout_height="@dimen/dp_120"
-                    android:layout_marginTop="@dimen/dp_94"
                     android:background="@drawable/navi_selector_preference_nol_mfc"
                     android:gravity="center"
                     android:text="@string/route_preference_recommend"
@@ -182,11 +183,24 @@
             </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.sgm.navi.ui.view.SkinScrollView>
 
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/sv_bar"
+            android:layout_width="@dimen/dp_186"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_14"
+            android:focusable="false"
+            android:background="@drawable/bg_navi_control_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.sgm.navi.scene.ui.navi.view.SwipeView
             android:id="@+id/sv_bar_area"
-            android:layout_width="@dimen/dp_166"
+            android:layout_width="@dimen/dp_186"
             android:layout_height="@dimen/dp_30"
-            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_14"
+            android:visibility="visible"
+            android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
