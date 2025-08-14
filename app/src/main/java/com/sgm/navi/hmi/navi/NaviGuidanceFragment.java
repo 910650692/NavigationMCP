@@ -792,7 +792,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         Logger.i(TAG, "onHiddenChanged = " + hidden);
         if (!hidden) {
             if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
-                mBinding.sceneNaviCrossImage.hideLayerCross();
+                mBinding.sceneNaviCrossImage.showLayerCross();
             }
             if (null != mViewModel) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
@@ -805,7 +805,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             }
         } else {
             if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
-                mBinding.sceneNaviCrossImage.showLayerCross();
+                mBinding.sceneNaviCrossImage.hideLayerCross();
             }
         }
     }
