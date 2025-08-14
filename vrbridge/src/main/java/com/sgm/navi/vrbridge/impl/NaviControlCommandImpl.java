@@ -1740,7 +1740,12 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onBroadcastSwitch: mode = ", mode);
         }
+
         MapStateManager.getInstance().openMapWhenBackground();
+        final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
+        if (muteMode == 1) {
+            NaviPackage.getInstance().setMute(false);
+        }
 
         final CallResponse callResponse;
         //映射设置功能包

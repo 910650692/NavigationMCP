@@ -109,8 +109,14 @@ public final class MapStateManager {
         mCurNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
         updateNaviStatus(mCurNaviStatus);
 
+        //播报是否静音
+        final int muteMode = SettingPackage.getInstance().getConfigKeyMute();
+        if (muteMode == 1) {
+            mBuilder.setMute(true);
+        } else {
+            mBuilder.setMute(false);
+        }
         // 播报模式只支持详细、简洁、极简
-        mBuilder.setMute(false);
         final int broadcastMode = SettingPackage.getInstance().getConfigKeyBroadcastMode();
         updateBroadcastMode(broadcastMode);
 
@@ -282,6 +288,21 @@ public final class MapStateManager {
                     break;
                 case SettingController.KEY_SETTING_VOICE_MUTE:
                     //播报静音-静音状态不涉及播报模式
+                    if (Logger.openLog) {
+                        Logger.d(IVrBridgeConstant.TAG, "current muteMode", value);
+                    }
+                    switch (value) {
+                        case SettingController.VALUE_VOICE_MUTE_ON:
+                            //声音打开
+                            mBuilder.setMute(false);
+                            break;
+                        case SettingController.VALUE_VOICE_MUTE_OFF:
+                            //声音关闭
+                            mBuilder.setMute(true);
+                            break;
+                        default:
+                            return;
+                    }
                     break;
                 case SettingController.KEY_SETTING_GUIDE_ROUTE_PREFERENCE:
                     //路线偏好

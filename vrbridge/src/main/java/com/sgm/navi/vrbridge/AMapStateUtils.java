@@ -57,16 +57,8 @@ final public class AMapStateUtils {
                 if (data.has("mCurrMapMode")) {
                     map.put(NaviStateCons.KEY_PERSPECTIVE_MODE, data.optInt("mCurrMapMode"));
                 }
-                boolean isMute = false;
-                if (data.has("mIsMute")) {
-                    isMute = data.optBoolean("mIsMute");
-                    if (isMute) {
-                        map.put(NaviStateCons.KEY_BROADCAST_MODE, 2);
-                    }
-                }
                 if (data.has("mBroadcastMode")) {
-                    map.put(NaviStateCons.KEY_BROADCAST_MODE, isMute ? 2
-                            : data.optInt("mBroadcastMode"));
+                    map.put(NaviStateCons.KEY_BROADCAST_MODE, data.optInt("mBroadcastMode"));
                 }
                 if (data.has("mPathCount")) {
                     map.put(NaviStateCons.KEY_PLANE_ROUTE_NUM, data.optInt("mPathCount"));
@@ -204,6 +196,9 @@ final public class AMapStateUtils {
         }
         if (data.has("mHasPrivacyPermission")) {
             map.put(NaviStateCons.KEY_PRIVACY_ACCEPTED, data.optBoolean("mHasPrivacyPermission"));
+        }
+        if (data.has("mIsMute")) {
+            map.put(NaviStateCons.KEY_IS_MUTE, data.optBoolean("mIsMute"));
         }
     }
 
