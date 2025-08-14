@@ -220,11 +220,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             Logger.e(TAG, "mModel is null, return");
             return;
         }
-        if (!mModel.isAllowSGMAgreement()) {
-            checkAgreementRights();
-        } else if (mModel.isFirstLauncher()) {
-            popAgreementDialog();
-        } else if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
+        checkAgreementRights();
+        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
             mModel.checkAuthorizationExpired();
         }
     }

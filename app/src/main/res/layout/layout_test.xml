@@ -57,6 +57,20 @@
                 app:layout_constraintTop_toBottomOf="@id/close" />
 
             <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/clean_sgm_protocol"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:background="@color/white"
+                android:padding="@dimen/dp_16"
+                android:text="清除上汽协议状态"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/clean_activate" />
+
+            <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_calibration"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -68,7 +82,7 @@
                 android:textSize="@dimen/sp_20"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/clean_activate" />
+                app:layout_constraintTop_toBottomOf="@id/clean_sgm_protocol" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/test_signal"

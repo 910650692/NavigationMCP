@@ -34,6 +34,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.define.engine.GaodeLogLevel;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
 import com.sgm.navi.service.logicpaket.engine.EnginePackage;
 import com.sgm.navi.service.logicpaket.hud.HudPackage;
@@ -41,6 +42,7 @@ import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 import com.sgm.navi.service.logicpaket.recorder.RecorderPackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
+import com.sgm.navi.service.utils.AgreementManager;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -163,6 +165,13 @@ public class TestWindow {
     }
 
     private void initAction() {
+        mBinding.cleanSgmProtocol.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AgreementPackage.getInstance().allowSGMAgreement(false);
+            }
+        });
+
         mBinding.cleanActivate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
