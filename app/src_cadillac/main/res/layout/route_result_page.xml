@@ -342,7 +342,7 @@
                         style="@style/style_mfc_config"
                         android:id="@+id/route_line_info_tv_prefer_bg"
                         clickCommand="@{ViewModel.getPreferenceClick()}"
-                        android:layout_width="@dimen/dp_420"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_74"
                         android:layout_marginStart="@dimen/dp_20"
                         android:nextFocusForward="@id/route_line_info_switch_energy_bg"
