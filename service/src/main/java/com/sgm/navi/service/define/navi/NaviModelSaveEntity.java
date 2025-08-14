@@ -3,6 +3,7 @@ package com.sgm.navi.service.define.navi;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NaviModelSaveEntity {
     private SpeedOverallEntity mSpeedOverallEntity;
@@ -20,6 +21,7 @@ public class NaviModelSaveEntity {
     private List<PoiInfoEntity> mHangingCardPoiList;
     private HandCardType mHandCardType;
     private List<FyElecVehicleETAInfo> mFyElecVehicleETAInfos;
+    private Object mChargeTipEntity;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;
@@ -139,5 +141,13 @@ public class NaviModelSaveEntity {
 
     public void setFyElecVehicleETAInfos(List<FyElecVehicleETAInfo> mFyElecVehicleETAInfos) {
         this.mFyElecVehicleETAInfos = mFyElecVehicleETAInfos;
+    }
+
+    public Object getChargeTipEntity() {
+        return mChargeTipEntity;
+    }
+
+    public void setChargeTipEntity(final Object mChargeTipEntity) {
+        this.mChargeTipEntity = mChargeTipEntity;
     }
 }

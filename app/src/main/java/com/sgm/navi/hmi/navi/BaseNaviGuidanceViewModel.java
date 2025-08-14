@@ -567,7 +567,9 @@ public class BaseNaviGuidanceViewModel extends
      * @param entity
      */
     public void notifyBatteryWarning(ChargeTipEntity entity) {
-        mView.notifyBatteryWarning(entity);
+        if (mView != null) {
+            mView.notifyBatteryWarning(entity);
+        }
     }
 
     /**
@@ -849,6 +851,12 @@ public class BaseNaviGuidanceViewModel extends
                 onUpdateElectVehicleETAInfo(infos);
             }
         }
+        if (Boolean.TRUE.equals(mNaviChargeTipVisibility.get())) {
+            Object chargeTipEntity = mModelSaveEntity.getChargeTipEntity();
+            if ((chargeTipEntity instanceof ChargeTipEntity)) {
+                notifyBatteryWarning((ChargeTipEntity) chargeTipEntity);
+            }
+        }
     }
 
     public void onCurrentRoadSpeed(int speed) {
@@ -999,6 +1007,12 @@ public class BaseNaviGuidanceViewModel extends
     public void closeNavi() {
         if (mView != null) {
             mView.closeNavi();
+        }
+    }
+
+    public void setChargeTipEntity(Object chargeTipEntity) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setChargeTipEntity(chargeTipEntity);
         }
     }
 }

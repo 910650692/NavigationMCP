@@ -16,6 +16,7 @@ import com.sgm.navi.service.define.search.SearchResultEntity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public interface ISceneCallback {
 
@@ -260,4 +261,6 @@ public interface ISceneCallback {
     }
 
     default void saveHandingCardDetail(List<PoiInfoEntity> infoEntities, HandCardType type) {}
+
+    default void setChargeTipEntity(Object chargeTipEntity) {}
 }

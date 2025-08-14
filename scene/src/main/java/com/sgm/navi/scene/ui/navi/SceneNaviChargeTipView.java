@@ -128,6 +128,9 @@ public class SceneNaviChargeTipView extends NaviSceneBase<SceneNaviChargeTipView
     public void updateUi(final ChargeTipEntity entity) {
         Logger.i(TAG, "entity:", entity, " mViewBinding:", mViewBinding);
         this.mEntity = entity;
+        if (mISceneCallback != null) {
+            mISceneCallback.setChargeTipEntity(entity);
+        }
         if (entity == null) {
             return;
         }

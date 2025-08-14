@@ -1793,6 +1793,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
     }
 
+    @Override
+    public void setChargeTipEntity(Object chargeTipEntity) {
+        if (mViewModel != null) {
+            mViewModel.setChargeTipEntity(chargeTipEntity);
+        }
+    }
+
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
         if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
