@@ -675,13 +675,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex1 = position;
                 refreshLocalInfoListCheckedState(0, mCurrentSelectedIndex1);
                 mFilterOneChildAdapter.setCategoryList(childList);
-                mViewBinding.searchFilterView.searchFilterScrollview.post(()
-                        -> {
-                    if (mViewBinding != null) {
-                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
-                                mViewBinding.searchFilterView.searchFilterList1Child.getBottom());
-                    }
-                });
+//                mViewBinding.searchFilterView.searchFilterScrollview.post(()
+//                        -> {
+//                    if (mViewBinding != null) {
+//                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
+//                                mViewBinding.searchFilterView.searchFilterList1Child.getBottom());
+//                    }
+//                });
             }
         });
         mFilterTwoAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
@@ -704,13 +704,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex2 = position;
                 refreshLocalInfoListCheckedState(1, mCurrentSelectedIndex2);
                 mFilterTwoChildAdapter.setCategoryList(childList);
-                mViewBinding.searchFilterView.searchFilterScrollview.post(()
-                        -> {
-                    if (mViewBinding != null) {
-                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
-                                mViewBinding.searchFilterView.searchFilterList2Child.getBottom());
-                    }
-                });
+//                mViewBinding.searchFilterView.searchFilterScrollview.post(()
+//                        -> {
+//                    if (mViewBinding != null) {
+//                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
+//                                mViewBinding.searchFilterView.searchFilterList2Child.getBottom());
+//                    }
+//                });
             }
         });
         mFilterThreeAdapter.setFilterItemClickListener(new IOnFilterItemClickListener() {
@@ -734,13 +734,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 refreshLocalInfoListCheckedState(2, mCurrentSelectedIndex3);
                 mFilterThreeChildAdapter.setCharge(!ConvertUtils.isEmpty(getEditText()) && getEditText().startsWith("充电站"));
                 mFilterThreeChildAdapter.setCategoryList(childList);
-                mViewBinding.searchFilterView.searchFilterScrollview.post(()
-                        -> {
-                    if (mViewBinding != null) {
-                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
-                                mViewBinding.searchFilterView.searchFilterList3Child.getBottom());
-                    }
-                });
+//                mViewBinding.searchFilterView.searchFilterScrollview.post(()
+//                        -> {
+//                    if (mViewBinding != null) {
+//                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
+//                                mViewBinding.searchFilterView.searchFilterList3Child.getBottom());
+//                    }
+//                });
             }
         });
 
@@ -764,13 +764,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 mCurrentSelectedIndex4 = position;
                 refreshLocalInfoListCheckedState(3, mCurrentSelectedIndex4);
                 mFilterFourChildAdapter.setCategoryList(childList);
-                mViewBinding.searchFilterView.searchFilterScrollview.post(()
-                        -> {
-                    if (mViewBinding != null) {
-                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
-                                mViewBinding.searchFilterView.searchFilterList4Child.getBottom());
-                    }
-                });
+//                mViewBinding.searchFilterView.searchFilterScrollview.post(()
+//                        -> {
+//                    if (mViewBinding != null) {
+//                        mViewBinding.searchFilterView.searchFilterScrollview.smoothScrollTo(0,
+//                                mViewBinding.searchFilterView.searchFilterList4Child.getBottom());
+//                    }
+//                });
             }
         });
 
