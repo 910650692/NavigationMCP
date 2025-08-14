@@ -93,7 +93,7 @@
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_cross"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_453"
                     android:scaleType="fitXY"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
@@ -103,7 +103,6 @@
                     android:id="@+id/scene_navi_eta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/iv_cross" />
 
@@ -123,12 +122,6 @@
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                     app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_30"
-                    app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
-                    app:layout_constraintTop_toBottomOf="@id/scene_navi_lanes" />
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.sgm.navi.ui.view.SkinCardView>
