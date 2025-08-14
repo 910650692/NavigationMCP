@@ -253,8 +253,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_LABLE_ROADNAME_ON, true);
         //显示3D建筑
         getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_BUILD_MODEL_ON, true);
-        //设置简易三维开
-        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_SIMPLE3D_ON, true);
+        //设置简易三维关
+        getMapview().getOperatorBusiness().setMapViewState(MapViewStateType.MAP_VIEWSTATE_IS_SIMPLE3D_ON, false);
         // 显示开放图层
         getMapview().getOperatorBusiness().showOpenLayer(OpenLayerID.OpenLayerIDRouteTraffic, MapType.HUD_MAP != mapType);
         //设置地形阴影图开
