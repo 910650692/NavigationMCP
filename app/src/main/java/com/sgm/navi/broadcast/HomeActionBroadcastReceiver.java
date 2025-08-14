@@ -52,6 +52,8 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
                     Logger.w(TAG, "Current activity is not MapActivity or is null");
                 }
             }
+        }else if ((intent.getAction().equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName != null)){
+            FloatViewManager.getInstance().hideAllCardWidgets(false);
         }
     }
 
