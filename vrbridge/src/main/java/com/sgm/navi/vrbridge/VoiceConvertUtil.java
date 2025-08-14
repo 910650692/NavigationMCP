@@ -40,22 +40,22 @@ public final class VoiceConvertUtil {
         }
 
         for (PoiInfoEntity poiInfo : poiInfoEntityList) {
-            if (null == poiInfo || TextUtils.isEmpty(poiInfo.getPid())) {
+            if (null == poiInfo || null == poiInfo.getPoint()) {
                 continue;
             }
 
             final PoiBean poiBean = new PoiBean();
             poiBean.setName(poiInfo.getName());
             poiBean.setAddress(poiInfo.getAddress());
-            poiBean.setUid(poiInfo.getPid());
             final GeoPoint geoPoint = poiInfo.getPoint();
-            if (null != geoPoint) {
-                poiBean.setLongitude(geoPoint.getLon());
-                poiBean.setLatitude(geoPoint.getLat());
+            if (TextUtils.isEmpty(poiInfo.getPid())) {
+                poiBean.setUid(geoPoint.getLon() + "_" + geoPoint.getLat());
+            } else {
+                poiBean.setUid(poiInfo.getPid());
             }
 
             final String distance = poiBean.getDistance();
-            if (null != geoPoint && (TextUtils.isEmpty(distance) || ZERO_DIST.equals(distance))) {
+            if (TextUtils.isEmpty(distance) || ZERO_DIST.equals(distance)) {
                 poiBean.setDistance(formatDistance(geoPoint));
             } else {
                 poiBean.setDistance(poiBean.getDistance());
