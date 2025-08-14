@@ -12,16 +12,15 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_828"
+        android:layout_height="wrap_content"
         android:focusable="false"
-        android:paddingStart="@dimen/dp_56"
         android:paddingRight="@dimen/dp_40"
-        android:paddingBottom="@dimen/dp_30">
+        android:paddingBottom="@dimen/dp_6">
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_header"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_148"
+            android:layout_height="@dimen/dp_152"
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,8 +29,10 @@
             android:id="@+id/route_details_list_img_header"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_55"
             android:focusable="false"
             android:src="@drawable/circle_dot_green"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_header"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header" />
 
@@ -43,7 +44,6 @@
             android:text="@string/route_details_list_header"
             android:textColor="@color/floating_search_item_night"
             android:textSize="@dimen/sp_46"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_header"
             app:layout_constraintStart_toEndOf="@id/route_details_list_img_header"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_header" />
@@ -61,8 +61,9 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_details_list_bg_footer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_148"
+            android:layout_height="@dimen/dp_152"
             android:focusable="false"
+            app:layout_constraintTop_toBottomOf="@+id/route_detail_result_list"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -70,8 +71,10 @@
             android:id="@+id/route_details_list_img_footer"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_55"
             android:focusable="false"
             android:src="@drawable/circle_dot_red"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer" />
 
@@ -86,7 +89,6 @@
             android:maxLines="1"
             android:textColor="@color/floating_search_item_night"
             android:textSize="@dimen/sp_46"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/route_details_list_bg_footer"
             app:layout_constraintStart_toEndOf="@id/route_details_list_img_footer"
             app:layout_constraintTop_toTopOf="@id/route_details_list_bg_footer"

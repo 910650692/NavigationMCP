@@ -17,15 +17,19 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:id="@+id/item_root_view"
         style="@style/style_mfc_config"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
+        <com.sgm.navi.ui.view.SkinView
+            android:id="@+id/item_root_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_168"
+            />
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg"
-            android:layout_width="@dimen/dp_60"
+            android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_168"
             android:focusable="false"
             android:outlineSpotShadowColor="@color/bg_route_shadow_list"
@@ -35,18 +39,20 @@
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_detail_info_item_img_bg_view"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:focusable="false"
             app:layout_constraintBottom_toBottomOf="@+id/item_root_view"
             app:layout_constraintTop_toTopOf="@+id/item_root_view" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginStart="@dimen/dp_24"
             android:focusable="false"
             android:src="@drawable/img_tbt_exit_hud_sou2"
+            app:layout_constraintStart_toStartOf="@+id/route_detail_info_item_img_bg"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
@@ -54,54 +60,50 @@
             android:id="@+id/route_detail_info_item_cbx"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_34"
             android:background="@drawable/route_details_selector"
             android:button="@null"
             android:clickable="false"
             android:focusable="false"
             app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintEnd_toEndOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@+id/route_detail_info_item_img_bg" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_road_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_34"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_128"
             android:layout_marginTop="@dimen/dp_24"
             android:focusable="false"
             android:textColor="@color/floating_search_item_night"
             android:textSize="@dimen/sp_46"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
             app:layout_constraintTop_toTopOf="@+id/item_root_view"
             tools:text="晨晖路" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_description"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_34"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_128"
             android:layout_marginBottom="@dimen/dp_20"
             android:focusable="false"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
             app:layout_constraintBottom_toBottomOf="@+id/item_root_view"
-            app:layout_constraintStart_toEndOf="@id/route_detail_info_item_img_bg"
-            app:layout_constraintTop_toBottomOf="@+id/route_detail_info_item_road_name"
+            app:layout_constraintStart_toStartOf="@id/route_detail_info_item_img_bg"
             tools:text="42米 红绿灯1个" />
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/route_detail_info_item_img_updown"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
-            android:layout_marginEnd="@dimen/dp_40"
             android:src="@drawable/img_route_down"
             android:focusable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@id/route_detail_info_item_img_bg"
+            app:layout_constraintEnd_toEndOf="@+id/item_root_view"
+            app:layout_constraintTop_toTopOf="@id/route_detail_info_item_img_bg" />
 
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/route_detail_info_item_recyclerView"
