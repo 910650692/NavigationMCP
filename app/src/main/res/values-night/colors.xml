@@ -67,8 +67,8 @@
     <color name="main_map_limit_loading">#B3FFFFFF</color>
     <color name="main_map_limit_loading_color">#1D59C3</color>
     <color name="main_map_limit_loading_stroke_color">#2C2D36</color>
-    <color name="main_map_limit_retry_button_color">#FF1D59C3</color>
-    <color name="main_map_limit_current_city_color">#FF007BFF</color>
+    <color name="main_map_limit_retry_button_color">#FF005CFF</color>
+    <color name="main_map_limit_current_city_color">#FF005CFF</color>
     <color name="main_map_limit_button_color">#FF2C2D36</color>
     <color name="main_map_limit_restricted">#9E171A</color>
     <color name="main_map_limit_restricted_background">#802C2F38</color>

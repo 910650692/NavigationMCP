@@ -28,8 +28,8 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_52"
             android:text="@string/limit_policy"
             android:textColor="@color/main_map_limit_title_color"
             android:textSize="@dimen/sp_52"
@@ -42,9 +42,8 @@
             clickCommand="@{ViewModel.closePage}"
             android:layout_width="@dimen/dp_74"
             android:layout_height="@dimen/dp_74"
-            android:layout_marginTop="@dimen/dp_38"
-            android:layout_marginEnd="@dimen/dp_26"
-            android:padding="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_48"
+            android:layout_marginEnd="@dimen/dp_36"
             android:focusable="false"
             android:src="@drawable/icon_poi_close"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,12 +58,12 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_160"
+                android:layout_marginBottom="@dimen/dp_461"
                 android:src="@drawable/icon_limit_loading"
                 android:focusable="false"
-                app:layout_constraintBottom_toTopOf="@id/tv_loading"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -81,13 +80,13 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_retry"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_goneMarginBottom="@dimen/dp_261" />
+                app:layout_goneMarginBottom="@dimen/dp_379" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_retry"
-                android:layout_width="@dimen/dp_264"
-                android:layout_height="@dimen/dp_76"
-                android:layout_marginBottom="@dimen/dp_201"
+                android:layout_width="@dimen/dp_340"
+                android:layout_height="@dimen/dp_96"
+                android:layout_marginBottom="@dimen/dp_379"
                 android:background="@drawable/bg_item_limit_retry"
                 android:gravity="center"
                 android:text="@string/limit_retry"
@@ -109,10 +108,9 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/layout_multi_city"
-                android:layout_width="@dimen/dp_362"
-                android:layout_height="@dimen/dp_58"
-                android:layout_marginStart="@dimen/dp_25"
-                android:layout_marginTop="@dimen/dp_132"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginTop="@dimen/dp_171"
                 android:visibility="visible"
                 android:focusable="false"
                 app:layout_constraintStart_toStartOf="parent"
@@ -120,8 +118,9 @@
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_item_pre"
-                    android:layout_width="@dimen/dp_58"
-                    android:layout_height="@dimen/dp_58"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginStart="@dimen/dp_36"
                     android:src="@drawable/img_limit_back"
                     android:focusable="false"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -130,20 +129,21 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cities_recycler_view"
-                    android:layout_width="@dimen/dp_234"
+                    android:layout_width="@dimen/dp_592"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_7"
                     android:orientation="horizontal"
                     android:focusable="false"
-                    app:layout_constraintEnd_toStartOf="@+id/iv_item_next"
-                    app:layout_constraintStart_toEndOf="@+id/iv_item_back"
+                    app:layout_constraintStart_toEndOf="@+id/iv_item_pre"
+                    app:layout_goneMarginStart="@dimen/dp_52"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_item_next"
-                    android:layout_width="@dimen/dp_58"
-                    android:layout_height="@dimen/dp_58"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
+                    android:layout_marginEnd="@dimen/dp_36"
                     android:src="@drawable/img_limit_next"
                     android:focusable="false"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -156,8 +156,8 @@
                 android:id="@+id/tv_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_132"
+                android:layout_marginStart="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_178"
                 android:textColor="@color/main_map_limit_current_city_color"
                 android:textSize="@dimen/sp_46"
                 android:focusable="false"
@@ -168,13 +168,13 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/tv_other_city"
                 clickCommand="@{ViewModel.otherCitySelection}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_124"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_width="@dimen/dp_200"
+                android:layout_height="@dimen/dp_96"
+                android:layout_marginTop="@dimen/dp_162"
+                android:layout_marginEnd="@dimen/dp_48"
                 android:background="@drawable/bg_item_limit"
-                android:paddingHorizontal="@dimen/dp_54"
-                android:paddingVertical="@dimen/dp_18"
+                android:paddingHorizontal="@dimen/dp_62"
+                android:paddingVertical="@dimen/dp_23"
                 android:text="@string/limit_other"
                 android:textColor="@color/main_map_limit_current_city"
                 android:textSize="@dimen/sp_38"
@@ -187,8 +187,8 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/dp_224"
-                android:paddingBottom="@dimen/dp_41"
+                android:layout_marginTop="@dimen/dp_290"
+                android:paddingBottom="@dimen/dp_32"
                 android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -202,8 +202,9 @@
                 android:textSize="@dimen/sp_38"
                 android:visibility="invisible"
                 android:focusable="false"
+                android:layout_marginTop="@dimen/dp_24"
                 app:layout_constraintStart_toStartOf="@id/tv_city"
-                app:layout_constraintTop_toBottomOf="@id/tv_other_city"
+                app:layout_constraintTop_toBottomOf="@id/tv_city"
                 tools:visibility="visible" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>

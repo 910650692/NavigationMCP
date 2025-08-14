@@ -215,7 +215,7 @@
     <color name="main_map_limit_loading_color">#2461EA</color>
     <color name="main_map_limit_loading_stroke_color">#8E97B9</color>
     <color name="main_map_limit_retry_button_color">#FF2461EA</color>
-    <color name="main_map_limit_current_city_color">#FF000000</color>
+    <color name="main_map_limit_current_city_color">#2461EA</color>
     <color name="main_map_limit_recyclerview_color">#42386DF0</color>
     <color name="message_center_close">#4B535D</color>
     <color name="setting_favorite_icon_color">#4B535D</color>
