@@ -1741,6 +1741,9 @@ public final class VoiceSearchManager {
                         IVrBridgeConstant.ResponseString.ADD_FAVORITE + poiInfo.getName());
                 final FavoriteInfo favoriteInfo = new FavoriteInfo();
                 favoriteInfo.setCommonName(0);
+                if (ConvertUtils.isEmpty(poiInfo.getPid())) {
+                    poiInfo.setPid(poiInfo.getPoint().getLon() + "_" + poiInfo.getPoint().getLat());
+                }
                 poiInfo.setFavoriteInfo(favoriteInfo);
                 BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
             }

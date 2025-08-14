@@ -1044,7 +1044,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      *
      * @param sessionId   用来确保本轮数据的一致性
      * @param poiType     HOME：家；COMPANY：公司 (此两个是设置家公司地址) poiCollect:收藏指定poi
-     * @param poi         地址，CURRENT_LOCATION：当前位置
+     * @param poi         关键字
      * @param poiCallback poiCallback
      * @return CallResponse 语音执行结果回复.
      */
