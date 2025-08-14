@@ -40,6 +40,7 @@ import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.adapter.GasStationAdapter;
 import com.sgm.navi.scene.adapter.GridSpacingItemDecoration;
+import com.sgm.navi.scene.api.search.IOnLoadingStatusChangedListener;
 import com.sgm.navi.scene.databinding.ScenePoiDetailsContentViewBinding;
 import com.sgm.navi.scene.impl.poi.ScenePoiDetailContentViewImpl;
 import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
@@ -120,6 +121,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private Boolean mViaUserAdd = true;
     private SearchPhoneDialog mSearchDialogBuild;
     private SearchConfirmDialog mSearchConfirmBuild;
+    private IOnLoadingStatusChangedListener mLoadingStatusChangedListener;
+
+    public void setLoadingStatusChangedListener(IOnLoadingStatusChangedListener loadingStatusChangedListener) {
+        this.mLoadingStatusChangedListener = loadingStatusChangedListener;
+    }
 
     public ScenePoiDetailContentView(final @NonNull Context context) {
         super(context);
@@ -1807,6 +1813,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     //1064667，地图点击详情页加载失败后，再通知地图显示“回车位”按钮
                     mScreenViewModel.NotifyMapTimer();
                 }
+                mLoadingStatusChangedListener.loadingStatusChanged(2);
                 mViewBinding.noResultButton.setOnClickListener((view) -> {
                     mScreenViewModel.NotifyMapTimer();
                     doSearch(mPoiInfoEntity);
@@ -1827,6 +1834,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
     private void showLoading(final boolean isShow) {
         if (mViewBinding == null) {
             return;
+        }
+        if (mLoadingStatusChangedListener != null) {
+            mLoadingStatusChangedListener.loadingStatusChanged(isShow ? 1 : 0);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK) {
             mViewBinding.csPoiNoResult.setVisibility(View.GONE);
@@ -1911,6 +1921,14 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mScreenViewModel.doSearchByNet(poiInfo);
         }
 
+    }
+
+    public void doTimeoutTask() {
+        ThreadManager.getInstance().postUi(mTimeoutTask);
+    }
+
+    public void setPoiInfoEntity(final PoiInfoEntity poiInfoEntity) {
+        mPoiInfoEntity = poiInfoEntity;
     }
 
     public void setChildIndex(final int index) {

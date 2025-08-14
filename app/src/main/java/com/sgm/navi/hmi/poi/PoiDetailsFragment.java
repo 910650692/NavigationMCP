@@ -29,9 +29,11 @@ import com.sgm.navi.ui.base.BaseFragment;
 @Route(path = RoutePath.Search.POI_DETAILS_FRAGMENT)
 public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, PoiDetailsViewModel> {
     private SearchResultEntity mSearchResultEntity;
+    private PoiInfoEntity mPoiInfoEntity;
     private AccessTokenParam mParams;
     private int mViaIndex = -1;
     private boolean mViaUserAdd = true;
+    private int mPoiType = AutoMapConstant.PoiType.POI_KEYWORD;
     @Override
     public int onLayoutId() {
         return R.layout.fragment_poi_details;
@@ -51,6 +53,13 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onInitData() {
         RoutePackage.getInstance().setRouteAlongInfo(null);
+        if (mBinding != null) {
+            mBinding.scenePoiDetailContentView.setLoadingStatusChangedListener(isLoading -> {
+                if (mViewModel != null) {
+                    mViewModel.setIsLoading(isLoading);
+                }
+            });
+        }
     }
 
     @Override
@@ -72,6 +81,17 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mViewModel.onReStoreFragment();
         try {
             getBundleData();
+            if (mBinding != null && mViewModel != null) {
+                mBinding.scenePoiDetailContentView.refreshPoiView(mViewModel.getPoiType(), mViewModel.getPoiInfoEntity(),true);
+                mBinding.scenePoiDetailContentView.setPoiInfoEntity(mViewModel.getPoiInfoEntity());
+                if (mViewModel.getIsLoading() == 1) {
+                    mBinding.scenePoiDetailContentView.doSearch(mViewModel.getPoiInfoEntity());
+                } else if (mViewModel.getIsLoading() == 2) {
+                    mBinding.scenePoiDetailContentView.doTimeoutTask();
+                } else {
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "current is not in loading status " );
+                }
+            }
         } catch (Exception e) {
             Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "getBundleData error: " + e.getMessage());
         }
@@ -89,26 +109,26 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         final Bundle parsedArgs = getArguments();
         if (parsedArgs != null) {
             final int isOpenFromNavi = parsedArgs.getInt(NaviConstant.NAVI_CONTROL, 0);
-            final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
-            final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+            mPoiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+            mPoiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
             final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
             mViaIndex = parsedArgs.getInt(NaviConstant.VIA_POSITION, -1);
             mViaUserAdd = parsedArgs.getBoolean(NaviConstant.VIA_IS_USER_ADD, true);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
-            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " , poiType);
-            mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType " , mPoiType);
+            mBinding.scenePoiDetailContentView.refreshPoiView(mPoiType, mPoiInfoEntity,true);
             mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
             mBinding.scenePoiDetailContentView.setPowerType(mViewModel.powerType());
             mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
             mBinding.scenePoiDetailContentView.setViaIndexSelect(true,mViaIndex);
             mBinding.scenePoiDetailContentView.setViaUserAdd(mViaUserAdd);
-            mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
+            mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
             }
-            mViewModel.setIsSearchPoiDetailsFragment(poiType == AutoMapConstant.PoiType.POI_MAP_CLICK
-                    || poiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK);
+            mViewModel.setIsSearchPoiDetailsFragment(mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK
+                    || mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK);
         }
     }
 
@@ -123,18 +143,18 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         }
 
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
-        final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
-        final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+        mPoiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+        mPoiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
         final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
         final String labelName = parsedArgs.getString("LABEL","");
         final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
-        mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity,true);
+        mBinding.scenePoiDetailContentView.refreshPoiView(mPoiType, mPoiInfoEntity,true);
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
-        mBinding.scenePoiDetailContentView.doSearch(poiInfoEntity);
+        mBinding.scenePoiDetailContentView.doSearch(mPoiInfoEntity);
         mBinding.scenePoiDetailContentView.setChildIndex(childIndex);
         mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
         mBinding.scenePoiDetailContentView.setLabelName(labelName);
-        mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
+        mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
     }
 
     @Override
@@ -146,12 +166,12 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                 ThreadManager.getInstance().postDelay(reloadRunnable, 200);
                 final Bundle parsedArgs = getArguments();
                 if (parsedArgs != null) {
-                    final PoiInfoEntity poiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
-                    final int poiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
+                    mPoiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
+                    mPoiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
                     final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
                     mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
-                    mBinding.scenePoiDetailContentView.refreshPoiView(poiType, poiInfoEntity, true);
-                    mBinding.scenePoiDetailContentView.setJumpPoiInfo(poiInfoEntity);
+                    mBinding.scenePoiDetailContentView.refreshPoiView(mPoiType, mPoiInfoEntity, true);
+                    mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
                 }
                 if (mViewModel.calcDistanceBetweenPoints()) {
                     mBinding.scenePoiDetailContentView.showSelfParkingView();
@@ -223,6 +243,10 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mViewModel != null) {
+            mViewModel.setPoiInfoEntity(mPoiInfoEntity);
+            mViewModel.setPoiType(mPoiType);
+        }
     }
 
     @Override

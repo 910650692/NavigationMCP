@@ -11,6 +11,7 @@ import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.search.cloudByPatac.rep.BaseRep;
 import com.sgm.navi.service.define.map.MapMode;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -35,13 +36,15 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     private double maxDistance = 5; //自车位和地图中心点阈值
     private int mTaskId;
     private boolean isReStore;
+    private int mLoadingStatus;
     private SearchResultEntity mSearchResultEntity;
+    private PoiInfoEntity mPoiInfoEntity;
+    private int mPoiType;
 
     public PoiDetailsModel() {
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 初始化");
         mSearchPackage = SearchPackage.getInstance();
         mCallbackId = UUID.randomUUID().toString();
-        mSearchPackage.registerCallBack(mCallbackId, this);
         mCalibrationPackage = CalibrationPackage.getInstance();
         mapPackage= MapPackage.getInstance();
         isReStore = false;
@@ -51,6 +54,7 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
     public void onCreate() {
         super.onCreate();
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "PoiDetailsModel 创建");
+        mSearchPackage.registerCallBack(mCallbackId, this);
         MapAdapter.getInstance().registerCallback(MapType.MAIN_SCREEN_MAIN_MAP, this);
     }
 
@@ -243,4 +247,32 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         mSearchPackage.createLabelMarker(searchResultEntity);
         mSearchPackage.showPreview(searchResultEntity.getPoiList());
     }
+
+    public void setIsLoading(int loadingStatus) {
+        this.mLoadingStatus = loadingStatus;
+    }
+
+    public int isLoading() {
+        return mLoadingStatus;
+    }
+
+
+    public PoiInfoEntity getPoiInfoEntity() {
+        return mPoiInfoEntity;
+    }
+
+    public void setPoiInfoEntity(PoiInfoEntity poiInfoEntity) {
+        this.mPoiInfoEntity = poiInfoEntity;
+    }
+
+    public int getPoiType() {
+        return mPoiType;
+    }
+
+    public void setPoiType(int poiType) {
+        this.mPoiType = poiType;
+    }
+
+
+
 }

@@ -302,4 +302,43 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
     public void setIsSearchPoiDetailsFragment(boolean isSearchPoiDetailsFragment) {
         MapPackage.getInstance().setIsSearchPoiDetailsFragment(isSearchPoiDetailsFragment);
     }
+
+    public void setPoiType(int poiType) {
+        if (mModel != null) {
+            mModel.setPoiType(poiType);
+        }
+    }
+
+    public int getPoiType() {
+        if (mModel != null) {
+            return mModel.getPoiType();
+        }
+        return 1;
+    }
+
+    public void setPoiInfoEntity(PoiInfoEntity poiInfoEntity) {
+        if (mModel != null) {
+            mModel.setPoiInfoEntity(poiInfoEntity);
+        }
+    }
+
+    public PoiInfoEntity getPoiInfoEntity() {
+        if (mModel != null) {
+            return mModel.getPoiInfoEntity();
+        }
+        return null;
+    }
+
+    public void setIsLoading(int loadingStatus) {
+        if (mModel != null) {
+            mModel.setIsLoading(loadingStatus);
+        }
+    }
+
+    public int getIsLoading() {
+        if (mModel != null) {
+            return mModel.isLoading();
+        }
+        return 0;
+    }
 }
