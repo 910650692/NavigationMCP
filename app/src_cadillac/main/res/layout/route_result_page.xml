@@ -302,14 +302,14 @@
 
         <com.sgm.navi.scene.ui.route.SceneRouteDescendantsView
             android:id="@+id/ly_secondary_poi"
-            android:layout_width="@dimen/dp_1096"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_m_82"
             android:background="@drawable/bg_shadow_navi_cadillac"
             android:clickable="true"
             android:focusable="false"
             android:paddingHorizontal="@dimen/dp_51"
-            android:paddingVertical="@dimen/dp_75"
+            android:paddingVertical="@dimen/dp_51"
             android:visibility="@{ViewModel.getSecondaryPoiVisibility() == 1 ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toEndOf="@+id/route_line_info_title"
             app:layout_constraintTop_toTopOf="parent"/>

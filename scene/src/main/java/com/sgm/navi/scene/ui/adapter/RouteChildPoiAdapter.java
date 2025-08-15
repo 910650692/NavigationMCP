@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ResourceUtils;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.RouteChildPoiItemBinding;
 import com.sgm.navi.service.define.search.ChildInfo;
@@ -70,8 +71,10 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         if (mSelected == position) {
             holder.mView.setVisibility(View.VISIBLE);
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_color_route_item_select));
         } else {
             holder.mView.setVisibility(View.GONE);
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_color_route_item_no_select));
         }
         holder.mTextView.setText(mChildInfoList.get(position).getShortName());
         holder.mTextView.setOnClickListener(new View.OnClickListener() {
