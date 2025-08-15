@@ -53,6 +53,7 @@ import lombok.Getter;
 public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyleInner implements ILayerClickObserver, ICarObserver {
 
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
+    protected String className = "BaseLayerImpl";
 
     @Getter
     private BizControlService bizService;
@@ -199,7 +200,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             }
             customTexture.cmbFileInfo.isMergeRes = !styleAdapter.isFromCardImagesRes(item);
             if (!customTexture.cmbFileInfo.isMergeRes) {
-                Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
+                Logger.e(TAG, className, " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
             }
         }
         return result;
@@ -227,7 +228,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
             if (Logger.openLog) {
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "\n", styleJson);
+                Logger.d(TAG, className, " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "\n", styleJson);
             }
         }
         return styleJson;
@@ -251,12 +252,12 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                     String key = layer.getName() + item.getBusinessType() + item.getID();
                     TexturePoolManager.get().add(key, markerId);
                 }
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+                Logger.d(TAG, className, " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
             }
         } else {
             if (Logger.openLog) {
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+                Logger.d(TAG, className, " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
             }
         }
@@ -271,10 +272,10 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             if (layer.getMapView().addLayer3DModel(layer3DModel)) {
                 markerId = layer3DModel.resourceID;
             }
-            Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+            Logger.e(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                     "\n", "使用 自定义  3D 纹理信息 :{ markerRes = ", str3DModelId, " ; markerId = ", markerId, " }");
         } else {
-            Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+            Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                     "\n", " 使用 默认  3D 纹理信息 :{ markerRes = ", str3DModelId, " ; markerId = ", markerId, " }");
         }
 
@@ -308,7 +309,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void clearLayerItem(BaseLayer layer, LayerItem item) {
-        Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
+        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
         String key = layer.getName() + item.getBusinessType() + item.getID();
         if (TexturePoolManager.get().containsKey(key)) {
             int markerId = TexturePoolManager.get().getValueAsInt(key);
@@ -316,20 +317,20 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 layer.getMapView().destroyTexture(markerId);
             }
             TexturePoolManager.get().removeKey(key);
-            Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
+            Logger.e(TAG, className, " clearLayerItem key:", key, " markerId:", markerId);
         }
         super.clearLayerItem(layer, item);
     }
 
     @Override
     public void clearLayerItems(BaseLayer layer) {
-        Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
+        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
         List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
         for (Integer value : removeValues) {
             if (null != value) {
                 layer.getMapView().destroyTexture(value);
                 if (Logger.openLog) {
-                    Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems layer:", layer.getName(), " markerId:", value);
+                    Logger.e(TAG, className, " clearLayerItems layer:", layer.getName(), " markerId:", value);
                 }
             }
         }

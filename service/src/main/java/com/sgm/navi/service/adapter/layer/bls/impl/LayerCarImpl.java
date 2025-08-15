@@ -29,6 +29,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
 
     public LayerCarImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerCarImpl";
         getLayerCarControl().setStyle(this);
         getLayerCarControl().setVisible(true);
         getLayerCarControl().setClickable(true);

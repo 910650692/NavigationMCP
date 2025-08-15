@@ -23,6 +23,7 @@ public class LayerLabelImpl extends BaseLayerImpl<LayerLabelStyleAdapter> {
 
     public LayerLabelImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerLabelImpl";
         getLayerLabelControl().setStyle(this);
         getLayerLabelControl().addClickObserver(this);
     }

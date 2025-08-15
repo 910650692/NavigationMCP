@@ -81,6 +81,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerGuideRouteImpl";
         getLayerGuideRouteControl().setStyle(this);
         getLayerRoadCrossControl().setStyle(this);
         getLayerRoadFacilityControl().setStyle(this);

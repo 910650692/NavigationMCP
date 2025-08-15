@@ -32,6 +32,7 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
 
     public LayerUserImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerUserImpl";
         getLayerUserControl().setStyle(this);
         getLayerUserControl().addClickObserver(this);
         Logger.d(TAG, "LayerUserImpl init");
