@@ -3,6 +3,8 @@ package com.sgm.navi.hmi.launcher;
 import static android.content.Context.WINDOW_SERVICE;
 
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ComponentCallbacks;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -13,13 +15,19 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -93,6 +101,8 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private LayerPackage mLayerPackage;
     private boolean isConnected;
     private static boolean isInitialized = false;
+    private int moveDistance;
+    private ValueAnimator widthAnimator;
 
     private LauncherWindowService() {
 
@@ -240,10 +250,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
 
+        moveDistance = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.navi_main_float_window_width);
         if (FloatWindowReceiver.isShowMusicTab){
-            mBinding.floatWindow.setVisibility(View.INVISIBLE);
+            ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
+            layoutParams.width = moveDistance;
+            mBinding.floatWindow.setLayoutParams(layoutParams);
         } else {
-            mBinding.floatWindow.setVisibility(View.GONE);
+            ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
+            layoutParams.width = 0;
+            mBinding.floatWindow.setLayoutParams(layoutParams);
         }
 
         final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
@@ -513,11 +528,33 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         if (mBinding == null){
             return;
         }
-        if (isOpenFloat){
-            mBinding.floatWindow.setVisibility(View.INVISIBLE);
-        } else {
-            mBinding.floatWindow.setVisibility(View.GONE);
+
+        final int startWidth = 0;
+        final int endWidth = moveDistance; // 目标宽度
+
+        if (widthAnimator != null && widthAnimator.isRunning()) {
+            widthAnimator.cancel();
         }
+
+        widthAnimator = isOpenFloat
+                ? ValueAnimator.ofInt(startWidth, endWidth)
+                : ValueAnimator.ofInt(endWidth, startWidth);
+
+        mBinding.floatWindow.setLayerType(View.LAYER_TYPE_HARDWARE, null); // 启用硬件加速
+
+        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
+                if (layoutParams.width != value) {
+                    layoutParams.width = value;
+                    mBinding.floatWindow.requestLayout();
+                }
+            }
+        });
+        widthAnimator.setDuration(165);
+        widthAnimator.start();
     }
 
     @Override
