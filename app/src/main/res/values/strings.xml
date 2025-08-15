@@ -177,7 +177,7 @@
     <string name="route_poi_details_bussTime">营业时间:</string>
     <string name="route_no_function">暂未添加</string>
     <string name="route_refresh_fast">重算路线与当前一致，请稍后再试。</string>
-    <string name="route_error_add_start_end">行程起终点不可添加为途经点</string>
+    <string name="route_error_add_start_end">行程起点或终点不可添加为途经点</string>
     <string name="route_error_no_service_data">无服务区数据</string>
     <string name="route_error_no_request_data">数据异常，无法进行路线规划</string>
     <string name="route_error_via_max">途经点添加失败：最多只能添加5个途径点</string>

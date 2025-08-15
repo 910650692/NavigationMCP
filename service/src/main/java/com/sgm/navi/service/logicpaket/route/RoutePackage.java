@@ -774,15 +774,73 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public void requestManyVia(final MapType mapTypeId, final List<RouteParam> routeParams) {
         ThreadManager.getInstance().execute(() -> {
+            List<RouteParam> lastRouteParams = mViaRouteParams.get(mapTypeId);
+            RouteWayID routeWayID;
+            if (isAddVia(routeParams, lastRouteParams)) {
+                routeWayID = RouteWayID.ROUTE_WAY_ADD_VIA;
+            } else {
+                routeWayID = RouteWayID.ROUTE_WAY_DELETE_VIA;
+            }
             mViaRouteParams.put(mapTypeId, routeParams);
             final RouteRequestParam routeRequestParam = new RouteRequestParam();
             routeRequestParam.setMMapTypeId(mapTypeId);
-            routeRequestParam.setMRouteWay(RouteWayID.ROUTE_WAY_ADD_ALL_VIA);
+            routeRequestParam.setMRouteWay(routeWayID);
             routeRequestParam.setMFastNavi(mNaviStatusAdapter.isGuidanceActive());
             routeRequestParam.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_JNY_PNT);
             requestRoute(routeRequestParam);
         });
     }
+
+    /**
+     * 判断是否有新增途经点
+     *
+     * @param routeParams    当前途经点列表
+     * @param lastRouteParams 上一次途经点列表
+     * @return 是否有新增途经点
+     */
+    public boolean isAddVia(final List<RouteParam> routeParams, final List<RouteParam> lastRouteParams) {
+        if (routeParams == null || routeParams.isEmpty()) {
+            return false;
+        }
+
+        if (lastRouteParams == null || lastRouteParams.isEmpty()) {
+            return true;
+        }
+
+        for (RouteParam paramInFirst : routeParams) {
+            boolean flag = false;
+            for (RouteParam paramInSecond : lastRouteParams) {
+                if (isTheSamePoi(paramInFirst, paramInSecond)) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否是同一个点
+     *
+     * @param firstRouteParam    点信息
+     * @param secondRouteParam 点信息
+     * @return 返回是否是相同的点
+     */
+    public boolean isTheSamePoi(final RouteParam firstRouteParam, final RouteParam secondRouteParam) {
+        if (ConvertUtils.isEmpty(firstRouteParam) || ConvertUtils.isEmpty(secondRouteParam)
+                || ConvertUtils.isEmpty(firstRouteParam.getRealPos())
+                || ConvertUtils.isEmpty(secondRouteParam.getRealPos())) {
+            return false;
+        }
+        return (!ConvertUtils.isEmpty(firstRouteParam.getPoiID())
+                && !ConvertUtils.isEmpty(secondRouteParam.getPoiID())
+                && ConvertUtils.equals(firstRouteParam.getPoiID(), secondRouteParam.getPoiID()))
+                || (firstRouteParam.getRealPos().getLat() == secondRouteParam.getRealPos().getLat()
+                && firstRouteParam.getRealPos().getLon() == secondRouteParam.getRealPos().getLon());
+    }
+
 
     /**
      * 修改终点算路请求
