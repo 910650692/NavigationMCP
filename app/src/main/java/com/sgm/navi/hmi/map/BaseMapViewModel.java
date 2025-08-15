@@ -799,7 +799,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void resetMapCenterInScreen() {
-        if (mView != null) {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isMapStatus = currentNaviStatus.equals(NaviStatus.NaviStatusType.NO_STATUS) || currentNaviStatus.equals(NaviStatus.NaviStatusType.CRUISE);
+        if (mView != null && isMapStatus) {
             mView.setMapFocusable(true);
         }
         if (mModel != null) {
