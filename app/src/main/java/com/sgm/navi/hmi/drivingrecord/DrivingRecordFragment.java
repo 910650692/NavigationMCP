@@ -202,7 +202,7 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
             this.mDataList = dataList;
             mDrivingRecordAdapter.setDrivingRecordList(dataList);
             ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance().getString(R.string.setting_others_sync_success));
+                    ResourceUtils.Companion.getInstance().getString(R.string.hcm_set_success));
             if (mBinding != null) {
                 mBinding.pullRefreshLayout.finishRefresh();
                 mBinding.pullRefreshLayout.finishLoadMore();

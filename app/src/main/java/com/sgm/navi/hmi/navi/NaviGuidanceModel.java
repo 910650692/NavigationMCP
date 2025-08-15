@@ -1677,7 +1677,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         }
         if (mViaListManager != null) {
-            mViaListManager.updateViaPointList();
+            mViaListManager.updateViaList(getViaList());
         }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
