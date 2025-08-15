@@ -337,7 +337,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         speedMonitor.registerSpeedCallBack();
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
-        forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
+        if (mViewModel.getView() != null) {
+            forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
+        }
     }
 
     private MapPackage.TimeHelper timeHelper = new MapPackage.TimeHelper() {
@@ -2389,6 +2391,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
         ThreadManager.getInstance().postUi(() -> {
+            if (mViewModel.getView() == null) {
+                Logger.e(TAG, "mViewModel is null");
+                return;
+            }
             if(forecastAddressDialog == null){
                 forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
             }
