@@ -696,7 +696,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onUpdateViaPass(viaIndex);
         }
         mCurrentViaIndex = viaIndex + 1;
-        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
+//        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
     }
 
     @Override
