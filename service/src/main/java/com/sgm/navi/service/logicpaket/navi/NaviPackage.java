@@ -159,7 +159,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         if (muteStatus == NumberUtils.NUM_1) {
             SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
         }
-        StartService.getInstance().unregisterSdkCallback(TAG, this);
+        StartService.getInstance().unregisterSdkCallback(this);
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.d("AppFocusHelper", "汽车环境，开启导航互斥");
             mAppFocusHelper = AppFocusHelper.getInstance();
@@ -238,7 +238,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 mAppFocusHelper.startCarMapNavigation();
             }
         } else {
-            Logger.e(TAG, "###Fatal### startNavi fail");
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1652,5 +1651,28 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
 
     public void setEndPoint(LayerItemRouteEndPoint mEndPoint) {
         this.mEndPoint = mEndPoint;
+    }
+
+    /**
+     * MCP工具触发导航请求
+     * @param latitude 目的地纬度
+     * @param longitude 目的地经度
+     * @param poiName POI名称
+     * @param address 地址
+     * @param isSimulate 是否模拟导航
+     */
+    public void onMCPRequestNavigation(double latitude, double longitude, 
+                                     String poiName, String address, boolean isSimulate) {
+        Logger.i(TAG, "onMCPRequestNavigation: " + poiName + " (" + latitude + "," + longitude + "), simulate=" + isSimulate);
+        
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onMCPRequestNavigation(latitude, longitude, poiName, address, isSimulate);
+                    }
+                }
+            }
+        });
     }
 }

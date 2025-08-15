@@ -83,9 +83,7 @@ import com.sgm.navi.service.define.search.ServiceAreaInfo;
 import com.sgm.navi.service.define.utils.BevPowerCarUtils;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.ui.action.ViewAdapterKt;
-import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
-import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.define.TripID;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
@@ -183,16 +181,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     }
 
 
-    @Override
-    public void addFragment(BaseFragment fragment, Bundle bundle) {
-        //算路界面开启导航时要先关闭自己再拉起导航界面，避免addFragment时资源已被释放
-        BaseActivity activity = (BaseActivity) StackManager.getInstance().isContainMainActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (activity != null) {
-            activity.addFragment(fragment, bundle);
-        } else {
-            Logger.e(TAG, "activity is null");
-        }
-    }
 
     //------------右侧Tab***************************************************/
     /**
@@ -1077,8 +1065,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 poiServiceAreaOil.setVisibility(View.GONE);
             }
         }
-        mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.GONE);
-        mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.GONE);
+        if (mViewModel.powerType() == 1) {
+            mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.VISIBLE);
+            mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.VISIBLE);
+        } else {
+            mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.GONE);
+            mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.GONE);
+        }
         if (mRoutePoiDetailsPageView.stlPhone.getVisibility() == View.GONE
                 && mRoutePoiDetailsPageView.stlAroundSearch.getVisibility() == View.GONE
                 && mRoutePoiDetailsPageView.stlPoiFavorites.getVisibility() == View.GONE) {
@@ -1211,14 +1204,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
                 Logger.e(TAG, "mRoutePoiDetailsPageView = null");
                 return;
             }
-            if (mViewModel.powerType() == 1) {
-                mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.VISIBLE);
-                mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.VISIBLE);
-            } else {
-                mRoutePoiDetailsPageView.sivArrivalCapacity.setVisibility(View.GONE);
-                mRoutePoiDetailsPageView.poiArrivalCapacity.setVisibility(View.GONE);
-                return;
-            }
             SkinImageView sivArrivalCapacity = mRoutePoiDetailsPageView.sivArrivalCapacity;
             SkinTextView poiArrivalCapacity = mRoutePoiDetailsPageView.poiArrivalCapacity;
             //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
@@ -1303,6 +1288,14 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void onGetFragmentData() {
         final Bundle bundle = getArguments();
         assert bundle != null;
+        
+        // 处理MCP导航请求
+        final boolean autoStart = bundle.getBoolean("auto_start", false);
+        if (autoStart) {
+            handleMcpNavigationRequest(bundle);
+            return;
+        }
+        
         final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getParcelable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
             assert param != null;
@@ -1356,6 +1349,48 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         closeFragment(true);
         ToastUtils.Companion.getInstance().showCustomToastView(
                 ResourceUtils.Companion.getInstance().getString(R.string.route_error_no_request_data));
+    }
+
+    /**
+     * 处理MCP导航请求
+     */
+    private void handleMcpNavigationRequest(Bundle bundle) {
+        long routeTaskId = bundle.getLong("route_task_id", -1);
+        double latitude = bundle.getDouble("latitude", 0);
+        double longitude = bundle.getDouble("longitude", 0);
+        String poiName = bundle.getString("poi_name");
+        String address = bundle.getString("address");
+        boolean isSimulate = bundle.getBoolean("simulate", false);
+        
+        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 模拟: %b", 
+            poiName, latitude, longitude, isSimulate));
+        
+        // 设置UI标题
+        if (!ConvertUtils.isEmpty(poiName)) {
+            mViewModel.getTitle().set(poiName);
+            mViewModel.getEndName().set(poiName);
+        }
+        
+        // 创建PoiInfoEntity用于路线规划
+        PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        poiInfoEntity.setName(poiName != null ? poiName : "目的地");
+        poiInfoEntity.setAddress(address);
+        
+        // 创建GeoPoint
+        com.sgm.navi.service.define.bean.GeoPoint geoPoint = new com.sgm.navi.service.define.bean.GeoPoint();
+        geoPoint.setLon(longitude);
+        geoPoint.setLat(latitude);
+        poiInfoEntity.setPoint(geoPoint);
+        
+        // 发起路线规划
+        final RouteRequestParam routeRequestParam = new RouteRequestParam();
+        routeRequestParam.setMPoiInfoEntity(poiInfoEntity);
+        routeRequestParam.setMRoutePoiType(com.sgm.navi.service.define.route.RoutePoiType.ROUTE_POI_TYPE_END);
+        
+        mViewModel.requestRoute(routeRequestParam);
+        
+        // 设置自动导航标志，路线规划完成后自动启动导航
+        mViewModel.setAutoStartNavigation(true, isSimulate);
     }
 
     @Override

@@ -268,4 +268,17 @@ public interface IGuidanceObserver {
 
     }
 
+    /**
+     * MCP工具请求启动导航页面
+     * @param latitude 目的地纬度
+     * @param longitude 目的地经度
+     * @param poiName POI名称
+     * @param address 地址
+     * @param isSimulate 是否模拟导航
+     */
+    default void onMCPRequestNavigation(double latitude, double longitude, 
+                                      String poiName, String address, boolean isSimulate) {
+
+    }
+
 }

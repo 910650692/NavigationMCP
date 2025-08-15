@@ -55,6 +55,7 @@ import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
+import com.sgm.navi.service.callback.MCPGeoSearchCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +99,9 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private boolean mIsShow;
     private ScheduledFuture mScheduledFuture;
     private String mReservationPreNum = "";
+    
+    // MCP回调接口，由app模块注册
+    private static MCPGeoSearchCallback mcpGeoSearchCallback;
     private int mAbortTaskId = 0;
 
     private SearchPackage() {
@@ -124,6 +128,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public static SearchPackage getInstance() {
         return SearchPackageHolder.INSTANCE;
     }
+    
+    /**
+     * 设置MCP逆地理搜索回调接口
+     * 
+     * @param callback MCP回调接口
+     */
+    public static void setMCPGeoSearchCallback(MCPGeoSearchCallback callback) {
+        mcpGeoSearchCallback = callback;
+    }
 
 
     /**
@@ -145,6 +158,41 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void onSearchResult(final int taskId, final int errorCode, final String message,
                                final SearchResultEntity searchResultEntity, final SearchRequestParameter requestParameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> errorCode: {}, message: {}, taskId: {}", errorCode, message, taskId);
+        
+        // MCP搜索回调处理
+        if (mcpGeoSearchCallback != null) {
+            try {
+                if (searchResultEntity != null) {
+                    // 根据搜索类型分别处理
+                    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+                        // 关键词搜索：提取POI列表并格式化为JSON
+                        String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                        String poiListJson = mcpGeoSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
+                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
+                    } else {
+                        // 逆地理搜索：提取地址信息
+                        String address = mcpGeoSearchCallback.extractAddressFromSearchResult(searchResultEntity);
+                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, address);
+                    }
+                } else {
+                    // 搜索失败，完成任务但返回null
+                    if (requestParameter != null && requestParameter.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, null);
+                    } else {
+                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                    }
+                }
+            } catch (Exception e) {
+                Logger.w(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP搜索回调处理失败: " + e.getMessage());
+                // 确保任务能完成，避免永久等待
+                if (requestParameter != null && requestParameter.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+                    mcpGeoSearchCallback.completeKeywordSearchTask(taskId, null);
+                } else {
+                    mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                }
+            }
+        }
+        
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             final String identifier = entry.getKey();
             mCurrentCallbackId.set(identifier);
@@ -181,6 +229,35 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     @Override
     public void onSilentSearchResult(final int taskId,final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSilentSearchResult=> errorCode: {}, message: {}", errorCode, message);
+        
+        // MCP搜索回调处理
+        if (mcpGeoSearchCallback != null) {
+            try {
+                if (searchResultEntity != null) {
+                    // 根据搜索类型分别处理
+                    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
+                        // 关键词搜索：提取POI列表并格式化为JSON
+                        String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                        String poiListJson = mcpGeoSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
+                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
+                    } else {
+                        // 逆地理搜索：提取地址信息
+                        String address = mcpGeoSearchCallback.extractAddressFromSearchResult(searchResultEntity);
+                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, address);
+                    }
+                } else {
+                    // 搜索失败，完成任务但返回null
+                    // 由于onSilentSearchResult没有requestParameter，我们无法直接判断搜索类型
+                    // 这里假设静默搜索主要用于geoSearch，关键词搜索会走onSearchResult
+                    mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                }
+            } catch (Exception e) {
+                Logger.w(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP搜索回调处理失败: " + e.getMessage());
+                // 确保任务能完成，避免永久等待
+                mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+            }
+        }
+        
         final ThreadManager threadManager = ThreadManager.getInstance();
         for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
             threadManager.postUi(() -> {
@@ -1858,18 +1935,30 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         if (!ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds())) {
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
                     searchResult, false);
+            final List<GeoPoint> totalList = new ArrayList<>();
+            for (List<GeoPoint> tempList : firstElement.getMRoadPolygonBounds()) {
+                totalList.addAll(tempList);
+            }
+            showBoundsPreview(totalList);
         }
         if (!ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds())) {
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
                     searchResult, false);
+            final List<GeoPoint> totalList = new ArrayList<>();
+            for (List<GeoPoint> tempList : firstElement.getMPoiAoiBounds()) {
+                totalList.addAll(tempList);
+            }
+            showBoundsPreview(totalList);
         }
         if (!ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
             sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, searchResult);
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     searchResult, false);
         }
-        if (ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
-            //如果没有子点，直接以poi点为中心进行展示
+        if (ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds()) &&
+                ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds()) &&
+                ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
+            //如果没有子点，边界点，道路点，直接以poi点为中心进行展示
             showPreview(searchResultEntity.getPoiList());
         }
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "createLabelMarker result:" + addResult);

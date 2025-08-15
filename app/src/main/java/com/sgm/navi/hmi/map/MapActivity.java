@@ -1,7 +1,10 @@
 package com.sgm.navi.hmi.map;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,11 +21,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.WindowCompat;
 import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -46,6 +49,7 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
+import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MainScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
@@ -54,8 +58,16 @@ import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.define.route.RequestRouteResult;
+import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
+import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.scene.RoutePath;
+import com.alibaba.android.arouter.launcher.ARouter;
+import androidx.fragment.app.Fragment;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -77,6 +89,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     private static final String TAG = "MapActivity";
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
+    
+    // 静态变量跟踪Activity前台状态
+    public static boolean isInForeground = false;
+    
+    // 导航广播接收器
+    private BroadcastReceiver navigationReceiver;
 
     private Animation mRotateAnim;
 
@@ -114,7 +132,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
-        mViewModel.reSetSwitchIcon();
+        
+        // 注册导航广播接收器
+        initNavigationReceiver();
+        
+        // 处理Intent中的导航请求
+        handleNavigationRequest(getIntent());
     }
 
     private void updateTimeText() {
@@ -160,8 +183,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            Logger.e(TAG, "引擎已初始化 直接渲染底图");
-            mViewModel.loadMapView(mBinding.mainMapview);
+            if (mViewModel.judgeAutoProtocol()) {
+                Logger.e(TAG, "引擎已初始化 直接渲染底图");
+                mViewModel.loadMapView(mBinding.mainMapview);
+            }
             // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
         }
     }
@@ -200,6 +225,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     protected void onResume() {
         super.onResume();
+        isInForeground = true;
         syncFragment();
         if (mViewModel.isSupportSplitScreen()) {
             ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
@@ -237,6 +263,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
     protected void onStop() {
         Logger.i(TAG, "onStop");
+        isInForeground = false;
         mViewModel.dismissAuthorizationDialog();
         mViewModel.dismissReminderDialog();
         super.onStop();
@@ -245,6 +272,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
+        // 注销导航广播接收器
+        if (navigationReceiver != null) {
+            try {
+                unregisterReceiver(navigationReceiver);
+                navigationReceiver = null;
+            } catch (Exception e) {
+                Logger.w(TAG, "注销导航广播接收器失败: " + e.getMessage());
+            }
+        }
         PermissionUtils.getInstance().remove();
         stopTime();
         // 退出的时候主动保存一下最后的定位信息
@@ -261,6 +297,13 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         AppCache.getInstance().setFirstOpenMap(false);
         mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
         if (null != mViewModel) mViewModel.dismissDialog();
+        
+        // 取消注册导航广播接收器
+        if (navigationReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(navigationReceiver);
+            Logger.d(TAG, "导航广播接收器已取消注册");
+        }
+        
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -700,5 +743,107 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void hideOrShowFragmentContainer(boolean isShow) {
         mBinding.layoutFragment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+    }
+    
+    /**
+     * 初始化导航广播接收器
+     */
+    private void initNavigationReceiver() {
+        navigationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                handleNavigationRequest(intent);
+            }
+        };
+        
+        IntentFilter filter = new IntentFilter("com.sgm.navi.ACTION_START_NAVIGATION");
+        LocalBroadcastManager.getInstance(this).registerReceiver(navigationReceiver, filter);
+        Logger.d(TAG, "导航广播接收器已注册");
+    }
+    
+    /**
+     * 添加onNewIntent方法处理新的Intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Logger.d(TAG, "收到新的Intent");
+        handleNavigationRequest(intent);
+    }
+    
+    /**
+     * 处理导航请求
+     */
+    private void handleNavigationRequest(Intent intent) {
+        if (intent == null) {
+            return;
+        }
+        
+        boolean autoStart = intent.getBooleanExtra("auto_start", false);
+        if (!autoStart) {
+            return;
+        }
+        
+        long routeTaskId = intent.getLongExtra("route_task_id", -1);
+        double latitude = intent.getDoubleExtra("latitude", 0);
+        double longitude = intent.getDoubleExtra("longitude", 0);
+        String poiName = intent.getStringExtra("poi_name");
+        String address = intent.getStringExtra("address");
+        boolean isSimulate = intent.getBooleanExtra("simulate", false);
+        
+        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 路线taskId: %d, 模拟: %b", 
+            poiName, latitude, longitude, routeTaskId, isSimulate));
+            
+        if (routeTaskId > 0) {
+            // 打开RouteFragment并传递自动导航参数
+            if (mViewModel != null) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("auto_start", true);
+                bundle.putBoolean("simulate", isSimulate);
+                bundle.putLong("route_task_id", routeTaskId);
+                bundle.putString("poi_name", poiName);
+                bundle.putString("address", address);
+                bundle.putDouble("latitude", latitude);
+                bundle.putDouble("longitude", longitude);
+                
+                // 创建RouteFragment并传递参数
+                Fragment routeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
+                mViewModel.addFragment((BaseFragment) routeFragment, bundle);
+                
+                Logger.d(TAG, "已打开RouteFragment进行MCP导航，taskId: " + routeTaskId);
+            } else {
+                Logger.e(TAG, "mViewModel为null，无法打开RouteFragment");
+            }
+        } else {
+            Logger.w(TAG, "无效的路线taskId: " + routeTaskId);
+        }
+    }
+    
+    /**
+     * 打开导航界面Fragment
+     */
+    private void openNaviGuidanceFragment(boolean isSimulate) {
+        try {
+            Logger.d(TAG, "准备打开NaviGuidanceFragment，模拟模式: " + isSimulate);
+            
+            // 创建Bundle包含导航参数
+            Bundle bundle = new Bundle();
+            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, 
+                        isSimulate ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
+            
+            // 关闭所有Fragment，切换到导航页面
+            if (mViewModel != null) {
+                Logger.d(TAG, "关闭所有Fragment并启动导航页面");
+                mViewModel.closeAllFragment();
+                
+                // 添加NaviGuidanceFragment，这将触发正常的导航启动流程
+                mViewModel.addFragment(new NaviGuidanceFragment(), bundle);
+                Logger.d(TAG, "NaviGuidanceFragment已添加到Fragment栈");
+            } else {
+                Logger.e(TAG, "mViewModel为null，无法打开导航页面");
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "打开NaviGuidanceFragment失败: " + e.getMessage());
+        }
     }
 }

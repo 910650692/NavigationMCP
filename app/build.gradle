@@ -234,6 +234,8 @@ dependencies {
     implementation project(":burypoint")
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
+    implementation project(':mcp-coordinator')
+    implementation 'com.google.code.gson:gson:2.8.9'
 //    implementation libs.sgmsystem.extendservice
 }
 

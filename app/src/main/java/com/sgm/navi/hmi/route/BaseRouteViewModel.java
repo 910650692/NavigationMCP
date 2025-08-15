@@ -510,6 +510,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         }
     };
 
+    // MCP自动导航相关字段 - package protected for RouteModel access
+    boolean mAutoStartNavigation = false;
+    boolean mAutoNavigationSimulate = false;
+
     //动态设置参数
     private int MsgDialogTop = 41;
     private int MsgDialogLeft = 1097;
@@ -1103,6 +1107,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         return mStartNavi;
     }
 
+    /**
+     * 设置自动导航标志
+     * @param autoStart 是否自动导航
+     * @param simulate 是否模拟导航
+     */
+    public void setAutoStartNavigation(boolean autoStart, boolean simulate) {
+        mAutoStartNavigation = autoStart;
+        mAutoNavigationSimulate = simulate;
+        Logger.d(TAG, "设置自动导航标志: " + autoStart + ", 模拟: " + simulate);
+    }
+
     /***
      * 请求算路
      * @param param 请求参数
@@ -1526,8 +1541,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mDetailsResustEntry = resultPoiInfoEntity;
         mRouteSearchName.set(requestPoiInfoEntity.getName());
         mRouteSearchAddress.set(requestPoiInfoEntity.getAddress());
-        mRouteSearchTimeAndDistance.set("");
-        mRouteSearchElec.set("");
         mModel.getTravelTimeFutureIncludeChargeLeft(new GeoPoint(requestPoiInfoEntity.getPoint().getLon(),
                         requestPoiInfoEntity.getPoint().getLat()))
                 .thenAccept(etaInfo -> {
@@ -1594,12 +1607,11 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 mRouteSearchTypeVisibility.set(1);
                 mView.showPOIDetailGas(resultPoiInfoEntity);
             }
-            if (getCurrentPageUI() != 5) {
-                mCurrentPageHistory.add("5");
-                mIncludePageVisibility.set(getCurrentPageUI());
-            }
         });
-
+        if (getCurrentPageUI() != 5) {
+            mCurrentPageHistory.add("5");
+            mIncludePageVisibility.set(getCurrentPageUI());
+        }
     }
 
     /***

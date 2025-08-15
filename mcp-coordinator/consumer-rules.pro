@@ -1,0 +1,1 @@
+# Consumer proguard rules for mcp-coordinator module

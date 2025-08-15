@@ -2,6 +2,7 @@ package com.sgm.navi;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
@@ -17,6 +18,8 @@ import com.sgm.navi.patacnetlib.PatacNetClient;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.logicpaket.search.SearchPackage;
+import com.sgm.navi.mcp.tools.SGMNavigationTools;
 import com.sgm.navi.ui.BaseApplication;
 
 /**
@@ -25,12 +28,14 @@ import com.sgm.navi.ui.BaseApplication;
  * @date 2024/11/24
  */
 public class NaviApplication extends BaseApplication implements Application.ActivityLifecycleCallbacks {
+    
     @Override
     public void onCreate() {
         super.onCreate();
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
         initARouter();
         initComponent();
+        startSGMNavigationService();
     }
 
     @Override
@@ -76,5 +81,54 @@ public class NaviApplication extends BaseApplication implements Application.Acti
                 Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "PatacNetClient init failed: " + e.getMessage());
             }
         });
+    }
+    
+    /**
+     * 启动SGM导航服务
+     * 让SGMNavigationService自己负责连接MCP协调中心和注册工具
+     */
+    private void startSGMNavigationService() {
+        try {
+            // 注册MCP回调，需要在启动服务前进行，因为SGMNavigationTools实例会被创建
+            // 这样SearchPackage就能在geoSearch回调中调用我们的方法
+            SGMNavigationTools mcpCallback = new SGMNavigationTools();
+            SearchPackage.setMCPGeoSearchCallback(mcpCallback);
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "已注册MCP geoSearch回调");
+            
+            // 1. 先启动MCP协调中心服务
+            startMCPCoordinatorService();
+            
+            // 2. 延迟启动SGM导航服务，确保协调中心先启动
+            ThreadManager.getInstance().postDelay(() -> {
+                Intent intent = new Intent(this, com.sgm.navi.mcp.SGMNavigationService.class);
+                // 使用startForegroundService避免后台启动限制
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    startForegroundService(intent);
+                } else {
+                    startService(intent);
+                }
+                Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务");
+            }, 1000); // 延迟1秒启动
+            
+        } catch (Exception e) {
+            Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务失败: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * 启动MCP协调中心服务
+     */
+    private void startMCPCoordinatorService() {
+        try {
+            Intent intent = new Intent(this, com.sgm.navi.mcp.coordinator.MCPCoordinatorService.class);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "启动MCP协调中心服务");
+        } catch (Exception e) {
+            Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "启动MCP协调中心服务失败: " + e.getMessage());
+        }
     }
 }

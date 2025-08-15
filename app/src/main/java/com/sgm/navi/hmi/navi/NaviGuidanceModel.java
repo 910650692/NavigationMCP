@@ -26,6 +26,7 @@ import com.sgm.navi.hmi.search.alongway.MainAlongWaySearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
 import com.sgm.navi.hmi.splitscreen.SRFloatWindowService;
+import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -74,6 +75,7 @@ import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationParam;
 import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteParam;
+import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.route.RoutePriorityType;
 import com.sgm.navi.service.define.route.RouteRequestParam;
@@ -147,7 +149,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public static final String SIDE_ROAD = "SIDE";
     public static final String BRIDGE_ON = "ON";
     public static final String BRIDGE_UNDER = "UNDER";
-    public static final int ENTER_PREVIEW = 2;
+    public static final int ENTER_PREVIEW = 1;
     public static final int EXIT_PREVIEW = 0;
     private NetWorkUtils mNetWorkUtils;
     private Boolean mCurrentNetStatus;
@@ -583,9 +585,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     PoiInfoEntity poiInfo = currentAllPoiParamList.get(1).getMPoiInfoEntity();
                     boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             poiInfo, false);
-                    if (mViaListManager != null) {
-                        mViaListManager.updateViaList(getViaList());
-                    }
                     Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
                 }
                 // 删除后更新途经点列表信息
@@ -1586,13 +1585,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
         if (Objects.equals(mapTypeId, MapType.MAIN_SCREEN_MAIN_MAP)) {
-            if (touchEvent == null) {
-                //MFC移动地图
-                if (mViewModel != null) {
-                    mViewModel.onMapSwipe();
-                }
-                return;
-            }
             switch (touchEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mDownX = touchEvent.getX();
@@ -1685,7 +1677,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         }
         if (mViaListManager != null) {
-            mViaListManager.updateViaList(getViaList());
+            mViaListManager.updateViaPointList();
         }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
@@ -1787,16 +1779,74 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onResetSettingConfig() {
-        if (mViewModel != null) {
-            mViewModel.closeNavi();
-        }
+    public void onMCPRequestNavigation(double latitude, double longitude, 
+                                     String poiName, String address, boolean isSimulate) {
+        Logger.i(TAG, "onMCPRequestNavigation: " + poiName + " (" + latitude + "," + longitude + "), simulate=" + isSimulate);
+        
+        ThreadManager.getInstance().postUi(() -> {
+            try {
+                // 创建目的地POI
+                PoiInfoEntity destinationPoi = new PoiInfoEntity();
+                destinationPoi.setName(poiName != null ? poiName : "目的地");
+                destinationPoi.setAddress(address != null ? address : "");
+                
+                GeoPoint destPoint = new GeoPoint();
+                destPoint.setLat(latitude);
+                destPoint.setLon(longitude);
+                destinationPoi.setPoint(destPoint);
+                
+                // 创建路线请求参数
+                RouteRequestParam routeRequest = new RouteRequestParam();
+                routeRequest.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+                routeRequest.setMPoiInfoEntity(destinationPoi);
+                routeRequest.setMRoutePoiType(RoutePoiType.ROUTE_POI_TYPE_END); // 终点
+                routeRequest.setMIsOnline(true); // 在线路线规划
+                
+                Logger.d(TAG, "发起路线规划请求...");
+                
+                // 发起路线规划
+                long routeTaskId = mRoutePackage.requestRoute(routeRequest);
+                
+                if (routeTaskId > 0) {
+                    Logger.d(TAG, "路线规划请求成功，taskId: " + routeTaskId + "，等待路线完成后启动导航");
+                    
+                    // 延迟执行导航启动流程，等待路线规划完成
+                    ThreadManager.getInstance().postDelay(() -> {
+                        try {
+                            Logger.d(TAG, "开始执行导航启动流程...");
+                            
+                            // 创建Bundle包含导航参数
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, 
+                                        isSimulate ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
+                            
+                            // 关闭所有Fragment，切换到导航页面
+                            if (mViewModel != null) {
+                                Logger.d(TAG, "关闭所有Fragment并启动导航页面");
+                                mViewModel.closeAllFragment();
+                                
+                                // 添加NaviGuidanceFragment，这将触发正常的导航启动流程
+                                addFragment(new NaviGuidanceFragment(), bundle);
+                                Logger.d(TAG, "NaviGuidanceFragment已添加");
+                            }
+                        } catch (Exception e) {
+                            Logger.e(TAG, "导航启动流程执行失败: " + e.getMessage());
+                        }
+                    }, 3000); // 延迟3秒等待路线规划完成
+                } else {
+                    Logger.e(TAG, "路线规划请求失败");
+                }
+                
+            } catch (Exception e) {
+                Logger.e(TAG, "MCP导航请求处理失败: " + e.getMessage());
+            }
+        });
     }
 
     @Override
-    public void setChargeTipEntity(Object chargeTipEntity) {
+    public void onResetSettingConfig() {
         if (mViewModel != null) {
-            mViewModel.setChargeTipEntity(chargeTipEntity);
+            mViewModel.closeNavi();
         }
     }
 
