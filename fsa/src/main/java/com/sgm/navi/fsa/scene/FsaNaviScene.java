@@ -38,6 +38,7 @@ import com.sgm.navi.fsa.bean.SpeedLimitSignData;
 import com.sgm.navi.fsa.bean.TollStation;
 import com.sgm.navi.fsa.bean.TurnInfo;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
@@ -400,7 +401,13 @@ public final class FsaNaviScene {
 //            laneItem.setLaneVariationType();
             // 车道线类型信息
             final LaneTypeInfo laneTypeInfo = new LaneTypeInfo();
-            laneTypeInfo.setLaneType(amapLane2fsa(backlaneType));
+            // 根据最新方案，未划线车道LaneType需要传无效值(占位且显示为空白)
+            if(backlane == NaviConstant.LaneAction.LANE_ACTION_EMPTY
+                    && frontlaneType == NaviConstant.LaneAction.LANE_ACTION_NULL){
+                laneTypeInfo.setLaneType(FsaConstant.FsaLaneType.INVALID_VALUE);
+            }else{
+                laneTypeInfo.setLaneType(amapLane2fsa(backlaneType));
+            }
             if (laneInfoEntity.getOptimalLane().get(i) != 0xFF) {
                 laneTypeInfo.setBright(true);
             }
@@ -408,7 +415,13 @@ public final class FsaNaviScene {
             // 车道线方向信息
             final ArrayList<LaneDirection> directionList = new ArrayList<>();
             laneItem.setDirectionList(directionList);
-            amapLaneDirection2fsa(frontlaneType, backlane, directionList);
+            if(backlane == NaviConstant.LaneAction.LANE_ACTION_EMPTY
+                    && frontlaneType == NaviConstant.LaneAction.LANE_ACTION_NULL){
+                directionList.add(new LaneDirection(FsaConstant.FsaLaneDirection.INVALID_VALUE,FsaConstant.FsaLaneDirection.INVALID_VALUE));
+            }else{
+                amapLaneDirection2fsa(frontlaneType, backlane, directionList);
+            }
+
         }
         mLaneLineInfo = laneLineInfo;
         fsaService.sendEvent(FsaConstant.FsaFunction.ID_LANE_INFO, GsonUtils.toJson(laneLineInfo));
