@@ -158,7 +158,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem item, ClickViewIdInfo clickViewIds) {
-        ThreadManager.getInstance().postUi(() -> dispatchItemClickEvent(item, clickViewIds));
+        dispatchItemClickEvent(item, clickViewIds);
     }
 
     @Override
