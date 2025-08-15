@@ -26,6 +26,10 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
     private OnItemClickListener mItemClickListener;
     private int mSelected = -1;
 
+    private int mLastSelect = -1;
+    private int mParentSelect = -1;
+    private int mLastParentSelect = -1;
+
     public RouteSecondaryPoiAdapter() {
         mChildInfoList = new ArrayList<>();
     }
@@ -42,6 +46,36 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
         mChildInfoList.clear();
         mChildInfoList.addAll(childInfoList);
         mPoiInfoEntity = poiInfoEntity;
+        mSelected = -1;
+        mLastSelect = -1;
+        mLastParentSelect = -1;
+        mParentSelect = -1;
+        notifyDataSetChanged();
+    }
+
+    /***
+     * 设置子节点通过切换父节点
+     * @param childInfoList 子节点列表
+     * @param poiInfoEntity 当前点参数
+     * @param parentIndex 父节点索引
+     */
+    public void setChildInfoList(final List<ChildInfo> childInfoList,final PoiInfoEntity poiInfoEntity, final int parentIndex) {
+        if (null == childInfoList) {
+            return;
+        }
+        mChildInfoList.clear();
+        mChildInfoList.addAll(childInfoList);
+        mPoiInfoEntity = poiInfoEntity;
+        if (mSelected != -1) {
+            mLastSelect = mSelected;
+            mLastParentSelect = mParentSelect;
+        }
+        if (mLastParentSelect == parentIndex && mLastParentSelect != -1) {
+            mSelected = mLastSelect;
+        } else {
+            mSelected = -1;
+        }
+        mParentSelect = parentIndex;
         notifyDataSetChanged();
     }
 

@@ -50,7 +50,7 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
         if (mChildInfoList == null || mChildInfoList.isEmpty() || selected == -1 || selected >= mChildInfoList.size()) {
             return;
         }
-        mItemClickListener.onItemClick(mChildInfoList.get(selected), mPoiInfoEntity);
+        mItemClickListener.onItemClick(mChildInfoList.get(selected), mPoiInfoEntity, mSelected);
     }
 
     public void setItemClickListener(final OnItemClickListener itemClickListener) {
@@ -109,8 +109,9 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
          * 子节点点击事件
          * @param childInfo 子节点对象
          * @param poiInfoEntity 当前位置
+         * @param index 选中下标
          */
-        void onItemClick(ChildInfo childInfo, PoiInfoEntity poiInfoEntity);
+        void onItemClick(ChildInfo childInfo, PoiInfoEntity poiInfoEntity, int index);
 
     }
 }
