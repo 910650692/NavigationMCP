@@ -657,6 +657,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         final int index = Integer.parseInt(item.getID());
         final LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
         chargePoint.setType(1);
+        if (ConvertUtils.isEmpty(mViaPointList)) {
+            return chargePoint;
+        }
         if (index >= 0 && index < mViaPointList.size()) {
             final PoiInfoEntity poiInfoEntity = mViaPointList.get(index);
             if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList())) {
