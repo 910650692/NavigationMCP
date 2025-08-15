@@ -260,12 +260,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    public void judgeNetException() {
-        if (mModel != null) {
-            mModel.judgeNetException();
-        }
-    }
-
     public boolean judgeAutoProtocol() {
         return mModel.judgeAutoProtocol();
     }

@@ -482,9 +482,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         BroadcastManager.getInstance().sendSpiCollectingBroadcast();
         if (isShowStartupException()) {
             popStartupExceptionDialog();
-        }else {
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         }
+        ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
     }
 
     @Override
@@ -549,15 +548,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    /**
-     * 给activity调用的
-     */
-    public void judgeNetException() {
-        if (isShowStartupException()) {
-            popStartupExceptionDialog();
-        }
-    }
-
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
@@ -586,19 +576,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 @Override
                 public void onExit() {
                     FloatViewManager.getInstance().showAllCardWidgets();
-                    if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                        if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
-                            Logger.d(TAG, "桌面地图隐藏弹窗");
-                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG);
-                            mStartExceptionDialog.cancel();
-                        }
-                    } else {
-                        if (null != mViewModel) {
-                            Logger.d(TAG, "非桌面地图finish应用");
-                            mViewModel.moveToBack();
-                            ThreadManager.getInstance().asyncDelay(() -> mViewModel.getView().finish(), 400, TimeUnit.MILLISECONDS);
-                        }
-                    }
+                    mStartExceptionDialog.cancel();
                 }
             });
         }
@@ -617,8 +595,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
-            } else if (isShowStartupException()) {
-                popStartupExceptionDialog();
             } else if (isAllowSGMAgreement() && !isFirstLauncher()) {
                 checkAuthorizationExpired();
             }
@@ -2557,15 +2533,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
             Logger.e(TAG, "网络异常弹窗展示中，网络连恢复后消失");
-            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
             mStartExceptionDialog.dismiss();
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
-        }
-
-        if (ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG)) {
-            Logger.e(TAG, "网络异常点击事件拦截中，网络恢复后消失");
-            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         }
 
         if (mViewModel.isActivateDialogShowing()) {

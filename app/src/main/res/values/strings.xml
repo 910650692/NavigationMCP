@@ -659,7 +659,7 @@
     <string name="delete_charge_station_content">自动添加的充电站暂不支持逐个删除，是否要删除全部?</string>
     <string name="startup_exception_title">无应用缓存数据</string>
     <string name="startup_exception_content">请联网或下载离线数据后使用</string>
-    <string name="startup_exception_exit">退出</string>
+    <string name="startup_exception_exit">关闭</string>
 
     <!-- 激活相关 -->
     <string name="activating">地图服务激活中…</string>
