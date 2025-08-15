@@ -1401,7 +1401,6 @@ public final class VoiceSearchManager {
             final PoiInfoEntity homeCompanyInfo = getHomeCompanyPoiInfo(type);
             if (null != homeCompanyInfo) {
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, homeCompanyInfo);
-                return CallResponse.createSuccessResponse();
             } else {
                 CallResponse callResponse;
                 callResponse = CallResponse.createFailResponse("");
@@ -1411,20 +1410,19 @@ public final class VoiceSearchManager {
                     callResponse.setSubCallResult(NaviSubCallResult.TRAFFIC_QUERY_NO_COMPANY);
                 }
                 poiCallback.onResponse(callResponse);
-                return CallResponse.createSuccessResponse();
             }
+        } else {
+            mAlongToAround = false;
+            mSessionId = sessionId;
+            mPoiCallback = poiCallback;
+            //保存沿途搜参数，如果沿途搜没有结果，需转为周边搜
+            mKeyword = passBy;
+            mSearchType = IVrBridgeConstant.VoiceSearchType.ALONG_WAY;
+            final Bundle bundle = new Bundle();
+            bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH);
+            bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, passBy);
+            MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         }
-
-        mAlongToAround = false;
-        mSessionId = sessionId;
-        mPoiCallback = poiCallback;
-        //保存沿途搜参数，如果沿途搜没有结果，需转为周边搜
-        mKeyword = passBy;
-        mSearchType = IVrBridgeConstant.VoiceSearchType.ALONG_WAY;
-        final Bundle bundle = new Bundle();
-        bundle.putInt(IVrBridgeConstant.VoiceIntentParams.INTENT_PAGE, IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH);
-        bundle.putString(IVrBridgeConstant.VoiceIntentParams.KEYWORD, passBy);
-        MapPackage.getInstance().voiceOpenHmiPage(MapType.MAIN_SCREEN_MAIN_MAP, bundle);
         return CallResponse.createSuccessResponse();
     }
 

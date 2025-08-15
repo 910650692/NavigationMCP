@@ -1648,8 +1648,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.OFFLINE_NOT_SUPPORT);
         }
 
-        VoiceSearchManager.getInstance().handlePassBy(sessionId, poi, poiType, poiCallback);
-        return CallResponse.createSuccessResponse();
+        return VoiceSearchManager.getInstance().handlePassBy(sessionId, poi, poiType, poiCallback);
     }
 
     /**
