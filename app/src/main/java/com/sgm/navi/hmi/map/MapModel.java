@@ -1479,6 +1479,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
             );
             mapModelHelp.setCruiseScale();
+
+            // 地图桌面更新小卡片状态
+            if (FloatViewManager.getInstance().isNaviDeskBg()){
+                FloatViewManager.getInstance().showAllCardWidgets();
+            }
         }
         mViewModel.showOrHiddenCruise(isSuccess);
     }
@@ -1499,6 +1504,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_exit_cruise);
             mViewModel.showOrHiddenCruise(false);
+
+            // 地图桌面更新小卡片状态
+            if (FloatViewManager.getInstance().isNaviDeskBg()){
+                FloatViewManager.getInstance().hideAllCardWidgets(true);
+            }
         }
     }
 

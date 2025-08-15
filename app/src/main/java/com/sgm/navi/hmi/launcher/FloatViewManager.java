@@ -26,6 +26,7 @@ import com.patac.launcher.ILauncherModeManager;
 import com.patac.launcher.PatacLauncherModeConfig;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.android.utils.ScreenTypeUtils;
@@ -291,6 +292,11 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         }
         if (!isServiceConnect || ConvertUtils.isNull(mLauncherModeManager)) {
             Logger.e(TAG, "service not connect or mLauncherModeManager = null");
+            return;
+        }
+        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.CRUISE)){
+            hideAllCardWidgets(false);
+            Logger.d(TAG, "巡航状态下需要隐藏卡片");
             return;
         }
         if (cardWidgetIsOnShowing) {
