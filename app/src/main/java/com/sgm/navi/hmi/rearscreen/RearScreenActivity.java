@@ -60,7 +60,7 @@ public class RearScreenActivity extends BaseActivity<ActivityRearScreenBinding, 
         mViewModel.registerRearScreenMap();
         SignalPackage.getInstance().registerObserver(TAG, this);
         if (SignalPackage.getInstance().getSystemState() == SYSTEM_STATE_ENGINE_OFF) {//熄火状态
-            Logger.d(TAG, "state：" , SignalPackage.getInstance().getSystemState());
+            Logger.d(TAG, "state:" , SignalPackage.getInstance().getSystemState());
             mBinding.sclRearScreen.setVisibility(GONE);
             finishAndRemoveTask();
         }
@@ -185,10 +185,10 @@ public class RearScreenActivity extends BaseActivity<ActivityRearScreenBinding, 
      */
     public int[] getCarSelfPosition() {
         final int screenHeight = ScreenUtils.Companion.getInstance().getRealScreenHeight(this);
-        final int bottom = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.rear_screen_car_logo_bottom);
+        final int top = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.rear_screen_car_logo_top);
         int[] pos = new int[2];
         pos[0] = mBinding.getRoot().getWidth() / 2;
-        pos[1] = mViewModel.isNavigating() ? bottom : screenHeight / 2;
+        pos[1] = top;
         Logger.d(TAG, "pos[0]:" + pos[0], "pos[1]:" + pos[1]);
         return pos;
     }

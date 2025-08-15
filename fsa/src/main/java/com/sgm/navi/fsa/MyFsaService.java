@@ -335,10 +335,12 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         Logger.d(FsaConstant.FSA_TAG, "----handlePayload1" , ThreadManager.getInstance().isMainThread());
         switch (payload) {
             case FsaConstant.FsaEventPayload.OPEN_HUD_MAP:
+                Logger.e(FsaConstant.FSA_TAG, "----handlePayload1 open cluster map");
                 updateMapDisplayStatus(true);
                 ClusterMapOpenCloseManager.getInstance().triggerOpenOrClose(true);
                 break;
             case FsaConstant.FsaEventPayload.CLOSE_HUD_MAP:
+                Logger.e(FsaConstant.FSA_TAG, "----handlePayload1 close cluster map");
                 updateMapDisplayStatus(false);
                 ClusterMapOpenCloseManager.getInstance().triggerOpenOrClose(false);
                 break;
@@ -407,7 +409,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 break;
             case FsaConstant.FsaEventPayload.HUD_HINT:
                 //属于CLEA平台 接收信号 去关闭HUD
-                Logger.d(FsaConstant.FSA_TAG,"hud NO");
+                Logger.e(FsaConstant.FSA_TAG,"close hud map");
                 isShowHud = false;
                 ThreadManager.getInstance().postUi(() -> {
                     switchHudActivity(false);
@@ -417,7 +419,7 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 break;
             case FsaConstant.FsaEventPayload.HUD_LEFT_HALF:
                 //属于CLEA平台 接收信号 去开启HUD
-                Logger.d(FsaConstant.FSA_TAG,"hud OK");
+                Logger.e(FsaConstant.FSA_TAG,"open hud map");
                 isShowHud = true;
                 ThreadManager.getInstance().postUi(() -> {
                     switchHudActivity(true);

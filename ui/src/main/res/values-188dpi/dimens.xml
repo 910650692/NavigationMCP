@@ -3997,8 +3997,8 @@
     <!--桌面悬浮窗的位置-->
     <dimen name="launcher_position_top">22dp</dimen>
     <dimen name="launcher_position_left">34dp</dimen>
-    <!-- 后排屏CarLogo距离底部高度 -->
-    <dimen name="rear_screen_car_logo_bottom">339dp</dimen>
+    <!-- 后排屏CarLogo距离顶部高度 -->
+    <dimen name="rear_screen_car_logo_top">838dp</dimen>
 
     <dimen name="navi_cadillac_cluster_navi_text_size">52px</dimen>
     <dimen name="navi_cadillac_cluster_navi_unit_size">44px</dimen>

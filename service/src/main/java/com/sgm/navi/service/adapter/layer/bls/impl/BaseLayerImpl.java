@@ -238,10 +238,14 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public int getMarkerId(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo) {
         int markerId = super.getMarkerId(layer, item, styleInfo);
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
+        long usedTextureCount = layer.getMapView().getUsedTextureCount();
+        long capacityTextureCount = layer.getMapView().getCapacityTextureCount();
         if (Logger.openLog) {
             Logger.i(TAG, "CurrentMapView:" + getMapType(),
-                    "已使用纹理/支持最大纹理数:" + layer.getMapView().getUsedTextureCount()
-                            + "/" + layer.getMapView().getCapacityTextureCount());
+                    "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
+        }
+        if (usedTextureCount >= capacityTextureCount) {
+            Logger.e(TAG, "###Fatal###", "MapView:" + getMapType() + "纹理数超过最大限制500");
         }
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
             String markerRes = styleInfo.markerId;
