@@ -4191,4 +4191,5 @@
     <dimen name="scene_rcv_collect_list_switch_gone_max_height">839dp</dimen>
     <dimen name="scene_srv_add_via_list_max_height">744dp</dimen>
     <dimen name="terminal_parking_result_view_max_height">921dp</dimen>
+    <dimen name="route_search_service_page_max_height">704dp</dimen>
 </resources>
