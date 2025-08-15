@@ -136,8 +136,6 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         super.onDestroy();
         Logger.d(TAG, "----onDestroy");
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
-//        MyFsaService.getInstance().sendEvent(FsaConstant.FsaFunction.ID_SERVICE_HOLE, MAP_DISPLAYING_FALSE);
-//        ThreadManager.getInstance().removeHandleTask(mRunnable);
         SignalPackage.getInstance().unregisterObserver(TAG);
         ThreadManager.getInstance().removeHandleTask(holeAction);
     }

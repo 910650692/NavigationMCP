@@ -56,7 +56,6 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
     public void onDestroy() {
         super.onDestroy();
         Logger.d(TAG, "onDestroy called");
-        MapPackage.getInstance().unBindMapView(mView.getMapView());
     }
 
     public void loadMapView(){

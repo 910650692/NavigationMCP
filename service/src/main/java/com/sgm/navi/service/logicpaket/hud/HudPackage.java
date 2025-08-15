@@ -168,8 +168,10 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         NaviStatusPackage.getInstance().unregisterObserver(TAG);
         LayerPackage.getInstance().unInitLayer(MapType.HUD_MAP);
         MapAdapter.getInstance().unregisterCallback(MapType.HUD_MAP, this);
-        MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
-        MapAdapter.getInstance().destroyMapView(MapType.HUD_MAP);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
+            MapAdapter.getInstance().destroyMapView(MapType.HUD_MAP);
+        }
         Logger.d(TAG, "HUDMapView地图已销毁");
         ConvertUtils.clear(hudCallbackMap);
         mMapSurfaceView = null;
