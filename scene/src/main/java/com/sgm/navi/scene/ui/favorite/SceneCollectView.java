@@ -353,10 +353,10 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
             ConstraintLayout.LayoutParams sllParams = (ConstraintLayout.LayoutParams) mViewBinding.sllNoFavorite.getLayoutParams();
             if (mViewBinding.tvFavoriteSwitch.getVisibility() == VISIBLE) {
                 rcvParams.matchConstraintMaxHeight = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.scene_rcv_collect_list_switch_visible_max_height);
-                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_613);
+                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.scene_rcv_collect_sll_no_favorite_switch_visible_height);
             } else {
                 rcvParams.matchConstraintMaxHeight = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.scene_rcv_collect_list_switch_gone_max_height);
-                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.dp_713);
+                sllParams.height = getResources().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.scene_rcv_collect_sll_no_favorite_switch_gone_height);
             }
             mViewBinding.rcvCollect.setLayoutParams(rcvParams);
         }

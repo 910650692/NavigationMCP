@@ -4070,8 +4070,11 @@
     <dimen name="phone_address_dialog_main_show_margin_start">417dp</dimen>
     <dimen name="phone_address_dialog_main_not_show_margin_start">600dp</dimen>
     <dimen name="phone_address_dialog_setting_show_margin_start">1062dp</dimen>
-    <dimen name="scene_rcv_collect_list_switch_visible_max_height">680dp</dimen>
-    <dimen name="scene_rcv_collect_list_switch_gone_max_height">780dp</dimen>
+    <dimen name="scene_rcv_collect_list_switch_visible_max_height">564dp</dimen>
+    <dimen name="scene_rcv_collect_list_switch_gone_max_height">665dp</dimen>
+    <dimen name="scene_rcv_collect_sll_no_favorite_switch_visible_height">440dp</dimen>
+    <dimen name="scene_rcv_collect_sll_no_favorite_switch_gone_height">539dp</dimen>
+    <dimen name="scene_rcv_collect_sll_no_sgm_height">416dp</dimen>
     <dimen name="scene_srv_add_via_list_max_height">545dp</dimen>
     <dimen name="terminal_parking_result_view_max_height">743dp</dimen>
     <dimen name="route_search_service_page_max_height">518dp</dimen>
