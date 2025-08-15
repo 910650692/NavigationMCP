@@ -21,6 +21,7 @@ import com.autonavi.gbl.layer.observer.PrepareLayerStyleInner;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.RouteLayerItem;
 import com.autonavi.gbl.map.layer.model.CarLoc;
 import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.map.layer.model.CustomTextureParam;
@@ -29,6 +30,7 @@ import com.autonavi.gbl.map.layer.model.CustomUpdateParam;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.autonavi.gbl.map.layer.model.Layer3DModel;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
+import com.autonavi.gbl.map.layer.model.RouteLayerDrawParam;
 import com.autonavi.gbl.map.layer.model.RouteLayerStyle;
 import com.autonavi.gbl.map.layer.observer.ICarObserver;
 import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
@@ -36,10 +38,12 @@ import com.autonavi.gbl.map.model.MapStyleTime;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.bls.style.BaseStyleAdapter;
 import com.sgm.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.sgm.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
+import com.sgm.navi.service.adapter.layer.bls.utils.hudLayerStyle.NaviRouteLayerParser;
 import com.sgm.navi.service.define.map.MapType;
 
 import java.util.List;
@@ -70,6 +74,8 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     private static InnerStyleParam innerStyleParam;
 
+    private NaviRouteLayerParser mNaviRouteLayerParser;
+
     private static InnerStyleParam innerStyleParam() {
         if (innerStyleParam == null) {
             innerStyleParam = new InnerStyleParam();
@@ -91,6 +97,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         this.styleAdapter = createStyleAdapter();
         setParam(styleAdapter);
         this.bizService.setCollisionIntervalTime(getEngineId(), 500);
+        mNaviRouteLayerParser = new NaviRouteLayerParser();
     }
 
     public int getEngineId() {
@@ -276,19 +283,16 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public boolean getRouteLayerStyle(BaseLayer layer, LayerItem item, RouteLayerStyle style) {
-//        Logger.d(TAG, mapType, " getRouteLayerStyle style ", style);
-//        if (null != style && mapType == MapType.HUD_MAP) {
-//            ArrayList<RouteLayerParam> vecParam = style.vecParam;
-//            Logger.d(TAG, mapType, " getRouteLayerStyle vecParam ", vecParam.size());
-//            RouteLayerParam param = new RouteLayerParam();
-//            param.lineWidth = 6;
-//            param.showArrow = false;
-//            param.borderLineWidth = 0;
-//            param.fillColor = getContext().getColor(R.color.hud_color_route);
-//            style.vecParam.add(param);
-//            style.mPassedColor[0] = getContext().getColor(R.color.hud_color_route_passed);
-//            return true;
-//        }
+        Logger.d(TAG, mapType, " getRouteLayerStyle style ", style);
+        if (null != style && mapType == MapType.HUD_MAP) {
+            RouteLayerItem routeLayerItem = (RouteLayerItem) item;
+            RouteLayerDrawParam routeDrawParam = routeLayerItem.getRouteDrawParam();
+            boolean isNightMode = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
+            int fillLineColor = getContext().getColor(R.color.hud_color_route);
+            mNaviRouteLayerParser.getRouteLayerStyle(layer, item, style,
+                    this, routeDrawParam.mRouteStyleType, isNightMode, fillLineColor);
+            return true;
+        }
         return super.getRouteLayerStyle(layer, item, style);
     }
 
