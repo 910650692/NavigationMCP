@@ -1695,7 +1695,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 ThreadManager.getInstance().postDelay(new Runnable() {
                     @Override
                     public void run() {
-                        mScreenViewModel.setChildIndex(mChildSelectIndex);
+                        if (mScreenViewModel != null) {
+                            mScreenViewModel.setChildIndex(mChildSelectIndex);
+                        }
                     }
                 },1000);
             }
