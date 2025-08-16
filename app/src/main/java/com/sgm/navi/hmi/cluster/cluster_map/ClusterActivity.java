@@ -4,6 +4,7 @@ package com.sgm.navi.hmi.cluster.cluster_map;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.Application;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 
@@ -13,12 +14,14 @@ import androidx.core.content.ContextCompat;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.NaviApplication;
 import com.sgm.navi.fsa.FsaConstant;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.cluster.ClusterViewModel;
 import com.sgm.navi.hmi.databinding.ActivityClusterBinding;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.map.MapType;
@@ -42,6 +45,19 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
 
     private boolean isDisplayCluster = false;// 是否上屏
 
+    private int currentUiMode;
+
+    private final NaviApplication.OnConfigurationChangedListener onConfigurationChangedListener = newConfig -> {
+        Logger.d(TAG, "onConfigurationChangedListener---onConfigurationChanged");
+        final int tmpUiMode = newConfig.uiMode;
+        if (currentUiMode != tmpUiMode) {
+            initViewTheme();
+            ThreadManager.getInstance().runAsync(this::updateMapThemeType);
+            Logger.i(TAG, "主题发生变化，重置UI!");
+        }
+        currentUiMode = tmpUiMode;
+    };
+
     @Override
     public void onCreateBefore() {
         mScreenId = MapType.CLUSTER_MAP.name();
@@ -60,6 +76,7 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
     @Override
     public void onInitView(){
         Logger.d(TAG, "onInitView");
+        currentUiMode = getResources().getConfiguration().uiMode;
         ActivityCloseManager.getInstance().addOnCloseListener(this);
         mViewModel.registerClusterMap();
         initViewTheme();
@@ -68,6 +85,12 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
             Logger.d(TAG, "state：" , SignalPackage.getInstance().getSystemState());
             mBinding.cluster.setVisibility(GONE);
             finishAndRemoveTask();
+        }
+        Application application = AppCache.getInstance().getMApplication();
+        if (application instanceof NaviApplication) {
+            Logger.d(TAG, "onInitView---addOnConfigurationChangedListener");
+            ((NaviApplication) application).addOnConfigurationChangedListener(
+                    onConfigurationChangedListener);
         }
     }
 
@@ -138,14 +161,21 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         ActivityCloseManager.getInstance().removeOnCloseListener(this);
         SignalPackage.getInstance().unregisterObserver(TAG);
         ThreadManager.getInstance().removeHandleTask(holeAction);
+        Application application = AppCache.getInstance().getMApplication();
+        if (application instanceof NaviApplication) {
+            Logger.d(TAG, "onDestroy---removeOnConfigurationChangedListener");
+            ((NaviApplication) application).removeOnConfigurationChangedListener(
+                    onConfigurationChangedListener);
+        }
     }
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Logger.d(TAG, "onConfigurationChanged");
-        initViewTheme();
-        ThreadManager.getInstance().runAsync(this::updateMapThemeType);
+        // 改为监听Application的configChanged方法
+//        initViewTheme();
+//        ThreadManager.getInstance().runAsync(this::updateMapThemeType);
     }
 
     private void updateMapThemeType() {

@@ -2,6 +2,7 @@ package com.sgm.navi;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
@@ -19,12 +20,32 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.ui.BaseApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description TODO
  * @Author lvww
  * @date 2024/11/24
  */
 public class NaviApplication extends BaseApplication implements Application.ActivityLifecycleCallbacks {
+
+    private final List<OnConfigurationChangedListener> configChangedListenerList = new ArrayList<>();
+
+    public interface OnConfigurationChangedListener {
+        void onConfigurationChanged(@NonNull Configuration newConfig);
+    }
+
+    public void addOnConfigurationChangedListener(OnConfigurationChangedListener listener) {
+        if (listener != null && !configChangedListenerList.contains(listener)) {
+            configChangedListenerList.add(listener);
+        }
+    }
+
+    public void removeOnConfigurationChangedListener(OnConfigurationChangedListener listener) {
+        configChangedListenerList.remove(listener);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,6 +59,22 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         super.onTerminate();
         CarModelsFeature.getInstance().unRegisterBroadcast();
         StartService.getInstance().unSdkInit();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (!configChangedListenerList.isEmpty()) {
+            if (Logger.openLog) {
+                Logger.d(TAG, "onConfigurationChanged---configChangedListenerList_size:"
+                        + configChangedListenerList.size());
+            }
+            for (OnConfigurationChangedListener listener : configChangedListenerList) {
+                listener.onConfigurationChanged(newConfig);
+            }
+        } else {
+            Logger.w(TAG, "onConfigurationChanged未设置监听器");
+        }
     }
 
     @Override
