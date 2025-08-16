@@ -506,9 +506,11 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
     private void dispatchSearchSuccess(final boolean silent, final SearchResultEntity searchResultEntity) {
         try {
             Logger.d(TAG, "onSearchSuccess inCallback, silent: " + silent);
-            sortSearchResult(searchResultEntity);
+            final SearchResultEntity copyEntity = new SearchResultEntity();
+            GsonUtils.copyBean(searchResultEntity, copyEntity);
+            sortSearchResult(copyEntity);
             final int count = mSearchCallbackList.beginBroadcast();
-            final BaseSearchResult baseSearchResult = GsonUtils.convertToT(searchResultEntity, BaseSearchResult.class);
+            final BaseSearchResult baseSearchResult = GsonUtils.convertToT(copyEntity, BaseSearchResult.class);
             final String searchResultStr = GsonUtils.toJson(baseSearchResult);
             for (int i = 0; i < count; i++) {
                 final INaviAutoSearchCallback searchCallback = mSearchCallbackList.getRegisteredCallbackItem(i);
