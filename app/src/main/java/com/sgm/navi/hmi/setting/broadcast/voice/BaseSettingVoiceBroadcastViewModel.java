@@ -54,6 +54,8 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         super.onResume();
         if(recommendVoiceList != null && !recommendVoiceList.isEmpty()){
             mView.setData(recommendVoiceList);
+        }else {
+            Logger.w(TAG, "recommendVoiceList is empty");
         }
     }
 

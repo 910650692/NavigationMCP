@@ -78,6 +78,7 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
     }
 
     public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){
+        Logger.d(TAG, "get Voice List");
         return mVoicePackage.getRecommendVoiceList();
     }
 }
