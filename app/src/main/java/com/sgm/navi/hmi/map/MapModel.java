@@ -1894,17 +1894,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
             String currentTime = TimeUtils.getInstance().getCurrentTimeToHour();
             Logger.d(TAG, "key:" + key + ",,, currentTime:" + currentTime);
-            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
+//            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
                 mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
-
                 //是否在上班时间段内  在家附近
                 LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
                 boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
+                Logger.i(TAG, "workHours:", workHours);
                 GeoPoint nearByHome = mViewModel.nearByHome(true);
                 GeoPoint nearByCompany = mViewModel.nearByHome(false);
                 if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 去公司
                     boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
+                    Logger.i(TAG, "distanceCompany:", distanceCompany);
                     if (distanceCompany) {
                         mViewModel.loadNdOfficeTmc(false);
                     }
@@ -1913,14 +1914,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
                 //是否在下班时间段内  在公司附近
                 boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
+                Logger.i(TAG, "endofWorkHours:", endofWorkHours);
                 if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 回家
                     boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
+                    Logger.i(TAG, "distanceHome:", distanceHome);
                     if (distanceHome) {
                         mViewModel.loadNdOfficeTmc(true);
                     }
                 }
-            }
+//            }else {
+//                Logger.d(TAG, "The conditions are not met");
+//            }
         }
     }
 

@@ -844,7 +844,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
 
-        //Nd车型需要先判断是否是节假日
+        //Nd 557车型需要先判断是否是节假日
         if (mModel.showNdGoHomeView()) {
             tmcModeVisibility.set(false);
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
@@ -889,8 +889,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         if (!ConvertUtils.isEmpty(poiInfoEntity)) {
             return poiInfoEntity.getMPoint();
+        } else {
+            Logger.i(TAG, "poiInfoEntity is null");
+            return null;
         }
-        return null;
     }
 
     public void loadNdOfficeTmc(boolean home) {
