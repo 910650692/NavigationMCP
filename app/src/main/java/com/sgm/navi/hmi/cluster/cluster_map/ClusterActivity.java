@@ -216,7 +216,8 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
             } else {
 //            mBinding.cluster.setVisibility(GONE);
                 moveTaskToBack(true);
-                ThreadManager.getInstance().postDelay(finishAndRemoveTaskAction, 2000);
+                // TODO: 2025/8/17 修改问题 1112082 暂时先这么修改，待后续观察现象
+//                ThreadManager.getInstance().postDelay(finishAndRemoveTaskAction, 2000);
             }
         }
     }
