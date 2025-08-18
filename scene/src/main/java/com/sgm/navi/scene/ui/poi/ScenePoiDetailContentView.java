@@ -94,6 +94,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         ScenePoiDetailContentViewImpl> {
     private static final String HOME_COMPANY_FRAGMENT = "HomeCompanyFragment";
     private static final String DEFATULE_STRING = "--";
+    private static final String DEFATULE_OCCUPY = "0";
     private static final String DIVIDER = "_";
     private PoiInfoEntity mPoiInfoEntity;
     private final int mSpacing = 24; // 上下间距
@@ -1024,7 +1025,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                         setVisibility(VISIBLE);
             }
             final String fastFree = chargeInfo.getFast_free() == 0 ?
-                    DEFATULE_STRING : chargeInfo.getFast_free() + "";
+                    DEFATULE_OCCUPY : chargeInfo.getFast_free() + "";
             final String fastTotal = chargeInfo.getFast_total() == 0 ?
                     DEFATULE_STRING : "/" + chargeInfo.getFast_total();
             final String fastVolt = chargeInfo.getFastVolt() == 0 ?
@@ -1034,16 +1035,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final String fastInfo = fastPower + "." + fastVolt;
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setText(fastFree);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal);
-            if(chargeInfo.getFast_free() == 0){
-                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastOccupied.setVisibility(GONE);
-                mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastTotal.setText(fastTotal.replace("/",""));
-            }
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastInfo.setVisibility(ConvertUtils.isNull(mPoiInfoEntity.getOperatorId()) ? GONE : VISIBLE);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowInfo.setVisibility(ConvertUtils.isNull(mPoiInfoEntity.getOperatorId()) ? GONE : VISIBLE);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeFastCurrentAndVlot.
                     setText(fastInfo);
             final String slowFree = chargeInfo.getSlow_free() == 0 ?
-                    DEFATULE_STRING : chargeInfo.getSlow_free() + "";
+                    DEFATULE_OCCUPY : chargeInfo.getSlow_free() + "";
             final String slowTotal = chargeInfo.getSlow_total() == 0 ?
                     DEFATULE_STRING : "/" + chargeInfo.getSlow_total();
             final String slowVolt = chargeInfo.getSlowVolt() == 0 ?
@@ -1053,10 +1050,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             final String slowInfo = slowPower + "." + slowVolt;
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setText(slowFree);
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal);
-            if(chargeInfo.getSlow_free() == 0){
-                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowOccupied.setVisibility(GONE);
-                mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowTotal.setText(slowTotal.replace("/",""));
-            }
             mViewBinding.scenePoiDetailsChargingStationView.poiChargeSlowCurrentAndVlot.
                     setText(slowInfo);
             if (!ConvertUtils.equals(chargeInfo.getCurrentElePrice(), "--")) {
