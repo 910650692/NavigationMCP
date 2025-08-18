@@ -1,26 +1,26 @@
 {
   "map_main_car": {
-    "mleftscreenoffer": 1215,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 1428,
+    "mtopscreenoffer": 959
   },
   "map_main_naving": {
-    "mleftscreenoffer": 1331,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 1564,
+    "mtopscreenoffer": 959
   },
   "map_main_setting": {
-    "mleftscreenoffer": 1505,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 1768,
+    "mtopscreenoffer": 959
   },
   "map_main_car_window": {
-    "mleftscreenoffer": 1514,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 1779,
+    "mtopscreenoffer": 959
   },
   "map_main_naving_window": {
-    "mleftscreenoffer": 1630,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 1915,
+    "mtopscreenoffer": 959
   },
   "map_main_setting_window": {
-    "mleftscreenoffer": 1804,
-    "mtopscreenoffer": 816
+    "mleftscreenoffer": 2119,
+    "mtopscreenoffer": 959
   }
 }
