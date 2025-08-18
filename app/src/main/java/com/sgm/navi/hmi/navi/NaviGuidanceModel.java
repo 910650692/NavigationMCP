@@ -951,9 +951,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
                 MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamList.size());
+        final int allPoiParamSize = allPoiParamList.size();
+        Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamSize);
+        final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
+        if (!ConvertUtils.isEmpty(viaRemain)) {
+            mIsNeedUpdateViaList = allPoiParamSize != (viaRemain.size() + 2);
+        }
         for (int i = 1; i < allPoiParamList.size() - 1; i++) {
-            final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
             final RouteParam routeParam = allPoiParamList.get(i);
             if (!ConvertUtils.isEmpty(viaRemain)) {
                 final int index = i - 1;

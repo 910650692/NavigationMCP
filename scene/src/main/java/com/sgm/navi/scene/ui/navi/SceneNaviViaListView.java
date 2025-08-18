@@ -236,8 +236,10 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         addBatteryLeftData(list);
         mNaviViaEntityList.clear();
         mNaviViaEntityList.addAll(list);
+        boolean isCanRefresh = (mNaviViaEntityList.size() == getButterySize());
+        Logger.i(TAG, isCanRefresh);
         // 如果是电车在当前页面不立即更新数据，因为有电量数据要更新，直接根据电车回调更新整体数据
-        if (OpenApiHelper.powerType() == 1 && this.isVisible() && !forceUpdate) {
+        if (OpenApiHelper.powerType() == 1 && this.isVisible() && !forceUpdate && !isCanRefresh) {
             if (Logger.openLog) {
                 Logger.d(TAG, "电车不立即更新数据，等待电量回调");
             }
@@ -333,6 +335,29 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                 }
             }
         }
+    }
+
+    private int getButterySize() {
+        if (!ConvertUtils.isEmpty(mElectVehicleETAInfoList)) {
+            long currentPathId = OpenApiHelper.getCurrentPathId(mMapTypeId);
+            FyElecVehicleETAInfo currentVehicleETAInfo = null;
+            for (FyElecVehicleETAInfo info : mElectVehicleETAInfoList) {
+                if (info.getPathID() == currentPathId) {
+                    currentVehicleETAInfo = info;
+                    break;
+                }
+            }
+            if (currentVehicleETAInfo != null) {
+                // 手动添加的途经点和终点的电量信息
+                ArrayList<Long> batteryLeftUserAdd = new ArrayList<>(
+                        currentVehicleETAInfo.getEnergySum());
+                // 补能点的电量信息
+                ArrayList<FyChargingStation> chargeStationInfo =
+                        new ArrayList<>(currentVehicleETAInfo.getChargeStationInfo());
+                return batteryLeftUserAdd.size() + chargeStationInfo.size();
+            }
+        }
+        return -1;
     }
 
     public void updateSceneVisible(final boolean isVisible) {

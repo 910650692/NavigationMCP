@@ -152,6 +152,15 @@ public class NaviViaListAdapter extends RecyclerView.Adapter<NaviViaListAdapter.
     @SuppressLint("SetTextI18n")
     private void setChargeUi(final int chargeLeft, final SkinImageView img,
                              final SkinTextView text) {
+        // 无有效电量数据场景
+        if (chargeLeft == -255) {
+            img.setImageResource(R.drawable.img_electricity_medium_42);
+            text.setTextColor(
+                    ResourceUtils.Companion.getInstance().
+                            getColor(R.color.poi_details_bottom_ff_00));
+            text.setText("--");
+            return;
+        }
         final int leftCharge = Math.max(-99, chargeLeft);
         if (!ConvertUtils.isEmpty(leftCharge)) {
             //50%以上电量，显示满电量图片，20-50%电量，显示半电量图片
