@@ -4,6 +4,7 @@ package com.sgm.navi.hmi.search.suggestion;
 import android.os.Bundle;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
@@ -80,6 +81,10 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
         super.onHiddenChanged(hidden);
         if (hidden) {
             mBinding.sceneSugPoiList.hideInput();
+        }else{
+            if(!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mBinding.sceneSugPoiList)){
+                mBinding.sceneSugPoiList.requestFocusAndShowKeyboard();
+            }
         }
     }
 
