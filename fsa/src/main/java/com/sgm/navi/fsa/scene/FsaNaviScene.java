@@ -958,6 +958,26 @@ public final class FsaNaviScene {
     }
 
     /**
+     * 发送目的地信息.
+     */
+    public void sendDestinationInfo(final MyFsaService fsaService) {
+        final RoutePackage routePackage = RoutePackage.getInstance();
+        if (null != routePackage) {
+            final RouteParam routeParam = routePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (null != routeParam) {
+                final DestInfo destInfo = new DestInfo();
+                destInfo.setName(routeParam.getName());
+                destInfo.setAddress(routeParam.getAddress());
+                if (null != routeParam.getRealPos()) {
+                    final GeoPoint location = new GeoPoint(routeParam.getRealPos().getLon(), routeParam.getRealPos().getLat());
+                    destInfo.setLocation(location);
+                }
+                fsaService.sendEvent(FsaConstant.FsaFunction.ID_DESTINATION_INFO, GsonUtils.toJson(destInfo));
+            }
+        }
+    }
+
+    /**
      * 保存数据
      *
      * @param functionId int
