@@ -1694,7 +1694,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             case INaviConstant.OpenIntentPage.ROUTE_PAGE:
                 final PoiInfoEntity endPoint = ExportIntentParam.getPoiInfo();
                 if (null != endPoint) {
-                    openRoute(endPoint);
+                    startRoute(endPoint);
                 }
                 ExportIntentParam.setPoiInfo(null);
                 break;
