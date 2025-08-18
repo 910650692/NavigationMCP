@@ -283,6 +283,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         changeUiTypeOnNaviStatusChanged();
         updateLanInfo(mIsShowLane, mLastLanInfo);
         updateTbT(mNaviEtaInfo);
+        MapStateManager.getInstance().vrSendLauncherShow(true);
     }
 
     private void registerFloatWindowReceiver() {
@@ -395,6 +396,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 mView.setFocusable(isShow);
                 if (isShow) {
                     changeUiTypeOnNaviStatusChanged();
+                    MapStateManager.getInstance().vrSendLauncherShow(true);
                 } else {
                     MapStateManager.getInstance().vrSendLauncherShow(false);
                 }
@@ -483,7 +485,6 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             return;
         }
         final boolean isNavigating = isOnNavigating();
-        MapStateManager.getInstance().vrSendLauncherShow(isNavigating);
         ThreadManager.getInstance().postUi(() -> {
             mBinding.cardTbtView.setVisibility(isNavigating ? View.VISIBLE : View.GONE);
             mBinding.cardNaviView.setVisibility((isNavigating || FloatViewManager.getInstance().isBiZhiDeskBg()) ? View.GONE : View.VISIBLE);
