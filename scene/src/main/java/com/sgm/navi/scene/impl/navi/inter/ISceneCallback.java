@@ -263,4 +263,6 @@ public interface ISceneCallback {
     default void saveHandingCardDetail(List<PoiInfoEntity> infoEntities, HandCardType type) {}
 
     default void setChargeTipEntity(Object chargeTipEntity) {}
+
+    default void setEndPoint(PoiInfoEntity endPoint) {}
 }

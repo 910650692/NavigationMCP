@@ -127,6 +127,9 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         isGetParkEndRequesting = false;
         if (!ConvertUtils.isNull(searchResultEntity) && !ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
             mEndPoiInfoEntity = searchResultEntity.getPoiList().get(0);
+            if (mCallBack != null) {
+                mCallBack.setEndPoint(mEndPoiInfoEntity);
+            }
             Logger.i(TAG, "assembleParkEnd success!");
         } else {
             Logger.i(TAG, "assembleParkEnd failed!");
