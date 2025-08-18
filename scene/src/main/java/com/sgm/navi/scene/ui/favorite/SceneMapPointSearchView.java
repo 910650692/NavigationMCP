@@ -285,7 +285,7 @@ public class SceneMapPointSearchView extends BaseSceneView<SceneMapPointSearchVi
         if (mPoiType == AutoMapConstant.HomeCompanyType.ALONG_WAY) {
             mIsFavoriteOrViaPoint = RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiInfoEntity);
         } else if(mPoiType == HomeCompanyType.COLLECTION){
-            mIsFavoriteOrViaPoint = !BehaviorPackage.getInstance().isFavorite(mPoiInfoEntity).isEmpty();
+            mIsFavoriteOrViaPoint = !BehaviorPackage.getInstance().isHomeOrCompanyOrFavorite(mPoiInfoEntity).isEmpty();
         }
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"IsFavoriteOrViaPoint: " + mIsFavoriteOrViaPoint);
         if (mIsFavoriteOrViaPoint) {

@@ -269,7 +269,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_addq_58);
             switch (mHomeCompanyType) {
                 case 0:
-                    if (!BehaviorPackage.getInstance().isFavorite(mPoiInfoEntity).isEmpty()) {
+                    if (!BehaviorPackage.getInstance().isHomeOrCompanyOrFavorite(mPoiInfoEntity).isEmpty()) {
                         holder.mResultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
                         holder.mResultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
                     }else{

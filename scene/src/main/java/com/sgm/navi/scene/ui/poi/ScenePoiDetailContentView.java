@@ -2099,8 +2099,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setImageDrawable(
                         ContextCompat.getDrawable(getContext(),
                                 R.drawable.icon_details_bottom_go_here));
-                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setClickable(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty());
-                mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty() ? 1.0f : 0.5f);
+                if (mPoiInfoEntity != null) {
+                    mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setClickable(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty());
+                    mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setAlpha(mScreenViewModel.isFavorite(mPoiInfoEntity).isEmpty() ? 1.0f : 0.5f);
+                }
                 mViewBinding.scenePoiDetailsBottomView.stlStartRoute.setIsClickChangeColor(false);
                 mViewBinding.scenePoiDetailsBottomView.stvStartRoute.setText(R.string.st_collect_add);
                 mViewBinding.scenePoiDetailsBottomView.sivStartRoute.setVisibility(View.GONE);

@@ -366,13 +366,16 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
      * @return string 如果是非空字符串就是有添加过
      */
     public String isHomeOrCompanyOrFavorite(final PoiInfoEntity poiInfo) {
+        if (ConvertUtils.isEmpty(poiInfo)) {
+            return "";
+        }
         String itemId = "";
         itemId = isFavorite(poiInfo);
         if (!TextUtils.isEmpty(itemId)) {
             return itemId;
         }
         PoiInfoEntity homeFavoriteInfo = getHomeFavoriteInfo();
-        if (homeFavoriteInfo != null && homeFavoriteInfo.getPid() == poiInfo.getPid()) {
+        if (homeFavoriteInfo != null && ConvertUtils.equals(homeFavoriteInfo.getPid(), poiInfo.getPid())) {
             if (homeFavoriteInfo.getFavoriteInfo() == null || TextUtils.isEmpty(homeFavoriteInfo
                     .getFavoriteInfo().getItemId())) {
                 itemId = homeFavoriteInfo.getPid();
@@ -384,7 +387,7 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
             }
         }
         PoiInfoEntity companyFavoriteInfo = getCompanyFavoriteInfo();
-        if (companyFavoriteInfo != null && companyFavoriteInfo.getPid() == poiInfo.getPid()) {
+        if (companyFavoriteInfo != null && ConvertUtils.equals(companyFavoriteInfo.getPid(), poiInfo.getPid())) {
             if (companyFavoriteInfo.getFavoriteInfo() == null || TextUtils.isEmpty(companyFavoriteInfo.getFavoriteInfo().getItemId())) {
                 itemId = companyFavoriteInfo.getPid();
             } else {
