@@ -94,20 +94,17 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
         final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeHome, true);
-        if (simpleFavoriteList != null) {
+        if (simpleFavoriteList != null && simpleFavoriteList.size() > 0) {
             Logger.i(TAG, "getHomeFavoriteInfo: " + simpleFavoriteList.size());
-            for (int i = 0; i < simpleFavoriteList.size(); i++) {
-                Logger.i(TAG, "getHomeFavoriteInfo: " + i + "="
-                        + simpleFavoriteList.get(i).id + "; "
-                        + simpleFavoriteList.get(i).item_id + "; "
-                        + simpleFavoriteList.get(i).address + "; "
-                        + simpleFavoriteList.get(i).city_name + "; "
-                        + simpleFavoriteList.get(i).type + "; "
-                        + simpleFavoriteList.get(i).point_x + "; "
-                        + simpleFavoriteList.get(i).point_y + "; "
-                        + simpleFavoriteList.get(i).name
-                );
-            }
+            Logger.i(TAG, "getHomeFavoriteInfo: first = "
+                    + simpleFavoriteList.get(0).id + "; "
+                    + simpleFavoriteList.get(0).item_id + "; "
+                    + simpleFavoriteList.get(0).address + "; "
+                    + simpleFavoriteList.get(0).city_name + "; "
+                    + simpleFavoriteList.get(0).type + "; "
+                    + simpleFavoriteList.get(0).point_x + "; "
+                    + simpleFavoriteList.get(0).point_y + "; "
+                    + simpleFavoriteList.get(0).name);
         } else {
             Logger.i(TAG, "getHomeFavoriteInfo: simpleFavoriteList == null");
         }
@@ -125,18 +122,17 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         }
         final ArrayList<SimpleFavoriteItem> simpleFavoriteList =
                 mBehaviorService.getSimpleFavoriteList(FavoriteType.FavoriteTypeCompany, true);
-        if (simpleFavoriteList != null) {
+        if (simpleFavoriteList != null && simpleFavoriteList.size() > 0) {
             Logger.i(TAG, "getCompanyFavoriteInfo: " + simpleFavoriteList.size());
-            for (int i = 0; i < simpleFavoriteList.size(); i++) {
-                Logger.i(TAG, "getCompanyFavoriteInfo: " + i + "="
-                        + simpleFavoriteList.get(i).address + "; "
-                        + simpleFavoriteList.get(i).city_name + "; "
-                        + simpleFavoriteList.get(i).type + "; "
-                        + simpleFavoriteList.get(i).point_x + "; "
-                        + simpleFavoriteList.get(i).point_y + "; "
-                        + simpleFavoriteList.get(i).name
-                );
-            }
+            Logger.i(TAG, "getCompanyFavoriteInfo: first = "
+                    + simpleFavoriteList.get(0).id + "; "
+                    + simpleFavoriteList.get(0).item_id + "; "
+                    + simpleFavoriteList.get(0).address + "; "
+                    + simpleFavoriteList.get(0).city_name + "; "
+                    + simpleFavoriteList.get(0).type + "; "
+                    + simpleFavoriteList.get(0).point_x + "; "
+                    + simpleFavoriteList.get(0).point_y + "; "
+                    + simpleFavoriteList.get(0).name);
         } else {
             Logger.i(TAG, "getCompanyFavoriteInfo: simpleFavoriteList == null");
         }

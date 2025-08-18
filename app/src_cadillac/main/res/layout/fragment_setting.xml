@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@+id/lines">
 
-            <FrameLayout
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment_container"
                 android:layout_width="0dp"
                 android:focusable="false"

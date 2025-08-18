@@ -56,11 +56,11 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
 
     @Override
     public void onInitData() {
-        ThreadManager.getInstance().postDelay(() -> {
+        ThreadManager.getInstance().runAsync(() -> {
             mViewModel.isLogin(); // 判断用户当前登录状态
             mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
             mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
-        }, 0);
+        });
     }
 
     @Override
