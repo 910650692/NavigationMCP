@@ -29,8 +29,8 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 clickCommand="@{viewModel.mFinishAbout}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/dp_49"
+                android:layout_height="@dimen/dp_49"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/dp_22"
                 android:src="@drawable/img_setting_back"
