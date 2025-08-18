@@ -308,7 +308,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtils.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (permissions.length >0 && permissions != null) {
+            PermissionUtils.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
