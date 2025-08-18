@@ -508,6 +508,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             Logger.d(TAG, "onSearchSuccess inCallback, silent: " + silent);
             final SearchResultEntity copyEntity = new SearchResultEntity();
             GsonUtils.copyBean(searchResultEntity, copyEntity);
+            final List<PoiInfoEntity> copyList = new ArrayList<>(searchResultEntity.getPoiList());
+            copyEntity.setPoiList(copyList);
             sortSearchResult(copyEntity);
             final int count = mSearchCallbackList.beginBroadcast();
             final BaseSearchResult baseSearchResult = GsonUtils.convertToT(copyEntity, BaseSearchResult.class);
