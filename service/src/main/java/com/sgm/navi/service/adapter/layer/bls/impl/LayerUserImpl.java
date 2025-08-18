@@ -95,16 +95,19 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         ArrayList<BizUserFavoritePoint> favoriteList = new ArrayList<>();
         if (!ConvertUtils.isEmpty(mSimpleFavoriteList)) {
             mSimpleFavoriteList.forEach((entity) -> {
+                //防止已添加的收藏点更换为家/公司类型
+                removeFavoriteMain(entity);
                 BizUserFavoritePoint point = new BizUserFavoritePoint();
                 //FavoriteInfo 根据 mCommonName  1家，2公司，0普通收藏点）
                 FavoriteInfo favoriteInfo = entity.getFavoriteInfo();
                 if (!ConvertUtils.isEmpty(favoriteInfo)) {
                     point.id = favoriteInfo.getItemId();
-                    if (favoriteInfo.getCommonName() == 0) {
+                    int commonName = favoriteInfo.getCommonName();
+                    if (commonName == 0) {
                         point.favoriteType = FavoriteType.FavoriteTypePoi;
-                    } else if (favoriteInfo.getCommonName() == 1) {
+                    } else if (commonName == 1) {
                         point.favoriteType = FavoriteType.FavoriteTypeHome;
-                    } else if (favoriteInfo.getCommonName() == 2) {
+                    } else if (commonName == 2) {
                         point.favoriteType = FavoriteType.FavoriteTypeCompany;
                     }
                 }
