@@ -434,7 +434,7 @@ public class NaviRouteLayerParser {
             case MapRouteTexture.MapRouteTextureNavi:
                 if(!isHighLight){
                     fillLineId = prepareLayerStyle.getMarkerId(baseLayer, layerItem,
-                            new ItemStyleInfo("", "", "map_lr_dott_car_light", ""));
+                            new ItemStyleInfo("", "", "map_lr_road_white_front", ""));
                     borderLineId = -1;
                     fillLineRatio = 0.5f;
                     borderLineRatio = 0.5f;
@@ -442,7 +442,7 @@ public class NaviRouteLayerParser {
                     borderColor = 0xffffffff;
                 }else {
                     fillLineId = prepareLayerStyle.getMarkerId(baseLayer, layerItem,
-                            new ItemStyleInfo("", "", "map_lr_dott_car_fill", ""));
+                            new ItemStyleInfo("", "", "map_lr_road_white_front", ""));
                     borderLineId = -1;
                     fillLineRatio = 0.4375f;
                     borderLineRatio = 0.5f;

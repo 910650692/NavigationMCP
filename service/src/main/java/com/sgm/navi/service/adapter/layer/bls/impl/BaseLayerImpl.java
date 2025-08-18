@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.layer.BizAreaControl;
@@ -292,7 +293,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         if (null != style && mapType == MapType.HUD_MAP) {
             RouteLayerItem routeLayerItem = (RouteLayerItem) item;
             RouteLayerDrawParam routeDrawParam = routeLayerItem.getRouteDrawParam();
-            boolean isNightMode = mapView.getOperatorStyle().getMapStyle().time == MapStyleTime.MapTimeNight;
+            boolean isNightMode = ThemeUtils.INSTANCE.isNightModeEnabled(getContext());
             int fillLineColor = getContext().getColor(R.color.hud_color_route);
             mNaviRouteLayerParser.getRouteLayerStyle(layer, item, style,
                     this, routeDrawParam.mRouteStyleType, isNightMode, fillLineColor);
