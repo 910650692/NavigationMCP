@@ -1,5 +1,6 @@
 package com.sgm.navi.service.logicpaket.user.msgpush;
 
+import com.android.utils.log.Logger;
 import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapter;
 import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapterCallback;
 import com.sgm.navi.service.define.bean.GeoPoint;
@@ -17,6 +18,7 @@ import java.util.Hashtable;
 public class MsgPushPackage implements MsgPushAdapterCallback{
     private final MsgPushAdapter msgPushAdapter;
     private final Hashtable<String, MsgPushCallBack> callBacks;
+    private long mLastSendTime;
 
     public MsgPushPackage() {
         callBacks = new Hashtable<>();
@@ -53,7 +55,15 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
     }
 
     public long sendReqSendToPhone(MsgPushRequestInfo pAosRequest) {
-        return msgPushAdapter.sendReqSendToPhone(pAosRequest);
+        long result;
+        if (mLastSendTime + (10 * 60 * 1000) < System.currentTimeMillis()) {
+            result = msgPushAdapter.sendReqSendToPhone(pAosRequest);
+            mLastSendTime = System.currentTimeMillis();
+        } else {
+            result = -1L;
+        }
+        Logger.d("sendReqSendToPhone: result = ", result);
+        return result;
     }
 
     public MsgPushResponseInfo request(long deviceId, GeoPoint userLocation) {

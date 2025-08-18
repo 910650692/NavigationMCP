@@ -79,8 +79,14 @@ public class SceneNaviLastMileImpl extends BaseSceneModel<SceneNaviLastMileView>
             msgPushRequestInfo.setLat(routeParam.getRealPos().getLat());
             msgPushRequestInfo.setLon(routeParam.getRealPos().getLon());
             final long resultCode = mMsgPushPackage.sendReqSendToPhone(msgPushRequestInfo);
-            if (resultCode == 1) {
-                ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance().getMContext().getText(R.string.navi_send_to_phone));
+            if (resultCode == -1L) {
+                ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance()
+                        .getMContext().getText(R.string.navi_send_to_phone_once_in_ten_minute));
+            } else if (resultCode == 0L) {
+                //整数 >0:网络请求的标识用于AbortRequest() ; =0:网络请求未发起，无回调。
+            } else if (resultCode > 0L) {
+                ToastUtils.Companion.getInstance().showCustomToastView(AppCache.getInstance()
+                        .getMContext().getText(R.string.navi_send_to_phone));
             }
             Logger.d(TAG, "SceneNaviSendPhoneImpl send result：", resultCode, ",address：",
                     routeParam.getAddress());
