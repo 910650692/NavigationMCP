@@ -6,6 +6,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.voice.VoiceInfo;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.speech.ISpeechObserver;
 import com.sgm.navi.service.logicpaket.speech.SpeechPackage;
@@ -177,7 +178,7 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
         }
         if (!TextUtils.isEmpty(tts) && !TextUtils.equals(mBroadcastTypeTts, tts)) {
             String data = SettingPackage.getInstance().getValueFromDB(SettingController.KEY_SETTING_NAVI_BROADCAST);
-            if (!TextUtils.isEmpty(data)) {
+            if (!TextUtils.isEmpty(data) && !NaviPackage.getInstance().isMute()) {
                 SpeechPackage.getInstance().synthesizeLast(tts);
             }
             mBroadcastTypeTts = tts;

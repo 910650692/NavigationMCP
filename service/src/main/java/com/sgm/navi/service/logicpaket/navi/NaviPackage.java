@@ -589,12 +589,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         SettingAdapter.getInstance().setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
         if (isMute) {
+            setCurrentNaviVolume(mSignalAdapter.getNaviVolume());
             mSignalAdapter.setNaviVolume(NumberUtils.NUM_0);
         } else {
             if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
                 mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
-            } else {
-                mSignalAdapter.setNaviVolume(NumberUtils.NUM_31);
             }
         }
     }
@@ -1601,11 +1600,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         int muteStatus = SettingAdapter.getInstance().getConfigKeyMute();
         if (muteStatus == NumberUtils.NUM_1) {
             SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
-            if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
-                mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
-            } else {
-                mSignalAdapter.setNaviVolume(NumberUtils.NUM_31);
-            }
         }
         if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
