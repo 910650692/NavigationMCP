@@ -295,19 +295,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             @Override
             public void onCancelClick() {
                 FloatViewManager.getInstance().mRemindDialogShow = false;
-                if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                    Logger.d(TAG, "桌面地图情况");
-                    setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
-                } else {
-                    moveToBack();
-                    ThreadManager.getInstance().asyncDelay(new Runnable() {
-                        @Override
-                        public void run() {
-                            mView.finish();
-                            FloatViewManager.getInstance().showAllCardWidgets();
-                        }
-                    }, 800, TimeUnit.MILLISECONDS);
-                }
+                setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
+                FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
         reminderDialog.show();

@@ -368,12 +368,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                             mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                             mViewModel.checkPrivacyRights();
                         } else {
-                            if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                                Logger.d(TAG, "桌面地图隐藏弹窗");
-                                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL);
-                            } else {
-                                mViewModel.exitSelf();
-                            }
+                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL);
                         }
                     }
                 });
@@ -2171,12 +2166,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             @Override
             public void onCancelClick() {
                 FloatViewManager.getInstance().mLocationPermissionGranted = false;
-                if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                    Logger.d(TAG, "桌面地图情况");
-                    mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
-                } else {
-                    mViewModel.exitSelf();
-                }
+                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
             }
         });
         Logger.d(TAG, "isForeground : ", ProcessManager.isAppInForeground());
