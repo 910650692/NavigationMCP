@@ -1265,7 +1265,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 case IVrBridgeConstant.VoiceIntentPage.CLOSE_CURRENT_PAGE:
                     //关闭当前页面
                     final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-                    Logger.d(IVrBridgeConstant.TAG, "currentFragment = ", currentFragment.getClass().getName());
+                    if (Logger.openLog) {
+                        Logger.d(TAG, "voiceCloseFragment", null != currentFragment ? currentFragment.getClass().getSimpleName() : "empty page");
+                    }
                     if (!ConvertUtils.isNull(currentFragment)
                             && ConvertUtils.equals(currentFragment.getClass().getName(), RouteFragment.class.getName())
                             && mRoutePackage != null) {
