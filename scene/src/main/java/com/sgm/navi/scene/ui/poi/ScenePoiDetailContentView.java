@@ -957,8 +957,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      */
     private void refreshGasStationView() {
         final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
-        for (GasStationInfo gasStationInfo : gasStationInfos) {
-            gasStationInfo.setPrice(getContext().getString(R.string.oil_price, gasStationInfo.getPrice()));
+        if(!ConvertUtils.isEmpty(gasStationInfos)){
+            for (GasStationInfo gasStationInfo : gasStationInfos) {
+                gasStationInfo.setPrice(getContext().getString(R.string.oil_price, gasStationInfo.getPrice()));
+            }
         }
         final GasStationAdapter gasStationAdapter = new GasStationAdapter();
         gasStationAdapter.setGasStationList(gasStationInfos);
