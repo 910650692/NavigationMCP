@@ -4078,4 +4078,6 @@
     <dimen name="scene_srv_add_via_list_max_height">545dp</dimen>
     <dimen name="terminal_parking_result_view_max_height">743dp</dimen>
     <dimen name="route_search_service_page_max_height">518dp</dimen>
+    <dimen name="item_favorite_empty_no_favorite_margin_top">55dp</dimen>
+    <dimen name="item_favorite_empty_no_data_margin_top">40dp</dimen>
 </resources>
