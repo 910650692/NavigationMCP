@@ -396,6 +396,7 @@ public final class ActivationManager {
 
         if (ConvertUtils.isEmpty(ORDER_ID) && ConvertUtils.isEmpty(orderId)) {
             Logger.e(TAG, "订单id信息缺失");
+            mActivateListener.onActivateException();
             return;
         }
 
@@ -420,15 +421,18 @@ public final class ActivationManager {
         Logger.e(TAG, "userCode = ", userCode, "; loginCode = ", loginCode);
         if (mActivationService == null) {
             Logger.e(TAG, "mActivationService == null");
+            mActivateListener.onActivateException();
             return;
         }
         if (!mIsInit) {
             Logger.e(TAG, "mActivationService 未初始化");
+            mActivateListener.onActivateException();
             return;
         }
         final ActivateReturnParam activateReturnParam = mActivationService.manualActivate(userCode, loginCode);
         if (activateReturnParam == null) {
             Logger.e(TAG, "activateReturnParam == null");
+            mActivateListener.onActivateException();
             return;
         }
         Logger.e(TAG, "activateReturnParam.iErrorCode = ", activateReturnParam.iErrorCode);
@@ -495,6 +499,11 @@ public final class ActivationManager {
          * @param isSuccess 是否成功
          */
         void onManualActivated(final boolean isSuccess);
+
+        /**
+         * 未知异常导致的激活失败
+         */
+        void onActivateException();
 
         /**
          * 开始下单回调给impl

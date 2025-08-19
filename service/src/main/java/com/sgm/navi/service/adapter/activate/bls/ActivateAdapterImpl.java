@@ -76,6 +76,12 @@ public class ActivateAdapterImpl implements IActivateApi {
             }
 
             @Override
+            public void onActivateException() {
+                Logger.e(TAG, "未知异常,走激活失败，提供重试机会");
+                onActivatedError(20011, codeManager.getActivateMsg(20011));
+            }
+
+            @Override
             public void onOrderCreated(final boolean isSuccess) {
                 if (!isSuccess) {
                     ActivationManager.setCreateOrderNum(ActivationManager.getCreateOrderNum() + 1);
