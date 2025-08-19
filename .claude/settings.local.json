@@ -4,7 +4,9 @@
       "Bash(git checkout backup-mcp-working -- settings.gradle)",
       "Bash(git checkout backup-mcp-working -- service/src/main/java/com/sgm/navi/service/callback/ service/src/main/java/com/sgm/navi/service/logicpaket/navi/IGuidanceObserver.java service/src/main/java/com/sgm/navi/service/logicpaket/navi/NaviPackage.java service/src/main/java/com/sgm/navi/service/logicpaket/search/SearchPackage.java)",
       "Bash(git checkout backup-mcp-working -- app/src/main/res/values-en/strings.xml app/src/main/res/values/strings.xml)",
-      "Bash(git checkout backup-mcp-working -- utils/build.gradle)"
+      "Bash(git checkout backup-mcp-working -- utils/build.gradle)",
+      "Bash(adb logcat -d)",
+      "mcp__fetch__fetch"
     ],
     "deny": [],
     "ask": []

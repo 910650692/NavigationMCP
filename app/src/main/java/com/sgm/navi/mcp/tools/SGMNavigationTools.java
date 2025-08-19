@@ -206,7 +206,7 @@ public class SGMNavigationTools implements MCPGeoSearchCallback {
             CompletableFuture<String> future = new CompletableFuture<>();
             
             // 设置超时，超时返回null
-            future = future.completeOnTimeout(null, 5000, TimeUnit.MILLISECONDS);
+            future = future.completeOnTimeout(null, 8000, TimeUnit.MILLISECONDS);
             
             // 发起关键词搜索，使用静默搜索避免影响UI
             int taskId = SearchPackage.getInstance().keywordSearch(1, keyword, true);
@@ -216,7 +216,7 @@ public class SGMNavigationTools implements MCPGeoSearchCallback {
             pendingKeywordSearchTasks.put(taskId, future);
             
             // 等待结果，最多5秒
-            String result = future.get(5000, TimeUnit.MILLISECONDS);
+            String result = future.get(8000, TimeUnit.MILLISECONDS);
             
             // 清理任务
             pendingKeywordSearchTasks.remove(taskId);

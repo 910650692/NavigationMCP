@@ -171,6 +171,27 @@
             android:exported="true"
             android:foregroundServiceType="shortService" />
 
+        <!-- MCP协调中心服务 -->
+        <service
+            android:name="com.sgm.navi.mcp.coordinator.MCPCoordinatorService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            tools:replace="android:exported">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="mcp" />
+        </service>
+
+        <!-- SGM导航MCP工具服务 -->
+        <service
+            android:name="com.sgm.navi.mcp.SGMNavigationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="navigation_tools" />
+        </service>
+
         <receiver
             android:name="com.sgm.navi.broadcast.HomeActionBroadcastReceiver"
             android:enabled="true"

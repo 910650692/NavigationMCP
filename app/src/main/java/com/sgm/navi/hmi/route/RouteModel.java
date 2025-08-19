@@ -877,7 +877,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
         mRoutePackage.showRouteLine(routeLineLayerParam.getMMapTypeId());
         
-        // 检查是否需要自动导航
+        // 检查是否需要自动导航，但不阻止停车场搜索
         if (!ConvertUtils.isEmpty(mViewModel) && mViewModel.mAutoStartNavigation) {
             Logger.d(TAG, "路线绘制完成，自动启动导航，模拟: " + mViewModel.mAutoNavigationSimulate);
             ThreadManager.getInstance().postDelay(() -> {
@@ -886,8 +886,8 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                     // 重置自动导航标志
                     mViewModel.mAutoStartNavigation = false;
                 }
-            }, 500); // 短暂延迟确保路线绘制完成
-            return; // 自动导航时不进行停车场搜索
+            }, 1500); // 延迟1.5秒确保停车场搜索先完成
+            // 不再return，让代码继续执行停车场搜索逻辑
         }
         
         if (!mRoutePackage.isRouteState()) {
