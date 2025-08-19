@@ -111,11 +111,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private void init() {
         Logger.i(TAG, "init:" + isInited);
         if (!isInited) {
+            isInited = true;
             initParameters();
             initCallBacks();
             initView();
             initAndGetMusicTabStatus();
-            isInited = true;
         }
     }
 
