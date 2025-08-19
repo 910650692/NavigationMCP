@@ -1036,7 +1036,13 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void onRouteRequest() {
         mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
         //清除搜索图层扎标
-        mSearchPackage.clearLabelMark();
+        mSearchPackage.clearPoiLabelMark();
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_CENTRAL);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
         clearWeatherView();
         clearRestArea();
         clearRestrictionView();

@@ -107,7 +107,9 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
         mSearchPackage.clearPoiLabelMark();
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
-        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        if (!isAlongWaySearch()) {
+            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        }
         mSearchPackage.clearFocus();
     }
 
@@ -256,7 +258,9 @@ public class ScenePoiDetailContentViewImpl extends BaseSceneModel<ScenePoiDetail
             mSearchPackage.clearPoiLabelMark();
             mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
             mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
-            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+            if (!isAlongWaySearch()) {
+                mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+            }
         }
     }
 

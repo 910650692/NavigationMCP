@@ -91,7 +91,9 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Park);
-        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        if (!isAlongWaySearch()) {
+            mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
+        }
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
     }
 

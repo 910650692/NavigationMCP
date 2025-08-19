@@ -1859,7 +1859,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
                     searchResult, false);
         }
-        if (!ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds())) {
+        if (!ConvertUtils.isEmpty(firstElement.getMPoiAoiBounds()) && !isAlongWaySearch()) {//算路/导航态下不显示AOI
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
                     searchResult, false);
         }
