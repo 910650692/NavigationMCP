@@ -135,12 +135,12 @@ public class SettingVoiceBroadcastFragment extends BaseFragment<FragmentVoiceBro
     }
 
     @Override
-    public void toUseTask(final VoiceInfo voiceInfo) {
-        Logger.d(TAG, "toUseTask: ", mIsUsingAllTask, voiceInfo.getId());
+    public void toUseVoice(final VoiceInfo voiceInfo) {
+        Logger.d(TAG, "toUseVoice: ", mIsUsingAllTask, voiceInfo.getId());
         if (!mIsUsingAllTask && mVoiceId != voiceInfo.getId()) {
             mIsUsingAllTask = true;
             mVoiceId = voiceInfo.getId();
-            mViewModel.toUseTask(voiceInfo);
+            mViewModel.toUseVoice(voiceInfo);
         }
     }
 

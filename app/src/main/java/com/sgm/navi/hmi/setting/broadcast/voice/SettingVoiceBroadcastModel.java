@@ -3,6 +3,7 @@ package com.sgm.navi.hmi.setting.broadcast.voice;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.define.voice.VoiceInfo;
+import com.sgm.navi.service.logicpaket.speech.ISpeechObserver;
 import com.sgm.navi.service.logicpaket.speech.SpeechPackage;
 import com.sgm.navi.service.logicpaket.voice.VoiceCallback;
 import com.sgm.navi.service.logicpaket.voice.VoicePackage;
@@ -11,7 +12,7 @@ import com.sgm.navi.ui.base.BaseModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastViewModel> implements VoiceCallback {
+public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastViewModel> implements VoiceCallback, ISpeechObserver {
     private static final String TAG = SettingVoiceBroadcastModel.class.getSimpleName();
 
     private final VoicePackage mVoicePackage;
@@ -26,11 +27,13 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
     public void onCreate() {
         super.onCreate();
         mVoicePackage.registerCallBack(this);
+        mSpeechPackage.addObserver("SettingVoiceBroadcastModel", this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mSpeechPackage.removeObserver("SettingVoiceBroadcastModel");
     }
 
     /**
@@ -47,8 +50,16 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
      * 设置声音
      * @param irfPath
      */
-    public void setVoice(final String irfPath, final String text) {
-        mSpeechPackage.setVoice(irfPath);
+    public void setVoice(final String irfPath, final String voicePackage, final String voiceName,
+                         final String voiceIcon, final boolean isBoolean) {
+        mSpeechPackage.setVoice(irfPath, voicePackage, voiceName, voiceIcon, isBoolean);
+    }
+
+    /**
+     * 语音播报
+     * @param text
+     */
+    public void synthesize(final String text) {
         mSpeechPackage.synthesize(text);
     }
 
@@ -80,5 +91,10 @@ public class SettingVoiceBroadcastModel extends BaseModel<SettingVoiceBroadcastV
     public HashMap<Integer, VoiceInfo> getRecommendVoiceList(){
         Logger.d(TAG, "get Voice List");
         return mVoicePackage.getRecommendVoiceList();
+    }
+
+    @Override
+    public void onVoiceSet(String voicePackage, int result, String voiceName, boolean isBoolean) {
+        mViewModel.onVoiceSet(voicePackage, result, voiceName, isBoolean);
     }
 }

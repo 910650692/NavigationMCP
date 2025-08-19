@@ -1,10 +1,11 @@
 package com.sgm.navi.service.logicpaket.speech;
 
-
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.speech.ISpeechAdapterCallback;
 import com.sgm.navi.service.adapter.speech.SpeechAdapter;
+import com.sgm.navi.service.define.setting.SettingController;
+import com.sgm.navi.service.greendao.setting.SettingManager;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -56,9 +57,10 @@ public class SpeechPackage implements ISpeechAdapterCallback {
     }
 
     /*设置语音包路径*/
-    public void setVoice(String irfPath) {
+    public synchronized void setVoice(final String irfPath, final String voicePackage, final String voiceName,
+                         final String voiceIcon, final boolean isBoolean) {
         if (mSpeechAdapter != null) {
-            mSpeechAdapter.setVoice(irfPath);
+            mSpeechAdapter.setVoice(irfPath, voicePackage, voiceName, voiceIcon, isBoolean);
         }
     }
 
@@ -89,9 +91,13 @@ public class SpeechPackage implements ISpeechAdapterCallback {
     }
 
     @Override
-    public void onVoiceSet(int result) {
+    public void onVoiceSet(String irfPath, int result, String voicePackage, String voiceName, String voiceIcon, boolean isBoolean) {
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PATH, irfPath);
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, voicePackage);
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceName);
+        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceIcon);
         for (ISpeechObserver observer : mObserverMap.values()) {
-            observer.onVoiceSet(result);
+            observer.onVoiceSet(voicePackage, result, voiceName, isBoolean);
         }
     }
 

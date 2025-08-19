@@ -15,7 +15,8 @@ public interface ISpeechApi {
 
     void unregisterCallback(ISpeechAdapterCallback callback);
 
-    int setVoice(String irfPath);
+    int setVoice(final String irfPath, final String voicePackage, final String voiceName,
+                 final String voiceIcon, final boolean isBoolean);
 
     void synthesize(boolean isNormalTTS, String text);
 

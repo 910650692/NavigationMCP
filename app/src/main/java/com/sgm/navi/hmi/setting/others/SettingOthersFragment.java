@@ -217,7 +217,9 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                     @Override
                     @HookMethod(eventName = BuryConstant.EventName.AMAP_RETURN_DEFAULT)
                     public void onCommitClick() {
-                        SpeechPackage.getInstance().setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH);
+                        SpeechPackage.getInstance().setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH, "default",
+                                ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name),
+                                "default", true);
                         VoicePackage.getInstance().resetVoiceList();
                         CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
