@@ -60,7 +60,7 @@
                     android:maxLines="1"
                     android:textCursorDrawable="@drawable/shape_edittext_cursor"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/black"
+                    android:textColorHint="@color/setting_offline_no_search_hint"
                     android:textSize="@dimen/sp_34">
 
                     <requestFocus />
@@ -75,7 +75,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/dp_12"
                     android:src="@drawable/img_setting_close"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
             </com.sgm.navi.ui.view.SkinRelativeLayout>
 
