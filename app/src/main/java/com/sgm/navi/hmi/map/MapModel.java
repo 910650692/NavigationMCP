@@ -1012,6 +1012,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (getTopFragment(PoiDetailsFragment.class)) {
                     closeFragment(true);
                 }
+                setMapCenterInScreen();
                 goToCarPosition();
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 Logger.i(TAG, "---" + "goToCarPosition");

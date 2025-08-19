@@ -39,10 +39,12 @@ public class SkinCheckBox extends AppCompatCheckBox {
         super.drawableStateChanged();
         boolean isPressed = isPressed();
         boolean isFocused = isFocused();
-        if (isFocused && isPressed) {
+        if (isFocused && isPressed && mIsClickChangeColor) {
             //MFC 获取焦点并且按压态 使用XML 配置MFC Background
-        } else if (isFocused) {
+            setAlpha(0.6f);
+        } else if (isFocused && mIsClickChangeColor) {
             //MFC 获取焦点并且按压态  使用XML 配置MFC Background
+            setAlpha(0.5f);
         } else if (isPressed && mIsClickChangeColor) {
             // 触屏按压态
             setAlpha(0.6f);
