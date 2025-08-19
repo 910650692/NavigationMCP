@@ -68,6 +68,7 @@ public interface AutoMapConstant {
         int PID_LIST_SEARCH = 18; // Pid批量搜做
         int PID_EN_ROUTE_SEARCH = 19; // Pid沿途搜
         int ROUTE_TERMINAL_PARK_SEARCH = 20; // 算路终点周边搜（确认是否有停车场）
+        int GEO_SEARCH_NEARBY = 12; // 逆地理周边搜索
     }
 
     /*** ！！！搜索相关,数据传递key,只能添加不能删除！！！ */
