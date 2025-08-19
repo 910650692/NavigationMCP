@@ -1431,10 +1431,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void showToast(@StringRes int res) {
         if (Looper.getMainLooper() != Looper.myLooper()) {
             ThreadManager.getInstance().postUi(() -> {
-                ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+                if (mView != null) {
+                    ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+                }
+
             });
         } else {
-            ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+            if (mView != null) {
+                ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+            }
         }
     }
 

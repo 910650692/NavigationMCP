@@ -272,6 +272,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void doAfterInitSdk() {
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
         //initData
         mViewModel.loadMapView(mBinding.mainMapview);
         // 给限行设置点击事件
@@ -404,7 +408,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onMoveMapCenter");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.GONE);
-            mViewModel.setMapCenterInScreen();
+            if (mViewModel != null) {
+                mViewModel.setMapCenterInScreen();
+            }
         });
     }
 
@@ -413,7 +419,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onMoveMapCenter with bundle");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.GONE);
-            mViewModel.setMapCenterInScreen(bundle);
+            if (mViewModel != null) {
+                mViewModel.setMapCenterInScreen(bundle);
+            }
         });
     }
 
@@ -422,7 +430,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onResetMapCenter");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
-            mViewModel.resetMapCenterInScreen();
+            if (mViewModel != null) {
+                mViewModel.resetMapCenterInScreen();
+            }
         });
     }
 
@@ -431,7 +441,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onResetMapTabFromDetail");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
-            mViewModel.resetVisibleInScreen();
+            if (mViewModel != null) {
+                mViewModel.resetVisibleInScreen();
+            }
         });
     }
 
@@ -441,7 +453,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     public void showParkingView() {
-        mViewModel.showParkingView();
+        if (mViewModel != null) {
+            mViewModel.showParkingView();
+        }
     }
 
     @Override
@@ -468,7 +482,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (mViewModel.isSupportSplitScreen()) {
             mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
-            ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 200);
+            ThreadManager.getInstance().postDelay(() -> {
+                if (mViewModel != null) {
+                    mViewModel.hideStartIcon();
+                }
+            }, 200);
         }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);
@@ -521,7 +539,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onFragmentSizeChanged(boolean isSpiltFragment) {
         super.onFragmentSizeChanged(isSpiltFragment);
-        if (!isSpiltFragment) {
+        if (!isSpiltFragment && mViewModel != null) {
             mViewModel.stopCruise();
         }
         setMapFocusable(false);
@@ -559,7 +577,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.sceneGoHome.setCallback(new ISceneCallback() {
             @Override
             public void clickGoHomeBtn(int type) {
-                mViewModel.goHomeOrCompany(type);
+                if (mViewModel != null) {
+                    mViewModel.goHomeOrCompany(type);
+                }
             }
         });
     }
@@ -636,7 +656,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void notifyStepOneThirdScreen() {
-        mViewModel.notifyStepOneThirdScreen();
+        if (mViewModel != null) {
+            mViewModel.notifyStepOneThirdScreen();
+        }
     }
 
     public void closeSplitFragment() {
@@ -650,11 +672,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void openGuideFragment() {
         Logger.i(TAG, "closeSplitFragment openGuideFragment");
-        mViewModel.openGuideFragment();
+        if (mViewModel != null) {
+            mViewModel.openGuideFragment();
+        }
     }
 
     public void updateUiOnHomeKeyClick() {
-        mViewModel.updateUiOnHomeKeyClick();
+        if (mViewModel != null) {
+            mViewModel.updateUiOnHomeKeyClick();
+        }
     }
 
     private final Observable.OnPropertyChangedCallback propertyChangedCallback = new Observable.OnPropertyChangedCallback() {
