@@ -192,11 +192,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             return;
         }
         ScaleInfo scaleInfo = new ScaleInfo();
-        scaleInfo.bgScale = 0.7;
-        scaleInfo.poiScale = 0.7;
-        scaleInfo.bubbleScale = 0.7;
+        scaleInfo.bgScale = 0.8;
+        scaleInfo.poiScale = 0.8;
+        scaleInfo.bubbleScale = 0.8;
         if (null != getMapview().getLayerMgr()) {
-            Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.7");
+            Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.8");
             getMapview().getLayerMgr().setAllPointLayerItemsScale(scaleInfo);
         }
     }

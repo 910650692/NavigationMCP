@@ -2,7 +2,7 @@
   "car_layer_style": {
     "car_marker": {
       "track_marker_id": "-1",
-      "track_arc_marker_id": "navi_night_underpan",
+      "track_arc_marker_id": "-1",
       "compass_marker_id": "global_image_navi_direction_day_night",
       "compass_indicator_marker_id": "global_image_navi_direction_day_night",
       "shine_marker_id": "-1"
