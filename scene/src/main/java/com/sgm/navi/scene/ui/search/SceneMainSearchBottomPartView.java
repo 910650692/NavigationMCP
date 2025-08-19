@@ -164,10 +164,21 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                         //清空历史记录
                         UserTrackPackage.getInstance().clearSearchHistory();
                         UserTrackPackage.getInstance().clearHistoryRoute();
-                        mSearchHistoryAdapter.notifyList(new ArrayList<>());
-                        mViewBinding.rcyRecord.setVisibility(GONE);
-                        mViewBinding.tvRecordNull.setVisibility(VISIBLE);
-                        showDeleteRecord();
+
+                        if(!ConvertUtils.isNull(mSearchHistoryAdapter)){
+                            mSearchHistoryAdapter.notifyList(new ArrayList<>());
+                            showDeleteRecord();
+                        }else{
+                            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"mSearchHistoryAdapter is null");
+                        }
+
+                        if(!ConvertUtils.isNull(mViewBinding)){
+                            mViewBinding.rcyRecord.setVisibility(GONE);
+                            mViewBinding.tvRecordNull.setVisibility(VISIBLE);
+                        }else{
+                            Logger.e(MapDefaultFinalTag.SEARCH_HMI_TAG,"mViewBinding is null");
+                        }
+
                         ToastUtils.Companion.getInstance().showCustomToastView(
                                 ResourceUtils.Companion.getInstance().getString(R.string.ssh_cleared_history_record));
                     }
