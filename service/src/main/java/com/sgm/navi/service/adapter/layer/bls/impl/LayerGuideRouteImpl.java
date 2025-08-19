@@ -999,7 +999,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         ArrayList<?> pathInfoList = routeResult.getMLineLayerParam().getMPathInfoList();
-        setPathInfos(pathInfoList, 0);
+        int selectIndex = routeResult.getMLineLayerParam().getMSelectIndex();
+        Logger.d(TAG, getMapType(), "setPathInfoByRouteResult selectIndex = " + selectIndex);
+        setPathInfos(pathInfoList, Math.max(selectIndex, 0));
         Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
     }
 
@@ -1011,7 +1013,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         ArrayList<?> pathInfoList = routeResult.getMLineLayerParam().getMPathInfoList();
-        setPathInfos(pathInfoList, 0, isShowOnePath);
+        int selectIndex = routeResult.getMLineLayerParam().getMSelectIndex();
+        Logger.d(TAG, getMapType(), "setPathInfoByRouteResult selectIndex = " + selectIndex);
+        setPathInfos(pathInfoList, Math.max(selectIndex, 0), isShowOnePath);
         Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
     }
 
