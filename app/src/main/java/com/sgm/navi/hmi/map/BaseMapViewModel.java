@@ -280,7 +280,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
+        Logger.d(TAG, "popAgreementDialog");
         if (reminderDialog != null && reminderDialog.isShowing() && mView != null) {
+            Logger.d(TAG, "popAgreementDialog already is show");
             return;
         }
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
@@ -299,6 +301,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
+        Logger.d(TAG, "popAgreementDialog currently on display");
         reminderDialog.show();
         FloatViewManager.getInstance().mRemindDialogShow = true;
         FloatViewManager.getInstance().hideAllCardWidgets(false);
@@ -309,6 +312,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void dismissReminderDialog() {
+        Logger.d(TAG, "reminderDialogDismiss");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
@@ -317,6 +321,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void reminderDialogReCreate() {
+        Logger.d(TAG, "reminderDialogReCreate");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;

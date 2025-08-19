@@ -261,6 +261,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         AppCache.getInstance().setFirstOpenMap(false);
         mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
         if (null != mViewModel) mViewModel.dismissDialog();
+        mViewModel = null;
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
