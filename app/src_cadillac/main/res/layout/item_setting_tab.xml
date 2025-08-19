@@ -1,9 +1,9 @@
 <com.sgm.navi.ui.view.SkinLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/style_mfc_config"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:focusable="false"
     android:gravity="center"
     >
 

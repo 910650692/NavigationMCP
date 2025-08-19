@@ -9,6 +9,7 @@ import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.api.favorite.ISceneMapPointSearchView;
 import com.sgm.navi.scene.ui.favorite.SceneMapPointSearchView;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
@@ -79,6 +80,9 @@ public class SceneMapPointSearchViewImpl extends BaseSceneModel<SceneMapPointSea
      */
     public void clearPoiLabelMark() {
         mSearchPackage.clearPoiLabelMark();
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_AREA);
     }
 
     /**

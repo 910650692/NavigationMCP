@@ -657,6 +657,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         final int index = Integer.parseInt(item.getID());
         final LayerItemRouteReplaceChargePoint chargePoint = new LayerItemRouteReplaceChargePoint();
         chargePoint.setType(1);
+        if (ConvertUtils.isEmpty(mViaPointList)) {
+            return chargePoint;
+        }
         if (index >= 0 && index < mViaPointList.size()) {
             final PoiInfoEntity poiInfoEntity = mViaPointList.get(index);
             if (!ConvertUtils.isEmpty(poiInfoEntity) && !ConvertUtils.isEmpty(poiInfoEntity.getChargeInfoList())) {
@@ -926,6 +929,17 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     customUpdatePairs.add(createUpdateStylePair("click_delete", "display:none;"));
                 }
             }
+            case BizRouteType.BizRouteTypeViaETA -> {
+                //途经点预计到达时间样式适配
+                customUpdatePairs.add(createUpdateStylePair("eta_text", "font-size:22px;"));
+                customUpdatePairs.add(createUpdateStylePair("energy_text_desc", "font-size:22px;"));
+                customUpdatePairs.add(createUpdateStylePair("energy_text", "font-size:22px;"));
+                customUpdatePairs.add(createUpdateStylePair("energy_text_low", "font-size:22px;"));
+                customUpdatePairs.add(createUpdateStylePair("end_area_all", "padding-top:8px;"));
+                customUpdatePairs.add(createUpdateStylePair("end_area_all", "padding-bottom:8px;"));
+                customUpdatePairs.add(createUpdateStylePair("end_area_all", "padding-start:10px;"));
+                customUpdatePairs.add(createUpdateStylePair("end_area_all", "padding-end:10px;"));
+            }
             case BizRouteType.BizRouteTypeGuideLabel -> {
                 //备选路线标签深色文字颜色适配
                 if (isNightMode) {
@@ -936,6 +950,13 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     customUpdatePairs.add(createUpdateStylePair("traffic_light_text", "color:#ffffff;"));
                     customUpdatePairs.add(createUpdateStylePair("cost_text2", "color:#ffffff;"));
                 }
+                customUpdatePairs.add(createUpdateStylePair("label_text", "font-size:28px;"));
+                customUpdatePairs.add(createUpdateStylePair("time_diff_text", "font-size:28px;"));
+                customUpdatePairs.add(createUpdateStylePair("cost_text1", "font-size:28px;"));
+                customUpdatePairs.add(createUpdateStylePair("distance_diff_text", "font-size:24px;"));
+                customUpdatePairs.add(createUpdateStylePair("traffic_light_text", "font-size:24px;"));
+                customUpdatePairs.add(createUpdateStylePair("cost_text2", "font-size:24px;"));
+                customUpdatePairs.add(createUpdateStylePair("div2_ignore", "margin-top:8px;"));
             }
             case BizRoadFacilityType.BizRoadFacilityTypeGuideCameraActive -> {
                 //导航态电子眼深色文字颜色适配

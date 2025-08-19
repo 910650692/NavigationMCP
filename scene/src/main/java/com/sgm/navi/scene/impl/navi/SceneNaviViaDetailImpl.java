@@ -126,6 +126,10 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
 
     public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
         if (null != naviViaEntity) {
+            // 相同的pid不进行重复搜索
+            if (mCurrentPoiId != null && mCurrentPoiId.equals(naviViaEntity.getPid())) {
+                return;
+            }
             mCurrentPoiId = naviViaEntity.getPid();
             if (null != mCurrentPoiId) {
                 ThreadManager.getInstance().removeHandleTask(mSearchPoi);

@@ -78,22 +78,23 @@ public class CalibrationAdapterImpl implements CalibrationApi {
         Logger.d(TAG, "s vehiclePropulsionType: ", vehiclePropulsionType);
         switch (vehiclePropulsionType) {
             case 0: // CeOCD_VehPrplsnType_Gas
-                ADAS_Configuration_Type = 0;
+                vehiclePropulsionType = 0;
                 powerType = 0;
                 break;
             case 3: // CeOCD_VehPrplsnType_BEV
-                ADAS_Configuration_Type = 1;
+                vehiclePropulsionType = 1;
                 powerType = 1;
                 break;
             case 5: // CeOCD_VehPrplsnType_PHEV
-                ADAS_Configuration_Type = 2;
+                vehiclePropulsionType = 2;
                 powerType = 2;
                 break;
             case 6: // CeOCD_VehPrplsnType_HEV(48V重混)
-                ADAS_Configuration_Type = 3;
+                vehiclePropulsionType = 3;
                 powerType = 0;
                 break;
             default:
+                vehiclePropulsionType = 1;
                 powerType = 1;
                 break;
         }

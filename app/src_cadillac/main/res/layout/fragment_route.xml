@@ -19,7 +19,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/fragment_route"
             android:visibility="invisible"
-            android:layout_width="@dimen/dp_2062"
+            android:layout_width="@dimen/dp_2160"
             android:layout_height="@dimen/dp_1102"
             android:layout_marginStart="@dimen/dp_259"
             android:focusable="false">

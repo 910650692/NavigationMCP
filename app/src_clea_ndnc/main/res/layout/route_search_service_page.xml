@@ -99,7 +99,7 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_20"
                 app:layout_constraintHeight_default="wrap"
-                app:layout_constraintHeight_max="@dimen/dp_704"
+                app:layout_constraintHeight_max="@dimen/route_search_service_page_max_height"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 

@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHeight_max="@dimen/dp_744"
+                app:layout_constraintHeight_max="@dimen/scene_srv_add_via_list_max_height"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>

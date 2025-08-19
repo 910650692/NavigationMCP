@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.utils.ResourceUtils;
 import com.sgm.navi.scene.R;
 import com.sgm.navi.scene.databinding.RouteChildPoiItemBinding;
 import com.sgm.navi.service.define.search.ChildInfo;
@@ -50,7 +51,7 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
         if (mChildInfoList == null || mChildInfoList.isEmpty() || selected == -1 || selected >= mChildInfoList.size()) {
             return;
         }
-        mItemClickListener.onItemClick(mChildInfoList.get(selected), mPoiInfoEntity);
+        mItemClickListener.onItemClick(mChildInfoList.get(selected), mPoiInfoEntity, mSelected);
     }
 
     public void setItemClickListener(final OnItemClickListener itemClickListener) {
@@ -70,8 +71,10 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
     public void onBindViewHolder(@NonNull final Holder holder, final int position) {
         if (mSelected == position) {
             holder.mView.setVisibility(View.VISIBLE);
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_color_route_item_select));
         } else {
             holder.mView.setVisibility(View.GONE);
+            holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_color_route_item_no_select));
         }
         holder.mTextView.setText(mChildInfoList.get(position).getShortName());
         holder.mTextView.setOnClickListener(new View.OnClickListener() {
@@ -109,8 +112,9 @@ public class RouteChildPoiAdapter extends RecyclerView.Adapter<RouteChildPoiAdap
          * 子节点点击事件
          * @param childInfo 子节点对象
          * @param poiInfoEntity 当前位置
+         * @param index 选中下标
          */
-        void onItemClick(ChildInfo childInfo, PoiInfoEntity poiInfoEntity);
+        void onItemClick(ChildInfo childInfo, PoiInfoEntity poiInfoEntity, int index);
 
     }
 }

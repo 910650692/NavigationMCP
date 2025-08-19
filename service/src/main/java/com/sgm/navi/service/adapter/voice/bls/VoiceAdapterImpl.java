@@ -161,15 +161,19 @@ public class VoiceAdapterImpl implements VoiceApi, IDataInitObserver, IDataListO
         if(recommendVoiceList == null || recommendVoiceList.isEmpty()){
             HashMap<Integer, VoiceInfo> voiceList = new HashMap<>();
             ArrayList<Integer> voiceIdList = getVoiceIdList(DownLoadMode.DOWNLOAD_MODE_NET.ordinal());
-            if (voiceIdList != null && voiceIdList.size() > 0) {
+            if (!ConvertUtils.isEmpty(voiceIdList)) {
                 for (int i = 0; i < voiceIdList.size(); i++) {
                     VoiceInfo voiceInfo = getVoice(DownLoadMode.DOWNLOAD_MODE_NET.ordinal(), voiceIdList.get(i));
                     if (voiceInfo != null) {
                         Logger.d(TAG, "voiceInfo: ", voiceInfo.getName(),
                                 voiceInfo.getId(), voiceInfo.getFilePath());
                         voiceList.put(voiceInfo.getId(), voiceInfo);
+                    }else {
+                        Logger.d(TAG, "voiceInfo is empty");
                     }
                 }
+            } else {
+                Logger.d(TAG, "autoSdk return voiceInfo list is empty");
             }
             recommendVoiceList = voiceList;
         }

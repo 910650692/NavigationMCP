@@ -44,7 +44,7 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
                 FloatViewManager.getInstance().setCardWidgetStatus(false);
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
-            if (isEmpty && !StartService.getInstance().checkSdkIsNeedInit()) {
+            if (isEmpty) {
                 final BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
                 if (baseActivity instanceof MapActivity) {
                     ((MapActivity)baseActivity).updateUiOnHomeKeyClick();

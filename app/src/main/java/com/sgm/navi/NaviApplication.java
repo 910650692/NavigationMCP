@@ -3,6 +3,7 @@ package com.sgm.navi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.content.res.Configuration;
 
 import androidx.annotation.NonNull;
 
@@ -22,13 +23,32 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.mcp.tools.SGMNavigationTools;
 import com.sgm.navi.ui.BaseApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Description TODO
  * @Author lvww
  * @date 2024/11/24
  */
 public class NaviApplication extends BaseApplication implements Application.ActivityLifecycleCallbacks {
-    
+
+    private final List<OnConfigurationChangedListener> configChangedListenerList = new ArrayList<>();
+
+    public interface OnConfigurationChangedListener {
+        void onConfigurationChanged(@NonNull Configuration newConfig);
+    }
+
+    public void addOnConfigurationChangedListener(OnConfigurationChangedListener listener) {
+        if (listener != null && !configChangedListenerList.contains(listener)) {
+            configChangedListenerList.add(listener);
+        }
+    }
+
+    public void removeOnConfigurationChangedListener(OnConfigurationChangedListener listener) {
+        configChangedListenerList.remove(listener);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -43,6 +63,22 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         super.onTerminate();
         CarModelsFeature.getInstance().unRegisterBroadcast();
         StartService.getInstance().unSdkInit();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (!configChangedListenerList.isEmpty()) {
+            if (Logger.openLog) {
+                Logger.d(TAG, "onConfigurationChanged---configChangedListenerList_size:"
+                        + configChangedListenerList.size());
+            }
+            for (OnConfigurationChangedListener listener : configChangedListenerList) {
+                listener.onConfigurationChanged(newConfig);
+            }
+        } else {
+            Logger.w(TAG, "onConfigurationChanged未设置监听器");
+        }
     }
 
     @Override
@@ -82,7 +118,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             }
         });
     }
-    
+
     /**
      * 启动SGM导航服务
      * 让SGMNavigationService自己负责连接MCP协调中心和注册工具
@@ -94,10 +130,10 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             SGMNavigationTools mcpCallback = new SGMNavigationTools();
             SearchPackage.setMCPGeoSearchCallback(mcpCallback);
             Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "已注册MCP geoSearch回调");
-            
+
             // 1. 先启动MCP协调中心服务
             startMCPCoordinatorService();
-            
+
             // 2. 延迟启动SGM导航服务，确保协调中心先启动
             ThreadManager.getInstance().postDelay(() -> {
                 Intent intent = new Intent(this, com.sgm.navi.mcp.SGMNavigationService.class);
@@ -109,12 +145,12 @@ public class NaviApplication extends BaseApplication implements Application.Acti
                 }
                 Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务");
             }, 1000); // 延迟1秒启动
-            
+
         } catch (Exception e) {
             Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 启动MCP协调中心服务
      */

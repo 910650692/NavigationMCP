@@ -50,6 +50,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
 
     public LayerSearchImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerSearchImpl";
         getLayerSearchControl().setStyle(this);
         getLayerSearchControl().addClickObserver(this);
     }

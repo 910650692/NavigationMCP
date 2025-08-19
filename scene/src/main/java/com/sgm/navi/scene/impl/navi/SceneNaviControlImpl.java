@@ -126,13 +126,6 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         // 初始化静音状态
         int muteStatus = SettingPackage.getInstance().getConfigKeyMute();
         Logger.i(TAG, "init muteStatus:", muteStatus);
-        int currentNaviVolume = getNaviVolume();
-        if (currentNaviVolume <= NumberUtils.NUM_0) {
-            setNaviVolume(NumberUtils.NUM_31);
-            mNaviPackage.setCurrentNaviVolume(NumberUtils.NUM_31);
-        } else {
-            mNaviPackage.setCurrentNaviVolume(currentNaviVolume);
-        }
         mIsMute = muteStatus == 1;
         mNaviPackage.setMuteByHmi(mIsMute);
         updateVariationVoice();
@@ -480,13 +473,12 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         // 当前静音并且系统不是静音状态，进行静音操作
         if (isMute && currentSystemVolume > NumberUtils.NUM_0) {
             setNaviVolume(NumberUtils.NUM_0);
+            mNaviPackage.setCurrentNaviVolume(currentSystemVolume);
             // 不是静音，但是目前系统音量是静音状态，主动给音量设值
         } else if (!isMute && currentSystemVolume <= NumberUtils.NUM_0) {
-            // 如果最后一次音量设置是有效值，就设置给系统，不然默认设置为31，即是一半的音量
+            // 如果最后一次音量设置是有效值，就设置给系统。不然默认设置为最小激活值，这是系统的行为，导航不需要处理
             if (lastSystemVolume > NumberUtils.NUM_0) {
                 setNaviVolume(lastSystemVolume);
-            } else {
-                setNaviVolume(NumberUtils.NUM_31);
             }
         }
     }
@@ -499,12 +491,12 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         // 导航音量为0时，导航音量静音
         if (volume == NumberUtils.NUM_0) {
             if (!mIsMute) {
+                mNaviPackage.setCurrentNaviVolume(NumberUtils.NUM_0);
                 changeMuteStatus();
                 return;
             }
             // 主动放大音量破除静音状态
         } else if (volume > NumberUtils.NUM_0) {
-            mNaviPackage.setCurrentNaviVolume(volume);
             if (mIsMute) {
                 changeMuteStatus();
                 return;

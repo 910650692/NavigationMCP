@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.layer.BizAreaControl;
@@ -21,6 +22,7 @@ import com.autonavi.gbl.layer.observer.PrepareLayerStyleInner;
 import com.autonavi.gbl.map.MapView;
 import com.autonavi.gbl.map.layer.BaseLayer;
 import com.autonavi.gbl.map.layer.LayerItem;
+import com.autonavi.gbl.map.layer.RouteLayerItem;
 import com.autonavi.gbl.map.layer.model.CarLoc;
 import com.autonavi.gbl.map.layer.model.ClickViewIdInfo;
 import com.autonavi.gbl.map.layer.model.CustomTextureParam;
@@ -29,6 +31,7 @@ import com.autonavi.gbl.map.layer.model.CustomUpdateParam;
 import com.autonavi.gbl.map.layer.model.ItemStyleInfo;
 import com.autonavi.gbl.map.layer.model.Layer3DModel;
 import com.autonavi.gbl.map.layer.model.LayerTexture;
+import com.autonavi.gbl.map.layer.model.RouteLayerDrawParam;
 import com.autonavi.gbl.map.layer.model.RouteLayerStyle;
 import com.autonavi.gbl.map.layer.observer.ICarObserver;
 import com.autonavi.gbl.map.layer.observer.ILayerClickObserver;
@@ -36,10 +39,12 @@ import com.autonavi.gbl.map.model.MapStyleTime;
 import com.sgm.navi.service.BuildConfig;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.bls.style.BaseStyleAdapter;
 import com.sgm.navi.service.adapter.layer.bls.texture.TexturePoolManager;
 import com.sgm.navi.service.adapter.layer.bls.texture.TextureStylePoolManager;
+import com.sgm.navi.service.adapter.layer.bls.utils.hudLayerStyle.NaviRouteLayerParser;
 import com.sgm.navi.service.define.map.MapType;
 
 import java.util.List;
@@ -49,6 +54,7 @@ import lombok.Getter;
 public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyleInner implements ILayerClickObserver, ICarObserver {
 
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
+    protected String className = "BaseLayerImpl";
 
     @Getter
     private BizControlService bizService;
@@ -69,6 +75,8 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     private MapType mapType;
 
     private static InnerStyleParam innerStyleParam;
+
+    private NaviRouteLayerParser mNaviRouteLayerParser;
 
     private static InnerStyleParam innerStyleParam() {
         if (innerStyleParam == null) {
@@ -91,6 +99,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         this.styleAdapter = createStyleAdapter();
         setParam(styleAdapter);
         this.bizService.setCollisionIntervalTime(getEngineId(), 500);
+        mNaviRouteLayerParser = new NaviRouteLayerParser();
     }
 
     public int getEngineId() {
@@ -151,7 +160,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void onNotifyClick(BaseLayer layer, LayerItem item, ClickViewIdInfo clickViewIds) {
-        ThreadManager.getInstance().postUi(() -> dispatchItemClickEvent(item, clickViewIds));
+        dispatchItemClickEvent(item, clickViewIds);
     }
 
     @Override
@@ -192,7 +201,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             }
             customTexture.cmbFileInfo.isMergeRes = !styleAdapter.isFromCardImagesRes(item);
             if (!customTexture.cmbFileInfo.isMergeRes) {
-                Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
+                Logger.e(TAG, className, " ", mapType, " 使用 自定义 图片资源  图层 :", layer.getName(), " );图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType());
             }
         }
         return result;
@@ -220,7 +229,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         if (TextUtils.isEmpty(styleJson)) {
             styleJson = super.getLayerStyle(layer, item, forJava);
             if (Logger.openLog) {
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "\n", styleJson);
+                Logger.d(TAG, className, " ", mapType, " 默认 纹理样式配置 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 ：", item.getItemType(), "\n", styleJson);
             }
         }
         return styleJson;
@@ -230,10 +239,14 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public int getMarkerId(BaseLayer layer, LayerItem item, ItemStyleInfo styleInfo) {
         int markerId = super.getMarkerId(layer, item, styleInfo);
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
+        long usedTextureCount = layer.getMapView().getUsedTextureCount();
+        long capacityTextureCount = layer.getMapView().getCapacityTextureCount();
         if (Logger.openLog) {
             Logger.i(TAG, "CurrentMapView:" + getMapType(),
-                    "已使用纹理/支持最大纹理数:" + layer.getMapView().getUsedTextureCount()
-                            + "/" + layer.getMapView().getCapacityTextureCount());
+                    "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
+        }
+        if (usedTextureCount >= capacityTextureCount) {
+            Logger.e(TAG, "###Fatal###", "MapView:" + getMapType() + "纹理数超过最大限制500");
         }
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
             String markerRes = styleInfo.markerId;
@@ -244,12 +257,12 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                     String key = layer.getName() + item.getBusinessType() + item.getID();
                     TexturePoolManager.get().add(key, markerId);
                 }
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+                Logger.d(TAG, className, " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
             }
         } else {
             if (Logger.openLog) {
-                Logger.d(TAG, getClass().getSimpleName(), " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+                Logger.d(TAG, className, " ", mapType, " 默认 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
             }
         }
@@ -264,10 +277,10 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
             if (layer.getMapView().addLayer3DModel(layer3DModel)) {
                 markerId = layer3DModel.resourceID;
             }
-            Logger.e(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+            Logger.e(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                     "\n", "使用 自定义  3D 纹理信息 :{ markerRes = ", str3DModelId, " ; markerId = ", markerId, " }");
         } else {
-            Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
+            Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                     "\n", " 使用 默认  3D 纹理信息 :{ markerRes = ", str3DModelId, " ; markerId = ", markerId, " }");
         }
 
@@ -276,19 +289,16 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public boolean getRouteLayerStyle(BaseLayer layer, LayerItem item, RouteLayerStyle style) {
-//        Logger.d(TAG, mapType, " getRouteLayerStyle style ", style);
-//        if (null != style && mapType == MapType.HUD_MAP) {
-//            ArrayList<RouteLayerParam> vecParam = style.vecParam;
-//            Logger.d(TAG, mapType, " getRouteLayerStyle vecParam ", vecParam.size());
-//            RouteLayerParam param = new RouteLayerParam();
-//            param.lineWidth = 6;
-//            param.showArrow = false;
-//            param.borderLineWidth = 0;
-//            param.fillColor = getContext().getColor(R.color.hud_color_route);
-//            style.vecParam.add(param);
-//            style.mPassedColor[0] = getContext().getColor(R.color.hud_color_route_passed);
-//            return true;
-//        }
+        Logger.d(TAG, mapType, " getRouteLayerStyle style ", style);
+        if (null != style && mapType == MapType.HUD_MAP) {
+            RouteLayerItem routeLayerItem = (RouteLayerItem) item;
+            RouteLayerDrawParam routeDrawParam = routeLayerItem.getRouteDrawParam();
+            boolean isNightMode = ThemeUtils.INSTANCE.isNightModeEnabled(getContext());
+            int fillLineColor = getContext().getColor(R.color.hud_color_route);
+            mNaviRouteLayerParser.getRouteLayerStyle(layer, item, style,
+                    this, routeDrawParam.mRouteStyleType, isNightMode, fillLineColor);
+            return true;
+        }
         return super.getRouteLayerStyle(layer, item, style);
     }
 
@@ -304,7 +314,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void clearLayerItem(BaseLayer layer, LayerItem item) {
-        Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
+        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
         String key = layer.getName() + item.getBusinessType() + item.getID();
         if (TexturePoolManager.get().containsKey(key)) {
             int markerId = TexturePoolManager.get().getValueAsInt(key);
@@ -312,20 +322,20 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                 layer.getMapView().destroyTexture(markerId);
             }
             TexturePoolManager.get().removeKey(key);
-            Logger.e(TAG, getClass().getSimpleName(), " clearLayerItem key:", key, " markerId:", markerId);
+            Logger.e(TAG, className, " clearLayerItem key:", key, " markerId:", markerId);
         }
         super.clearLayerItem(layer, item);
     }
 
     @Override
     public void clearLayerItems(BaseLayer layer) {
-        Logger.v(TAG, getClass().getSimpleName(), " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
+        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
         List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
         for (Integer value : removeValues) {
             if (null != value) {
                 layer.getMapView().destroyTexture(value);
                 if (Logger.openLog) {
-                    Logger.e(TAG, getClass().getSimpleName(), " clearLayerItems layer:", layer.getName(), " markerId:", value);
+                    Logger.e(TAG, className, " clearLayerItems layer:", layer.getName(), " markerId:", value);
                 }
             }
         }

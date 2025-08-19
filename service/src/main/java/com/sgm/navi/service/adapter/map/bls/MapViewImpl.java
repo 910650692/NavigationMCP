@@ -226,6 +226,9 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         }else {
             Logger.d(TAG, "", "3D视角下地图已关闭隐藏扎点开关");
         }
+        if (mapType == MapType.REAR_SCREEN_MAP) {// 锁定后排屏地图手势功能
+            operatorGesture.setTouchEnable(false);
+        }
         getMapview().getOperatorGesture().hidePoiOn3DMoving(false);
         getMapview().getOperatorGesture().hidePoiOn3DSliding(false);
         getMapview().getOperatorGesture().lockMapPitchAngle(true);

@@ -121,13 +121,13 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
         mViewBinding.routeDescendantsList.setAdapter(mRouteChildPoiAdapter);
         mRouteChildPoiAdapter.setItemClickListener(new RouteChildPoiAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(final ChildInfo childInfo, final PoiInfoEntity poiInfoEntity) {
+            public void onItemClick(final ChildInfo childInfo, final PoiInfoEntity poiInfoEntity, final int index) {
                 if (childInfo.getMGrandChildInfoList() != null && !childInfo.getMGrandChildInfoList().isEmpty()) {
-                    mRouteSecondaryPoiAdapter.setChildInfoList(childInfo.getMGrandChildInfoList(), poiInfoEntity);
+                    mRouteSecondaryPoiAdapter.setChildInfoList(childInfo.getMGrandChildInfoList(), poiInfoEntity, index);
                 } else {
                     List<ChildInfo> grandChildInfoList = new ArrayList<>();
                     grandChildInfoList.add(childInfo);
-                    mRouteSecondaryPoiAdapter.setChildInfoList(grandChildInfoList, poiInfoEntity);
+                    mRouteSecondaryPoiAdapter.setChildInfoList(grandChildInfoList, poiInfoEntity, index);
                     if (mItemClickListener != null) {
                         mItemClickListener.OnScrollListener();
                     }
@@ -179,7 +179,7 @@ public class SceneRouteDescendantsView extends BaseSceneView<SceneRouteDescendan
                 mViewBinding.lyDescendantsView.setVisibility(View.VISIBLE);
                 mViewBinding.routeDescendantsText.setVisibility(View.GONE);
                 mViewBinding.routeDescendantsList.setVisibility(View.VISIBLE);
-                if (mRouteSecondaryPoiAdapter != null) {
+                if (mRouteChildPoiAdapter != null) {
                     mRouteChildPoiAdapter.setChildInfoList(poiInfoEntity.getChildInfoList(), poiInfoEntity);
                     mRouteChildPoiAdapter.setSelected(0);
                 }

@@ -337,7 +337,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         speedMonitor.registerSpeedCallBack();
         speedMonitor.registerCallBack(this);
         mViewModel.initVisibleAreaPoint();
-        forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
+        if (mViewModel.getView() != null) {
+            forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
+        }
     }
 
     private MapPackage.TimeHelper timeHelper = new MapPackage.TimeHelper() {
@@ -366,12 +368,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                             mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                             mViewModel.checkPrivacyRights();
                         } else {
-                            if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                                Logger.d(TAG, "桌面地图隐藏弹窗");
-                                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL);
-                            } else {
-                                mViewModel.exitSelf();
-                            }
+                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_SGM_PROTOCOL);
                         }
                     }
                 });
@@ -480,9 +477,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         BroadcastManager.getInstance().sendSpiCollectingBroadcast();
         if (isShowStartupException()) {
             popStartupExceptionDialog();
-        }else {
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         }
+        ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
     }
 
     @Override
@@ -547,15 +543,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
     }
 
-    /**
-     * 给activity调用的
-     */
-    public void judgeNetException() {
-        if (isShowStartupException()) {
-            popStartupExceptionDialog();
-        }
-    }
-
     public boolean isShowStartupException() {
         boolean isNetConnect = Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork());
         boolean isOfflineData = "1".equals(mCommonManager.getValueByKey(UserDataCode.SETTING_DOWNLOAD_LIST));
@@ -584,19 +571,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 @Override
                 public void onExit() {
                     FloatViewManager.getInstance().showAllCardWidgets();
-                    if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                        if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
-                            Logger.d(TAG, "桌面地图隐藏弹窗");
-                            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG);
-                            mStartExceptionDialog.cancel();
-                        }
-                    } else {
-                        if (null != mViewModel) {
-                            Logger.d(TAG, "非桌面地图finish应用");
-                            mViewModel.moveToBack();
-                            ThreadManager.getInstance().asyncDelay(() -> mViewModel.getView().finish(), 400, TimeUnit.MILLISECONDS);
-                        }
-                    }
+                    mStartExceptionDialog.cancel();
                 }
             });
         }
@@ -615,8 +590,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
-            } else if (isShowStartupException()) {
-                popStartupExceptionDialog();
             } else if (isAllowSGMAgreement() && !isFirstLauncher()) {
                 checkAuthorizationExpired();
             }
@@ -664,13 +637,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
-        if (BuildConfig.FLAVOR.equals("clea_local_8155") || BuildConfig.FLAVOR.equals("clea_8775")) {
-            //如果是ND  需要把数据转换为dp
-            int left = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMleftscreenoffer());
-            int top = ScreenUtils.Companion.getInstance().dp2px(mapVisibleAreaInfo.getMtopscreenoffer());
-            MapVisibleAreaInfo ndMapArea = new MapVisibleAreaInfo(left, top);
-            return ndMapArea;
-        }
         return mapVisibleAreaInfo;
     }
 
@@ -801,29 +767,31 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void refreshMapMode() {
-        String data = mSettingPackage.getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
-        MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
-        MapMode mapViewMode = MapMode.UP_2D;
-        if (!TextUtils.isEmpty(data)) {
-            switch (data) {
-                case SettingController.VALUE_MAP_MODE_NORTH_2D:
-                    mapViewMode = MapMode.NORTH_2D;
-                    break;
-                case SettingController.VALUE_MAP_MODE_CAR_3D:
-                    mapViewMode = MapMode.UP_3D;
-                    break;
-                default:
-                    break;
+        if (mSettingPackage != null) {
+            String data = mSettingPackage.getValueFromDB(SettingController.SETTING_GUIDE_MAP_MODE);
+            MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
+            MapMode mapViewMode = MapMode.UP_2D;
+            if (!TextUtils.isEmpty(data)) {
+                switch (data) {
+                    case SettingController.VALUE_MAP_MODE_NORTH_2D:
+                        mapViewMode = MapMode.NORTH_2D;
+                        break;
+                    case SettingController.VALUE_MAP_MODE_CAR_3D:
+                        mapViewMode = MapMode.UP_3D;
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-        if (mapViewMode == MapMode.UP_3D) {
-            mapPackage.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,
-                    AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE);
-        }
+            if (mapViewMode == MapMode.UP_3D) {
+                mapPackage.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,
+                        AutoMapConstant.MAP_ZOOM_LEVEL_DEFAULT_3D_PATCHANGLE);
+            }
 
-        if(mapViewMode != currentMode) {
-            mapPackage.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, mapViewMode, true);
-            mSettingPackage.setConfigKeyMapviewMode(mapViewMode.ordinal());
+            if(mapViewMode != currentMode) {
+                mapPackage.switchMapMode(MapType.MAIN_SCREEN_MAIN_MAP, mapViewMode, true);
+                mSettingPackage.setConfigKeyMapviewMode(mapViewMode.ordinal());
+            }
         }
     }
 
@@ -1122,7 +1090,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     public void goToCarPosition() {
-        mapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mapPackage != null) {
+            mapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
     }
 
     public void updateUiStyle(MapType mapTypeId, ThemeType type) {
@@ -1283,7 +1253,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 case IVrBridgeConstant.VoiceIntentPage.CLOSE_CURRENT_PAGE:
                     //关闭当前页面
                     final BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-                    Logger.d(IVrBridgeConstant.TAG, "currentFragment = ", currentFragment.getClass().getName());
+                    if (Logger.openLog) {
+                        Logger.d(TAG, "voiceCloseFragment", null != currentFragment ? currentFragment.getClass().getSimpleName() : "empty page");
+                    }
                     if (!ConvertUtils.isNull(currentFragment)
                             && ConvertUtils.equals(currentFragment.getClass().getName(), RouteFragment.class.getName())
                             && mRoutePackage != null) {
@@ -1479,6 +1451,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
             );
             mapModelHelp.setCruiseScale();
+
+            // 地图桌面更新小卡片状态
+            if (FloatViewManager.getInstance().isNaviDeskBg()){
+                FloatViewManager.getInstance().showAllCardWidgets();
+            }
         }
         mViewModel.showOrHiddenCruise(isSuccess);
     }
@@ -1499,6 +1476,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_exit_cruise);
             mViewModel.showOrHiddenCruise(false);
+
+            // 地图桌面更新小卡片状态
+            if (FloatViewManager.getInstance().isNaviDeskBg()){
+                FloatViewManager.getInstance().hideAllCardWidgets(true);
+            }
         }
     }
 
@@ -1902,17 +1884,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
             String currentTime = TimeUtils.getInstance().getCurrentTimeToHour();
             Logger.d(TAG, "key:" + key + ",,, currentTime:" + currentTime);
-            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
+//            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
                 mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
-
                 //是否在上班时间段内  在家附近
                 LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
                 boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
+                Logger.i(TAG, "workHours:", workHours);
                 GeoPoint nearByHome = mViewModel.nearByHome(true);
                 GeoPoint nearByCompany = mViewModel.nearByHome(false);
                 if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 去公司
                     boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
+                    Logger.i(TAG, "distanceCompany:", distanceCompany);
                     if (distanceCompany) {
                         mViewModel.loadNdOfficeTmc(false);
                     }
@@ -1921,14 +1904,18 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
                 //是否在下班时间段内  在公司附近
                 boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
+                Logger.i(TAG, "endofWorkHours:", endofWorkHours);
                 if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
                     //判断距离是否大于等于1km 小于等于50km 回家
                     boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
+                    Logger.i(TAG, "distanceHome:", distanceHome);
                     if (distanceHome) {
                         mViewModel.loadNdOfficeTmc(true);
                     }
                 }
-            }
+//            }else {
+//                Logger.d(TAG, "The conditions are not met");
+//            }
         }
     }
 
@@ -2172,12 +2159,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             @Override
             public void onCancelClick() {
                 FloatViewManager.getInstance().mLocationPermissionGranted = false;
-                if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                    Logger.d(TAG, "桌面地图情况");
-                    mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
-                } else {
-                    mViewModel.exitSelf();
-                }
+                mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_LOCATION_PROTOCOL);
             }
         });
         Logger.d(TAG, "isForeground : ", ProcessManager.isAppInForeground());
@@ -2375,6 +2357,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     public void showForecastDialog(int type, OftenArrivedItemInfo oftenArrivedItemInfo) {
         ThreadManager.getInstance().postUi(() -> {
+            if (mViewModel.getView() == null) {
+                Logger.e(TAG, "mViewModel is null");
+                return;
+            }
             if(forecastAddressDialog == null){
                 forecastAddressDialog = new ForecastAddressDialog(mViewModel.getView(), this);
             }
@@ -2537,15 +2523,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         if (null != mStartExceptionDialog && mStartExceptionDialog.isShowing()) {
             Logger.e(TAG, "网络异常弹窗展示中，网络连恢复后消失");
-            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
             mStartExceptionDialog.dismiss();
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
-        }
-
-        if (ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG)) {
-            Logger.e(TAG, "网络异常点击事件拦截中，网络恢复后消失");
-            mViewModel.setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
-            ThreadManager.getInstance().postUi(() -> mViewModel.setSdkInitStatus(true));
         }
 
         if (mViewModel.isActivateDialogShowing()) {

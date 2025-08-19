@@ -3,5 +3,5 @@
     <string name="dialog_commit">确定</string>
     <string name="dialog_cancel">取消</string>
     <string name="agree">同意</string>
-    <string name="not_agree_and_exit">不同意并退出</string>
+    <string name="not_agree_and_exit">不同意并关闭</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.sgm.navi.hmi.setting;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.google.android.material.tabs.TabLayout;
 import com.sgm.navi.hmi.BR;
@@ -20,7 +23,9 @@ import com.sgm.navi.hmi.favorite.FavoriteFragment;
 import com.sgm.navi.hmi.setting.broadcast.SettingBroadcastFragment;
 import com.sgm.navi.hmi.setting.guide.SettingNaviFragment;
 import com.sgm.navi.hmi.setting.others.SettingOthersFragment;
+import com.sgm.navi.scene.ui.setting.SceneVerticalTabLayout;
 import com.sgm.navi.service.AutoMapConstant;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.view.SkinLinearLayout;
 
@@ -48,16 +53,28 @@ public class SettingFragment extends BaseFragment<FragmentSettingBinding, Settin
         initListener();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onInitData() {
-        mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
+        SceneVerticalTabLayout tabLayout = mBinding.tabLayout;
+        TabLayout.Tab tabNavi = tabLayout.newTab();
+        mBinding.tabLayout.addTab(tabNavi.setCustomView(getCustomView(
                 R.string.setting_tab_guide, R.drawable.bg_setting_tab_navi)));
-        mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
+        TabLayout.Tab tabBroadcast = tabLayout.newTab();
+        mBinding.tabLayout.addTab(tabBroadcast.setCustomView(getCustomView(
                 R.string.setting_tab_broadcast, R.drawable.bg_setting_tab_broadcast)));
-        mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
+        TabLayout.Tab tabFavorite = tabLayout.newTab();
+        mBinding.tabLayout.addTab(tabFavorite.setCustomView(getCustomView(
                 R.string.setting_tab_favorite, R.drawable.bg_setting_tab_favorite)));
-        mBinding.tabLayout.addTab(mBinding.tabLayout.newTab().setCustomView(getCustomView(
+        TabLayout.Tab tabOthers = tabLayout.newTab();
+        mBinding.tabLayout.addTab(tabOthers.setCustomView(getCustomView(
                 R.string.setting_tab_others, R.drawable.bg_setting_tab_others)));
+        if (BuildConfig.FLAVOR.equals("cadi")) {
+            tabNavi.view.setBackground(getResources().getDrawable(R.drawable.bg_base_mfc_cadillac_bg_selector));
+            tabBroadcast.view.setBackground(getResources().getDrawable(R.drawable.bg_base_mfc_cadillac_bg_selector));
+            tabFavorite.view.setBackground(getResources().getDrawable(R.drawable.bg_base_mfc_cadillac_bg_selector));
+            tabOthers.view.setBackground(getResources().getDrawable(R.drawable.bg_base_mfc_cadillac_bg_selector));
+        }
     }
 
     private View getCustomView(int textRes, int imageRes) {

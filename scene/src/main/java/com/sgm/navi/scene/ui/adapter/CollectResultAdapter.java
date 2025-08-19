@@ -159,7 +159,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
                 }
                 //若是常用地址或者收到的点，设置为加图标
                 if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
-                    if (ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                    if (ConvertUtils.isEmpty(BehaviorPackage.getInstance().isHomeOrCompanyOrFavorite(mPoiEntities.get(position)))) {
                         holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance().
                                 getDrawable(R.drawable.img_addq_58));
                         holder.mResultItemBinding.textNavi.setText(R.string.mps_set_add);
@@ -221,7 +221,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             //若是常用地址或者收到的点并且已经添加，直接return
             if (mCollectionType == AutoMapConstant.CollectionType.COMMON || mCollectionType == AutoMapConstant.CollectionType.GET_POINT) {
                 if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COLLECTION) {
-                    if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isFavorite(mPoiEntities.get(position)))) {
+                    if (!ConvertUtils.isEmpty(BehaviorPackage.getInstance().isHomeOrCompanyOrFavorite(mPoiEntities.get(position)))) {
                         return;
                     }
                 } else if (mHomeCompanyType == AutoMapConstant.HomeCompanyType.COMMON) {

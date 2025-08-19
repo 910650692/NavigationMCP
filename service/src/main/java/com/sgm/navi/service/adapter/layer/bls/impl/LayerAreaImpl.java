@@ -24,6 +24,7 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
 
     public LayerAreaImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerAreaImpl";
         getLayerAreaControl().setStyle(this);
         getLayerAreaControl().addClickObserver(this);
     }

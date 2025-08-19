@@ -652,7 +652,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                         break;
                     case AutoMapConstant.ProtectState.CANCEL_NET_EXCEPTION_DIALOG:
                         Logger.e(TAG, "网络异常，触发权限检查");
-                        mViewModel.judgeNetException();
+                        //todo暂时没用
                         break;
                     case AutoMapConstant.ProtectState.ACTIVATION_EXCEPTION:
                         Logger.w(TAG, "激活异常，触发激活检查");

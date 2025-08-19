@@ -39,7 +39,7 @@ public class SceneMainAlongWaySearchHistoryImpl extends BaseSceneModel<SceneSear
      * @return itemId 已经收藏 null 未收藏
      */
     public String isFavorite(final PoiInfoEntity poiInfo) {
-        return mBehaviorPackage.isFavorite(poiInfo);
+        return mBehaviorPackage.isHomeOrCompanyOrFavorite(poiInfo);
     }
 
     /**

@@ -358,8 +358,8 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
 //        openOrCloseImmersive(true);
 //        mNaviPackage.setPreviewStatus(false);
         switchMapMode();
+        mMapPackage.exitPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
         mLayerPackage.setFollowMode(getMapId(), true);
-        mMapPackage.exitPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     // 回自车位

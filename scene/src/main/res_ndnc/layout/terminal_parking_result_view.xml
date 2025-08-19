@@ -49,7 +49,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxHeight="@dimen/dp_921"
+            android:maxHeight="@dimen/terminal_parking_result_view_max_height"
             android:minHeight="@dimen/dp_607"
             android:paddingBottom="@dimen/dp_20">
 

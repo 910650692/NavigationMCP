@@ -28,6 +28,7 @@
 
 <!--            TODO  需要确认点击事件添加的位置 是否能重改-->
             <com.sgm.navi.ui.view.SkinView
+                style="@style/style_mfc_config_no_bg"
                 android:id="@+id/content_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -169,6 +170,7 @@
             android:id="@+id/ll_action_container"
             android:layout_width="@dimen/dp_440"
             android:layout_height="match_parent"
+            android:focusable="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -177,6 +179,7 @@
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:focusable="false"
                 android:background="@color/setting_bg_gray"
                 android:layout_weight="1"
                 android:orientation="vertical">
@@ -185,6 +188,7 @@
                     android:id="@+id/item_favorite_top_icon"
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:focusable="false"
                     android:src="@drawable/img_favorite_top"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
@@ -192,6 +196,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_item_top"
+                    android:focusable="false"
                     android:layout_marginTop="@dimen/dp_6"
                     android:textColor="@color/color_black_70"
                     android:textSize="@dimen/sp_38" />
@@ -201,6 +206,7 @@
             <com.sgm.navi.ui.view.SkinLinearLayout
                 android:id="@+id/item_favorite_delete"
                 android:layout_width="@dimen/dp_0"
+                android:focusable="false"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:background="@color/setting_delete_red"
@@ -210,12 +216,14 @@
                 <com.sgm.navi.ui.view.SkinImageView
                     android:layout_width="@dimen/dp_74"
                     android:layout_height="@dimen/dp_74"
+                    android:focusable="false"
                     android:src="@drawable/img_favorite_delete"/>
 
                 <com.sgm.navi.ui.view.SkinTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/favorite_item_delete"
+                    android:focusable="false"
                     android:textColor="@color/setting_white"
                     android:layout_marginTop="@dimen/dp_6"
                     android:textSize="@dimen/sp_38" />

@@ -18,6 +18,7 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
 
     public LayerFlyLineImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerFlyLineImpl";
         getLayerFlyLineControl().updateDrawMode(FlylineDrawMode.FLYLINE_MOVE_END, true);
         getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypeLine, false);
         getLayerFlyLineControl().setVisible(BizFlyLineType.BizFlyLineTypePoint, false);

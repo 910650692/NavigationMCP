@@ -95,6 +95,8 @@ public class ViaListManager {
         mViaIdList = getViaIdList(viaList);
         if (!ConvertUtils.isEmpty(mViaIdList)) {
             mChargeStationTaskId = mSearchPackage.poiListSearch(mViaIdList, 4, true);
+        } else {
+            mRoutePackage.updateViaPointList(MapType.MAIN_SCREEN_MAIN_MAP, new ArrayList<>());
         }
     }
 

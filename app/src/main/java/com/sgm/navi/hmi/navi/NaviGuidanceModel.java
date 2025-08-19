@@ -135,7 +135,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mEndPoiSearchRunnable;
     private Runnable mCloseClusterOverView;
     private Runnable mOnClusterMapOpenOrClose;
-    private Runnable mFirstDrawEndPoint;
     private Runnable mInitLazyView;
     private Runnable mUpdateViaList;
     private Runnable mShowPreView;
@@ -217,8 +216,15 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return;
         }
         String poiId = endRouteParam.getPoiID();
-        mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
-        Logger.i(TAG, "mEndSearchId = ", mEndSearchId, " poiId = ", poiId);
+        if (!ConvertUtils.isEmpty(poiId)) {
+            mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
+            Logger.i(TAG, "mEndSearchId = ", mEndSearchId, " poiId = ", poiId);
+        } else if (!ConvertUtils.isNull(endRouteParam.getRealPos())) {
+            mEndSearchId = mSearchPackage.geoSearch(endRouteParam.getRealPos(), true);
+            Logger.d(TAG, "geoSearch mEndSearchId:", mEndSearchId);
+        } else {
+            Logger.e(TAG, "终点信息获取失败,POID和终点坐标都为空!");
+        }
     }
 
     public boolean getIsShowAutoAdd() {
@@ -310,12 +316,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         };
-        mFirstDrawEndPoint = new Runnable() {
-            @Override
-            public void run() {
-                endPoiSearch();
-            }
-        };
         mUpdateViaList = new Runnable() {
             @Override
             public void run() {
@@ -345,7 +345,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mCloseClusterOverView);
         ThreadManager.getInstance().removeHandleTask(mOnClusterMapOpenOrClose);
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
-        ThreadManager.getInstance().removeHandleTask(mFirstDrawEndPoint);
         ThreadManager.getInstance().removeHandleTask(mUpdateViaList);
         ThreadManager.getInstance().removeHandleTask(mShowPreView);
     }
@@ -380,8 +379,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mLayerPackage.openDynamicLevel(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
             }
-            // 延时绘制终点扎标，减少峰值消耗
-            ThreadManager.getInstance().postDelay(mFirstDrawEndPoint, NumberUtils.NUM_1000);
             // 开始三分钟查询一次终点POI信息
             ThreadManager.getInstance().removeHandleTask(mEndPoiSearchRunnable);
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
@@ -467,6 +464,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             ThreadManager.getInstance().cancelDelayRun(mScheduledFuture);
             mScheduledFuture = null;
         }
+    }
+
+    @Override
+    public void setEndPoint(PoiInfoEntity endPoint) {
+        Logger.i(TAG, "setEndPoint");
+        drawEndPoint(endPoint);
     }
 
     /**
@@ -695,7 +698,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onUpdateViaPass(viaIndex);
         }
         mCurrentViaIndex = viaIndex + 1;
-        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
+//        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
     }
 
     @Override
@@ -947,9 +950,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
                 MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
-        Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamList.size());
+        final int allPoiParamSize = allPoiParamList.size();
+        Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamSize);
+        final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
+        if (!ConvertUtils.isEmpty(viaRemain)) {
+            mIsNeedUpdateViaList = allPoiParamSize != (viaRemain.size() + 2);
+        }
         for (int i = 1; i < allPoiParamList.size() - 1; i++) {
-            final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
             final RouteParam routeParam = allPoiParamList.get(i);
             if (!ConvertUtils.isEmpty(viaRemain)) {
                 final int index = i - 1;
@@ -967,6 +974,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mIsNeedUpdateViaList = true;
             }
         }
+        if (!ConvertUtils.isEmpty(tmpList)) {
+            NaviViaEntity naviViaEntity = tmpList.get(0);
+            updateNewestViaPoint(naviViaEntity);
+        }
         if (mIsShowAutoAdd) {
             tmpList.addAll(mNaviPackage.getAllViaPoints());
             Collections.sort(tmpList, (o1, o2) -> o1.getmArriveTimeStamp() >= o2.getmArriveTimeStamp() ? 1 : -1);
@@ -978,10 +989,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     allPoiParamList.get(allPoiParamList.size() - 1), mNaviEtaInfo, true, true));
         }
         Logger.i(TAG, "mViaList-Size:", mViaList.size(), "tmSize:", tmpList.size());
-        if (!ConvertUtils.isEmpty(mViaList)) {
-            NaviViaEntity naviViaEntity = mViaList.get(0);
-            updateNewestViaPoint(naviViaEntity);
-        }
         return mViaList;
     }
 

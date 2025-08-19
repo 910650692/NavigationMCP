@@ -22,10 +22,6 @@
             android:focusable="false"
             android:showDividers="none">
 
-            <com.android.car.ui.FocusParkingView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/navi_broadcast_voice"
                 android:layout_width="wrap_content"
@@ -34,11 +30,6 @@
                 android:focusable="false"
                 android:textSize="@dimen/sp_46"
                 android:textColor="@color/setting_bg_tab_text_select" />
-
-            <com.android.car.ui.FocusArea
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     style="@style/style_mfc_config_no_bg"
@@ -196,12 +187,14 @@
                     clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:nextFocusForward="@+id/cruise_broadcast_road_condition"
                     android:orientation="horizontal"
                     android:layout_marginTop="@dimen/dp_86">
 
                     <com.sgm.navi.ui.view.SkinTextView
                         clickCommand="@{viewModel.mSwitchCruiseBroadcastClick}"
                         android:id="@+id/switch_eagle_eye_map"
+                        android:focusable="false"
                         android:layout_width="@dimen/dp_96"
                         android:layout_height="@dimen/dp_48"
                         android:layout_gravity="center"
@@ -236,6 +229,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:focusable="true"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCruiseBroadcastRoadCondition}"
                         android:background="@drawable/bg_setting_broadcast"
@@ -251,6 +245,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:focusable="true"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCruiseBroadcastCamera}"
                         android:background="@drawable/bg_setting_broadcast"
@@ -267,6 +262,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:focusable="true"
                         android:button="@null"
                         android:checked="@{viewModel.mIsCruiseBroadcastSafe}"
                         android:background="@drawable/bg_setting_broadcast"
@@ -277,8 +273,7 @@
                         android:textSize="@dimen/sp_46" />
                 </com.sgm.navi.ui.view.SkinLinearLayout>
 
-            </com.android.car.ui.FocusArea>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
 
-        </com.sgm.navi.ui.view.SkinLinearLayout>
     </com.sgm.navi.ui.view.SkinScrollView>
 </layout>

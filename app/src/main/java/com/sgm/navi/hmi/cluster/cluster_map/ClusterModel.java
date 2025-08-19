@@ -14,10 +14,7 @@ import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
-import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
-import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
-import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
@@ -78,8 +75,10 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
         NaviPackage.getInstance().unregisterObserver(mViewModel.mScreenId);
         SettingPackage.getInstance().unRegisterSettingChangeCallback(getMapId().name());
         LayerPackage.getInstance().unInitLayer(mViewModel.getMapView().provideMapTypeId());
-        MapAdapter.getInstance().unBindMapView(mViewModel.getMapView());
-        MapAdapter.getInstance().destroyMapView(MapType.CLUSTER_MAP);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            MapPackage.getInstance().unBindMapView(mViewModel.getMapView());
+            MapPackage.getInstance().destroyMapView(MapType.CLUSTER_MAP);
+        }
     }
 
     private MapType getMapId() {
@@ -115,7 +114,7 @@ public class ClusterModel extends BaseModel<ClusterViewModel> implements IMapPac
             LayerPackage.getInstance().setFollowMode(mMapTypeId, true);
             MapPackage.getInstance().switchMapMode(MapType.CLUSTER_MAP, MapMode.UP_3D,false);
             MapPackage.getInstance().setZoomLevel(mMapTypeId, MAP_ZOOM_LEVEL_DEFAULT);
-            MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
+            MapPackage.getInstance().updateUiStyle(MapType.CLUSTER_MAP, ThemeUtils.INSTANCE.isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
             LayerAdapter.getInstance().setStartPointVisible(MapType.CLUSTER_MAP,false);
             if (SettingPackage.getInstance().getMapViewTextSize()) {
                 MapPackage.getInstance().setMapViewTextSize(MapType.CLUSTER_MAP, 1.3f);

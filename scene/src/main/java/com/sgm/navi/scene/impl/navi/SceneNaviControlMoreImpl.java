@@ -215,7 +215,9 @@ public class SceneNaviControlMoreImpl extends BaseSceneModel<SceneNaviControlMor
             default -> String.format(ResourceUtils.Companion.getInstance().getString(R.string.navi_broadcast_switch),
                     ResourceUtils.Companion.getInstance().getString(R.string.navi_broadcast_detail));
         };
-        SpeechPackage.getInstance().synthesizeLast(tts);
+        if (!NaviPackage.getInstance().isMute()) {
+            SpeechPackage.getInstance().synthesizeLast(tts);
+        }
     }
 
     @Override

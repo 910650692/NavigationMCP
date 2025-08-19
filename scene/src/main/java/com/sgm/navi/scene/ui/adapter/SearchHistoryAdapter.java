@@ -229,7 +229,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         geoPoint.setLon(historyPoint.getLon());
                         geoPoint.setLat(historyPoint.getLat());
                         favInfo.setPoint(geoPoint);
-                        if (!BehaviorPackage.getInstance().isFavorite(favInfo).isEmpty()) {
+                        if (!BehaviorPackage.getInstance().isHomeOrCompanyOrFavorite(favInfo).isEmpty()) {
                             resultHolder.resultItemBinding.textNavi.setText(R.string.route_service_list_item_added);
                             resultHolder.resultItemBinding.ivNaviIcon.setImageResource(R.drawable.img_route_search_added);
                         } else {
@@ -266,7 +266,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                     poiInfo.setPoint(historyPoint);
                 }
                 poiInfo.setName(mPoiEntities.get(position).getMEndPoiName());
-                final boolean isFavorite = !ConvertUtils.isEmpty(mBehaviorPackage.isFavorite(poiInfo));
+                final boolean isFavorite = !ConvertUtils.isEmpty(mBehaviorPackage.isHomeOrCompanyOrFavorite(poiInfo));
                 if (isFavorite) {
                     resultHolder.resultItemBinding.ivCollect.setImageDrawable(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_star_filling58));
                     resultHolder.resultItemBinding.stvCollect.setText(R.string.sha_cancel);

@@ -2275,6 +2275,15 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     /**
      * 计算两点之间的直线距离.
      *
+     * @return 距离.
+     */
+    public int calcStraightDistanceWithInt(final GeoPoint startPoint,final GeoPoint endPoint) {
+        return (int) Math.round(mLayerAdapter.calcStraightDistance(startPoint, endPoint));
+    }
+
+    /**
+     * 计算两点之间的直线距离.
+     *
      * @param endPoint 终点.
      * @return 距离.
      */

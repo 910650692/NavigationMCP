@@ -81,6 +81,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
+        this.className = "LayerGuideRouteImpl";
         getLayerGuideRouteControl().setStyle(this);
         getLayerRoadCrossControl().setStyle(this);
         getLayerRoadFacilityControl().setStyle(this);
@@ -466,8 +467,14 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      * @param viaPointList
      */
     public void updateViaPointList(List<PoiInfoEntity> viaPointList) {
-        if (ConvertUtils.isNull(viaPointList)) {
+        if (ConvertUtils.isEmpty(viaPointList)) {
             Logger.e(TAG, getMapType(), "via point list is null");
+            //删除全部途经点场景
+            mPathPoints.mViaPoints.clear();
+            mViaList = new ArrayList<>(mPathPoints.mViaPoints);
+            getStyleAdapter().updateViaPointList(viaPointList);
+            getLayerGuideRouteControl().setPathPoints(mPathPoints);
+            updatePaths();
             return;
         }
         mPathPoints.mViaPoints.clear();

@@ -132,12 +132,12 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
      */
     public void updateDrivingRecordData(final ArrayList<DrivingRecordDataBean> dataList) {
         if (dataList == null || dataList.isEmpty()) {
-            mRecordListViewVisibility.setValue(false);
-            mEmptyViewVisibility.setValue(true);
+            mRecordListViewVisibility.postValue(false);
+            mEmptyViewVisibility.postValue(true);
             mView.updateDrivingRecordView(new ArrayList<>());
         } else {
-            mRecordListViewVisibility.setValue(true);
-            mEmptyViewVisibility.setValue(false);
+            mRecordListViewVisibility.postValue(true);
+            mEmptyViewVisibility.postValue(false);
             mView.updateDrivingRecordView(dataList);
         }
     }
@@ -148,9 +148,9 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
      */
     public void updateLoginTipView(final boolean isLogin) {
         if (isLogin) {
-            mLoginTipVisibility.setValue(false);
+            mLoginTipVisibility.postValue(false);
         } else {
-            mLoginTipVisibility.setValue(true);
+            mLoginTipVisibility.postValue(true);
         }
     }
 

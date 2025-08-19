@@ -260,29 +260,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    public void judgeNetException() {
-        if (mModel != null) {
-            mModel.judgeNetException();
-        }
-    }
-
     public boolean judgeAutoProtocol() {
         return mModel.judgeAutoProtocol();
     }
 
     public void startTime() {
-        mView.startTime();
+        if (mView != null) {
+            mView.startTime();
+        }
     }
 
     public void stopTime() {
-        mView.stopTime();
+        if (mView != null) {
+            mView.stopTime();
+        }
     }
 
     /**
      * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
-        if (reminderDialog != null && reminderDialog.isShowing()) {
+        if (reminderDialog != null && reminderDialog.isShowing() && mView != null) {
             return;
         }
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
@@ -297,19 +295,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             @Override
             public void onCancelClick() {
                 FloatViewManager.getInstance().mRemindDialogShow = false;
-                if (FloatViewManager.getInstance().isNaviDeskBg()) {
-                    Logger.d(TAG, "桌面地图情况");
-                    setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
-                } else {
-                    moveToBack();
-                    ThreadManager.getInstance().asyncDelay(new Runnable() {
-                        @Override
-                        public void run() {
-                            mView.finish();
-                            FloatViewManager.getInstance().showAllCardWidgets();
-                        }
-                    }, 800, TimeUnit.MILLISECONDS);
-                }
+                setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
+                FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
         reminderDialog.show();
@@ -413,7 +400,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         mInitSdkSuccess = successful;
         if (successful) {
-            mView.doAfterInitSdk();
+            if (mView != null) {
+                mView.doAfterInitSdk();
+            }
             if (Logger.openLog) {
                 Logger.d(TAG, "IsFirstOpenMap: ", AppCache.getInstance().isFirstOpenMap(), " mIsContinueNaviNotified:", mIsContinueNaviNotified.get());
             }
@@ -672,7 +661,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public boolean isFragmentStackNull() {
-        return mView.isFragmentStackNull();
+        if (mView != null) {
+            return mView.isFragmentStackNull();
+        } else {
+            return true;
+        }
     }
 
     public void toHomeFragment() {
@@ -795,7 +788,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void resetMapCenterInScreen() {
-        if (mView != null) {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        boolean isMapStatus = currentNaviStatus.equals(NaviStatus.NaviStatusType.NO_STATUS) || currentNaviStatus.equals(NaviStatus.NaviStatusType.CRUISE);
+        if (mView != null && isMapStatus) {
             mView.setMapFocusable(true);
         }
         if (mModel != null) {
@@ -838,7 +833,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
 
-        //Nd车型需要先判断是否是节假日
+        //Nd 557车型需要先判断是否是节假日
         if (mModel.showNdGoHomeView()) {
             tmcModeVisibility.set(false);
             PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
@@ -852,18 +847,24 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
                 homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
                 companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                mView.setTMCView(0, null);
-                mView.setTMCView(1, null);
+                if (mView != null) {
+                    mView.setTMCView(0, null);
+                    mView.setTMCView(1, null);
+                }
             } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
                 mModel.refreshHomeOfficeTMC(true);
             } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
                 mModel.refreshHomeOfficeTMC(true);
                 companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                mView.setTMCView(1, null);
+                if (mView != null) {
+                    mView.setTMCView(1, null);
+                }
             } else {
                 mModel.refreshHomeOfficeTMC(false);
                 homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                mView.setTMCView(0, null);
+                if (mView != null) {
+                    mView.setTMCView(0, null);
+                }
             }
         }
     }
@@ -877,8 +878,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
         if (!ConvertUtils.isEmpty(poiInfoEntity)) {
             return poiInfoEntity.getMPoint();
+        } else {
+            Logger.i(TAG, "poiInfoEntity is null");
+            return null;
         }
-        return null;
     }
 
     public void loadNdOfficeTmc(boolean home) {
@@ -972,7 +975,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 kilometer = scale;
             }
             final String result = String.format(format, kilometer);
-            mView.updateOnMapScaleChanged(result, MapPackage.getInstance().getScaleLineLength(MapType.MAIN_SCREEN_MAIN_MAP));
+            if (mView != null) {
+                mView.updateOnMapScaleChanged(result, MapPackage.getInstance().getScaleLineLength(MapType.MAIN_SCREEN_MAIN_MAP));
+            }
             if (mModel.getCarMode() == MapMode.UP_3D) {
                 if (scale >= 200) {
                     mModel.setPitchAngle(MapType.MAIN_SCREEN_MAIN_MAP,0);
@@ -1122,7 +1127,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         args.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE,
                 AutoMapConstant.SearchType.ALONG_WAY_SEARCH);
         args.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, passBy);
-        addFragment(new SearchResultFragment(), args);
+        addPoiDetailsFragment(new SearchResultFragment(), args);
     }
 
     /**
@@ -1323,13 +1328,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             messageCenterOperate.set("");
             messageCenterContentVisibility.set(true);
             messageCenterImgVisibility.set(true);
-            mView.setMessageImg(messageCenterInfo.getSrcImg());
+            if (mView != null) {
+                mView.setMessageImg(messageCenterInfo.getSrcImg());
+            }
         } else if (messageCenterInfo.getMsgType() == MessageCenterType.PHONE_MESSAGE) {
             //线和X图片隐藏
             messageCenterOperate.set("");
             messageCenterContentVisibility.set(true);
             messageCenterImgVisibility.set(true);
-            mView.setMessageImg(messageCenterInfo.getSrcImg());
+            if (mView != null) {
+                mView.setMessageImg(messageCenterInfo.getSrcImg());
+            }
             messageLineVisibility.set(false);
             messageLineHeightVisibility.set(false);
             messageCloseVisibility.set(false);
@@ -1426,7 +1435,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     // 更新巡航态下的车道信息
     public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
-        mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        if (mView != null) {
+            mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        }
         cruiseLanesVisibility.set(cruiseVisibility.get() && !ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
@@ -1450,7 +1461,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setCruiseMuteOrUnMute(boolean isOpen) {
         muteVisibility.set(isOpen);
-        mView.cruiseMuteOrUnMute(isOpen);
+        if (mView != null) {
+            mView.cruiseMuteOrUnMute(isOpen);
+        }
     }
 
     public void stopCruise() {
@@ -1514,19 +1527,25 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             if ("计算中...".equals(param.getMTime())) {
                 homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
-            mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+            if (mView != null) {
+                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+            }
         }
         if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
             companyTime.set(param.getMTime());
             if ("计算中...".equals(param.getMTime())) {
                 companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
-            mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+            if (mView != null) {
+                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
+            }
         }
 
         if (mModel.showNdGoHomeView()) {
             mGoHomeVisible.set(true);
-            mView.setNdGoHomeView(param);
+            if (mView != null) {
+                mView.setNdGoHomeView(param);
+            }
             startGoHomeTimer();
             return;
         }
@@ -1568,7 +1587,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     };
 
     public void updateCruiseRoadName(CruiseInfoEntity cruiseInfoEntity) {
-        mView.updateCruiseRoadName(cruiseInfoEntity);
+        if (mView != null) {
+            mView.updateCruiseRoadName(cruiseInfoEntity);
+        }
     }
 
     /**
@@ -1612,7 +1633,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         moveToBack();
         ThreadManager.getInstance().asyncDelay(() -> {
             Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
-            mView.finish();
+            if (mView != null) {
+                mView.finish();
+            }
         }, 400, TimeUnit.MILLISECONDS);
     }
 
@@ -1671,7 +1694,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             case INaviConstant.OpenIntentPage.ROUTE_PAGE:
                 final PoiInfoEntity endPoint = ExportIntentParam.getPoiInfo();
                 if (null != endPoint) {
-                    openRoute(endPoint);
+                    startRoute(endPoint);
                 }
                 ExportIntentParam.setPoiInfo(null);
                 break;
@@ -1713,9 +1736,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) mView.getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (mView != null) {
+            InputMethodManager imm = (InputMethodManager) mView.getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 
@@ -1883,7 +1908,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void closeSplitFragment() {
-        mView.closeSplitFragment();
+        if (mView != null) {
+            mView.closeSplitFragment();
+        }
     }
 
     public void updateUiOnHomeKeyClick() {

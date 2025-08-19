@@ -8,12 +8,14 @@
         android:background="@color/dialog_startup_exception_root">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/dp_1600"
-            android:layout_height="@dimen/dp_500"
-            android:layout_marginStart="@dimen/dp_310"
-            android:layout_marginBottom="@dimen/dp_180"
-            android:background="@drawable/startup_exception_bg_dialog"
-            android:elevation="10dp"
+            android:layout_width="@dimen/dp_1694"
+            android:layout_height="@dimen/dp_578"
+            android:layout_marginStart="@dimen/dp_255"
+            android:layout_marginBottom="@dimen/dp_125"
+            android:background="@drawable/bg_shadow_system_cadillac"
+            android:focusable="false"
+            android:paddingHorizontal="@dimen/dp_47"
+            android:paddingVertical="@dimen/dp_39"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -48,7 +50,7 @@
                 android:background="@drawable/bg_shape_commit_button"
                 android:gravity="center"
                 android:text="@string/startup_exception_exit"
-                android:textColor="@color/white"
+                android:textColor="@color/always_white"
                 android:textSize="@dimen/sp_38"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tv_content" />

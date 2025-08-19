@@ -3,6 +3,7 @@ package com.sgm.navi.service.logicpaket.hud;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.autonavi.gbl.common.path.option.PathInfo;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
@@ -11,6 +12,7 @@ import com.sgm.navi.service.adapter.calibration.CalibrationAdapterCallback;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.map.IMapAdapterCallback;
 import com.sgm.navi.service.adapter.map.MapAdapter;
+import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.RouteLineLayerParam;
 import com.sgm.navi.service.define.layer.refix.CarModeType;
@@ -26,6 +28,7 @@ import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
@@ -168,8 +171,10 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         NaviStatusPackage.getInstance().unregisterObserver(TAG);
         LayerPackage.getInstance().unInitLayer(MapType.HUD_MAP);
         MapAdapter.getInstance().unregisterCallback(MapType.HUD_MAP, this);
-        MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
-        MapAdapter.getInstance().destroyMapView(MapType.HUD_MAP);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            MapAdapter.getInstance().unBindMapView(mMapSurfaceView);
+            MapAdapter.getInstance().destroyMapView(MapType.HUD_MAP);
+        }
         Logger.d(TAG, "HUDMapView地图已销毁");
         ConvertUtils.clear(hudCallbackMap);
         mMapSurfaceView = null;
@@ -234,7 +239,8 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
 
     @Override
     public void onSelectMainPathStatus(long pathID, int result) {
-        hudDrawLine();
+        Logger.d(TAG, "onSelectMainPathStatus");
+        updateHudDrawLine(pathID);
     }
 
     @Override
@@ -282,10 +288,43 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         RoutePackage.getInstance().showOnlyOneRouteLine(MapType.HUD_MAP);
     }
 
+    private void updateHudDrawLine(long pathID) {
+        PathInfo selectPathInfo = OpenApiHelper.getPathInfo(
+                MapType.MAIN_SCREEN_MAIN_MAP, pathID);
+        ArrayList<PathInfo> pathInfos = new ArrayList<>();
+        if (selectPathInfo != null) {
+            pathInfos.add(selectPathInfo);
+        }
+        if (!ConvertUtils.isEmpty(pathInfos)) {
+            NaviAdapter.getInstance().updatePathInfo(MapType.HUD_MAP, pathInfos,
+                    0);
+        }
+    }
+
     //修改地图雪地 非雪地模式
     private void updateMapThemeType(boolean isSnowMode) {
         Logger.d(TAG, "updateMapThemeType:isSnowMode:", isSnowMode);
         ThemeType colorMode = isSnowMode ? ThemeType.DAY : ThemeType.NIGHT;
         MapAdapter.getInstance().updateUiStyle(MapType.HUD_MAP, colorMode);
     }
+
+    @Override
+    public void onChangeNaviPath(long oldPathId, long pathID) {
+        Logger.i(TAG, "onChangeNaviPath oldPathId = ", oldPathId, " pathID = ", pathID);
+        updateHudDrawLine(pathID);
+    }
+
+    @Override
+    public void onDeletePath(ArrayList<Long> pathIDList) {
+        Logger.i(TAG, "onDeletePath");
+        if (!ConvertUtils.isEmpty(pathIDList)) {
+            for (long pathId : pathIDList) {
+                Logger.i(TAG, "onDeletePath pathId = ", pathId);
+                RoutePackage.getInstance().removeRouteLineInfo(MapType.HUD_MAP, pathId);
+            }
+            long currentPathID = OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP);
+            updateHudDrawLine(currentPathID);
+        }
+    }
+
 }
