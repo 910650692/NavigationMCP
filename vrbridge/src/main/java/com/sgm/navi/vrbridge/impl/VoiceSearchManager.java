@@ -709,9 +709,7 @@ public final class VoiceSearchManager {
         final boolean inRoute = NaviStatus.NaviStatusType.ROUTING.equals(curStatus)
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus);
         if (inNavi || inRoute) {
-            if (inRoute) {
-                mPlanRouteResult = 1;
-            } else {
+            if (inNavi) {
                 mPlanRouteResult = -1;
             }
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
