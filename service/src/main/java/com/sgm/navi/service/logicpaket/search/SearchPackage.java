@@ -55,7 +55,8 @@ import com.sgm.navi.service.greendao.history.HistoryManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
-import com.sgm.navi.service.callback.MCPGeoSearchCallback;
+import com.sgm.navi.service.callback.MCPSearchCallback;
+import com.sgm.navi.service.callback.MCPUIDisplayCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,8 +102,16 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     private String mReservationPreNum = "";
     
     // MCP回调接口，由app模块注册
-    private static MCPGeoSearchCallback mcpGeoSearchCallback;
+    private static MCPSearchCallback mcpSearchCallback;
+    // MCP UI显示回调接口，用于通知应用层显示搜索结果界面
+    private static MCPUIDisplayCallback mcpUIDisplayCallback;
     private int mAbortTaskId = 0;
+    
+    // MCP任务管理 - 用于控制MCP搜索任务的回调和UI显示
+    private static final Set<Integer> mcpTasks = ConcurrentHashMap.newKeySet(); // 所有MCP任务
+    private static final Map<Integer, Boolean> mcpTaskUIRequests = new ConcurrentHashMap<>(); // UI显示需求
+    private static final Map<Integer, String> mcpTaskSortTypes = new ConcurrentHashMap<>(); // 排序类型
+    private static final Map<Integer, Integer> mcpTaskPageSizes = new ConcurrentHashMap<>(); // 每页大小限制
 
     private SearchPackage() {
         mManager = HistoryManager.getInstance();
@@ -134,8 +143,17 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      * 
      * @param callback MCP回调接口
      */
-    public static void setMCPGeoSearchCallback(MCPGeoSearchCallback callback) {
-        mcpGeoSearchCallback = callback;
+    public static void setMCPSearchCallback(MCPSearchCallback callback) {
+        mcpSearchCallback = callback;
+    }
+
+    /**
+     * 设置MCP UI显示回调接口
+     * 
+     * @param callback MCP UI显示回调接口
+     */
+    public static void setMCPUIDisplayCallback(MCPUIDisplayCallback callback) {
+        mcpUIDisplayCallback = callback;
     }
 
 
@@ -159,47 +177,187 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                                final SearchResultEntity searchResultEntity, final SearchRequestParameter requestParameter) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSearchResult=> errorCode: {}, message: {}, taskId: {}", errorCode, message, taskId);
         
-        // MCP搜索回调处理
-        if (mcpGeoSearchCallback != null) {
+        // MCP搜索回调处理 - 处理所有MCP发起的搜索任务
+        if (mcpSearchCallback != null && mcpTasks.contains(taskId)) {
             try {
                 if (searchResultEntity != null) {
+                    // 优先使用requestParameter中的搜索类型，如果不存在则使用searchResultEntity中的类型
+                    int searchType = (requestParameter != null) ? requestParameter.getSearchType() : searchResultEntity.getSearchType();
+                    
                     // 根据搜索类型分别处理
-                    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
-                        // 关键词搜索：提取POI列表并格式化为JSON
-                        String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
-                        String poiListJson = mcpGeoSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
-                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
-                    } else {
-                        // 逆地理搜索：提取地址信息
-                        String address = mcpGeoSearchCallback.extractAddressFromSearchResult(searchResultEntity);
-                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, address);
+                    switch (searchType) {
+                        case AutoMapConstant.SearchType.SEARCH_KEYWORD:
+                            // 关键词搜索：提取POI列表并格式化为JSON
+                            String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                            String poiListJson = mcpSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
+                            mcpSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
+                            break;
+                        case AutoMapConstant.SearchType.AROUND_SEARCH:
+                            // 周边搜索：提取POI列表并格式化为JSON
+                            String aroundKeyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                            String aroundPoiListJson = mcpSearchCallback.extractPOIListFromSearchResult(searchResultEntity, aroundKeyword, 10);
+                            mcpSearchCallback.completeAroundSearchTask(taskId, aroundPoiListJson);
+                            break;
+                        case AutoMapConstant.SearchType.GEO_SEARCH:
+                        default:
+                            // 逆地理搜索：提取地址信息
+                            String address = mcpSearchCallback.extractAddressFromSearchResult(searchResultEntity);
+                            mcpSearchCallback.completeGeoSearchTask(taskId, address);
+                            break;
                     }
                 } else {
                     // 搜索失败，完成任务但返回null
-                    if (requestParameter != null && requestParameter.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
-                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, null);
+                    if (requestParameter != null) {
+                        switch (requestParameter.getSearchType()) {
+                            case AutoMapConstant.SearchType.SEARCH_KEYWORD:
+                                mcpSearchCallback.completeKeywordSearchTask(taskId, null);
+                                break;
+                            case AutoMapConstant.SearchType.AROUND_SEARCH:
+                                mcpSearchCallback.completeAroundSearchTask(taskId, null);
+                                break;
+                            case AutoMapConstant.SearchType.GEO_SEARCH:
+                            default:
+                                mcpSearchCallback.completeGeoSearchTask(taskId, null);
+                                break;
+                        }
                     } else {
-                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                        // 如果requestParameter为null，默认当作逆地理搜索处理
+                        mcpSearchCallback.completeGeoSearchTask(taskId, null);
                     }
                 }
             } catch (Exception e) {
                 Logger.w(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP搜索回调处理失败: " + e.getMessage());
                 // 确保任务能完成，避免永久等待
-                if (requestParameter != null && requestParameter.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
-                    mcpGeoSearchCallback.completeKeywordSearchTask(taskId, null);
+                if (requestParameter != null) {
+                    switch (requestParameter.getSearchType()) {
+                        case AutoMapConstant.SearchType.SEARCH_KEYWORD:
+                            mcpSearchCallback.completeKeywordSearchTask(taskId, null);
+                            break;
+                        case AutoMapConstant.SearchType.AROUND_SEARCH:
+                            mcpSearchCallback.completeAroundSearchTask(taskId, null);
+                            break;
+                        case AutoMapConstant.SearchType.GEO_SEARCH:
+                        default:
+                            mcpSearchCallback.completeGeoSearchTask(taskId, null);
+                            break;
+                    }
                 } else {
-                    mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                    mcpSearchCallback.completeGeoSearchTask(taskId, null);
                 }
+            }
+            
+            // 如果不需要显示UI，立即清理任务记录
+            Boolean shouldShowUI = mcpTaskUIRequests.get(taskId);
+            if (shouldShowUI == null || !shouldShowUI) {
+                mcpTasks.remove(taskId);
+                mcpTaskUIRequests.remove(taskId);
             }
         }
         
-        for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
-            final String identifier = entry.getKey();
-            mCurrentCallbackId.set(identifier);
-            final SearchResultCallback callback = entry.getValue();
-            callback.onSearchResult(taskId, errorCode, message, searchResultEntity);
+        // MCP搜索结果排序处理
+        if (mcpTasks.contains(taskId) && searchResultEntity != null && searchResultEntity.getPoiList() != null) {
+            String sortType = mcpTaskSortTypes.get(taskId);
+            if (sortType == null) sortType = "DISTANCE_ASC"; // 默认按距离排序
+            
+            List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+            final GeoPoint currentPos = new GeoPoint();
+            currentPos.setLon(mPositionAdapter.getLastCarLocation().getLongitude());
+            currentPos.setLat(mPositionAdapter.getLastCarLocation().getLatitude());
+            
+            switch (sortType) {
+                case "DISTANCE_ASC": // 距离由近到远
+                    poiList.sort((poi1, poi2) -> {
+                        int dist1 = calcStraightDistanceWithInt(currentPos, poi1.getPoint());
+                        int dist2 = calcStraightDistanceWithInt(currentPos, poi2.getPoint());
+                        return Integer.compare(dist1, dist2);
+                    });
+                    break;
+                    
+                case "RATING_DESC": // 评分由高到低
+                    poiList.sort((poi1, poi2) -> {
+                        try {
+                            double rating1 = poi1.getRating() != null ? Double.parseDouble(poi1.getRating()) : 0;
+                            double rating2 = poi2.getRating() != null ? Double.parseDouble(poi2.getRating()) : 0;
+                            return Double.compare(rating2, rating1);
+                        } catch (NumberFormatException e) {
+                            return 0;
+                        }
+                    });
+                    break;
+                    
+                case "PRICE_LOW": // 价格由低到高
+                    poiList.sort((poi1, poi2) -> 
+                        Integer.compare(poi1.getAverageCost(), poi2.getAverageCost()));
+                    break;
+                    
+                case "PRICE_HIGH": // 价格由高到低
+                    poiList.sort((poi1, poi2) -> 
+                        Integer.compare(poi2.getAverageCost(), poi1.getAverageCost()));
+                    break;
+            }
+            
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP搜索结果已按 " + sortType + " 排序");
+            
+            // 清理排序类型
+            mcpTaskSortTypes.remove(taskId);
         }
-        if (searchResultEntity != null && taskId != mAbortTaskId) {
+        
+        // MCP UI显示处理 - 检查MCP任务的UI显示需求
+        if (mcpSearchCallback != null && mcpTasks.contains(taskId)) {
+            Boolean shouldShowUI = mcpTaskUIRequests.get(taskId);
+            if (shouldShowUI != null && shouldShowUI && searchResultEntity != null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI显示: taskId=" + taskId + ", 搜索类型=" + searchResultEntity.getSearchType());
+                
+                // 应用pageSize限制 - 在显示UI前截取结果
+                Integer pageSize = mcpTaskPageSizes.get(taskId);
+                if (pageSize != null && pageSize > 0) {
+                    List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
+                    if (poiList != null && poiList.size() > pageSize) {
+                        // 创建新的ArrayList，避免SubList类型转换异常
+                        searchResultEntity.setPoiList(new ArrayList<>(poiList.subList(0, pageSize)));
+                        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI显示: 截取结果到 " + pageSize + " 条");
+                    }
+                }
+                
+                // 显示地图标记
+                addPoiMarker(searchResultEntity, requestParameter);
+                
+                // 通过MCP UI显示回调通知应用层显示搜索结果界面
+                if (mcpUIDisplayCallback != null) {
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI显示回调: 触发导航到搜索结果页面");
+                    mcpUIDisplayCallback.onShowSearchResult(taskId, searchResultEntity, requestParameter);
+                }
+                
+                // 触发HMI回调显示搜索结果列表
+                for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+                    final String identifier = entry.getKey();
+                    mCurrentCallbackId.set(identifier);
+                    final SearchResultCallback callback = entry.getValue();
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI触发HMI回调: " + identifier);
+                    callback.onSearchResult(taskId, errorCode, message, searchResultEntity);
+                }
+                
+                // 清理MCP任务记录
+                mcpTasks.remove(taskId);
+                mcpTaskUIRequests.remove(taskId);
+                mcpTaskPageSizes.remove(taskId);
+            }
+        }
+        
+        // 正常HMI回调处理 - 只处理非MCP任务，或MCP任务但不显示UI的情况
+        boolean isMCPTask = mcpSearchCallback != null && mcpTasks.contains(taskId);
+        boolean mcpShowUI = isMCPTask && mcpTaskUIRequests.getOrDefault(taskId, false);
+        
+        if (!isMCPTask || !mcpShowUI) {
+            for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+                final String identifier = entry.getKey();
+                mCurrentCallbackId.set(identifier);
+                final SearchResultCallback callback = entry.getValue();
+                callback.onSearchResult(taskId, errorCode, message, searchResultEntity);
+            }
+        }
+        // 地图标记处理 - 只处理非MCP任务，或MCP任务但不显示UI的情况（避免重复标记）
+        if (searchResultEntity != null && taskId != mAbortTaskId && (!isMCPTask || !mcpShowUI)) {
             addPoiMarker(searchResultEntity, requestParameter);
             if (requestParameter.getSearchType() != AutoMapConstant.SearchType.SEARCH_SUGGESTION
                     && !ConvertUtils.isEmpty(searchResultEntity.getKeyword())) {
@@ -230,31 +388,77 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
     public void onSilentSearchResult(final int taskId,final int errorCode, final String message, final SearchResultEntity searchResultEntity) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "onSilentSearchResult=> errorCode: {}, message: {}", errorCode, message);
         
-        // MCP搜索回调处理
-        if (mcpGeoSearchCallback != null) {
+        // MCP搜索回调处理 - 只处理MCP发起的搜索任务
+        if (mcpSearchCallback != null && mcpTasks.contains(taskId)) {
             try {
                 if (searchResultEntity != null) {
-                    // 根据搜索类型分别处理
-                    if (searchResultEntity.getSearchType() == AutoMapConstant.SearchType.SEARCH_KEYWORD) {
-                        // 关键词搜索：提取POI列表并格式化为JSON
-                        String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
-                        String poiListJson = mcpGeoSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
-                        mcpGeoSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
-                    } else {
-                        // 逆地理搜索：提取地址信息
-                        String address = mcpGeoSearchCallback.extractAddressFromSearchResult(searchResultEntity);
-                        mcpGeoSearchCallback.completeGeoSearchTask(taskId, address);
+                    // 根据搜索类型分别处理，使用searchResultEntity中的搜索类型
+                    int searchType = searchResultEntity.getSearchType();
+                    
+                    switch (searchType) {
+                        case AutoMapConstant.SearchType.SEARCH_KEYWORD:
+                            // 关键词搜索：提取POI列表并格式化为JSON
+                            String keyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                            String poiListJson = mcpSearchCallback.extractPOIListFromSearchResult(searchResultEntity, keyword, 5);
+                            mcpSearchCallback.completeKeywordSearchTask(taskId, poiListJson);
+                            break;
+                        case AutoMapConstant.SearchType.AROUND_SEARCH:
+                            // 周边搜索：提取POI列表并格式化为JSON
+                            String aroundKeyword = searchResultEntity.getKeyword() != null ? searchResultEntity.getKeyword() : "";
+                            String aroundPoiListJson = mcpSearchCallback.extractPOIListFromSearchResult(searchResultEntity, aroundKeyword, 10);
+                            mcpSearchCallback.completeAroundSearchTask(taskId, aroundPoiListJson);
+                            break;
+                        case AutoMapConstant.SearchType.GEO_SEARCH:
+                        default:
+                            // 逆地理搜索：提取地址信息
+                            String address = mcpSearchCallback.extractAddressFromSearchResult(searchResultEntity);
+                            mcpSearchCallback.completeGeoSearchTask(taskId, address);
+                            break;
                     }
                 } else {
                     // 搜索失败，完成任务但返回null
                     // 由于onSilentSearchResult没有requestParameter，我们无法直接判断搜索类型
-                    // 这里假设静默搜索主要用于geoSearch，关键词搜索会走onSearchResult
-                    mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                    // 这里需要一个机制来记住之前发起的搜索类型，暂时默认按geoSearch处理
+                    // TODO: 可以考虑在发起搜索时记录taskId和搜索类型的映射关系
+                    mcpSearchCallback.completeGeoSearchTask(taskId, null);
                 }
             } catch (Exception e) {
-                Logger.w(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP搜索回调处理失败: " + e.getMessage());
+                Logger.w(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP静默搜索回调处理失败: " + e.getMessage());
                 // 确保任务能完成，避免永久等待
-                mcpGeoSearchCallback.completeGeoSearchTask(taskId, null);
+                mcpSearchCallback.completeGeoSearchTask(taskId, null);
+            }
+            
+            // 如果不需要显示UI，立即清理任务记录
+            Boolean shouldShowUI = mcpTaskUIRequests.get(taskId);
+            if (shouldShowUI == null || !shouldShowUI) {
+                mcpTasks.remove(taskId);
+                mcpTaskUIRequests.remove(taskId);
+            }
+        }
+        
+        // MCP UI显示处理 - 检查MCP任务的UI显示需求（静默搜索）
+        if (mcpSearchCallback != null && mcpTasks.contains(taskId)) {
+            Boolean shouldShowUI = mcpTaskUIRequests.get(taskId);
+            if (shouldShowUI != null && shouldShowUI && searchResultEntity != null) {
+                Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI显示(静默): taskId=" + taskId + ", 搜索类型=" + searchResultEntity.getSearchType());
+                
+                // 显示地图标记（onSilentSearchResult没有requestParameter，传null）
+                addPoiMarker(searchResultEntity, null);
+                
+                // 触发HMI回调显示搜索结果列表
+                for (Map.Entry<String, SearchResultCallback> entry : mISearchResultCallbackMap.entrySet()) {
+                    final String identifier = entry.getKey();
+                    mCurrentCallbackId.set(identifier);
+                    final SearchResultCallback callback = entry.getValue();
+                    Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP UI触发HMI回调(静默): " + identifier);
+                    callback.onSilentSearchResult(taskId, errorCode, message, searchResultEntity);
+                }
+                
+                // 清理MCP任务记录
+                mcpTasks.remove(taskId);
+                mcpTaskUIRequests.remove(taskId);
+                mcpTaskPageSizes.remove(taskId);
+                return; // 提前返回，避免重复处理
             }
         }
         
@@ -916,6 +1120,85 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .build();
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing around search with range.");
         return mSearchAdapter.aroundSearch(requestParameterBuilder);
+    }
+
+    /**
+     * 周边搜索 - MCP专用重载方法，支持UI显示控制
+     * @param page    页数
+     * @param keyword 搜索关键词
+     * @param geoPoint 经纬度
+     * @param range 搜索半径
+     * @param isSilentSearch 是否静默搜索
+     * @param showUI 是否显示UI界面（MCP专用参数）
+     * @return taskId
+     */
+    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint,
+                            final String range, final boolean isSilentSearch, final boolean showUI) {
+        // 调用现有的aroundSearch方法
+        int taskId = aroundSearch(page, keyword, geoPoint, range, isSilentSearch);
+        
+        // 记录MCP任务和UI显示需求
+        if (taskId != -1) {
+            mcpTasks.add(taskId); // 标记为MCP任务
+            mcpTaskUIRequests.put(taskId, showUI); // 记录UI需求
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP aroundSearch taskId: " + taskId + ", showUI: " + showUI);
+        }
+        
+        return taskId;
+    }
+    
+    /**
+     * 周边搜索 - MCP专用重载方法，支持UI显示控制和排序
+     * @param page    页数
+     * @param keyword 搜索关键词
+     * @param geoPoint 经纬度
+     * @param range 搜索半径
+     * @param isSilentSearch 是否静默搜索
+     * @param showUI 是否显示UI界面
+     * @param sortType 排序类型（DISTANCE_ASC/RATING_DESC/PRICE_LOW/PRICE_HIGH）
+     * @return taskId
+     */
+    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint,
+                            final String range, final boolean isSilentSearch, final boolean showUI,
+                            final String sortType) {
+        // 调用基础的MCP周边搜索方法
+        int taskId = aroundSearch(page, keyword, geoPoint, range, isSilentSearch, showUI);
+        
+        // 记录排序类型
+        if (taskId != -1 && sortType != null) {
+            mcpTaskSortTypes.put(taskId, sortType);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP aroundSearch with sort: " + sortType);
+        }
+        
+        return taskId;
+    }
+    
+    /**
+     * MCP专用周边搜索 - 支持排序类型和pageSize限制
+     * 
+     * @param page 页数
+     * @param keyword 搜索关键词
+     * @param geoPoint 经纬度
+     * @param range 搜索半径
+     * @param isSilentSearch 是否静默搜索
+     * @param showUI 是否显示UI
+     * @param sortType 排序类型
+     * @param pageSize 每页大小限制
+     * @return taskId
+     */
+    public int aroundSearch(final int page, final String keyword, final GeoPoint geoPoint,
+                            final String range, final boolean isSilentSearch, final boolean showUI,
+                            final String sortType, final Integer pageSize) {
+        // 调用基础方法
+        int taskId = aroundSearch(page, keyword, geoPoint, range, isSilentSearch, showUI, sortType);
+        
+        // 记录pageSize
+        if (taskId != -1 && pageSize != null && pageSize > 0) {
+            mcpTaskPageSizes.put(taskId, pageSize);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP aroundSearch with pageSize: " + pageSize);
+        }
+        
+        return taskId;
     }
 
     /**
@@ -2676,5 +2959,26 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             }
         }
         return sapaDetail;
+    }
+    
+    /**
+     * 关键词搜索 - MCP专用重载方法，支持任务标记
+     * @param page    页数
+     * @param keyword 搜索关键词
+     * @param isSilent 是否静默搜索
+     * @return taskId
+     */
+    public int keywordSearchForMCP(final int page, final String keyword, final boolean isSilent) {
+        // 调用普通的关键词搜索方法
+        int taskId = keywordSearch(page, keyword, isSilent);
+        
+        // 记录MCP任务标记
+        if (taskId != -1) {
+            mcpTasks.add(taskId); // 标记为MCP任务
+            mcpTaskUIRequests.put(taskId, false); // MCP关键词搜索默认不显示UI
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "MCP keywordSearch taskId: " + taskId + ", 已标记为MCP任务");
+        }
+        
+        return taskId;
     }
 }

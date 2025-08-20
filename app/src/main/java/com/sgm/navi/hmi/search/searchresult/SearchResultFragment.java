@@ -95,7 +95,29 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
         mBinding.scenePoiList.setRange(range);
         mBinding.scenePoiList.setCityCode(cityCode);
         mBinding.scenePoiList.setRouteAround(Objects.equals(mSourceFragmentTag, AutoMapConstant.SourceFragment.FRAGMENT_ROUTE));
-        mBinding.scenePoiList.setEditText(searchType, keyword);
+        
+        // 检查是否是MCP搜索结果，如果是则不重新搜索
+        boolean isMCPResult = parsedArgs.getBoolean("MCP_SEARCH_RESULT", false);
+        if (isMCPResult) {
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "MCP搜索结果，跳过重新搜索");
+            // 获取MCP搜索结果
+            SearchResultEntity mcpSearchEntity = parsedArgs.getParcelable("MCP_SEARCH_ENTITY");
+            if (mcpSearchEntity != null) {
+                // 直接设置搜索框文本，但不触发搜索
+                mBinding.scenePoiList.setSearchTextOnly(keyword, searchType);
+                // 保存MCP搜索结果
+                mSearchResultEntity = mcpSearchEntity;
+                // 立即显示MCP搜索结果
+                mBinding.scenePoiList.notifySearchResult(-1, mcpSearchEntity);
+            } else {
+                // 兜底：如果MCP数据为空，还是执行正常搜索
+                mBinding.scenePoiList.setEditText(searchType, keyword);
+            }
+        } else {
+            // 正常搜索流程
+            mBinding.scenePoiList.setEditText(searchType, keyword);
+        }
+        
         if (searchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
             mViewModel.registerRouteCallback();
         }

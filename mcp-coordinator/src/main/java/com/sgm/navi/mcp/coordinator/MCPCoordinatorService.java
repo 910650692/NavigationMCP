@@ -53,7 +53,7 @@ public class MCPCoordinatorService extends Service {
      */
     private void initHttpServer() {
         try {
-            jsonRpcHandler = new JsonRpcHandler(mcpBinder);
+            jsonRpcHandler = new JsonRpcHandler(mcpBinder, toolRegistry);
             httpServer = new HttpServerManager(jsonRpcHandler);
             
             if (httpServer.startServer()) {

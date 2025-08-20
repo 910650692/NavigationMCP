@@ -94,6 +94,9 @@ import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseViewModel;
+import com.sgm.navi.service.define.search.SearchResultEntity;
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 import com.sgm.navi.vrbridge.IVrBridgeConstant;
@@ -1950,5 +1953,41 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void setCurrentProtectState(int protectState) {
         this.mCurrentProtectState = protectState;
+    }
+
+    /**
+     * 显示MCP搜索结果
+     */
+    public void showMCPSearchResult(int taskId, SearchResultEntity searchResultEntity, Bundle bundle) {
+        Logger.d(TAG, "显示MCP搜索结果: taskId=" + taskId);
+        
+        try {
+            // 使用ARouter导航到搜索结果页面
+            Fragment fragment = (Fragment) ARouter.getInstance()
+                    .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
+                    .navigation();
+            
+            if (fragment != null) {
+                // 设置Fragment的参数
+                fragment.setArguments(bundle);
+                
+                // 添加Fragment到当前Activity
+                if (mView != null) {
+                    mView.addFragment((BaseFragment) fragment, bundle);
+                    
+                    // MCP搜索结果会在Fragment的getBundleData中自动处理
+                    Logger.d(TAG, "MCP搜索结果页面显示成功");
+                    
+                } else {
+                    Logger.e(TAG, "mView为空，无法添加Fragment");
+                }
+                
+            } else {
+                Logger.e(TAG, "MCP搜索结果Fragment创建失败");
+            }
+            
+        } catch (Exception e) {
+            Logger.e(TAG, "显示MCP搜索结果失败", e);
+        }
     }
 }

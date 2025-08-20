@@ -107,6 +107,7 @@ import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.FavoriteInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.forecast.ForecastArrivedDataInfo;
@@ -140,6 +141,11 @@ import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
+import com.sgm.navi.service.callback.MCPUIDisplayCallback;
+import com.sgm.navi.service.define.search.SearchRequestParameter;
+import com.sgm.navi.scene.RoutePath;
+import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
+import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.service.logicpaket.signal.SignalCallback;
@@ -185,7 +191,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ForecastCallBack, SearchResultCallback, NaviStatusCallback, SettingUpdateObservable.SettingUpdateObserver,
         IDeskBackgroundChangeListener, PermissionUtils.PermissionsObserver, StartService.ISdkInitCallback,
         OnDeskCardVisibleStateChangeListener, IForecastAddressCallBack,
-        ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver {
+        ScreenTypeUtils.SplitScreenChangeListener, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver, MCPUIDisplayCallback {
 
     private static final String TAG = "MapModel";
     private CommonManager mCommonManager;
@@ -359,6 +365,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         super.onCreate();
         PermissionUtils.getInstance().setPermissionsObserver(this);
         StartService.getInstance().registerSdkCallback(TAG, this);
+        // 注册MCP UI显示回调
+        SearchPackage.setMCPUIDisplayCallback(this);
         AgreementPackage.getInstance().init();
         AgreementPackage.getInstance().setAgreementCallback("StartupModel",
                 new AgreementPackage.AgreementCallback() {
@@ -2571,5 +2579,37 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public MapMode getCarMode() {
         MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         return currentMode;
+    }
+
+    @Override
+    public void onShowSearchResult(int taskId, SearchResultEntity searchResultEntity, SearchRequestParameter requestParameter) {
+        Logger.d(TAG, "MCP UI显示搜索结果: taskId=" + taskId + ", 搜索类型=" + searchResultEntity.getSearchType());
+        
+        try {
+            // 通过ViewModel触发导航到搜索结果页面
+            if (mViewModel != null) {
+                // 创建Bundle数据
+                Bundle bundle = SearchFragmentFactory.createKeywordFragment(
+                        AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, // 源页面标识  
+                        searchResultEntity.getSearchType(), // 搜索类型
+                        searchResultEntity.getKeyword(), // 搜索关键词
+                        null // 搜索位置（PoiInfoEntity类型，暂时传null）
+                );
+                
+                // 添加MCP标识，表示这是MCP搜索结果，不需要重新搜索
+                bundle.putBoolean("MCP_SEARCH_RESULT", true);
+                bundle.putParcelable("MCP_SEARCH_ENTITY", searchResultEntity);
+                
+                // 通过ViewModel显示搜索结果
+                mViewModel.showMCPSearchResult(taskId, searchResultEntity, bundle);
+                
+                Logger.d(TAG, "MCP搜索结果页面显示请求已发送");
+            } else {
+                Logger.e(TAG, "ViewModel为空，无法显示MCP搜索结果");
+            }
+            
+        } catch (Exception e) {
+            Logger.e(TAG, "MCP显示搜索结果失败", e);
+        }
     }
 }

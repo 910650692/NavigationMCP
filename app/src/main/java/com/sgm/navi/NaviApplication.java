@@ -20,7 +20,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
-import com.sgm.navi.mcp.tools.SGMNavigationTools;
+import com.sgm.navi.mcp.tools.BaseToolHelper;
 import com.sgm.navi.ui.BaseApplication;
 
 import java.util.ArrayList;
@@ -125,11 +125,11 @@ public class NaviApplication extends BaseApplication implements Application.Acti
      */
     private void startSGMNavigationService() {
         try {
-            // 注册MCP回调，需要在启动服务前进行，因为SGMNavigationTools实例会被创建
-            // 这样SearchPackage就能在geoSearch回调中调用我们的方法
-            SGMNavigationTools mcpCallback = new SGMNavigationTools();
-            SearchPackage.setMCPGeoSearchCallback(mcpCallback);
-            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "已注册MCP geoSearch回调");
+            // 注册MCP回调，需要在启动服务前进行，使用BaseToolHelper单例
+            // 这样SearchPackage就能在搜索回调中调用我们的方法
+            BaseToolHelper mcpCallback = BaseToolHelper.getInstance();
+            SearchPackage.setMCPSearchCallback(mcpCallback);
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "已注册MCP搜索回调");
 
             // 1. 先启动MCP协调中心服务
             startMCPCoordinatorService();

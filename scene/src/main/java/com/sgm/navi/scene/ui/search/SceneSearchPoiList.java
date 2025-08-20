@@ -68,6 +68,7 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingUpdateObservable;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.ui.view.SkinConstraintLayout;
 import com.sgm.navi.ui.view.SkinTextView;
 import com.sgm.navi.ui.view.refresh.RefreshListener;
@@ -470,6 +471,33 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     mScreenViewModel.closeSearchOpenFromNavi();
                 } else {
                     mScreenViewModel.closeSearch();
+                }
+            } else if (mSearchType == AutoMapConstant.SearchType.AROUND_SEARCH) {
+                // MCP周边搜索点击搜索框，打开搜索建议页面进行编辑
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "MCP周边搜索点击搜索框，打开搜索建议页面: " + mSearchText);
+                
+                // 创建Bundle传递当前搜索关键词
+                Bundle bundle = new Bundle();
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, mSearchText);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.AROUND_SEARCH);
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT, AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT);
+                
+                // 如果有位置信息，也传递过去
+                if (mPoiInfoEntity != null) {
+                    bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, mPoiInfoEntity);
+                }
+                
+                // 使用ARouter跳转到搜索建议页面
+                Fragment fragment = (Fragment) ARouter.getInstance()
+                    .build(RoutePath.Search.SUGGESTION_FRAGMENT)
+                    .with(bundle)
+                    .navigation();
+                    
+                if (fragment != null) {
+                    // 添加Fragment
+                    StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name())
+                        .addFragment((BaseFragment) fragment, bundle);
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "已打开搜索建议页面");
                 }
             }
 
@@ -1042,6 +1070,23 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
         this.mPageNum = 1;
         performSearch(mPageNum, searchText, false);
+    }
+
+    /**
+     * 仅设置搜索框文本，不触发搜索
+     * 用于MCP搜索结果显示
+     *
+     * @param searchText 关键字搜索
+     * @param searchType 搜索类型
+     */
+    public void setSearchTextOnly(final String searchText, final int searchType) {
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "仅设置搜索框文本: " + searchText + ", 类型: " + searchType);
+        // 保持原有的搜索类型，不强制改变
+        this.mSearchType = searchType;
+        this.mSearchText = searchText;
+        mViewBinding.searchTextBarView.searchBarTextView.setText(searchText);
+        this.mPageNum = 1;
+        // 不调用performSearch，不触发新的搜索
     }
 
     public void setPoiInfoEntity(final PoiInfoEntity poiInfo) {

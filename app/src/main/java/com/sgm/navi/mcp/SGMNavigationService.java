@@ -14,7 +14,9 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.sgm.navi.mcp.core.Mcp;
-import com.sgm.navi.mcp.tools.SGMNavigationTools;
+import com.sgm.navi.mcp.tools.LocationTools;
+import com.sgm.navi.mcp.tools.SearchTools;
+import com.sgm.navi.mcp.tools.NavigationTools;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.hmi.R;
@@ -94,18 +96,24 @@ public class SGMNavigationService extends Service {
                     // 1. 设置MCP协调中心服务连接
                     Mcp.setMCPCoordinatorService(mcpCoordinatorService);
                     
-                    // 2. 创建SGM导航工具实例并使用注解驱动注册
-                    SGMNavigationTools navigationTools = new SGMNavigationTools();
+                    // 2. 创建各类工具实例并使用注解驱动注册
+                    LocationTools locationTools = new LocationTools();
+                    SearchTools searchTools = new SearchTools();
+                    NavigationTools navigationTools = new NavigationTools();
+                    
+                    // 3. 注册所有工具类
+                    Mcp.registerTool(locationTools);
+                    Mcp.registerTool(searchTools);
                     Mcp.registerTool(navigationTools);
                     
                     int registeredCount = Mcp.getRegisteredToolCount();
                     String[] toolNames = Mcp.getRegisteredToolNames();
                     
                     Log.d(TAG, 
-                        String.format("✅ 导航工具注册完成，共注册 %d 个工具: %s", 
+                        String.format("✅ SGM导航工具注册完成，共注册 %d 个工具: %s", 
                         registeredCount, String.join(", ", toolNames)));
                         
-                    Log.d(TAG, "🚀 SGM导航工具已就绪，等待AI智能体调用");
+                    Log.d(TAG, "🚀 SGM导航工具模块已就绪，包含位置、搜索、导航三大功能");
                     
                     updateNotification("工具已注册 (" + registeredCount + "个)，服务就绪");
                 } catch (Exception e) {

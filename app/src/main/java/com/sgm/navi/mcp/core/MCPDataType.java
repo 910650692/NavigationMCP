@@ -5,7 +5,8 @@ package com.sgm.navi.mcp.core;
  */
 public enum MCPDataType {
     STRING("string"),
-    NUMBER("number"), 
+    NUMBER("number"),
+    INTEGER("integer"),
     BOOLEAN("boolean"),
     OBJECT("object"),
     ARRAY("array");

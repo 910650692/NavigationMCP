@@ -3,6 +3,7 @@ package com.sgm.navi.mcp.coordinator;
 import android.os.RemoteException;
 import android.util.Log;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,12 +21,16 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class JsonRpcHandler {
     private static final String TAG = "JsonRpcHandler";
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+        .disableHtmlEscaping() // 防止转义中文字符
+        .create();
     private final JsonParser jsonParser = new JsonParser();
     private IMCPService mcpService;
+    private ToolRegistry toolRegistry;
     
-    public JsonRpcHandler(IMCPService mcpService) {
+    public JsonRpcHandler(IMCPService mcpService, ToolRegistry toolRegistry) {
         this.mcpService = mcpService;
+        this.toolRegistry = toolRegistry;
     }
     
     /**
@@ -209,25 +214,39 @@ public class JsonRpcHandler {
             JsonObject responseData = new JsonObject();
             com.google.gson.JsonArray toolsArray = new com.google.gson.JsonArray();
             
-            // 为每个工具创建完整的schema - 通用化处理
+            // 为每个工具创建完整的schema - 使用实际存储的schema
             for (String toolName : toolNames) {
+                ToolRegistry.RegisteredTool tool = toolRegistry.getTool(toolName);
+                if (tool == null) {
+                    Log.w(TAG, "工具不存在: " + toolName);
+                    continue;
+                }
+                
                 JsonObject toolSchema = new JsonObject();
-                toolSchema.addProperty("name", toolName);
-                toolSchema.addProperty("description", "Navigation tool: " + toolName);
+                toolSchema.addProperty("name", tool.name);
+                toolSchema.addProperty("description", tool.description);
                 
-                // 添加通用的输入schema
-                JsonObject inputSchema = new JsonObject();
-                inputSchema.addProperty("type", "object");
-                
-                // 所有工具都可能有通用参数，具体的schema应该由工具提供者定义
-                JsonObject properties = new JsonObject();
-                JsonObject paramsProp = new JsonObject();
-                paramsProp.addProperty("type", "object");
-                paramsProp.addProperty("description", "Tool-specific parameters");
-                properties.add("params", paramsProp);
-                
-                inputSchema.add("properties", properties);
-                toolSchema.add("inputSchema", inputSchema);
+                // 使用存储的实际schema
+                try {
+                    // 解析存储的schema并提取inputSchema部分
+                    JsonObject storedSchema = jsonParser.parse(tool.schema).getAsJsonObject();
+                    if (storedSchema.has("function")) {
+                        JsonObject functionSchema = storedSchema.getAsJsonObject("function");
+                        if (functionSchema.has("parameters")) {
+                            // 直接使用function.parameters作为inputSchema
+                            toolSchema.add("inputSchema", functionSchema.get("parameters"));
+                        } else {
+                            // 兜底：使用通用schema
+                            toolSchema.add("inputSchema", createDefaultInputSchema());
+                        }
+                    } else {
+                        // 兜底：使用通用schema
+                        toolSchema.add("inputSchema", createDefaultInputSchema());
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "解析工具schema失败: " + toolName + ", 使用通用schema", e);
+                    toolSchema.add("inputSchema", createDefaultInputSchema());
+                }
                 
                 toolsArray.add(toolSchema);
             }
@@ -242,6 +261,23 @@ public class JsonRpcHandler {
             Log.e(TAG, "获取工具列表失败", e);
             return createErrorResponse(idElement, -32003, "Failed to get tools list: " + e.getMessage());
         }
+    }
+    
+    /**
+     * 创建默认的InputSchema（兜底方案）
+     */
+    private JsonObject createDefaultInputSchema() {
+        JsonObject inputSchema = new JsonObject();
+        inputSchema.addProperty("type", "object");
+        
+        JsonObject properties = new JsonObject();
+        JsonObject paramsProp = new JsonObject();
+        paramsProp.addProperty("type", "object");
+        paramsProp.addProperty("description", "Tool-specific parameters");
+        properties.add("params", paramsProp);
+        
+        inputSchema.add("properties", properties);
+        return inputSchema;
     }
     
     /**
