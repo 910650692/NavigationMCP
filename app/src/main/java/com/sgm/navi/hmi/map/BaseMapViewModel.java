@@ -387,7 +387,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void hideStartIcon() {
-        startIconVisibility.set(false);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            Logger.d(TAG, "hideStartIcon");
+            startIconVisibility.set(false);
+        }
     }
 
     public void showStartIcon() {

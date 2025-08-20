@@ -474,8 +474,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             if (!ConvertUtils.equals(errCode, 0) && !ConvertUtils.isEmpty(msg)) {
                 showActivateFailedDialog(errCode, msg);
             }
-            mBinding.mainImg.setImageResource(R.drawable.logo_startup);
-            return;
         }
         mViewModel.reminderDialogReCreate();
         mBinding.mainImg.setImageResource(R.drawable.logo_startup);
