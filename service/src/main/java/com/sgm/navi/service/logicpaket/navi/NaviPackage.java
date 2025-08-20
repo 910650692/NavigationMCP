@@ -145,6 +145,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Getter
     @Setter
     private NaviDriveReportEntity mNaviDriveReportEntity;
+    @Getter
+    private String mArriveTime = "";
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -647,6 +649,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         Logger.i(TAG, "onNaviInfo: ");
         mCurrentNaviEtaInfo = naviETAInfo;
+        if (mCurrentNaviEtaInfo != null) {
+            int time = mCurrentNaviEtaInfo.getRemainTime();
+            mArriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
+            Logger.i(TAG, mArriveTime);
+        }
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {

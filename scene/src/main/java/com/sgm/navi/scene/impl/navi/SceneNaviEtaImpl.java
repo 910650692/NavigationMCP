@@ -24,6 +24,7 @@ import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviManeuverInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 
 import java.util.Objects;
 
@@ -332,7 +333,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
         }
         mArriveDay = TimeUtils.getArriveDay(time);
         mTime = time;
-        mArriveTime = TimeUtils.getArriveTime(mScreenView.getContext(), time);
+        mArriveTime = NaviPackage.getInstance().getMArriveTime();
         mRemainInfo = TimeUtils.getRemainInfo(mScreenView.getContext(), distance, time);
         // 到达或者剩余信息有变化才更新界面
         if (!Objects.equals(mLastArriveTime, mArriveTime) || !Objects.equals(mLastRemainInfo, mRemainInfo)) {
@@ -342,7 +343,7 @@ public class SceneNaviEtaImpl extends BaseSceneModel<SceneNaviEtaView> {
 
     public void refreshArriveTime() {
         if (mTime > 0) {
-            mArriveTime = TimeUtils.getArriveTime(mScreenView.getContext(), mTime);
+            mArriveTime = NaviPackage.getInstance().getMArriveTime();
             if (!TextUtils.isEmpty(mArriveTime)) {
                 mScreenView.setTextNaviEtaRouteArrivalDefault(
                         new AutoUIString(ConvertUtils.digitToBold(mArriveTime)));
