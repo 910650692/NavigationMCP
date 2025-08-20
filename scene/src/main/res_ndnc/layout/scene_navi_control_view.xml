@@ -68,7 +68,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_192"
-            android:maxWidth="@dimen/dp_455"
+            android:maxWidth="@dimen/dp_449"
             android:layout_marginStart="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_buick"
             android:padding="@dimen/dp_34"
