@@ -4312,6 +4312,11 @@
     <dimen name="navi_tbt_height">90.06dp</dimen>
     <dimen name="navi_tbt_height_short">78.66dp</dimen>
     <dimen name="navi_tbt_with">467.4dp</dimen>
+    <!--路口大图位置信息-->>
+    <dimen name="navi_cross_left">176dp</dimen>
+    <dimen name="navi_cross_top">159dp</dimen>
+    <dimen name="navi_cross_right">644dp</dimen>
+    <dimen name="navi_cross_bottom">442dp</dimen>
     <!--1/3屏路口大图高度-->
     <dimen name="one_third_screen_cross_pic_height">198.93dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">471.39dp</dimen>

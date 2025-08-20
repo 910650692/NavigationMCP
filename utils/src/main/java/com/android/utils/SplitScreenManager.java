@@ -23,6 +23,10 @@ public class SplitScreenManager {
     private boolean isServiceConnect = false;
     private ISystemExtendServiceProxy mBinder;
     private Context mContext;
+    // 记录分屏位置，0在左，1在右
+    private int mPos;
+
+    public static final String TAG = "SplitScreenManager";
 
     /***
      * 这里不要做耗时操作
@@ -281,5 +285,42 @@ public class SplitScreenManager {
         } else {
             return ScreenTypeUtils.getInstance().isOneThirdScreen() ? offsetOneThreeX : offsetTwoThreeX;
         }
+    }
+
+    public void setSplitPos() {
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            mPos = 0;
+            return;
+        }
+        String[] splitScreenStatus = getSplitScreenStatus();
+        if (splitScreenStatus == null) {
+            mPos = 0;
+            return;
+        }
+        if (splitScreenStatus.length != 2) {
+            mPos = 0;
+            return;
+        }
+        String splitLeft = splitScreenStatus[0];
+        String splitRight = splitScreenStatus[1];
+        if (splitLeft == null || splitRight == null) {
+            mPos = 0;
+            return;
+        }
+        boolean isLeft = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitLeft);
+        boolean isRight = PatacSESConstants.SPLIT_SCREEN_NAVI.equals(splitRight);
+        if (isLeft) {
+            mPos = 0;
+            return;
+        }
+        if (isRight) {
+            mPos = 1;
+            return;
+        }
+        Logger.i(TAG, "setSplitPos pos", mPos);
+    }
+
+    public int getSplitPos() {
+        return mPos;
     }
 }
