@@ -183,6 +183,11 @@ public class PermissionUtils {
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (REQUEST_PERMISSION_CODE == requestCode) {
+            if (permissions.length == 0 || grantResults.length == 0) {
+                Logger.e(TAG, "Permission data is invalid, return early.");
+                return;
+            }
+
             String permission = permissions[0];
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Logger.i(TAG, "current permission granted success-> " + permission);
