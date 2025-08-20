@@ -704,7 +704,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //转换终点扎标数据
     private void setRouteEndPoint() {
         mRouteEndPoint.setRestNum(-1);
+        mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
+        if (Logger.openLog) {
+            Logger.d(TAG, "selectPathIndex ", selectPathIndex);
+        }
+        if (selectPathIndex < 0) {
+            Logger.e(TAG, "selectPathIndex is invalid: ", selectPathIndex);
+            return;
+        }
         if (ConvertUtils.isNull(mRouteResult)) {
             return;
         }
@@ -713,31 +721,30 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.v(TAG, "mRouteLineInfos is Empty");
             return;
         }
+        if (selectPathIndex >= mRouteLineInfos.size()) {
+            Logger.e(TAG, "selectPathIndex out of bounds: ", selectPathIndex + " vs size: ", mRouteLineInfos.size());
+            return;
+        }
         int mCarType = CalibrationPackage.getInstance().powerType();
-        if (selectPathIndex < mRouteLineInfos.size()) {
-            if (mCarType == 0 || mCarType == 2) {
-                final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
-                        .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
-                Logger.d(TAG, "getRemainGasPercent: " + num);
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
-                if (num != 0) {
-                    mRouteEndPoint.setRestNum(num);
-                } else {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                    mRouteEndPoint.setRestNum(-1);
-                }
+        if (mCarType == 0 || mCarType == 2) {
+            final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
+                    .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
+            Logger.d(TAG, "getRemainGasPercent: " + num);
+            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+            if (num != 0) {
+                mRouteEndPoint.setRestNum(num);
             } else {
-                if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
-                    mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
-                } else {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                    mRouteEndPoint.setRestNum(-1);
-                }
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                mRouteEndPoint.setRestNum(-1);
             }
         } else {
-            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-            Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
+            if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
+            } else {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                mRouteEndPoint.setRestNum(-1);
+            }
         }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
                 mRouteEndPoint.getRestNum() + " BusinessHours is " + mRouteEndPoint.getBusinessHours());
