@@ -18,45 +18,75 @@
         <!--8155 背景内边距34-->
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_434"
-            android:layout_height="@dimen/dp_155"
+            android:layout_height="@dimen/dp_163"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:padding="@dimen/dp_34"
             android:visibility="@{ViewModel.mTopNaviBarVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/sk_iv_basic_home_mfc_bg"
+                clickCommand="@{ViewModel.goHome}"
+                android:layout_width="@dimen/dp_95"
+                android:layout_height="@dimen/dp_95"
+                android:layout_marginStart="@dimen/dp_22"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_home"
                 clickCommand="@{ViewModel.goHome}"
-                android:layout_width="@dimen/dp_49"
-                android:layout_height="@dimen/dp_49"
-                android:layout_marginStart="@dimen/dp_47"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:src="@drawable/img_basic_ic_home"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_home_mfc_bg"
+                app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_home_mfc_bg"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_home_mfc_bg"
+                app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_home_mfc_bg" />
+
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/sk_iv_basic_bus_mfc_bg"
+                clickCommand="@{ViewModel.goCompany}"
+                android:layout_width="@dimen/dp_95"
+                android:layout_height="@dimen/dp_95"
+                android:layout_marginStart="@dimen/dp_18"
+                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_mfc_bg"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_bus"
                 clickCommand="@{ViewModel.goCompany}"
-                android:layout_width="@dimen/dp_49"
-                android:layout_height="@dimen/dp_49"
-                android:layout_marginStart="@dimen/dp_62"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:src="@drawable/img_basic_ic_bus"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_bus_mfc_bg"
+                app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_bus_mfc_bg"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_bus_mfc_bg"
+                app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_bus_mfc_bg"/>
+
+            <com.sgm.navi.ui.view.SkinView
+                android:id="@+id/sk_iv_basic_search_mfc_bg"
+                clickCommand="@{ViewModel.doSearch}"
+                android:layout_width="@dimen/dp_95"
+                android:layout_height="@dimen/dp_95"
+                android:layout_marginStart="@dimen/dp_18"
+                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_mfc_bg"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/sk_iv_basic_search"
                 clickCommand="@{ViewModel.doSearch}"
-                android:layout_width="@dimen/dp_49"
-                android:layout_height="@dimen/dp_49"
-                android:layout_marginStart="@dimen/dp_62"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:src="@drawable/img_basic_ic_search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/sk_iv_basic_search_mfc_bg"
+                app:layout_constraintEnd_toEndOf="@+id/sk_iv_basic_search_mfc_bg"
+                app:layout_constraintBottom_toBottomOf="@+id/sk_iv_basic_search_mfc_bg"
+                app:layout_constraintTop_toTopOf="@+id/sk_iv_basic_search_mfc_bg" />
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <!--智驾和加油或者充电站-->

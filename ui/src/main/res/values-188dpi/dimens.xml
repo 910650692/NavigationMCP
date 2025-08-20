@@ -4027,10 +4027,11 @@
     <dimen name="bg_charge_number_item_corner">12dp</dimen>
     <dimen name="bg_search_main_tab_corner">20dp</dimen>
 
-    <dimen name="navi_main_tap_margin_start">34dp</dimen>
+    <dimen name="navi_main_tap_margin_start">4dp</dimen>
     <dimen name="navi_main_tap_margin_top">85dp</dimen>
-    <dimen name="navi_main_tap_margin_bottom">130dp</dimen>
+    <dimen name="navi_main_tap_margin_bottom">96dp</dimen>
     <dimen name="navi_main_tap_margin_end">34dp</dimen>
+    <dimen name="navi_main_tab_margin_top">51dp</dimen>
     <dimen name="navi_main_limit_margin_end">40dp</dimen>
     <dimen name="navi_main_tap_height">95dp</dimen>
     <dimen name="navi_main_parking_margin_end">102dp</dimen>
