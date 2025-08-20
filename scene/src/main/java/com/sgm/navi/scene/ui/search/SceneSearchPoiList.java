@@ -2347,6 +2347,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchResultNoData.setVisibility(isShow ? GONE : View.VISIBLE);
         mViewBinding.recyclerSearchResult.setVisibility(isShow ? GONE : View.VISIBLE);
         mViewBinding.pullRefreshLayout.setVisibility(isShow ? GONE : View.VISIBLE);
+        mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+        mIsFilterViewShow = false;
         if (!ConvertUtils.isNull(mAnimator)) {
             if (isShow && !mAnimator.isRunning()) {
                 mAnimator.start();
