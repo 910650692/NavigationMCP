@@ -15,6 +15,7 @@
         android:layout_marginStart="@dimen/dp_259"
         android:focusable="false"
         android:padding="@dimen/dp_51"
+        android:clickable="true"
         android:background="@drawable/bg_shadow_navi_cadillac">
 
         <com.android.car.ui.FocusParkingView
