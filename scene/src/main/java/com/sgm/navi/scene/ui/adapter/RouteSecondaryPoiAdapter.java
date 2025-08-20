@@ -97,7 +97,6 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
         if (mSelected == position) {
             holder.mTextView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_selected));
             holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.bg_route_button_select_color));
-            holder.mTextView.startTextViewOneTimeMarquee();
         } else {
             holder.mTextView.setBackground(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.bg_route_secondary_poi_unselected));
             holder.mTextView.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.text_route_defult));
@@ -121,6 +120,7 @@ public class RouteSecondaryPoiAdapter extends RecyclerView.Adapter<RouteSecondar
                 mSelected = position;
                 notifyItemChanged(lastSelect);
                 notifyItemChanged(mSelected);
+                holder.mTextView.startTextViewOneTimeMarquee();
                 if (mItemClickListener == null) {
                     return;
                 }
