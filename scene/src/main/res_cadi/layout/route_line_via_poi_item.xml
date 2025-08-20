@@ -19,13 +19,14 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/route_item_via_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_64"
+        android:layout_marginTop="@dimen/dp_22"
         android:focusable="false">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_62"
+            android:layout_height="@dimen/dp_64"
             android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/route_item_via_empty"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,64 +34,30 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.sgm.navi.ui.view.SkinView
-                android:id="@+id/line_bg"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_70"
-                android:focusable="false"/>
-
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/route_item_via_img"
-                android:layout_width="@dimen/dp_14"
-                android:layout_height="@dimen/dp_14"
-                android:src="@drawable/circle_dot_orange"
-                android:focusable="false"
-                app:layout_constraintBottom_toBottomOf="@+id/line_bg"
-                app:layout_constraintStart_toStartOf="@+id/line_bg"
-                app:layout_constraintTop_toTopOf="@+id/line_bg" />
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_28"
-                android:background="@color/route_line_color"
-                android:focusable="false"
-                app:layout_constraintBottom_toTopOf="@+id/route_item_via_img"
-                app:layout_constraintEnd_toEndOf="@+id/route_item_via_img"
-                app:layout_constraintStart_toStartOf="@+id/route_item_via_img" />
-
-            <com.sgm.navi.ui.view.SkinTextView
-                android:layout_width="0.5dp"
-                android:layout_height="@dimen/dp_28"
-                android:background="@color/route_line_color"
-                android:focusable="false"
-                app:layout_constraintEnd_toEndOf="@id/route_item_via_img"
-                app:layout_constraintStart_toStartOf="@id/route_item_via_img"
-                app:layout_constraintTop_toBottomOf="@+id/route_item_via_img" />
-
-
-            <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_via_select"
                 android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_54"
+                android:layout_height="@dimen/dp_64"
                 app:layout_constraintTop_toTopOf="@+id/route_via_item_name"
                 app:layout_constraintBottom_toBottomOf="@+id/route_via_item_name"
-                app:layout_constraintStart_toEndOf="@+id/route_item_via_img"
-                app:layout_constraintEnd_toEndOf="@+id/route_via_close"/>
+                app:layout_constraintStart_toStartOf="@+id/route_item_via_long_img"
+                app:layout_constraintEnd_toEndOf="@+id/route_item_via_delete_img"/>
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_item_via_long_img"
                 android:layout_width="@dimen/dp_54"
                 android:layout_height="@dimen/dp_54"
                 android:focusable="false"
+                android:layout_marginStart="@dimen/dp_30"
                 android:src="@drawable/img_route_via_long_press"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/line_bg"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/route_via_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/dp_16"
                 android:ellipsize="end"
                 android:focusable="false"
                 android:maxWidth="@dimen/dp_450"
@@ -103,15 +70,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路烽火路" />
 
-
             <com.sgm.navi.ui.view.SkinImageView
                 style="@style/style_mfc_config"
                 android:id="@+id/route_item_via_delete_img"
-                android:paddingHorizontal="@dimen/dp_7"
-                android:paddingVertical="@dimen/dp_7"
-                android:layout_width="@dimen/dp_68"
-                android:layout_height="@dimen/dp_68"
-                android:layout_marginEnd="@dimen/dp_30"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginEnd="@dimen/dp_40"
                 android:src="@drawable/img_route_via_remove_via"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +85,7 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/route_item_via_empty"
             android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_28"
+            android:layout_height="@dimen/dp_0"
             android:focusable="false"
             app:layout_constraintTop_toBottomOf="@+id/content"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -129,9 +93,8 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_item_via_empty_line"
             android:layout_width="0.5dp"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/dp_0"
             android:focusable="false"
-            android:background="@color/route_line_color"
             app:layout_constraintStart_toStartOf="@+id/route_item_via_empty"
             app:layout_constraintEnd_toEndOf="@+id/route_item_via_empty"
             app:layout_constraintTop_toTopOf="@+id/route_item_via_empty"

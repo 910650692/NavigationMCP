@@ -505,6 +505,196 @@
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            style="@style/style_mfc_config"
+            android:layout_width="@dimen/dp_922"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_shadow_navi_cadillac"
+            android:focusable="false"
+            android:visibility="gone"
+            android:paddingHorizontal="@dimen/dp_51"
+            android:paddingVertical="@dimen/dp_51"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="gone">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                style="@style/style_mfc_config"
+                clickCommand="@{ViewModel.getLongScreenCloseClick()}"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_39"
+                android:layout_marginBottom="@dimen/dp_27"
+                android:contentDescription="@string/app_currency_back"
+                android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
+                android:focusable="true"
+                android:nextFocusForward="@+id/route_line_info_tv_search_waypoint_bg"
+                android:src="@drawable/img_route_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/route_long_screen_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:text="@string/route_long_screen_edit_via"
+                android:textColor="@color/text_route_detail_title"
+                android:textSize="@dimen/sp_46"
+                android:layout_marginStart="@dimen/dp_104"
+                android:layout_marginTop="@dimen/dp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config_no_bg"
+                android:id="@+id/route_long_screen_start_point"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_64"
+                android:focusable="false"
+                android:layout_marginTop="@dimen/dp_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/route_long_screen_title">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/route_long_screen_start_img"
+                    android:layout_width="@dimen/dp_14"
+                    android:layout_height="@dimen/dp_14"
+                    android:focusable="false"
+                    android:src="@drawable/circle_dot_green"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_50"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/route_my_location"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_38"
+                    android:layout_marginStart="@dimen/dp_102"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinRecyclerView
+                android:id="@+id/route_long_screen_via_poi_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                app:layout_constraintTop_toBottomOf="@+id/route_long_screen_start_point"
+                tools:visibility="visible" />
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                style="@style/style_mfc_config_no_bg"
+                android:id="@+id/route_long_screen_end_point"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_64"
+                android:focusable="false"
+                android:layout_marginTop="@dimen/dp_22"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/route_long_screen_via_poi_recycle">
+
+                <com.sgm.navi.ui.view.SkinImageView
+                    android:id="@+id/route_long_screen_end_img"
+                    android:layout_width="@dimen/dp_14"
+                    android:layout_height="@dimen/dp_14"
+                    android:focusable="false"
+                    android:src="@drawable/circle_dot_red"
+                    android:layout_marginTop="@dimen/dp_26"
+                    android:layout_marginStart="@dimen/dp_50"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@{ViewModel.getEndName()}"
+                    android:textColor="@color/text_route_defult"
+                    android:textSize="@dimen/sp_38"
+                    android:ellipsize="end"
+                    android:maxWidth="@dimen/dp_678"
+                    android:maxLines="1"
+                    android:layout_marginStart="@dimen/dp_102"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:id="@+id/route_long_screen_add"
+                android:layout_width="@dimen/dp_342"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginStart="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_52"
+                android:layout_marginBottom="@dimen/dp_52"
+                clickCommand="@{ViewModel.getLongScreenSearchClick()}"
+                android:background="@drawable/bg_base_mfc_cadillac_blue_bg_selector"
+                android:focusable="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/route_long_screen_end_point">
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_long_screen_add_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/route_long_screen_add_via"
+                    android:textColor="@color/route_white"
+                    android:textSize="@dimen/sp_46"
+                    android:layout_marginTop="@dimen/dp_9"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/route_long_screen_add_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:text="@string/route_long_screen_add_via"
+                    android:textColor="@color/route_long_screen_add_via_hide"
+                    android:textSize="@dimen/sp_32"
+                    android:layout_marginBottom="@dimen/dp_9"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinTextView
+                style="@style/style_mfc_config_no_bg"
+                clickCommand="@{ViewModel.getLongScreenCloseClick()}"
+                android:id="@+id/route_long_screen_complete"
+                android:layout_width="@dimen/dp_342"
+                android:layout_height="@dimen/dp_120"
+                android:layout_marginStart="@dimen/dp_32"
+                android:background="@drawable/bg_base_mfc_cadillac_gery_bg_selector"
+                android:gravity="center"
+                android:text="@string/favorite_item_done"
+                android:textColor="@color/text_route_defult"
+                android:textSize="@dimen/sp_46"
+                android:layout_marginEnd="@dimen/dp_52"
+                android:layout_marginBottom="@dimen/dp_52"
+                android:layout_marginTop="@dimen/dp_52"
+                android:focusable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/route_long_screen_end_point"/>
+
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

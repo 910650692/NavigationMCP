@@ -168,6 +168,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         return mRoutePreferenceDrawableVisibility;
     }
 
+    private ObservableField<Boolean> mLongScreenSearchVisibility;
+
+    public ObservableField<Boolean> getLongScreenSearchVisibility() {
+        return mLongScreenSearchVisibility;
+    }
+
     /**
      * 主页面-标题-终点名称~我的位置
      **/
@@ -469,9 +475,14 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private PoiInfoEntity mDetailsResustEntry;
     private int mSeartype;
     private int mSearchListType = 0;
+    private int mRouteParamsNum = 0;
     private List<RouteParam> mGasChargeAlongList;
     //由于buick cadi缺少CR UI，临时参数
     public boolean isNDCar() {
+        return false;
+    }
+    //nd 557为方屏逻辑，cadi为连屏逻辑
+    public boolean isLongScreen() {
         return false;
     }
 
@@ -546,6 +557,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mRestrictionClick;
     private Action mPreferenceClick;
     private Action mAlongWaySearchClick;
+    private Action mLongScreenSearchClick;
     private Action mOpenCloseViaClick;
     private Action mRouteEnergyClick;
     private Action mStartNaviClick;
@@ -561,7 +573,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     }
     public Action getAlongWaySearchClick() {
         return mAlongWaySearchClick;
+
     }
+    public Action getLongScreenSearchClick() {
+        return mLongScreenSearchClick;
+    }
+
     public Action getOpenCloseViaClick() {
         return mOpenCloseViaClick;
     }
@@ -596,6 +613,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private Action mRouteSearchPhoneClick;
     private Action mRouteSearchDetailsAddRemoveClick;
     private Action mCloseRouteSearchDetailClick;
+    private Action mLongScreenCloseClick;
     public Action getCloseDetailsRouteClick() {
         return mCloseDetailsRouteClick;
     }
@@ -663,6 +681,12 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public Action getRouteSearchFavoriteClick() {
         return mRouteSearchFavoriteClick;
     }
+
+    public Action getLongScreenCloseClick() {
+        return mLongScreenCloseClick;
+    }
+
+
     public void initRouteListPage() {
         //路线列表page
         mAlongTabSearchVisibility = new ObservableField<>(false);
@@ -684,6 +708,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         mViaPoiListAllVisibility = new ObservableField<>(false);
         mSecondaryPoiVisibility = new ObservableField<>(0);
         mBatterCheckBoxVisibility = new ObservableField<>(false);
+        mLongScreenSearchVisibility = new ObservableField<>(false);
 
         mCloseRouteClick = this::closeRouteFragment;
 
@@ -720,7 +745,30 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                 Logger.e(TAG, "mModel is null");
                 return;
             }
+            if (mRouteParamsNum > 0 && isLongScreen()) {
+                Logger.d(TAG, "Long screen via click");
+                if (mLongScreenSearchVisibility != null) {
+                    mLongScreenSearchVisibility.set(true);
+                    mLastTab = mTabVisibility.get();
+                    mTabVisibility.set(0);
+                }
+                return;
+            }
 
+
+            if (mModel.isMaxRouteParam()) {
+                ToastUtils.Companion.getInstance().showCustomToastView(
+                        ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.add_via_failure));
+                return;
+            }
+            addFragment(new MainAlongWaySearchFragment(), null);
+        };
+
+        mLongScreenSearchClick = () -> {
+            if (mModel == null) {
+                Logger.e(TAG, "mModel is null");
+                return;
+            }
             if (mModel.isMaxRouteParam()) {
                 ToastUtils.Companion.getInstance().showCustomToastView(
                         ResourceUtils.Companion.getInstance().getString(com.sgm.navi.scene.R.string.add_via_failure));
@@ -770,6 +818,17 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             if (mModel != null) {
                 cancelTimer();
                 mModel.jumpToSupplementPlan();
+            }
+        };
+
+        mLongScreenCloseClick = () -> {
+            if (mLongScreenSearchVisibility != null) {
+                mLongScreenSearchVisibility.set(false);
+                if (mLastTab != null && mLastTab != 0){
+                    mTabVisibility.set(mLastTab);
+                } else {
+                    Logger.e(TAG, "last tab is null");
+                }
             }
         };
 
@@ -1045,6 +1104,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
             Logger.d(TAG, "isRouteTips");
             return;
         }
+        if (Boolean.TRUE.equals(mLongScreenSearchVisibility.get())) {
+            Logger.d(TAG, "Long Screen via show");
+            return;
+        }
         mScheduledFuture = ThreadManager.getInstance().asyncAtFixDelay(() -> {
             if (mTimes == NumberUtils.NUM_0) {
                 ThreadManager.getInstance().postUi(() -> {
@@ -1246,6 +1309,19 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param routeWayID 算路类别
      */
     public void setViaListUI(final List<RouteParam> routeParams,final RouteWayID routeWayID) {
+        if (isLongScreen()) {
+            if (routeParams == null || routeParams.isEmpty()) {
+                mRouteParamsNum = 0;
+                if (Boolean.TRUE.equals(mLongScreenSearchVisibility.get())) {
+                    mLongScreenCloseClick.call();
+                }
+            } else {
+                mRouteParamsNum = routeParams.size();
+            }
+            mView.showLongScreenTitleText(mRouteParamsNum);
+            mView.setViaList(routeParams);
+            return;
+        }
         if (routeParams == null || routeParams.isEmpty()) {
             mViaPoiListVisibility.set(false);
             mViaPoiListAllVisibility.set(false);
@@ -1725,6 +1801,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param isLongRoute 是否长途路
      */
     public void showHideTab(final boolean isLongRoute) {
+        if (Boolean.TRUE.equals(mLongScreenSearchVisibility.get())) {
+            Logger.d(TAG, "Long Screen via show");
+            return;
+        }
         if (mModel.powerType() == 1) {
             mTabVisibility.set(isLongRoute ? 2 : 1);
         } else if (mModel.powerType() == 0){

@@ -286,101 +286,176 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         });
         BevPowerCarUtils.getInstance().isElecPlanRoute = routeLineInfoSwitchEnergy.isChecked();
 
-        //途经点列表
-        SkinRecyclerView routeLineViaPoiRecycle = mRouteListPageView.routeLineViaPoiRecycle;
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        routeLineViaPoiRecycle.setLayoutManager(layoutManager);
-        mRouteViaPointAdapter = new RouteViaPointAdapter();
-        mRouteViaPointAdapter.setDeleteViaPointListener(index -> {
-            mViewModel.cancelTimer();
-            mViewModel.deleteViaParamMode(index);
-        });
-        routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
-        final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
-            private int mOriginalPosition = -1;
-            private int movePosition = -1;
+        if (!mViewModel.isLongScreen()) {
+            //途经点列表
+            SkinRecyclerView routeLineViaPoiRecycle = mRouteListPageView.routeLineViaPoiRecycle;
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            routeLineViaPoiRecycle.setLayoutManager(layoutManager);
+            mRouteViaPointAdapter = new RouteViaPointAdapter();
+            mRouteViaPointAdapter.setDeleteViaPointListener(index -> {
+                mViewModel.cancelTimer();
+                mViewModel.deleteViaParamMode(index);
+            });
+            routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
+            routeLineViaPoiRecycle.setOnTouchListener(mViewModel);
+            final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+                private int mOriginalPosition = -1;
+                private int movePosition = -1;
 
-            @Override
-            public int getMovementFlags(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
-                final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-                final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-                return makeMovementFlags(dragFlags, swipeFlags);
-            }
-
-            @Override
-            public boolean onMove(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder
-                    , final RecyclerView.ViewHolder target) {
-                if (mOriginalPosition == -1) {
-                    mOriginalPosition = viewHolder.getAdapterPosition();
+                @Override
+                public int getMovementFlags(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
+                    final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                    final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                    return makeMovementFlags(dragFlags, swipeFlags);
                 }
-                movePosition = target.getAdapterPosition();
-                mRouteViaPointAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                return true;
-            }
 
-            @Override
-            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
-            }
-
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-                if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder instanceof RouteViaPointAdapter.Holder && getContext() != null) {
-                    ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(getContext()
-                            .getDrawable(com.sgm.navi.scene.R.drawable.bg_route_via_select));
+                @Override
+                public boolean onMove(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder
+                        , final RecyclerView.ViewHolder target) {
+                    if (mOriginalPosition == -1) {
+                        mOriginalPosition = viewHolder.getAdapterPosition();
+                    }
+                    movePosition = target.getAdapterPosition();
+                    mRouteViaPointAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                    return true;
                 }
-                super.onSelectedChanged(viewHolder, actionState);
-            }
 
-            @Override
-            public void clearView(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
-                super.clearView(recyclerView, viewHolder);
-                if (viewHolder instanceof RouteViaPointAdapter.Holder) {
-                    ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(null);
+                @Override
+                public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
                 }
-                if (mOriginalPosition == movePosition || mOriginalPosition == -1) {
-                    Logger.d(TAG, "The position has not changed");
+
+                @SuppressLint("UseCompatLoadingForDrawables")
+                @Override
+                public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                    if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder instanceof RouteViaPointAdapter.Holder && getContext() != null) {
+                        ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(getContext()
+                                .getDrawable(com.sgm.navi.scene.R.drawable.bg_route_via_select));
+                    }
+                    super.onSelectedChanged(viewHolder, actionState);
+                }
+
+                @Override
+                public void clearView(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
+                    super.clearView(recyclerView, viewHolder);
+                    if (viewHolder instanceof RouteViaPointAdapter.Holder) {
+                        ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(null);
+                    }
+                    if (mOriginalPosition == movePosition || mOriginalPosition == -1) {
+                        Logger.d(TAG, "The position has not changed");
+                        mOriginalPosition = -1;
+                        return;
+                    }
+                    mViewModel.changeParamListMode(mOriginalPosition, movePosition);
                     mOriginalPosition = -1;
-                    return;
                 }
-                mViewModel.changeParamListMode(mOriginalPosition, movePosition);
-                mOriginalPosition = -1;
-            }
 
-            @Override
-            public boolean isItemViewSwipeEnabled() {
-                return false;
-            }
-        });
-        touchHelper.attachToRecyclerView(routeLineViaPoiRecycle);
+                @Override
+                public boolean isItemViewSwipeEnabled() {
+                    return false;
+                }
+            });
+            touchHelper.attachToRecyclerView(routeLineViaPoiRecycle);
 
-        //途径点滑动
-        mRouteListPageView.routeLineViaOpenClose.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mStartY = event.getY();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    mEndY = event.getY();
-                    final float diffY = mEndY - mStartY;
-                    if (Math.abs(diffY) > SWIPE_THRESHOLD) {
-                        if (diffY > 0) {
-                            if (Boolean.FALSE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
-                                mViewModel.getOpenCloseViaClick().call();
-                            }
-                        } else {
-                            if (Boolean.TRUE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
-                                mViewModel.getOpenCloseViaClick().call();
+            //途径点滑动
+            mRouteListPageView.routeLineViaOpenClose.setOnTouchListener((v, event) -> {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mStartY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mEndY = event.getY();
+                        final float diffY = mEndY - mStartY;
+                        if (Math.abs(diffY) > SWIPE_THRESHOLD) {
+                            if (diffY > 0) {
+                                if (Boolean.FALSE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
+                                    mViewModel.getOpenCloseViaClick().call();
+                                }
+                            } else {
+                                if (Boolean.TRUE.equals(mViewModel.getViaPoiListAllVisibility().get())) {
+                                    mViewModel.getOpenCloseViaClick().call();
+                                }
                             }
                         }
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            });
+        } else {
+            //长屏途经点列表
+            SkinRecyclerView routeLineViaPoiRecycle = mRouteListPageView.routeLongScreenViaPoiRecycle;
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            routeLineViaPoiRecycle.setLayoutManager(layoutManager);
+            mRouteViaPointAdapter = new RouteViaPointAdapter();
+            routeLineViaPoiRecycle.setAdapter(mRouteViaPointAdapter);
+            routeLineViaPoiRecycle.setOnTouchListener(mViewModel);
+            mRouteViaPointAdapter.setDeleteViaPointListener(index -> {
+                mViewModel.cancelTimer();
+                mViewModel.deleteViaParamMode(index);
+            });
+
+            final ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+                private int mOriginalPosition = -1;
+                private int movePosition = -1;
+
+                @Override
+                public int getMovementFlags(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
+                    final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                    final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                    return makeMovementFlags(dragFlags, swipeFlags);
+                }
+
+                @Override
+                public boolean onMove(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder
+                        , final RecyclerView.ViewHolder target) {
+                    if (mOriginalPosition == -1) {
+                        mOriginalPosition = viewHolder.getAdapterPosition();
                     }
-                    break;
-                default:
-                    break;
-            }
-            return false;
-        });
+                    movePosition = target.getAdapterPosition();
+                    mRouteViaPointAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                    return true;
+                }
+
+                @Override
+                public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, final int direction) {
+                }
+
+                @SuppressLint("UseCompatLoadingForDrawables")
+                @Override
+                public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                    if (actionState != ItemTouchHelper.ACTION_STATE_IDLE && viewHolder instanceof RouteViaPointAdapter.Holder && getContext() != null) {
+                        ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(getContext()
+                                .getDrawable(com.sgm.navi.scene.R.drawable.bg_route_via_select));
+                    }
+                    super.onSelectedChanged(viewHolder, actionState);
+                }
+
+                @Override
+                public void clearView(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
+                    super.clearView(recyclerView, viewHolder);
+                    if (viewHolder instanceof RouteViaPointAdapter.Holder) {
+                        ((RouteViaPointAdapter.Holder) viewHolder).mRouteViaSelect.setBackground(null);
+                    }
+                    if (mOriginalPosition == movePosition || mOriginalPosition == -1) {
+                        Logger.d(TAG, "The position has not changed");
+                        mOriginalPosition = -1;
+                        return;
+                    }
+                    mViewModel.changeParamListMode(mOriginalPosition, movePosition);
+                    mOriginalPosition = -1;
+                }
+
+                @Override
+                public boolean isItemViewSwipeEnabled() {
+                    return false;
+                }
+            });
+            touchHelper.attachToRecyclerView(routeLineViaPoiRecycle);
+        }
+
 
         //路线列表
         SceneRouteResultListView routeLineInfoSceneRouteResult = mRouteListPageView.routeLineInfoSceneRouteResult;
@@ -394,7 +469,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
 
         //防点击穿透
         mRouteListPageView.getRoot().setOnTouchListener(mViewModel);
-        routeLineViaPoiRecycle.setOnTouchListener(mViewModel);
 
         //子poi
         mRouteListPageView.lySecondaryPoi.setItemClickListener(new SceneRouteDescendantsView.OnItemClickListener() {
@@ -1290,6 +1364,23 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             mRoutePoiDetailsPageView.stvStartRoute.setAlpha(1);
             mRoutePoiDetailsPageView.stvStartRoute.setClickable(true);
         }
+    }
+
+    public void showLongScreenTitleText(int num) {
+        if (num == 0) {
+            mRouteListPageView.routeLineInfoTvSearchWaypoint.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_along_search));
+            mRouteListPageView.routeLineInfoImgSearchWaypoint.setImageResource(R.drawable.img_route_add_point);
+        } else {
+            mRouteListPageView.routeLineInfoTvSearchWaypoint.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_long_screen_via_num, num));
+            mRouteListPageView.routeLineInfoImgSearchWaypoint.setImageResource(R.drawable.img_route_editor);
+        }
+        mRouteListPageView.routeLongScreenAddText.setText(ResourceUtils.Companion.getInstance().getString(R.string.route_long_screen_added,  AutoMapConstant.MAX_ROUTE_VIA - num));
+        if (AutoMapConstant.MAX_ROUTE_VIA - num <= 0) {
+            mRouteListPageView.routeLongScreenAdd.setAlpha(0.5f);
+        } else {
+            mRouteListPageView.routeLongScreenAdd.setAlpha(1.0f);
+        }
+
     }
     //------------充电&POI详情页面***************************************************/
 

@@ -20,6 +20,7 @@ public interface AutoMapConstant {
 
     int DELAY_MINUTE = 1;
     int DELAY_SEVENTY_SECOND = 70;
+    int MAX_ROUTE_VIA = 5;
     int DELAY_TEN_SECONDS = 10;
 
     int CANCEL_AUTO_PROTOCOL = 1;

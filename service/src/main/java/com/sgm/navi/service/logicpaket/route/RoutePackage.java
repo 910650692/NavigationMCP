@@ -697,6 +697,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (param.isMIsOnline() && Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             //无网络无离线数据，直接提示不算路
             if (MapDataAdapter.getInstance().getAllDownLoadedList() == null || MapDataAdapter.getInstance().getAllDownLoadedList().isEmpty()) {
+                reGetParamList(MapType.MAIN_SCREEN_MAIN_MAP);
                 callBackFailMsg(param.getMMapTypeId(), "无网络连接，请检查网络后重试");
                 return NumberUtils.NUM_ERROR;
             }
@@ -924,7 +925,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
         removeRouteParam(routeParams, oldPoiInfoEntity);
-        if (routeParams != null && routeParams.size() >= 5) {
+        if (routeParams != null && routeParams.size() >= AutoMapConstant.MAX_ROUTE_VIA) {
             callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
             return;
         }
@@ -1409,7 +1410,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public boolean isMaxRouteParam(final MapType mapTypeId) {
         final List<RouteParam> allPoiParamList = getAllPoiParamList(mapTypeId);
-        if (allPoiParamList.size() < 7) {
+        if (allPoiParamList.size() < AutoMapConstant.MAX_ROUTE_VIA + 2) {
             return false;
         }
         return true;

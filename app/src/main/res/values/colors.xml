@@ -89,8 +89,10 @@
     <color name="route_charge_button_text_color">#FFFFFFFF</color>
     <color name="route_progressBar_color">#4ABA59</color>
     <color name="route_logo_color">#FFFFFFFF</color>
+    <color name="route_long_screen_add_via_hide">#B3FFFFFF</color>
     <color name="route_white">#FFFFFFFF</color>
     <color name="route_switch_button_off">#338E97B9</color>
+
 
     <color name="text_route_defult">#B3000000</color>
     <color name="text_route_title">#66000000</color>

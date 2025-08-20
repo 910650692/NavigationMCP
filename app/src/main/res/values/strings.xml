@@ -135,6 +135,10 @@
 
     <!--算路相关-->
     <string name="route_along_search">途径点</string>
+    <string name="route_long_screen_via_num">%s个途径点</string>
+    <string name="route_long_screen_edit_via">编辑途径点</string>
+    <string name="route_long_screen_add_via">添加途径点</string>
+    <string name="route_long_screen_added">还可以添加%s个</string>
     <string name="route_energy_replenishment_planning">补能规划</string>
     <string name="route_charging_station">充电</string>
     <string name="route_gas_station">加油</string>
