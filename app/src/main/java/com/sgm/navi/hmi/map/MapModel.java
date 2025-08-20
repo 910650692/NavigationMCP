@@ -405,6 +405,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDestroy() {
         super.onDestroy();
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         if (null == mapPackage) {
             return;
         }
