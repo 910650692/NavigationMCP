@@ -20,6 +20,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -128,6 +129,16 @@ public class LayerAdapter {
      */
     public void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
         mLayerApi.drawOnlyOneRouteLine(mapTypeId, routeResult);
+    }
+
+    /* 显示终点名称 */
+    public void showEndAreaPoint(MapType mapTypeId, RouteParam routeParam) {
+        mLayerApi.showEndAreaPoint(mapTypeId, routeParam);
+    }
+
+    /* 清除终点名称 */
+    public void clearEndAreaPoint(MapType mapTypeId) {
+        mLayerApi.clearEndAreaPoint(mapTypeId);
     }
 
     /* 路线替换补能扎标 */
@@ -429,14 +440,9 @@ public class LayerAdapter {
 
     /*=========================================↓ 扎标图层 ↓=========================================*/
 
-    /*显示终点区域弹出框图层*/
-    public boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult) {
-        return mLayerApi.updatePopSearchPointInfo(mapTypeId, labelResult);
-    }
-
-    /*清除扎标*/
-    public void clearLabelItem(MapType mapTypeId) {
-        mLayerApi.clearLabelItem(mapTypeId);
+    /* 更新终点停车场扎标是否显示 */
+    public void updateRouteEndPointParkViewVisible(MapType mapTypeId, boolean isShow) {
+        mLayerApi.updateRouteEndPointParkViewVisible(mapTypeId, isShow);
     }
 
     /*=========================================↑ 扎标图层 ↑=========================================*/

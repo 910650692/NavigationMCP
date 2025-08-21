@@ -27,6 +27,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
 
@@ -152,6 +153,18 @@ public class LayerAdapterImpl implements ILayerApi {
     @Override
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
         layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().drawRouteLine(routeResult);
+    }
+
+    /* 显示终点名称 */
+    @Override
+    public void showEndAreaPoint(MapType mapTypeId, RouteParam routeParam) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerArea().showEndAreaPoint(routeParam);
+    }
+
+    /* 清除终点名称 */
+    @Override
+    public void clearEndAreaPoint(MapType mapTypeId) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerArea().clearEndAreaPoint();
     }
 
     /**
@@ -534,14 +547,10 @@ public class LayerAdapterImpl implements ILayerApi {
 
     /*=========================================↓ 扎标图层 ↓=========================================*/
 
-    /*显示终点区域弹出框图层*/
-    public boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult) {
-        return layersPoolManager.getLayersPool(mapTypeId).getLayerLabel().updatePopSearchPointInfo(labelResult);
+    /* 更新终点停车场扎标是否显示 */
+    public void updateRouteEndPointParkViewVisible(MapType mapTypeId, boolean isShow) {
+        layersPoolManager.getLayersPool(mapTypeId).getLayerGuideRoute().updateRouteEndPointParkViewVisible(isShow);
     }
 
-    /*清除扎标*/
-    public void clearLabelItem(MapType mapTypeId) {
-        layersPoolManager.getLayersPool(mapTypeId).getLayerLabel().clearLabelItem();
-    }
     /*=========================================↑ 扎标图层 ↑=========================================*/
 }

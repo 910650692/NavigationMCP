@@ -991,10 +991,16 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteAllRoutePoiInfo(final RequestRouteResult requestRouteResult) {
         mRouteParams = requestRouteResult.getMRouteParams();
-        mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
         if (!ConvertUtils.isEmpty(mViewModel)) {
             ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams, requestRouteResult.getMRouteWay()));
         }
+        RouteParam endParam = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (endParam == null) {
+            Logger.e(TAG , "end param is null");
+            return;
+        }
+        mViewModel.getEndName().set(endParam.getName());
+
     }
 
     @Override

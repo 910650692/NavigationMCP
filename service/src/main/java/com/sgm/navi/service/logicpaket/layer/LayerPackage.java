@@ -141,11 +141,6 @@ public class LayerPackage implements ILayerAdapterCallBack {
         mLayerAdapter.closeDynamicLevel(mapTypeId);
     }
 
-    /*清除扎标*/
-    public void clearLabelItem(MapType mapTypeId) {
-        mLayerAdapter.clearLabelItem(mapTypeId);
-    }
-
     /* 设置起点扎标是否显示 */
     public void setStartPointVisible(MapType mapTypeId, boolean visible) {
         mLayerAdapter.setStartPointVisible(mapTypeId, visible);

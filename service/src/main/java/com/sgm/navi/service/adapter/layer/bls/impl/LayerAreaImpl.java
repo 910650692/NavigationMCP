@@ -3,6 +3,7 @@ package com.sgm.navi.service.adapter.layer.bls.impl;
 import android.content.Context;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.log.Logger;
 import com.autonavi.gbl.aosclient.model.GCoord3DDouble;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataCityAllRuleRes;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaDataRuleRes;
@@ -10,12 +11,17 @@ import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
 import com.autonavi.gbl.aosclient.model.GRestrictCity;
 import com.autonavi.gbl.aosclient.model.GRestrictRule;
 import com.autonavi.gbl.common.model.Coord3DDouble;
+import com.autonavi.gbl.common.model.RectInt;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.layer.model.BizAreaType;
+import com.autonavi.gbl.layer.model.BizRouteEndAreasInfo;
 import com.autonavi.gbl.layer.model.BizRouteRestrictInfo;
+import com.autonavi.gbl.layer.model.RouteEndAreaPointInfo;
+import com.autonavi.gbl.layer.model.RouteEndAreaType;
 import com.autonavi.gbl.map.MapView;
 import com.sgm.navi.service.adapter.layer.bls.style.LayerAreaStyleAdapter;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
@@ -160,5 +166,37 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
                 }
             }
         }
+    }
+
+    /**
+     *  显示终点名称
+     *  xml:end_area_parent_point.xml
+     * */
+    public void showEndAreaPoint(RouteParam poiInfo) {
+        if (ConvertUtils.isEmpty(poiInfo)) {
+            Logger.e(TAG, getMapType(), " poiInfo is null");
+            return;
+        }
+        RectInt rectInt = new RectInt(400, 900, 100, 600);
+        BizRouteEndAreasInfo bizRouteEndAreasInfo = new BizRouteEndAreasInfo();
+        RouteEndAreaPointInfo majorPointData = new RouteEndAreaPointInfo();
+        majorPointData.id = "parent";
+        if (ConvertUtils.isEmpty(poiInfo.getRealPos())) {
+            Logger.e(TAG, getMapType(), " poiInfo.getRealPos is null");
+            return;
+        }
+        majorPointData.mPos3D.lon = poiInfo.getRealPos().getLon();
+        majorPointData.mPos3D.lat = poiInfo.getRealPos().getLat();
+        majorPointData.mPos3D.z = 0.0f;
+        majorPointData.poiName = poiInfo.getName();
+        bizRouteEndAreasInfo.vecParentPointInfo.add(majorPointData);
+        getLayerAreaControl().updateRouteEndAreas(bizRouteEndAreasInfo, rectInt);
+        Logger.d(TAG, getMapType(), " poiName ", poiInfo.getName());
+    }
+
+    /* 清除终点名称 */
+    public void clearEndAreaPoint() {
+        Logger.d(TAG, "clearEndAreaPoint");
+        getLayerAreaControl().clearRouteEndArea(RouteEndAreaType.RouteEndAreaTypeAll);
     }
 }

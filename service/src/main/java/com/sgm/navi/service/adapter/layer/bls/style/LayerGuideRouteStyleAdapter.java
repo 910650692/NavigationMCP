@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -212,6 +213,11 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "更新终点扎标信息 data " + data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
+                            final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
+                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
+                            if (null != parkView) {
+                                parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
+                            }
                             int restNum = data.getRestNum();
                             if (restNum > 0) {
                                 final LayerPointItemType pointType = data.getEndPointType();
@@ -236,6 +242,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
+                            if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
+                                textView.setVisibility(VISIBLE);
+                            }
                             safetySetText(textView, data.getBusinessHours());
                         }
 
@@ -251,6 +260,11 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "onFocusProcess 更新终点扎标信息 data " + data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
+                            final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
+                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
+                            if (null != parkView) {
+                                parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
+                            }
                             int restNum = data.getRestNum();
                             if (restNum > 0) {
                                 final LayerPointItemType pointType = data.getEndPointType();
@@ -275,6 +289,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "onFocusProcess 终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
+                            if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
+                                textView.setVisibility(VISIBLE);
+                            }
                             safetySetText(textView, data.getBusinessHours());
                         }
                     };
@@ -632,6 +649,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             mRouteEndPoint.setRestNum(result.getRestNum());
             mRouteEndPoint.setBusinessHours(result.getBusinessHours());
             mRouteEndPoint.setEndPointType(result.getEndPointType());
+            mRouteEndPoint.setShowParkView(result.isShowParkView());
 //            mRouteControl.updateStyle(BizRouteType.BizRouteTypeEndPoint);
         }
     }

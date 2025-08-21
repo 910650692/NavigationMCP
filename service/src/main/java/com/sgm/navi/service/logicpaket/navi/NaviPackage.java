@@ -237,7 +237,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             //清除终点停车场扎标
-            mLayerAdapter.clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
+            mLayerAdapter.updateRouteEndPointParkViewVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mLayerAdapter.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
             if (mAppFocusHelper != null) {
                 mAppFocusHelper.startCarMapNavigation();
@@ -1620,6 +1620,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, false);
         clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        mLayerAdapter.clearEndAreaPoint(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
@@ -1630,7 +1631,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void clearRouteLine(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.clearRouteLine(mapTypeId);
-            mLayerAdapter.clearLabelItem(mapTypeId);
             mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         });
     }

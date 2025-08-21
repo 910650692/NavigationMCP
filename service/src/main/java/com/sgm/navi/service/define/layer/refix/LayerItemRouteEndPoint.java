@@ -13,6 +13,7 @@ public class LayerItemRouteEndPoint extends LayerItemData {
     private LayerPointItemType endPointType;   //终点扎标类型
     private int restNum;    //剩余油量/电量
     private String businessHours;   //营业时间
+    private boolean isShowParkView; //是否显示停车场
 
     @Override
     public String toString() {
