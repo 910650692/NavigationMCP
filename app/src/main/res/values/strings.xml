@@ -274,7 +274,7 @@
     <string name="favorite_item_edit">编辑</string>
     <string name="favorite_add">添加地址</string>
     <string name="favorite_top_back">返回顶部</string>
-    <string name="favorite_favorite_switch">开启后，在地图上显示通勤地址位置及行程信息</string>
+    <string name="favorite_favorite_switch">开启后，在地图上显示通勤卡片信息</string>
     <string name="favorite_switch_common">常用收藏夹</string>
     <string name="favorite_switch_charge">专属充电站</string>
     <string name="favorite_no_charging">暂无数据</string>
