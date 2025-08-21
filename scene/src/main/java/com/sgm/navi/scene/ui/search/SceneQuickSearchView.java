@@ -219,14 +219,18 @@ public class SceneQuickSearchView extends BaseSceneView<SceneQuickSearchListBind
                         break;
                     case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Along way search - Type: " , mSearchType);
-
+                        String alongRealName = name;
+                        //直接使用维修关键字进行搜索会得到手机电脑维修等搜索结果，需要拼接成汽车维修再进行搜索
+                        if (ConvertUtils.equals(name, "维修")) {
+                            alongRealName = getContext().getString(R.string.car_repair);
+                        }
                         //For Bury Point
-                        sendBuryPointForAlongWaySearch(name);
+                        sendBuryPointForAlongWaySearch(alongRealName);
 
                         fragment= (Fragment) ARouter.getInstance().build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                                 .navigation();
                         addFragment((BaseFragment) fragment,SearchFragmentFactory.createKeywordFragment(
-                                AutoMapConstant.SourceFragment.FRAGMENT_ALONG_WAY, mSearchType, name, null));
+                                AutoMapConstant.SourceFragment.FRAGMENT_ALONG_WAY, mSearchType, alongRealName, null));
                         break;
                     default:
                         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "Unsupported search type: " , mSearchType);
