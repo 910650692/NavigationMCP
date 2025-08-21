@@ -19,12 +19,15 @@ import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +87,9 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         Rect rect = new Rect(left, top, right, bottom);
         mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
         mIsSetRect = true;
-        showLayerCross();
+        if (isCanShowCross()) {
+            showLayerCross();
+        }
     }
 
     public void setRightPoint() {
@@ -96,9 +101,20 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         Rect rect = new Rect(left, top, right, bottom);
         mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
         mIsSetRect = true;
-        showLayerCross();
+        if (isCanShowCross()) {
+            showLayerCross();
+        }
     }
 
+    private boolean isCanShowCross() {
+        // 只有当前fragment是引导并且路口大图显示区域展示的时候才显示路口大图
+        BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(
+                MapType.MAIN_SCREEN_MAIN_MAP.name());
+        boolean isNavi = currentFragment != null && currentFragment.getClass().getSimpleName().
+                equals("NaviGuidanceFragment");
+        Logger.i(TAG, isNavi);
+        return isNavi && (mScreenView != null && mScreenView.isVisible());
+    }
     public void hideCross() {
         Logger.i(TAG, "hideCross");
         if (!ConvertUtils.isNull(mRoadCrossInfo)) {
