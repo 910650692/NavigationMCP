@@ -1098,4 +1098,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mBinding.sceneNaviControl.closeNavi();
         }
     }
+
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        if (mBinding != null && mBinding.sceneNaviCrossImage != null) {
+            mBinding.sceneNaviCrossImage.onWindowSideChanged(isOpenFloat);
+        }
+    }
 }

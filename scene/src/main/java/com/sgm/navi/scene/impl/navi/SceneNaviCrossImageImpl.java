@@ -29,7 +29,7 @@ import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageView> implements ScreenTypeUtils.SplitScreenChangeListener {
+public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageView> {
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CROSS_IMAGE_IMPL;
     private final NaviPackage mNaviPackage;
     private final LayerPackage mLayerPackage;
@@ -60,24 +60,17 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         mNextManeuverVisible = new ObservableField<>(false);
     }
 
-    @Override
-    protected void onCreate() {
-        super.onCreate();
-        ScreenTypeUtils.getInstance().addSplitScreenChangeListener(TAG, this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
-    }
-
     /**
      * 初始化
      */
     private void init() {
         Logger.i(TAG, "init");
-        setLeftPoint();
+        boolean isFloatWindowShow = NaviPackage.getInstance().isMIsFloatWindowShow();
+        if (isFloatWindowShow && ScreenTypeUtils.getInstance().isFullScreen()) {
+            setRightPoint();
+        } else {
+            setLeftPoint();
+        }
         // 初始默认关闭，有数据后会打开
         notifySceneStateChange(false);
     }
@@ -125,11 +118,9 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         }
     }
 
-    @Override
-    public void onSplitScreenChanged() {
-        mSplitScreenManager.setSplitPos();
-        int pos = mSplitScreenManager.getSplitPos();
-        if (pos == NumberUtils.NUM_1) {
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        Logger.i(TAG, "onWindowSideChanged isOpenFloat:", isOpenFloat);
+        if (isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen()) {
             setRightPoint();
         } else {
             setLeftPoint();

@@ -25,7 +25,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
@@ -2487,7 +2486,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         isShowMusicTab = isOpenFloat;
         setMapCenterInScreen();
         if (mViewModel != null) {
+            boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
+            Logger.i(TAG, musicTabShow);
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
+            NaviPackage.getInstance().setMIsFloatWindowShow(musicTabShow);
         }
     }
 

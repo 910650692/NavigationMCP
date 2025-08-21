@@ -147,6 +147,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private NaviDriveReportEntity mNaviDriveReportEntity;
     @Getter
     private String mArriveTime = "";
+    @Getter
+    @Setter
+    private boolean mIsFloatWindowShow;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
