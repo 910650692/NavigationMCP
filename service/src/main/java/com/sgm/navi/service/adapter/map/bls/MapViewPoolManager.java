@@ -22,6 +22,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -34,7 +35,7 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     private final ConcurrentHashMap<MapType, MapViewImpl> mapViewPools = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<MapType, List<IMapAdapterCallback>> callbacks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<MapType, CopyOnWriteArrayList<IMapAdapterCallback>> callbacks = new ConcurrentHashMap<>();
 
     private AtomicReference<MapService> mapService = new AtomicReference<>();
 
@@ -133,7 +134,7 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
 
     public void registerCallback(MapType mapTypeId, IMapAdapterCallback observer) {
         if (!callbacks.containsKey(mapTypeId)) {
-            callbacks.put(mapTypeId, new ArrayList<>());
+            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
         }
         if (!callbacks.get(mapTypeId).contains(observer)) {
             Logger.d(TAG, mapTypeId, " 注册回调 ：", observer.getClass().getSimpleName(), ";size =", callbacks.get(mapTypeId).size());
