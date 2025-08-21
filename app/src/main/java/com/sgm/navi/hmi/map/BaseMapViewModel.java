@@ -1487,10 +1487,29 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (ConvertUtils.isEmpty(endPoint)) {
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, endPoint);
-        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-        addFragment(new RouteFragment(), bundle);
+        switch (mModel.getNaviStatus()) {
+            case NaviStatus.NaviStatusType.SELECT_ROUTE,
+                    NaviStatus.NaviStatusType.ROUTING,
+                    NaviStatus.NaviStatusType.NAVING:
+                //当前为导航态，更换目的地直接发起快速导航
+                final RouteRequestParam routeRequestParam = new RouteRequestParam();
+                routeRequestParam.setMPoiInfoEntity(endPoint);
+                routeRequestParam.setMRoutePoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+                routeRequestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+                RoutePackage.getInstance().requestRoute(routeRequestParam);
+                break;
+            case NaviStatus.NaviStatusType.NO_STATUS,
+                    NaviStatus.NaviStatusType.CRUISE,
+                    NaviStatus.NaviStatusType.LIGHT_NAVING:
+                //打开算路界面
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, endPoint);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+                addFragment(new RouteFragment(), bundle);
+                break;
+            default:
+                break;
+        }
     }
 
     public void startNaviForRouteOver() {
@@ -1707,7 +1726,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             case INaviConstant.OpenIntentPage.ROUTE_PAGE:
                 final PoiInfoEntity endPoint = ExportIntentParam.getPoiInfo();
                 if (null != endPoint) {
-                    startRoute(endPoint);
+                    openRoute(endPoint);
                 }
                 ExportIntentParam.setPoiInfo(null);
                 break;
