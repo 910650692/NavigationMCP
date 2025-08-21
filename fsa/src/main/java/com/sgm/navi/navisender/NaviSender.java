@@ -3,17 +3,14 @@ package com.sgm.navi.navisender;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.l2.CleaCanData;
 import com.sgm.navi.service.adapter.l2.RoadGroupData;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
-import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
-import com.sgm.navi.service.define.route.FyRouteOption;
-import com.sgm.navi.service.define.route.RequestRouteResult;
-import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.signal.RoadConditionGroup;
 import com.sgm.navi.service.define.signal.SdNavigationStatusGroup;
 import com.sgm.navi.service.logicpaket.calibration.CalibrationPackage;
@@ -26,13 +23,10 @@ import com.sgm.navi.service.logicpaket.navistatus.NaviStatusCallback;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.position.IPositionPackageCallback;
 import com.sgm.navi.service.logicpaket.position.PositionPackage;
-import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
-import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -44,13 +38,12 @@ public class NaviSender {
     private final RoadConditionGroup mRoadConditionGroup = new RoadConditionGroup();
     private final SdNavigationStatusGroup mSdNavigationStatusGroup = new SdNavigationStatusGroup();
 
-    private List<RouteLineInfo> mRouteLineInfos = new ArrayList<>();
-    private List<RoadGroupData> mRoadGroupDatas = new ArrayList<>();
     private int sendIndex = 0;
     private ScheduledFuture mScheduledFuture;
     private int mRoadSpeed = 0;
     private int mCameraSpeed = 0;
     private boolean isInit = false;
+    private long mPathID = 0;
 
     //region INSTANCE
     public static NaviSender getInstance() {
@@ -95,7 +88,6 @@ public class NaviSender {
             return;
         }
         NaviPackage.getInstance().registerObserver(TAG, mIGuidanceObserver);
-        RoutePackage.getInstance().registerRouteObserver(TAG, mIRouteResultObserver);
         NaviStatusPackage.getInstance().registerObserver(TAG, mNaviStatusCallback);
         PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
         CruisePackage.getInstance().registerObserver(TAG, mICruiseObserver);
@@ -202,8 +194,8 @@ public class NaviSender {
 
             mRoadConditionGroup.setRemainDistance(naviETAInfo.getRemainDist() * 50 / 1000);
             mRoadConditionGroup.setRemainTime(naviETAInfo.getRemainTime());
-
-            if (mRoadGroupDatas.isEmpty()) {
+            checkPathUpdate(naviETAInfo.getPathID());
+            if (mScheduledFuture == null) {
                 mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
             }
 
@@ -220,7 +212,8 @@ public class NaviSender {
                 chargeStationRemainDist = naviTimeAndDist.dist;
                 chargeStationRemainTime = naviTimeAndDist.time;
             }
-            if (Logger.isDebugLevel()) Logger.d(TAG, PREFIX, "引导面板回调", naviETAInfo.getRemainDist(), naviETAInfo.getRemainTime(), viaRemain, chargeStationRemainDist, chargeStationRemainTime);
+            if (Logger.isDebugLevel())
+                Logger.d(TAG, PREFIX, "引导面板回调", naviETAInfo.getRemainDist(), naviETAInfo.getRemainTime(), viaRemain, chargeStationRemainDist, chargeStationRemainTime);
         }
 
         @Override
@@ -254,7 +247,7 @@ public class NaviSender {
             if (naviTmcInfo == null) {
                 Logger.d(TAG, PREFIX, "光柱图: null");
                 sendTrafficJamRoadInvalid();
-                sendRoadConditionGroupInvalid();
+                setRoadConditionGroupInvalid();
                 return;
             }
             NaviTmcInfo.NaviLightBarDetail lightBarDetail = naviTmcInfo.getLightBarDetail();
@@ -265,7 +258,7 @@ public class NaviSender {
                     int distance = 0;
                     for (int i = 0; i < tmcInfoData.size(); i++) {
                         NaviTmcInfo.NaviTmcInfoData naviTmcInfoData = tmcInfoData.get(i);
-                            Logger.d(TAG, PREFIX, "拥堵路段原始", naviTmcInfoData);
+                        Logger.d(TAG, PREFIX, "拥堵路段原始", naviTmcInfoData);
                         if (naviTmcInfoData == null) {
                             continue;
                         }
@@ -304,35 +297,6 @@ public class NaviSender {
                 sendTrafficJamRoadInvalid();
             }
         }
-
-        @Override
-        public void onReroute(FyRouteOption routeOption) {
-            Logger.d(TAG, PREFIX, "偏航"); // 可能是路线拥堵或其他原因导致的重算路，待添加参数判断
-            mSdNavigationStatusGroup.setNaviStat(4);
-            mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
-        }
-    };
-
-    private final IRouteResultObserver mIRouteResultObserver = new IRouteResultObserver() {
-        @Override
-        public void onRouteResult(RequestRouteResult requestRouteResult) {
-            Logger.d(TAG, PREFIX, "路线变更");
-            mRouteLineInfos = requestRouteResult.getMRouteLineInfos();
-            String naviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-            if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
-                mSdNavigationStatusGroup.setNaviStat(getNaviState(NaviStatus.NaviStatusType.NAVING));// 重新规划完成后的重置导航中
-                mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
-                sendCurrentRouteInfo();
-                startRoadConditionGroup();
-            }
-        }
-
-        @Override
-        public void onReroute() {
-            Logger.d(TAG, PREFIX, "重新规划中"); // 可能是路线拥堵或其他原因导致的重算路，待添加参数判断
-            mSdNavigationStatusGroup.setNaviStat(5);
-            mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
-        }
     };
 
     private final NaviStatusCallback mNaviStatusCallback = new NaviStatusCallback() {
@@ -341,10 +305,7 @@ public class NaviSender {
             Logger.d(TAG, PREFIX, "导航状态变更", naviStatus);
             mSdNavigationStatusGroup.setNaviStat(getNaviState(naviStatus));
             mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
-            if (NaviStatus.NaviStatusType.NAVING.equals(naviStatus) || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(naviStatus)) {
-                sendCurrentRouteInfo();
-                startRoadConditionGroup();
-            } else {
+            if (!NaviStatus.NaviStatusType.NAVING.equals(naviStatus)) {
                 // 仅导航中有效的参数，非导航态需设置默认值
                 mSdNavigationStatusGroup.setNaviStatRmnDist(0);
                 mSdNavigationStatusGroup.setNaviStatRmnDist_Inv(0);
@@ -361,10 +322,10 @@ public class NaviSender {
                 mSignalPackage.setRemainDistanceToChargingStation(0); // 距离充电站剩余里程
                 mSignalPackage.setRemainTimeToChargingStationy(0); // 距离充电站的剩余时长
 
-                sendIndex = 0;
-                mRoadGroupDatas = new ArrayList<>();
+                mPathID = 0;
                 if (mScheduledFuture != null) {
                     mScheduledFuture.cancel(true);
+                    mScheduledFuture = null;
                 }
                 mRoadConditionGroup.setRoadSegmentIndex(0);
                 mRoadConditionGroup.setSegmentLength(0);
@@ -378,34 +339,6 @@ public class NaviSender {
             }
         }
     };
-
-    private void sendCurrentRouteInfo() {
-        RouteLineInfo routeLineInfo = getCurrentRouteLineInfo();
-        if (routeLineInfo == null) {
-            mSignalPackage.setTotalDistanceFromStartToDestinationOnNavigation(0); // 导航总距离
-            mSignalPackage.setTotalPredictedTimeFromStartToDestinationOnNavigation(0); // 导航预计时长
-            Logger.d(TAG, PREFIX, "发送路线信息 获取当前路线异常 routeLineInfo null");
-            return;
-        }
-        long distance = routeLineInfo.getMDistance();
-        mSignalPackage.setTotalDistanceFromStartToDestinationOnNavigation((int) distance * 50 / 1000); // 导航总距离
-        mSignalPackage.setTotalPredictedTimeFromStartToDestinationOnNavigation((int) routeLineInfo.getMTotalTime()); // 导航预计时长
-        Logger.d(TAG, PREFIX, "发送路线信息", distance, routeLineInfo.getMTotalTime());
-    }
-
-    private RouteLineInfo getCurrentRouteLineInfo() {
-        Map<MapType, Integer> selectRouteIndex = RoutePackage.getInstance().getSelectRouteIndex();
-        if (mRouteLineInfos == null || mRouteLineInfos.isEmpty() || selectRouteIndex == null) {
-            Logger.d(TAG, PREFIX, "获取当前路线异常1", selectRouteIndex);
-            return null;
-        }
-        Integer index = selectRouteIndex.get(MapType.MAIN_SCREEN_MAIN_MAP);
-        if (index == null || index < 0 || index > mRouteLineInfos.size() - 1) {
-            Logger.d(TAG, PREFIX, "获取当前路线异常2", index, mRouteLineInfos.size());
-            return null;
-        }
-        return mRouteLineInfos.get(index);
-    }
 
     private int getNaviState(String naviStatus) {
         /**
@@ -434,14 +367,12 @@ public class NaviSender {
         mSignalPackage.setTrafficJamRoadAverageSpeedAvailability(1);
     }
 
-    private void sendRoadConditionGroupInvalid() {
+    private void setRoadConditionGroupInvalid() {
         mRoadConditionGroup.setRoadSegmentIndex(0);
         mRoadConditionGroup.setSegmentLength(0);
         mRoadConditionGroup.setSegmentTime(0);
         mRoadConditionGroup.setSegmentCondition(0);
         mRoadConditionGroup.setRoadSegmentCount(0);
-        mRoadConditionGroup.setRemainDistance(0);
-        mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
     }
 
     private void sendMinSpeedLimit() {
@@ -462,30 +393,63 @@ public class NaviSender {
         mSignalPackage.setVcuSpeedLimitArbitrationResultsAssured(1);
     }
 
-    private void startRoadConditionGroup() {
-        if (!mRoadGroupDatas.isEmpty()) {
-            Logger.d(TAG, PREFIX, "道路状况发送中");
-        }
-        Logger.d(TAG, PREFIX, "道路状况开始发送");
-        if (mScheduledFuture != null) {
-            mScheduledFuture.cancel(true);
-        }
-        sendRoadConditionGroupInvalid();
-        sendIndex = 0;
-        mRoadGroupDatas = L2Package.getInstance().getRoadGroupData();
-        if (mRoadGroupDatas == null) {
+    private void checkPathUpdate(long pathID) {
+        if (pathID == mPathID) {
             return;
         }
+        CleaCanData roadGroupData = L2Package.getInstance().getRoadGroupData(pathID);
+        if (roadGroupData == null) {
+            Logger.e(TAG, PREFIX, "获取当前路线异常", pathID);
+            return;
+        }
+        Logger.d(TAG, PREFIX, "更新路线信息", pathID);
+        startRoadConditionGroup(roadGroupData);
+        mPathID = pathID;
+    }
 
+    private void startRoadConditionGroup(CleaCanData cleaCanData) {
+        if (mScheduledFuture != null) {
+            Logger.d(TAG, PREFIX, "道路状况发送被打断");
+            mScheduledFuture.cancel(true);
+        }
+        Logger.d(TAG, PREFIX, "道路状况开始发送");
+        if (mPathID == 0) {
+            sendIndex = -2;
+        } else {
+            sendIndex = -3;
+        }
         mScheduledFuture = ThreadManager.getInstance().asyncWithFixDelay(() -> {
-            if (sendIndex >= mRoadGroupDatas.size()) {
-                sendRoadConditionGroupInvalid();
-                sendIndex = 0;
-                mRoadGroupDatas.clear();
+            List<RoadGroupData> roadGroupDatas = cleaCanData.getRoadGroupDatas();
+            if (sendIndex >= roadGroupDatas.size()) {
+                setRoadConditionGroupInvalid();
+                mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
                 mScheduledFuture.cancel(true);
+                mScheduledFuture = null;
+                Logger.d(TAG, PREFIX, "道路状况结束发送");
                 return;
             }
-            RoadGroupData roadGroupData = mRoadGroupDatas.get(sendIndex);
+            if (sendIndex == -3) { // 1.路线重规划
+                mSdNavigationStatusGroup.setNaviStat(5);
+                mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
+                setRoadConditionGroupInvalid();
+                mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
+                sendIndex++;
+                return;
+            }
+            if (sendIndex == -2) { // 2.算路完成
+                mSdNavigationStatusGroup.setNaviStat(getNaviState(NaviStatusPackage.getInstance().getCurrentNaviStatus()));
+                mSignalPackage.setSdNavigationStatus(mSdNavigationStatusGroup);
+                sendIndex++;
+                return;
+            }
+            if (sendIndex == -1) { // 3.总距离时间
+                mSignalPackage.setTotalDistanceFromStartToDestinationOnNavigation((int) cleaCanData.getTotalLength() * 50 / 1000); // 导航总距离
+                mSignalPackage.setTotalPredictedTimeFromStartToDestinationOnNavigation((int) cleaCanData.getTotalTime()); // 导航预计时长
+                Logger.d(TAG, PREFIX, "发送路线信息", cleaCanData.getTotalLength(), cleaCanData.getTotalTime());
+                sendIndex++;
+                return;
+            }
+            RoadGroupData roadGroupData = roadGroupDatas.get(sendIndex);
             mRoadConditionGroup.setRoadSegmentIndex(sendIndex + 1);
             mRoadConditionGroup.setSegmentLength(roadGroupData.getRoadLength());
             mRoadConditionGroup.setSegmentTime(roadGroupData.getRoadTime());
@@ -499,7 +463,7 @@ public class NaviSender {
                 status++;
             }
             mRoadConditionGroup.setSegmentCondition(status);
-            mRoadConditionGroup.setRoadSegmentCount(mRoadGroupDatas.size());
+            mRoadConditionGroup.setRoadSegmentCount(roadGroupDatas.size());
             mRoadConditionGroup.setDataInvalid(1);
             mSignalPackage.setRoadConditionGroup(mRoadConditionGroup);
             sendIndex++;
