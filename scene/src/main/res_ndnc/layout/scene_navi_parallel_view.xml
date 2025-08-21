@@ -29,8 +29,8 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_bridge_up_down"
             clickCommand="@{naviParallel.mClickBridgeUpDown}"
-            android:layout_width="@dimen/dp_204"
-            android:layout_height="@dimen/dp_202"
+            android:layout_width="@dimen/dp_208"
+            android:layout_height="@dimen/dp_192"
             android:background="@drawable/bg_shadow_navi_buick"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,10 +38,10 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_bridge_up_down"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
-            android:layout_marginTop="@dimen/dp_45"
-            android:background="@drawable/img_parallel_bridge_down"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginTop="@dimen/dp_50"
+            android:background="@drawable/img_under_the_bridge_black_58"
             app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="@id/sv_bridge_up_down" />
@@ -54,7 +54,7 @@
             android:gravity="center"
             android:text="@string/navi_bridge_down"
             android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintEnd_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintStart_toStartOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toBottomOf="@id/siv_bridge_up_down" />
@@ -70,9 +70,9 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/sv_main_auxiliary"
             clickCommand="@{naviParallel.mClickMainAuxiliary}"
-            android:layout_width="@dimen/dp_204"
-            android:layout_height="@dimen/dp_202"
-            android:layout_marginStart="@dimen/dp_m_34"
+            android:layout_width="@dimen/dp_208"
+            android:layout_height="@dimen/dp_192"
+            android:layout_marginStart="@dimen/dp_m_51"
             android:background="@drawable/bg_shadow_navi_buick"
             app:layout_constraintStart_toEndOf="@id/sv_bridge_up_down"
             app:layout_constraintTop_toTopOf="parent"
@@ -81,10 +81,10 @@
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/siv_main_auxiliary"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="@dimen/dp_68"
-            android:layout_marginTop="@dimen/dp_45"
-            android:background="@drawable/img_parallel_road_auxiliary"
+            android:layout_width="@dimen/dp_49"
+            android:layout_height="@dimen/dp_49"
+            android:layout_marginTop="@dimen/dp_50"
+            android:background="@drawable/img_in_the_side_black_58"
             app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
             app:layout_constraintTop_toTopOf="@id/sv_main_auxiliary" />
@@ -97,7 +97,7 @@
             android:gravity="center"
             android:text="@string/navi_road_auxiliary"
             android:textColor="@color/navi_color_000000_70"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             app:layout_constraintEnd_toEndOf="@id/sv_main_auxiliary"
             app:layout_constraintStart_toStartOf="@id/sv_main_auxiliary"
             app:layout_constraintTop_toBottomOf="@id/siv_main_auxiliary" />
