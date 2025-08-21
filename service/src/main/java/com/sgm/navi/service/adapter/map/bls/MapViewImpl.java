@@ -649,7 +649,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().removeMapviewObserver(this);
         getMapService().destroyMapView(getMapview());
         setDefaultMapView(null);
-        getDefaultDevice().attachSurfaceToDevice(null);
+        // TODO: 2025/8/21 根据高德回复 无需手动调用
+//        getDefaultDevice().attachSurfaceToDevice(null);
         getDefaultDevice().removeDeviceObserver(this);
         getMapService().destroyDevice(getDefaultDevice());
     }
