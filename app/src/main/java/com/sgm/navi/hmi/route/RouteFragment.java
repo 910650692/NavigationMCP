@@ -1394,7 +1394,6 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void onGetFragmentData() {
         final Bundle bundle = getArguments();
         assert bundle != null;
-        BevPowerCarUtils.getInstance().isElecPlanRoute = SettingPackage.getInstance().getChargingPlan();
         final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getParcelable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
             assert param != null;
@@ -1615,124 +1614,130 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             Logger.e(TAG, "mViewModel is null, cannot change page");
             return;
         }
-        ThreadManager.getInstance().postUi(() -> {
-            switch (routePageLevel) {
-                case ROUTE_DETAILS_LIST:
-                    if (null == mRouteDetailsListPageView || null == mRouteDetailsListPageStub) {
-                        mBinding.routeDetailInfoRoot.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in ROUTE_DETAILS_LIST");
-                                return;
-                            }
-                            mRouteDetailsListPageView = DataBindingUtil.bind(view);
-                            if (mRouteDetailsListPageView != null) {
-                                mRouteDetailsListPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRouteDetailsListPageView.setViewModel(mViewModel);
-                                mRouteDetailsListPageView.executePendingBindings();
-                            }
-                        });
-                        mRouteDetailsListPageStub = mBinding.routeDetailInfoRoot.getViewStub();
-                        mRouteDetailsListPageStub.inflate();
-                        initRouteDetailsPage();
-                    }
-                    break;
-                case ROUTE_SEARCH_SERVICE_LIST:
-                    if (null == mRouteServiceListPageView || null == mRouteServiceListPageStub) {
-                        mBinding.routeServiceListInfoRoot.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in ROUTE_SEARCH_SERVICE_LIST");
-                                return;
-                            }
-                            mRouteServiceListPageView = DataBindingUtil.bind(view);
-                            if (mRouteServiceListPageView != null) {
-                                mRouteServiceListPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRouteServiceListPageView.setViewModel(mViewModel);
-                                mRouteServiceListPageView.executePendingBindings();
-                            }
-                        });
-                        mRouteServiceListPageStub = mBinding.routeServiceListInfoRoot.getViewStub();
-                        mRouteServiceListPageStub.inflate();
-                        initServiceListPage();
-                    }
-                    break;
-                case ROUTE_CHARGE_GAS_LIST:
-                    if (null == mRouteChargeGasListPageView || null == mRouteChargeGasListPageStub) {
-                        mBinding.routeChargeListInfoRoot.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in ROUTE_CHARGE_GAS_LIST");
-                                return;
-                            }
-                            mRouteChargeGasListPageView = DataBindingUtil.bind(view);
-                            if (mRouteChargeGasListPageView != null) {
-                                mRouteChargeGasListPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRouteChargeGasListPageView.setViewModel(mViewModel);
-                                mRouteChargeGasListPageView.executePendingBindings();
-                            }
-                        });
-                        mRouteChargeGasListPageStub = mBinding.routeChargeListInfoRoot.getViewStub();
-                        mRouteChargeGasListPageStub.inflate();
-                        initChargeGasListPage();
-                    }
-                    break;
-                case ROUTE_WEATHER_LIST:
-                    if (null == mRouteWeatherPageView || null == mRouteWeatherPageStub) {
-                        mBinding.routeWeatherDetails.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in ROUTE_WEATHER_LIST");
-                                return;
-                            }
-                            mRouteWeatherPageView = DataBindingUtil.bind(view);
-                            if (mRouteWeatherPageView != null) {
-                                mRouteWeatherPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRouteWeatherPageView.setViewModel(mViewModel);
-                                mRouteWeatherPageView.executePendingBindings();
-                            }
-                        });
-                        mRouteWeatherPageStub = mBinding.routeWeatherDetails.getViewStub();
-                        mRouteWeatherPageStub.inflate();
-                        initWeatherDetailsPage();
-                    }
-                    break;
-                case ROUTE_POI_DETAILS_LIST:
-                    if (null == mRoutePoiDetailsPageView || null == mRoutePoiDetailsPageStub) {
-                        mBinding.routePoiDetails.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in ROUTE_POI_DETAILS_LIST");
-                                return;
-                            }
-                            mRoutePoiDetailsPageView = DataBindingUtil.bind(view);
-                            if (mRoutePoiDetailsPageView != null) {
-                                mRoutePoiDetailsPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRoutePoiDetailsPageView.setViewModel(mViewModel);
-                                mRoutePoiDetailsPageView.executePendingBindings();
-                            }
-                        });
-                        mRoutePoiDetailsPageStub = mBinding.routePoiDetails.getViewStub();
-                        mRoutePoiDetailsPageStub.inflate();
-                        initPoiDetailsPage();
-                    }
-                    break;
-                default:
-                    if (null == mRouteListPageView || null == mRouteListPageStub) {
-                        mBinding.routeLineInfoRoot.setOnInflateListener((viewStub, view) -> {
-                            if (mViewModel == null) {
-                                Logger.e(TAG, "mViewModel is null during inflate in default route page");
-                                return;
-                            }
-                            mRouteListPageView = DataBindingUtil.bind(view);
-                            if (mRouteListPageView != null) {
-                                mRouteListPageView.setVariable(BR.ViewModel, mViewModel);
-                                mRouteListPageView.setViewModel(mViewModel);
-                                mRouteListPageView.executePendingBindings();
-                            }
-                        });
-                        mRouteListPageStub = mBinding.routeLineInfoRoot.getViewStub();
-                        mRouteListPageStub.inflate();
-                        initRouteResultPage();
-                    }
-                    break;
-            }
-        });
+        if (ThreadManager.getInstance().isMainThread()) {
+            performPageChange(routePageLevel);
+        } else {
+            ThreadManager.getInstance().postUi(() -> performPageChange(routePageLevel));
+        }
+    }
+
+    private void performPageChange(final RoutePageLevel routePageLevel) {
+        switch (routePageLevel) {
+            case ROUTE_DETAILS_LIST:
+                if (null == mRouteDetailsListPageView || null == mRouteDetailsListPageStub) {
+                    mBinding.routeDetailInfoRoot.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in ROUTE_DETAILS_LIST");
+                            return;
+                        }
+                        mRouteDetailsListPageView = DataBindingUtil.bind(view);
+                        if (mRouteDetailsListPageView != null) {
+                            mRouteDetailsListPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRouteDetailsListPageView.setViewModel(mViewModel);
+                            mRouteDetailsListPageView.executePendingBindings();
+                        }
+                    });
+                    mRouteDetailsListPageStub = mBinding.routeDetailInfoRoot.getViewStub();
+                    mRouteDetailsListPageStub.inflate();
+                    initRouteDetailsPage();
+                }
+                break;
+            case ROUTE_SEARCH_SERVICE_LIST:
+                if (null == mRouteServiceListPageView || null == mRouteServiceListPageStub) {
+                    mBinding.routeServiceListInfoRoot.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in ROUTE_SEARCH_SERVICE_LIST");
+                            return;
+                        }
+                        mRouteServiceListPageView = DataBindingUtil.bind(view);
+                        if (mRouteServiceListPageView != null) {
+                            mRouteServiceListPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRouteServiceListPageView.setViewModel(mViewModel);
+                            mRouteServiceListPageView.executePendingBindings();
+                        }
+                    });
+                    mRouteServiceListPageStub = mBinding.routeServiceListInfoRoot.getViewStub();
+                    mRouteServiceListPageStub.inflate();
+                    initServiceListPage();
+                }
+                break;
+            case ROUTE_CHARGE_GAS_LIST:
+                if (null == mRouteChargeGasListPageView || null == mRouteChargeGasListPageStub) {
+                    mBinding.routeChargeListInfoRoot.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in ROUTE_CHARGE_GAS_LIST");
+                            return;
+                        }
+                        mRouteChargeGasListPageView = DataBindingUtil.bind(view);
+                        if (mRouteChargeGasListPageView != null) {
+                            mRouteChargeGasListPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRouteChargeGasListPageView.setViewModel(mViewModel);
+                            mRouteChargeGasListPageView.executePendingBindings();
+                        }
+                    });
+                    mRouteChargeGasListPageStub = mBinding.routeChargeListInfoRoot.getViewStub();
+                    mRouteChargeGasListPageStub.inflate();
+                    initChargeGasListPage();
+                }
+                break;
+            case ROUTE_WEATHER_LIST:
+                if (null == mRouteWeatherPageView || null == mRouteWeatherPageStub) {
+                    mBinding.routeWeatherDetails.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in ROUTE_WEATHER_LIST");
+                            return;
+                        }
+                        mRouteWeatherPageView = DataBindingUtil.bind(view);
+                        if (mRouteWeatherPageView != null) {
+                            mRouteWeatherPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRouteWeatherPageView.setViewModel(mViewModel);
+                            mRouteWeatherPageView.executePendingBindings();
+                        }
+                    });
+                    mRouteWeatherPageStub = mBinding.routeWeatherDetails.getViewStub();
+                    mRouteWeatherPageStub.inflate();
+                    initWeatherDetailsPage();
+                }
+                break;
+            case ROUTE_POI_DETAILS_LIST:
+                if (null == mRoutePoiDetailsPageView || null == mRoutePoiDetailsPageStub) {
+                    mBinding.routePoiDetails.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in ROUTE_POI_DETAILS_LIST");
+                            return;
+                        }
+                        mRoutePoiDetailsPageView = DataBindingUtil.bind(view);
+                        if (mRoutePoiDetailsPageView != null) {
+                            mRoutePoiDetailsPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRoutePoiDetailsPageView.setViewModel(mViewModel);
+                            mRoutePoiDetailsPageView.executePendingBindings();
+                        }
+                    });
+                    mRoutePoiDetailsPageStub = mBinding.routePoiDetails.getViewStub();
+                    mRoutePoiDetailsPageStub.inflate();
+                    initPoiDetailsPage();
+                }
+                break;
+            default:
+                if (null == mRouteListPageView || null == mRouteListPageStub) {
+                    mBinding.routeLineInfoRoot.setOnInflateListener((viewStub, view) -> {
+                        if (mViewModel == null) {
+                            Logger.e(TAG, "mViewModel is null during inflate in default route page");
+                            return;
+                        }
+                        mRouteListPageView = DataBindingUtil.bind(view);
+                        if (mRouteListPageView != null) {
+                            mRouteListPageView.setVariable(BR.ViewModel, mViewModel);
+                            mRouteListPageView.setViewModel(mViewModel);
+                            mRouteListPageView.executePendingBindings();
+                        }
+                    });
+                    mRouteListPageStub = mBinding.routeLineInfoRoot.getViewStub();
+                    mRouteListPageStub.inflate();
+                    initRouteResultPage();
+                }
+                break;
+        }
     }
 
     @Override
