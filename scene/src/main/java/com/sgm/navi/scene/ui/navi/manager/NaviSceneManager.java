@@ -120,6 +120,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                                     }
                                     showScene(newSceneBase, info);
                                     closeScene(oldSceneView);
+                                    checkSceneReset(oldSceneView.getSceneId());
                                 }
                                 default -> {
                                     if (Logger.openLog) {
