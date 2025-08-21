@@ -21,6 +21,8 @@ import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapterCallBack;
@@ -436,7 +438,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
             Logger.i(TAG, "behaviorData -> " + behaviorData);
             final DrivingRecordDataBean dataBean = parseJsonToBean(behaviorData);
-            if (mHistoryManager.isDataExist(dataBean.getRideRunType(), dataBean.getId())) {
+            if (dataBean == null || mHistoryManager.isDataExist(dataBean.getRideRunType(), dataBean.getId())) {
                 continue;
             }
             if (dataBean != null) {
@@ -471,7 +473,25 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             Logger.i(TAG, "parseJsonToBean: 输入JSON为空");
             return null;
         }
-        return mGson.fromJson(jsonStr, DrivingRecordDataBean.class);
+        try {
+            return mGson.fromJson(jsonStr, DrivingRecordDataBean.class);
+        } catch (JsonSyntaxException e) {
+            Logger.e(TAG, "JsonSyntaxException: ", e.getMessage(), jsonStr);
+            return null;
+        } catch (NumberFormatException e) {
+            Logger.e(TAG, "NumberFormatException: ", e.getMessage(), jsonStr);
+            return null;
+        } catch (JsonParseException e) {
+            Logger.e(TAG, "JsonParseException: ", e.getMessage(), jsonStr);
+            return null;
+        } catch (IllegalStateException e) {
+            Logger.e(TAG, "IllegalStateException: ", e.getMessage(), jsonStr);
+            return null;
+        } catch (Exception e) {
+            Logger.e(TAG, "Exception: ", e.getMessage(), jsonStr);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -519,7 +539,9 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             final String behaviorData = mUserTrackService.getBehaviorDataById(type, num);
             Logger.i(TAG, "behaviorData -> " + behaviorData);
             final DrivingRecordDataBean dataBean = parseJsonToBean(behaviorData);
-            drivingRecordDataBeans.add(dataBean);
+            if (dataBean != null) {
+                drivingRecordDataBeans.add(dataBean);
+            }
         }
         return drivingRecordDataBeans;
     }
