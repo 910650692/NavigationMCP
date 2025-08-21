@@ -822,7 +822,7 @@ public final class MapStateManager {
                 || ProcessStatus.AppRunStatus.PAUSED == appRunStatus
                 || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
             openMap(appRunStatus);
-            if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus) {
+            if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus || mLauncherDeskMode == 1) {
                 saveCommand = true;
             }
         } else if (null != AppCache.getInstance().getMContext()) {
