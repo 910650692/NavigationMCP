@@ -1394,6 +1394,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
     public void onGetFragmentData() {
         final Bundle bundle = getArguments();
         assert bundle != null;
+        BevPowerCarUtils.getInstance().isElecPlanRoute = SettingPackage.getInstance().getChargingPlan();
         final RouteSpeechRequestParam param = (RouteSpeechRequestParam) bundle.getParcelable("speech_open_route");
         if (!ConvertUtils.isEmpty(param)) {
             assert param != null;

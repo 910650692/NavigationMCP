@@ -478,7 +478,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     private int mRouteParamsNum = 0;
     private List<RouteParam> mGasChargeAlongList;
     //由于buick cadi缺少CR UI，临时参数
-    public boolean isNDCar() {
+    public boolean isNewAlterCharge() {
         return false;
     }
     //nd 557为方屏逻辑，cadi为连屏逻辑
@@ -492,7 +492,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         public void run() {
             if (mSecondaryPoiVisibility != null) {
                 //TODO CR
-                if (isNDCar()) {
+                if (isNewAlterCharge()) {
                     if (mShowSupplement) {
                         mSecondaryPoiVisibility.set(2);
                     } else {

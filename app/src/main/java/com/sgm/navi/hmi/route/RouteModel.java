@@ -1137,7 +1137,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
 
             //TODO CR
-            if (mViewModel != null && mViewModel.isNDCar()) {
+            if (mViewModel != null && mViewModel.isNewAlterCharge()) {
                 if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
                         && mRouteChargeStationParam.getMRouteSupplementParams() != null
                         && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
@@ -1163,7 +1163,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
 
         //TODO CR
-        if (mViewModel != null && mViewModel.isNDCar()) {
+        if (mViewModel != null && mViewModel.isNewAlterCharge()) {
             if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
                     && mRouteChargeStationParam.getMRouteSupplementParams() != null
                     && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
@@ -1280,7 +1280,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 }
 
                 //TODO CR
-                if (mViewModel != null && mViewModel.isNDCar()) {
+                if (mViewModel != null && mViewModel.isNewAlterCharge()) {
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
                     chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
