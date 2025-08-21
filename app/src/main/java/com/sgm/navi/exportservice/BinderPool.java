@@ -103,6 +103,7 @@ public final class BinderPool extends IBinderPool.Stub {
                 return;
             }
             try {
+                StartService.getInstance().unregisterSdkCallback(TAG, sdkCallback);
                 mInCallback = true;
                 final int count = mBinderPoolCallbackList.beginBroadcast();
                 for (int i = 0; i < count; i++) {

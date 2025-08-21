@@ -36,7 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"
-                android:focusable="true" />
+                android:focusable="true"
+                android:importantForAccessibility="yes"/>
         </com.android.car.ui.FocusArea>
 
         <!--MFC___Button FocusArea
