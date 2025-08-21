@@ -45,7 +45,7 @@
                 android:id="@+id/tabLayout"
                 android:layout_width="@dimen/dp_288"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_42"
+                android:layout_marginStart="@dimen/dp_52"
                 android:layout_marginTop="@dimen/dp_22"
                 android:background="@null"
                 android:focusedByDefault="true"
