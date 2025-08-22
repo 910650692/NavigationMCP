@@ -384,7 +384,9 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             isShowMoreSetup(true);
             boolean isPreview = mNaviPackage.getPreviewStatus();
             boolean isFixedOverview = mNaviPackage.getFixedOverViewStatus();
-            if (!isFixedOverview && isPreview) {
+            //如果当前不是引导页面不去更改其他页面的全览状态
+            boolean isCurrentNavi = mCallBack == null || mCallBack.getCurrentFragmentIsNavi();
+            if (!isFixedOverview && isPreview && isCurrentNavi) {
                 OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             }
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
