@@ -1722,6 +1722,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                         , index);
             }
         }
+        boolean isParkLot = getPointTypeCode(poiInfoEntity.getPointTypeCode()) == AutoMapConstant.PointTypeCode.PARKING_LOT;
         final LayerItemSearchResult layerItemSearchResult = new LayerItemSearchResult();
         final ArrayList<PoiInfoEntity> poiList = new ArrayList<>();
         poiList.add(poiInfoEntity);
@@ -1735,7 +1736,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
                     layerItemSearchResult, false);
         }
-        if (!ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList())) {
+        if (!ConvertUtils.isEmpty(poiInfoEntity.getChildInfoList()) && !isParkLot) {
             sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, layerItemSearchResult);
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     layerItemSearchResult, false);
@@ -1872,6 +1873,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
         sMarkerInfoMap.put(LayerPointItemType.SEARCH_POI_LABEL, searchResult);
         final boolean addResult = mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP,
                 LayerPointItemType.SEARCH_POI_LABEL, searchResult, false);
+        boolean isParkLot = getPointTypeCode(firstElement.getPointTypeCode()) == AutoMapConstant.PointTypeCode.PARKING_LOT;
         //被选中的poi对象需要添加子点，区域，道路的扎标
         if (!ConvertUtils.isEmpty(firstElement.getMRoadPolygonBounds())) {
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_Line_Road,
@@ -1881,7 +1883,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_PARENT_AREA,
                     searchResult, false);
         }
-        if (!ConvertUtils.isEmpty(firstElement.getChildInfoList())) {
+        if (!ConvertUtils.isEmpty(firstElement.getChildInfoList()) && !isParkLot) {
             sMarkerInfoMap.put(LayerPointItemType.SEARCH_CHILD_POINT, searchResult);
             mLayerAdapter.updateSearchMarker(MapType.MAIN_SCREEN_MAIN_MAP, LayerPointItemType.SEARCH_CHILD_POINT,
                     searchResult, false);
