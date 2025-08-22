@@ -920,8 +920,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 退出巡航
         stopCruise();
 
-        //三指飞屏 并将MapActivity推至后台
-        openThreeFingerFlyingScreen(touchEvent);
+        //三指飞屏 并将MapActivity推至后台 1118742 分屏时禁止三指手势
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            openThreeFingerFlyingScreen(touchEvent);
+        } else {
+            Logger.e(TAG, "分屏状态，禁止三指飞屏");
+        }
         FloatViewManager.getInstance().hideWidgetsOnMapTouch(touchEvent);
     }
 
