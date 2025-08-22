@@ -2202,6 +2202,10 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         });
     }
 
+    public void showPreview() {
+        mModel.showPreview();
+    }
+
     private void closeRouteFragment() {
         Logger.i(TAG, "closeRoute: ==>");
         if (Boolean.TRUE.equals(mRoutePreferenceVisibility.get())) {

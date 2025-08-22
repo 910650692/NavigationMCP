@@ -1369,11 +1369,7 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
         Logger.d(TAG, "不在选路态");
         return;
     }
-    if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
-        if (mCurrentImersiveStatus != currentImersiveStatus) {
-            mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
-        }
-    } else {
+    if (currentImersiveStatus != ImersiveStatus.IMERSIVE) {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.cancelTimer();
         }
@@ -1588,6 +1584,10 @@ public void setPoint() {
 
     public int getSearchLoadingType() {
         return mSearchLoadingType;
+    }
+
+    public void showPreview() {
+        mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     @Override

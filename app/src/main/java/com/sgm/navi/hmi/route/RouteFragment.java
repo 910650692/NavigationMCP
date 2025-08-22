@@ -1462,6 +1462,7 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         if (!hidden) {
             //设置全览态
             ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.IMERSIVE);
+            mViewModel.showPreview();
             if (!ConvertUtils.isEmpty(mViewModel)) {
                 mViewModel.isRequestRouteForPlateNumberAndAvoidLimitChange();
             } else {
