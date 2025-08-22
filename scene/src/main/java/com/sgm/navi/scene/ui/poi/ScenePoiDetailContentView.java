@@ -1529,6 +1529,12 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
             mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
                     setVisibility(GONE);
         }
+        if (mPoiType == AutoMapConstant.PoiType.POI_DELETE_AROUND) {
+            //删除途径点POI详情页面，不需要展示子点列表
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
+                    setVisibility(GONE);
+        }
         mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildExpandCollapse.
                 setOnClickListener(v -> {
                     mScenicChildAdapter.setCollapse(!mScenicChildAdapter.isCollapse());
@@ -1762,6 +1768,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
+            mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
+        }
+        if (mPoiType == AutoMapConstant.PoiType.POI_DELETE_AROUND) {
+            //删除途径点POI详情页面，不需要展示子点列表
+            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
         }
         mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setOnClickListener(v -> {
