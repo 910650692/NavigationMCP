@@ -48,6 +48,7 @@ import com.sgm.navi.service.adapter.layer.bls.utils.hudLayerStyle.NaviRouteLayer
 import com.sgm.navi.service.define.map.MapType;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
 
@@ -240,7 +241,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         int markerId = super.getMarkerId(layer, item, styleInfo);
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
         long usedTextureCount = layer.getMapView().getUsedTextureCount();
-        long capacityTextureCount = layer.getMapView().getCapacityTextureCount();
+        long capacityTextureCount = 500;
         if (Logger.openLog) {
             Logger.i(TAG, "CurrentMapView:" + getMapType(),
                     "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
@@ -256,6 +257,9 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                     markerId = texture.resID;
                     String key = layer.getName() + item.getBusinessType() + item.getID();
                     TexturePoolManager.get().add(key, markerId);
+                    if (Logger.openLog) {
+                        Logger.e(TAG, "添加图层name ", layer.getName(), " key ", key, " markerId ", markerId);
+                    }
                 }
                 Logger.d(TAG, className, " ", mapType, " 自定义 纹理 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(),
                         "\n", "纹理信息 :{ markerRes = ", styleInfo.markerId, " ; resID = ", texture.resID, " ; markerId = ", markerId, " }");
@@ -314,31 +318,37 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
 
     @Override
     public void clearLayerItem(BaseLayer layer, LayerItem item) {
-        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
+        super.clearLayerItem(layer, item);
+        Logger.i(TAG, className, " ", mapType, " 图层 :", layer.getName(), " ;图元业务类型 :", item.getBusinessType(), " ; 图元 :", item.getItemType(), " 删除纹理 ");
         String key = layer.getName() + item.getBusinessType() + item.getID();
         if (TexturePoolManager.get().containsKey(key)) {
-            int markerId = TexturePoolManager.get().getValueAsInt(key);
-            if (markerId > 0) {
-                layer.getMapView().destroyTexture(markerId);
+            CopyOnWriteArrayList<Integer> markerIdList = TexturePoolManager.get().getValueAsInt(key);
+            if (!ConvertUtils.isEmpty(markerIdList)) {
+                for (Integer markerId : markerIdList) {
+                    if (!ConvertUtils.isEmpty(markerId)) {
+                        layer.getMapView().destroyTexture(markerId);
+                    }
+                }
             }
             TexturePoolManager.get().removeKey(key);
-            Logger.e(TAG, className, " clearLayerItem key:", key, " markerId:", markerId);
+            Logger.e(TAG, className, " clearLayerItem key:", key, " markerIdList.size:", markerIdList.size());
         }
-        super.clearLayerItem(layer, item);
     }
 
     @Override
     public void clearLayerItems(BaseLayer layer) {
-        Logger.v(TAG, className, " ", mapType, " 图层 :", layer.getName(), " 删除纹理 ");
+        super.clearLayerItems(layer);
         List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
+        if (Logger.openLog && !removeValues.isEmpty()) {
+            Logger.i(TAG, className, " ", mapType, " 图层 :", layer.getName(), " 删除纹理数量: ", removeValues.size());
+        }
         for (Integer value : removeValues) {
             if (null != value) {
                 layer.getMapView().destroyTexture(value);
                 if (Logger.openLog) {
-                    Logger.e(TAG, className, " clearLayerItems layer:", layer.getName(), " markerId:", value);
+                    Logger.e(TAG, className, " clearLayerItems layer: ", layer.getName(), " markerId: ", value);
                 }
             }
         }
-        super.clearLayerItems(layer);
     }
 }
