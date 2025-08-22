@@ -1378,9 +1378,10 @@ public final class VoiceSearchManager {
 
         if (!TextUtils.isEmpty(mSortValue)) {
             //继续执行条件筛选
-            final String sortValue = mSortValue;
-            mSortValue = "";
-            SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, sortValue);
+            ThreadManager.getInstance().asyncDelay(() -> {
+                SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                mSortValue = "";
+            }, 500, TimeUnit.MILLISECONDS);
         } else {
             responseSearchWithResult();
         }
