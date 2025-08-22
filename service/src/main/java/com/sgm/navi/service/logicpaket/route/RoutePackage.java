@@ -23,6 +23,7 @@ import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.adapter.engine.EngineAdapter;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.mapdata.MapDataAdapter;
+import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.adapter.position.PositionAdapter;
@@ -37,6 +38,7 @@ import com.sgm.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
@@ -105,7 +107,7 @@ import lombok.Getter;
  * date 2024/11/24
  * Description TODO
  */
-final public class RoutePackage implements RouteResultObserver, QueryRestrictedObserver {
+final public class RoutePackage implements RouteResultObserver, QueryRestrictedObserver, GuidanceObserver {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
     private SignalPackage mSignalPackage;
     private CalibrationPackage mCalibrationPackage;
@@ -194,6 +196,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void initRouteService() {
         mRouteAdapter.initRouteService();
         mRouteAdapter.registerRouteObserver(RouteAdapter.REGISTRE_FROM_ROUTE, this);
+        mNaviAdapter.registerObserver("RoutePackage", this);
         mBlAosAdapter.addRestrictedObserver("routePackage", this);
     }
 
@@ -2233,6 +2236,22 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeResultObserver.cancelTimer();
         }
+    }
+
+    @Override
+    public void onPlayTTS(SoundInfoEntity info) {
+
+    }
+
+    @Override
+    public void onPlayRing(int type) {
+
+    }
+
+    @Override
+    public void onNaviStop() {
+        Logger.d(TAG, "onNaviStop: ");
+        removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     private static final class Helper {
