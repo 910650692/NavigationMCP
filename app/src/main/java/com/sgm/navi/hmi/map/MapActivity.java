@@ -20,9 +20,7 @@ import androidx.databinding.Observable;
 import androidx.databinding.ObservableBoolean;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
@@ -56,6 +54,7 @@ import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -98,6 +97,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        set557LogoPic();
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         mBinding.cruiseLayout.tvCurrentRoadName.setSoundEffectsEnabled(false);
@@ -283,6 +283,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
         setChargeGasImage();
+        set557LogoPic();
         mBinding.includeMessageCenter.setViewModel(mViewModel);
 
 
@@ -295,6 +296,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         if (Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get()))
             mViewModel.getOnlineForecastArrivedData();
+    }
+
+    public void set557LogoPic() {
+        if (ScreenTypeUtils.getInstance().is557CarMode()) {
+            mBinding.mainImg.setImageResource(R.drawable.logo_startup_557);
+        } else {
+            Logger.e(TAG, "not 557");
+        }
     }
 
     public void setChargeGasImage() {
@@ -477,7 +486,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         }
         mViewModel.reminderDialogReCreate();
-        mBinding.mainImg.setImageResource(R.drawable.logo_startup);
         if (mViewModel.isSupportSplitScreen()) {
             mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);

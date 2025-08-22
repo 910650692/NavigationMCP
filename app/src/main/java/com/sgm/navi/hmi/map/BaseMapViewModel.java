@@ -394,6 +394,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void showStartIcon() {
+        if (mView != null) {
+            mView.set557LogoPic();
+        }
         startIconVisibility.set(true);
     }
 
