@@ -267,6 +267,25 @@ public final class OpenApiHelper {
     }
 
     /**
+     * 不是导航中进入全览的时候使用
+     * @param mapTypeId 屏幕id
+     */
+    public static void enterPreviewNotNavi(final MapType mapTypeId) {
+        Logger.i(TAG, "enterPreview");
+        mMapType = null;
+        mMapMode = null;
+        LAYER_PACKAGE.setFollowMode(mapTypeId, false);
+        // 关闭自动比例尺
+        NAVI_PACKAGE.closeDynamicLevel(mapTypeId);
+        ROUTE_PACKAGE.showPreview(mapTypeId, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+        LayerItemRouteEndPoint endPoint = NAVI_PACKAGE.getEndPoint();
+        if (endPoint != null) {
+            ROUTE_PACKAGE.updateRouteEndPoint(MapType.MAIN_SCREEN_MAIN_MAP, endPoint);
+        }
+        NAVI_PACKAGE.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+    }
+
+    /**
      * 退出全览
      * @param mapTypeId 屏幕id
      */
