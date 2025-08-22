@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import com.android.utils.SpUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.fsa.MyFsaService;
 import com.sgm.navi.hmi.BuildConfig;
@@ -112,20 +113,13 @@ public class TestWindow {
     }
 
     private void initData() {
-        try {
-            PackageManager packageManager = AppCache.getInstance().getMApplication().getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(AppCache.getInstance().getMApplication().getPackageName(), 0);
-            mBinding.testVersion.setText("versionName: " + packageInfo.versionName + "\n" +
-                    "versionCode: " + packageInfo.getLongVersionCode() + "\n" +
-                    "flavor: " + BuildConfig.FLAVOR + "\n" +
-                    "buildType: " + BuildConfig.BUILD_TYPE);
-        } catch (PackageManager.NameNotFoundException e) {
-            Logger.e(TAG, "initData: ", e);
-        }
+        mBinding.testVersion.setText("versionName: " + ProcessManager.getVersionName(AppCache.getInstance().getMApplication()) + "\n" +
+                "versionCode: " + ProcessManager.getVersionCode(AppCache.getInstance().getMApplication()) + "\n" +
+                "flavor: " + BuildConfig.FLAVOR + "\n" +
+                "buildType: " + BuildConfig.BUILD_TYPE);
         mBinding.testNaiLogLevel.setAdapter(createNaiAdapter());
         mBinding.testGaodeLogLevel.setAdapter(createNaiAdapter());
     }
-
 
     private boolean checkOverlayPermission(Context context) {
         return Settings.canDrawOverlays(context);
