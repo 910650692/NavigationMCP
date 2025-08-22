@@ -629,6 +629,7 @@ public final class FsaNaviScene {
     public void updateHighwayService(final MyFsaService fsaService, final SapaInfoEntity sapaInfoEntity) {
         if (null == fsaService || null == sapaInfoEntity) {
             Logger.e(FsaConstant.FSA_TAG, "sapaInfoEntity is null");
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_SERVICE_POI, GsonUtils.toJson(new ArrayList<>()));
             return;
         }
         sendHighWaySubscribeInfos(fsaService, sapaInfoEntity);
@@ -824,7 +825,11 @@ public final class FsaNaviScene {
      * @param fsaService         MyFsaService.
      * @param searchResultEntity SearchResultEntity
      */
-    public void updateChargingStationInfo(final MyFsaService fsaService, final SearchResultEntity searchResultEntity) {
+    public void updateChargingStationInfo(final MyFsaService fsaService, SearchResultEntity searchResultEntity) {
+        if (searchResultEntity == null) {
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI, GsonUtils.toJson(new ArrayList<>()));
+            return;
+        }
         final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
         if (poiList != null) {
             final ArrayList<ChargingStationInfo> chargingStationInfos = new ArrayList<>();
@@ -842,7 +847,11 @@ public final class FsaNaviScene {
         }
     }
 
-    public void updateParkingLotInfo(final MyFsaService fsaService, final SearchResultEntity searchResultEntity) {
+    public void updateParkingLotInfo(final MyFsaService fsaService, SearchResultEntity searchResultEntity) {
+        if (searchResultEntity == null) {
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_PARKING_LOT_POI, GsonUtils.toJson(new ArrayList<>()));
+            return;
+        }
         final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
         if (poiList != null) {
             final ArrayList<ParkInfo> parkInfos = new ArrayList<>();
@@ -861,6 +870,10 @@ public final class FsaNaviScene {
     }
 
     public void updateGasStation(MyFsaService fsaService, SearchResultEntity searchResultEntity) {
+        if (searchResultEntity == null) {
+            fsaService.sendEvent(FsaConstant.FsaFunction.ID_GAS_STATION_POI, GsonUtils.toJson(new ArrayList<>()));
+            return;
+        }
         final List<PoiInfoEntity> poiList = searchResultEntity.getPoiList();
         if (poiList != null) {
             final ArrayList<GasStationInfo> gasStationInfos = new ArrayList<>();

@@ -107,6 +107,8 @@ public interface SignalApi {
      */
     float getHighVoltageBatteryPropulsionRange();
 
+    float getFuelLevelPercent();
+
     /**
      * 设置电池预加热参数
      * @param powerLevel int
@@ -171,4 +173,6 @@ public interface SignalApi {
     int getPredictedFuelSavingPer100km();
 
     int getTotalFuelSaving();
+
+    boolean getBatteryIndicatorStatus();
 }

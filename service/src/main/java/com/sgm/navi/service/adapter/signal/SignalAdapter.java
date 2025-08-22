@@ -130,6 +130,13 @@ public final class SignalAdapter {
         return mSignalApi.getHighVoltageBatteryPropulsionRange();
     }
 
+    public float getFuelLevelPercent() {
+        if (mSignalApi == null) {
+            return -1;
+        }
+        return mSignalApi.getFuelLevelPercent();
+    }
+
     public void setNextChargingDestination(int powerLevel, int status, int timeToArrival, int distToArrival) {
         if (mSignalApi == null) {
             return;
@@ -289,5 +296,12 @@ public final class SignalAdapter {
             return -1;
         }
         return mSignalApi.getTotalFuelSaving();
+    }
+
+    public boolean getBatteryIndicatorStatus() {
+        if (mSignalApi == null) {
+            return false;
+        }
+        return mSignalApi.getBatteryIndicatorStatus();
     }
 }

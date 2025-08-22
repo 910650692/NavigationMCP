@@ -509,6 +509,25 @@ public class SignalAdapterImpl implements SignalApi {
                 public void onErrorEvent(int i, int i1) {
                 }
             }, PatacProperty.TOTAL_FUEL_SAVING, 0);
+
+            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+                @Override
+                public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                    if (carPropertyValue == null) {
+                        Logger.i(TAG, "HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST", "carPropertyValue == null");
+                        return;
+                    }
+                    Integer value = (Integer) carPropertyValue.getValue();
+                    Logger.d(TAG, "HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST", value);
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onBatteryIndicatorStatusChange(value == 2 || value == 3 || value == 4);
+                    }
+                }
+
+                @Override
+                public void onErrorEvent(int i, int i1) {
+                }
+            }, VendorProperty.HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST, 0);
         } else {
             Logger.i(TAG, "mPropertyManager initialized");
         }
@@ -678,6 +697,20 @@ public class SignalAdapterImpl implements SignalApi {
     public float getHighVoltageBatteryPropulsionRange() {
         Logger.d(TAG, "getHighVoltageBatteryPropulsionRange: " + mHighVoltageBatteryPropulsionRange);
         return mHighVoltageBatteryPropulsionRange;
+    }
+
+    @Override
+    public float getFuelLevelPercent() {
+        final VehicleController.Result<Float> result;
+        try {
+            result = PowertainController.getInstance().getFuelLevelPercent();
+        } catch (Exception e) {
+            Logger.e(TAG, "getFuelLevelPercent: ", e.getMessage());
+            return -1;
+        }
+        final Float value = result.getValue(-1f);
+        Logger.d(TAG, "getFuelLevelPercent: " + value);
+        return value;
     }
 
     @Override
@@ -980,6 +1013,21 @@ public class SignalAdapterImpl implements SignalApi {
         return mTotalFuelSaving;
     }
     //endregion
+
+    @Override
+    public boolean getBatteryIndicatorStatus() {
+        final Integer result;
+        try {
+            CarPropertyValue<Integer> property = mPropertyManager.getProperty(Integer.class, VendorProperty.HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST
+                    , VehicleArea.GLOBAL);
+            result = property.getValue();
+        } catch (Exception e) {
+            Logger.e(TAG, "getBatteryIndicatorStatus: ", e.getMessage());
+            return false;
+        }
+        Logger.d(TAG, "getBatteryIndicatorStatus: " + result);
+        return result == 2 || result == 3 || result == 4;
+    }
 
     /**
      * 状态转换

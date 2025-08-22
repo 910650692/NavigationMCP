@@ -105,8 +105,10 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private ScheduledExecutorService mScheduler;
     private ScheduledFuture mSearchSF;
     private SapaInfoEntity mSapaInfoEntity;
-    private float mFuelLevelPercent = 100;
-    private float mRemainDist = -1;
+    private boolean isSendServicePoi = false;
+    private boolean isSendChargingStationsPoi = false;
+    private boolean isSendGasStationsPoi = false;
+    private boolean isSendParkingLotPoi = false;
     private GeoPoint mGasUpdateGeo;
     private GeoPoint mEleUpdateGeo;
     private GeoPoint mEndGeoPoint;
@@ -630,6 +632,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         SignalPackage.getInstance().registerObserver(FsaConstant.FSA_TAG, mSignalCallback);
         ThreeFingerFlyingScreenManager.getInstance().addOnCloseListener(this);
         powerType = CalibrationPackage.getInstance().powerType();
+        isSendChargingStationsPoi = SignalPackage.getInstance().getBatteryIndicatorStatus();
+        isSendGasStationsPoi = SignalPackage.getInstance().getFuelLevelPercent() < 7;
         if (mScheduler == null) {
             mScheduler = Executors.newScheduledThreadPool(1);
         }
@@ -1080,7 +1084,8 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 } else {
                     sendEvent(FsaConstant.FsaFunction.ID_PANEL_STATUS, FsaConstant.FsaValue.STRING_ZERO);
                     mSapaInfoEntity = null;
-                    mRemainDist = -1;
+                    isSendServicePoi = false;
+                    isSendParkingLotPoi = false;
                     mGasUpdateGeo = null;
                     mEleUpdateGeo = null;
                     mEndGeoPoint = null;
@@ -1096,7 +1101,31 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
     private final SignalCallback mSignalCallback = new SignalCallback() {
         @Override
         public void onFuelLevelPercentSignalChanged(float value) {
-            mFuelLevelPercent = value;
+            boolean isSend = value < 7;
+            if (isSend != isSendGasStationsPoi) {
+                isSendGasStationsPoi = isSend;
+                if (isSend) {
+                    mScheduler.execute(() -> updateGasStationsPoi());
+                } else {
+                    Logger.d(TAG, "poi清除加油站");
+                    FsaNaviScene.getInstance().updateGasStation(MyFsaService.this, null);
+                    mGasUpdateGeo = null;
+                }
+            }
+        }
+
+        @Override
+        public void onBatteryIndicatorStatusChange(boolean value) {
+            if (value != isSendChargingStationsPoi) {
+                isSendChargingStationsPoi = value;
+                if (value) {
+                    mScheduler.execute(() -> updateChargingStationsPoi());
+                } else {
+                    Logger.d(TAG, "poi清除充电站");
+                    FsaNaviScene.getInstance().updateChargingStationInfo(MyFsaService.this, null);
+                    mEleUpdateGeo = null;
+                }
+            }
         }
     };
 
@@ -1111,12 +1140,15 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
                 return;
             }
             if (mChargeStationTaskId == taskId) {
+                Logger.d(TAG, "poi发送新的充电站");
                 FsaNaviScene.getInstance().updateChargingStationInfo(MyFsaService.this, searchResultEntity);
             }
             if (mParkingLotTaskId == taskId) {
+                Logger.d(TAG, "poi发送新的停车场");
                 FsaNaviScene.getInstance().updateParkingLotInfo(MyFsaService.this, searchResultEntity);
             }
             if (mGasStationTaskId == taskId) {
+                Logger.d(TAG, "poi发送新的加油站");
                 FsaNaviScene.getInstance().updateGasStation(MyFsaService.this, searchResultEntity);
             }
         }
@@ -1139,7 +1171,17 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
             if (naviETAInfo == null) {
                 return;
             }
-            mRemainDist = naviETAInfo.getRemainDist();
+            boolean isSend = naviETAInfo.getRemainDist() < 2000;
+            if (isSend != isSendParkingLotPoi) {
+                isSendParkingLotPoi = isSend;
+                if (isSend) {
+                    mScheduler.execute(() -> updateParkingLotPoi());
+                } else {
+                    Logger.d(TAG, "poi清除停车场");
+                    FsaNaviScene.getInstance().updateParkingLotInfo(MyFsaService.this, null);
+                    mEndGeoPoint = null;
+                }
+            }
         }
 
         @Override
@@ -1182,6 +1224,16 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         @Override
         public void onNaviSAPAInfo(final SapaInfoEntity sapaInfoEntity) {
             mSapaInfoEntity = sapaInfoEntity;
+            boolean isSend = mSapaInfoEntity != null;
+            if (isSend != isSendServicePoi) {
+                isSendServicePoi = isSend;
+                if (isSend) {
+                    mScheduler.execute(() -> updateServicePoi());
+                } else {
+                    Logger.d(TAG, "poi清除服务区");
+                    FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, null);
+                }
+            }
         }
 
         @Override
@@ -1312,58 +1364,92 @@ public final class MyFsaService implements FsaServiceMethod.IRequestReceiveListe
         return (int) (BevPowerCarUtils.getInstance().initlialHVBattenergy * BevPowerCarUtils.getInstance().batterToDistance);
     }
 
+    private boolean isNavi() {
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        return Objects.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING);
+    }
+
     private Runnable mSearchRunable = new Runnable() {
         @Override
         public void run() {
-            String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
-            if (!Objects.equals(currentNaviStatus, NaviStatus.NaviStatusType.NAVING)) {
-                return;
-            }
-            FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, mSapaInfoEntity);
-
-            GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
-            if (powerType != 0 && getRemainDistance() < 50 * 1000) {
-                if (currentGeo == null) {
-                    return;
-                }
-                if (mEleUpdateGeo == null || SearchPackage.getInstance().calcStraightDistanceWithInt(currentGeo, mEleUpdateGeo) > 5000) {
-                    mEleUpdateGeo = currentGeo;
-                    Logger.d(TAG, "搜索充电站");
-                    mChargeStationTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站",
-                            mEleUpdateGeo, "2000", true);
-                } else {
-                    sendEventToMap(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI, "");
-                }
-            } else if (powerType != 1 && mFuelLevelPercent < 7) {
-                if (currentGeo == null) {
-                    return;
-                }
-                if (mGasUpdateGeo == null || SearchPackage.getInstance().calcStraightDistanceWithInt(currentGeo, mGasUpdateGeo) > 5000) {
-                    mGasUpdateGeo = currentGeo;
-                    Logger.d(TAG, "搜索加油站");
-                    mGasStationTaskId = SearchPackage.getInstance().aroundSearch(1, "加油站",
-                            mGasUpdateGeo, "2000", true);
-                } else {
-                    sendEventToMap(FsaConstant.FsaFunction.ID_GAS_STATION_POI, "");
-                }
-            }
-
-            if (mRemainDist != -1 && mRemainDist < 2000) {
-                RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
-                if (endPoint == null) {
-                    return;
-                }
-                GeoPoint endGeoPoint = endPoint.getRealPos();
-                if (endGeoPoint.equals(mEndGeoPoint)) {
-                    sendEventToMap(FsaConstant.FsaFunction.ID_PARKING_LOT_POI, "");
-                } else {
-                    mEndGeoPoint = endGeoPoint;
-                    Logger.d(TAG, "搜索停车场");
-                    mParkingLotTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
-                            endGeoPoint, "2000", true);
-                }
-            }
-
+            updateServicePoi();
+            updateChargingStationsPoi();
+            updateGasStationsPoi();
+            updateParkingLotPoi();
         }
     };
+
+    private void updateServicePoi() {
+        if (!isNavi()) {
+            return;
+        }
+        if (isSendServicePoi) {
+            Logger.d(TAG, "poi发送服务区");
+            FsaNaviScene.getInstance().updateHighwayService(MyFsaService.this, mSapaInfoEntity);
+        }
+    }
+
+    private void updateChargingStationsPoi() {
+        if (!isNavi()) {
+            return;
+        }
+        if (powerType == 1 && isSendChargingStationsPoi) {
+            GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
+            if (currentGeo == null) {
+                return;
+            }
+            if (mEleUpdateGeo == null || SearchPackage.getInstance().calcStraightDistanceWithInt(currentGeo, mEleUpdateGeo) > 5000) {
+                mEleUpdateGeo = currentGeo;
+                Logger.d(TAG, "poi搜索充电站");
+                mChargeStationTaskId = SearchPackage.getInstance().aroundSearch(1, "充电站",
+                        mEleUpdateGeo, "2000", true);
+            } else {
+                Logger.d(TAG, "poi发送旧的充电站");
+                sendEventToMap(FsaConstant.FsaFunction.ID_CHARGING_STATIONS_POI, "");
+            }
+        }
+    }
+
+    private void updateGasStationsPoi() {
+        if (!isNavi()) {
+            return;
+        }
+        if (powerType != 1 && isSendGasStationsPoi) {
+            GeoPoint currentGeo = PositionPackage.getInstance().currentGeo;
+            if (currentGeo == null) {
+                return;
+            }
+            if (mGasUpdateGeo == null || SearchPackage.getInstance().calcStraightDistanceWithInt(currentGeo, mGasUpdateGeo) > 5000) {
+                mGasUpdateGeo = currentGeo;
+                Logger.d(TAG, "poi搜索加油站");
+                mGasStationTaskId = SearchPackage.getInstance().aroundSearch(1, "加油站",
+                        mGasUpdateGeo, "2000", true);
+            } else {
+                Logger.d(TAG, "poi发送旧的加油站");
+                sendEventToMap(FsaConstant.FsaFunction.ID_GAS_STATION_POI, "");
+            }
+        }
+    }
+
+    private void updateParkingLotPoi() {
+        if (!isNavi()) {
+            return;
+        }
+        if (isSendParkingLotPoi) {
+            RouteParam endPoint = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (endPoint == null) {
+                return;
+            }
+            GeoPoint endGeoPoint = endPoint.getRealPos();
+            if (endGeoPoint.equals(mEndGeoPoint)) {
+                Logger.d(TAG, "poi发送旧的停车场");
+                sendEventToMap(FsaConstant.FsaFunction.ID_PARKING_LOT_POI, "");
+            } else {
+                mEndGeoPoint = endGeoPoint;
+                Logger.d(TAG, "poi搜索停车场");
+                mParkingLotTaskId = SearchPackage.getInstance().aroundSearch(1, "停车场",
+                        endGeoPoint, "2000", true);
+            }
+        }
+    }
 }

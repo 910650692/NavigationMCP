@@ -204,6 +204,17 @@ public final class SignalPackage implements SignalAdapterCallback {
         });
     }
 
+    @Override
+    public void onBatteryIndicatorStatusChange(boolean value) {
+        if (!ConvertUtils.isEmpty(mSignalCallbacks)) {
+            for (SignalCallback signalCallback : mSignalCallbacks.values()) {
+                if (signalCallback != null) {
+                    signalCallback.onBatteryIndicatorStatusChange(value);
+                }
+            }
+        }
+    }
+
     /**
      * 车外温度
      *
@@ -308,6 +319,10 @@ public final class SignalPackage implements SignalAdapterCallback {
      */
     public float getHighVoltageBatteryPropulsionRange() {
         return mSignalAdapter.getHighVoltageBatteryPropulsionRange();
+    }
+
+    public float getFuelLevelPercent() {
+        return mSignalAdapter.getFuelLevelPercent();
     }
 
     /**
@@ -482,5 +497,9 @@ public final class SignalPackage implements SignalAdapterCallback {
 
     public int getTotalFuelSaving() {
         return mSignalAdapter.getTotalFuelSaving();
+    }
+
+    public boolean getBatteryIndicatorStatus() {
+        return mSignalAdapter.getBatteryIndicatorStatus();
     }
 }
