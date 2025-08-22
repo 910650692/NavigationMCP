@@ -87,6 +87,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private Runnable timerRunnable = null;
     private int mCurrentUiMode;
     private ActivateFailedDialog mFailedDialog;
+    private int mSavePageCode = -1;
 
     @Override
     public void onCreateBefore() {
@@ -663,6 +664,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
         if (baseFragment instanceof SplitFragment) {
             closeFragment(true);
+            if (mSavePageCode != -1) {
+                callPageCode(mSavePageCode);
+                mSavePageCode = -1;
+            }
         } else {
             Logger.d("screen_change_used", "不包含1/3屏幕布局");
         }
@@ -699,6 +704,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void syncFragment() {
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+    }
+
+    public void savePageCode(int pageCode) {
+        mSavePageCode = pageCode;
     }
 
     public void callPageCode(int pageCode) {

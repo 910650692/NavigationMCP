@@ -97,8 +97,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action goHome = () -> {
         Logger.i(TAG, "goHome");
-        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.GO_HOME);
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
     };
 
     /***
@@ -106,8 +106,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action goCompany = () -> {
         Logger.i(TAG, "goCompany");
-        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.GO_COMPANY);
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
     };
 
     /***
@@ -115,8 +115,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action doSearch = () -> {
         Logger.i(TAG, "doSearch");
-        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.SEARCH_PAGE);
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
     };
 
     /***
@@ -124,8 +124,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action chargeOrGas = () -> {
         Logger.i(TAG, "chargeOrGas");
-        SplitScreenManager.getInstance().switchNaviToFullScreen();
         startMapActivity(INaviConstant.OpenIntentPage.SEARCH_RESULT_PAGE);
+        SplitScreenManager.getInstance().switchNaviToFullScreen();
     };
 
     /***
@@ -250,13 +250,12 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      * 启动Navi_App
      */
     public void startMapActivity(int pageCode) {
-        closeFragment(true);
         if (FloatViewManager.getInstance().isNaviDeskBg()) {
             ExportIntentParam.setIntentPage(pageCode);
         } else {
             MapActivity activity = (MapActivity) mView.getActivity();
             assert activity != null;
-            activity.callPageCode(pageCode);
+            activity.savePageCode(pageCode);
         }
     }
 
