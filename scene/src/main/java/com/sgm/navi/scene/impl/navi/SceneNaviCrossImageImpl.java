@@ -79,11 +79,14 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     private void setLeftPoint() {
-        ResourceUtils instance = ResourceUtils.Companion.getInstance();
-        int left = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_left);
-        int right = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_right);
-        int top = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_top);
-        int bottom = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_bottom);
+        int left = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_left);
+        int right = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_right);
+        int top = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_top);
+        int bottom = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_bottom);
         Rect rect = new Rect(left, top, right, bottom);
         mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
         mIsSetRect = true;
@@ -93,11 +96,14 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     }
 
     public void setRightPoint() {
-        ResourceUtils instance = ResourceUtils.Companion.getInstance();
-        int left = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_split_left);
-        int right = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_split_right);
-        int top = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_top);
-        int bottom = instance.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_cross_bottom);
+        int left = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_split_left);
+        int right = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_split_right);
+        int top = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_top);
+        int bottom = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_bottom);
         Rect rect = new Rect(left, top, right, bottom);
         mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
         mIsSetRect = true;
