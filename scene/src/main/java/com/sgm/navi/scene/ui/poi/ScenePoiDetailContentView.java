@@ -960,7 +960,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final List<GasStationInfo> gasStationInfos = mPoiInfoEntity.getStationList();
         if(!ConvertUtils.isEmpty(gasStationInfos)){
             for (GasStationInfo gasStationInfo : gasStationInfos) {
-                gasStationInfo.setPrice(getContext().getString(R.string.oil_price, gasStationInfo.getPrice()));
+                if (!ConvertUtils.isNull(gasStationInfo.getPrice()) && !gasStationInfo.getPrice().contains(getContext().getString(R.string.oil_price_unit))) {
+                    gasStationInfo.setPrice(getContext().getString(R.string.oil_price, gasStationInfo.getPrice()));
+                }
             }
         }
         final GasStationAdapter gasStationAdapter = new GasStationAdapter();

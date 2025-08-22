@@ -276,6 +276,7 @@
     <string name="oil_type_95">95#</string>
     <string name="oil_type_98">98#</string>
     <string name="oil_price">%s/升</string>
+    <string name="oil_price_unit">升</string>
     <string name="catering_price">¥%d</string>
     <string name="parking_lot_total">共%d</string>
     <string name="parking_lot_status">%d/%d</string>
