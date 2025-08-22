@@ -544,7 +544,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
-            addFragment(new SearchResultFragment(), bundle);
+            addPoiDetailsFragment(new SearchResultFragment(), bundle);
         } catch (Exception e) {
             Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
         }
