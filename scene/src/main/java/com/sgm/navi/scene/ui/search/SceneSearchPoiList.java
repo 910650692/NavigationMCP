@@ -1339,6 +1339,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         } else {
             mViewBinding.searchTextBarView.csFilter.setVisibility(GONE);
         }
+        refreshPullStatus();
+    }
+
+    private void refreshPullStatus() {
+        if(!ConvertUtils.isNull(mViewBinding)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mPageNum: "+mPageNum+" ,maxPageNum: "+maxPageNum);
+            mViewBinding.pullRefreshLayout.setCanRefresh(mPageNum != 1);
+            mViewBinding.pullRefreshLayout.setCanLoadMore(mPageNum != maxPageNum);
+        }
     }
 
     public void notifySearchResultNetError(int taskId,String message){
