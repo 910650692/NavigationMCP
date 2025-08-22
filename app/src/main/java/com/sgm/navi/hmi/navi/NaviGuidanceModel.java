@@ -214,7 +214,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return;
         }
         String poiId = endRouteParam.getPoiID();
-        if (!ConvertUtils.isEmpty(poiId)) {
+        Logger.i(TAG, poiId);
+        // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
+        if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
             mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
             Logger.i(TAG, "mEndSearchId = ", mEndSearchId, " poiId = ", poiId);
         } else if (!ConvertUtils.isNull(endRouteParam.getRealPos())) {

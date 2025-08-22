@@ -296,8 +296,17 @@ public class ChargeTipManager {
         Logger.i(TAG, "needQuery: ", needQuery, " mTipType:" + mTipType);
         if (needQuery) {
             mIsViaDetailSearching = true;
-            mViaDetailSearchId = mSearchPackage.poiIdSearch(viaEntity.getPid(), true);
-            Logger.i(TAG, "mViaDetailSearchId: ", mViaDetailSearchId);
+            String poiId = viaEntity.getPid();
+            Logger.i(TAG, poiId);
+            if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
+                mViaDetailSearchId = mSearchPackage.poiIdSearch(poiId, true);
+                Logger.i(TAG, "mViaDetailSearchId: ", mViaDetailSearchId);
+            } else if (!ConvertUtils.isNull(viaEntity.getRealPos())){
+                mViaDetailSearchId = mSearchPackage.geoSearch(viaEntity.getRealPos(), true);
+                Logger.i(TAG, "mViaDetailSearchId: ", mViaDetailSearchId);
+            } else {
+                Logger.e(TAG, "poiId无效，地址为空，无法进行搜索");
+            }
         }
     }
 

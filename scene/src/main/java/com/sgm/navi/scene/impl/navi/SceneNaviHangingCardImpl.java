@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.impl.navi;
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneModel;
@@ -277,7 +279,10 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         }
         if (ConvertUtils.isNull(mEndPoiInfoEntity)) {
             // 优先PoiID搜
-            if (!ConvertUtils.isEmpty(currentParam.getPoiID())) {
+            String poiId = currentParam.getPoiID();
+            Logger.i(TAG, poiId);
+            // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
+            if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
                 isGetParkEndRequesting = true;
                 mParkEndSearchId = mSearchPackage.poiIdSearch(currentParam.getPoiID(), true);
                 Logger.d(TAG, "poiIdSearch getPoiID:", currentParam.getPoiID(), " mParkEndSearchId:", mParkEndSearchId);
