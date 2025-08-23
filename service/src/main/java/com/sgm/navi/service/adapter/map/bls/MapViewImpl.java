@@ -1009,4 +1009,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     public int getScaleLineLength() {
         return getMapview().getOperatorScale().getScaleLineLength();
     }
+
+    public void updateLayerStyle() {
+        Logger.d(TAG, mapType, "updateLayerStyle mapView=" + getMapview());
+        if (getMapview() != null) {
+            getMapview().getLayerMgr().updateStyle();
+        }
+    }
 }

@@ -328,4 +328,9 @@ public class MapAdapterImpl implements IMapApi {
     public int getScaleLineLength(MapType mapType) {
         return mapViewPoolManager.getMapViewImpl(mapType).getScaleLineLength();
     }
+
+    @Override
+    public void updateLayerStyle(MapType mapTypeId) {
+        mapViewPoolManager.getMapViewImpl(mapTypeId).updateLayerStyle();
+    }
 }

@@ -641,4 +641,8 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
         return mMapAdapter.getScaleLineLength(mapTypeId);
     }
 
+    public void updateLayerStyle(MapType mapTypeId) {
+        mMapAdapter.updateLayerStyle(mapTypeId);
+    }
+
 }

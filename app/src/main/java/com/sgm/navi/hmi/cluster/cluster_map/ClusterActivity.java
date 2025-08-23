@@ -182,7 +182,8 @@ public class ClusterActivity extends BaseActivity<ActivityClusterBinding, Cluste
         boolean nightModeEnabled = ThemeUtils.INSTANCE.isNightModeEnabled(this);
         Logger.d(TAG, "updateMapThemeType:nightModeEnabled:" + nightModeEnabled);
         ThemeType colorMode = nightModeEnabled ? ThemeType.NIGHT : ThemeType.DAY;
-        MapAdapter.getInstance().updateUiStyle(MapType.CLUSTER_MAP, colorMode);
+        MapPackage.getInstance().updateUiStyle(MapType.CLUSTER_MAP, colorMode);
+        MapPackage.getInstance().updateLayerStyle(MapType.CLUSTER_MAP);
     }
 
     public IBaseScreenMapView getMapView() {
