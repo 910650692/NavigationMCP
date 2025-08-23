@@ -110,8 +110,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mCurrentUiMode = getResources().getConfiguration().uiMode;
         mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(propertyChangedCallback);
         mOpenGuideRunnable = () -> {
-            mViewModel.openGuideFragment();
-            mViewModel.openRouteFragment();
+            try {
+                if (mViewModel != null) {
+                    mViewModel.openGuideFragment();
+                    mViewModel.openRouteFragment();
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
