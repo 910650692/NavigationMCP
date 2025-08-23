@@ -2,6 +2,7 @@ package com.sgm.navi.hmi.traffic;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -157,4 +158,27 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
             ImmersiveStatusScene.getInstance().setImmersiveStatus(mapTypeId, status);
         }
     }
+
+    public void setIncreaseBtnColor(Boolean isIncrease) {
+        mBinding.tvIncrease.setSelected(isIncrease);
+        mBinding.tvIncrease.setTextColor(isIncrease ?
+                getResources().getColor(R.color.bg_route_big_window_select) :
+                getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+    }
+
+    public void setDecreaseBtnColor(Boolean isDecrease) {
+        mBinding.tvDecrease.setSelected(isDecrease);
+        mBinding.tvDecrease.setTextColor(isDecrease ?
+                getResources().getColor(R.color.bg_route_big_window_select) :
+                getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+    }
+
+    public void setIncreaseBtnAlpha(float alpha) {
+        mBinding.tvIncrease.setAlpha(alpha);
+    }
+
+    public void setDecreaseBtnAlpha(float alpha) {
+        mBinding.tvDecrease.setAlpha(alpha);
+    }
+
 }
