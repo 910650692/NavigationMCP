@@ -102,4 +102,12 @@ public class GeoPoint implements Parcelable {
         parcel.writeDouble(mZ);
         parcel.writeFloat(mCourse);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        GeoPoint other = (GeoPoint) obj;
+        return Double.compare(mLon, other.mLon) == 0 && Double.compare(mLat, other.mLat) == 0;
+    }
 }

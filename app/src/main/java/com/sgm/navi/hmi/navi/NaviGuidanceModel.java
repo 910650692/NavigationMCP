@@ -619,9 +619,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         } else {
-            if (mIsViaEmpty) {
-                return;
-            }
             mIsViaEmpty = true;
             mViewModel.showViaDetail(false);
         }

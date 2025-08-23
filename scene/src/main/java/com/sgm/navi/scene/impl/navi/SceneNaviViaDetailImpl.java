@@ -28,6 +28,7 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailView> implements SearchResultCallback {
@@ -130,16 +131,15 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
                 (mCurrentPoiType == AutoMapConstant.PointTypeCode.CHARGING_STATION &&
                         powerType == NumberUtils.NUM_1) ||
                 mCurrentPoiType == AutoMapConstant.PointTypeCode.PARKING_LOT);
-        Logger.i(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
+        Logger.d(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
                 mIsNeedShow);
         updateSceneVisible(b && isCanShow);
     }
 
     public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
         if (null != naviViaEntity) {
-            // 不搜索重复的点
-            if (mCurrentNaviViaEntity != null && mCurrentNaviViaEntity.getPid().
-                    equals(naviViaEntity.getPid())) {
+            // 不搜索重复的点,只有POIID和POS都一样才看作同一个点
+            if (Objects.equals(mCurrentNaviViaEntity, naviViaEntity)) {
                 return;
             }
             mCurrentNaviViaEntity = naviViaEntity;
@@ -152,7 +152,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
      * @param isVisible visible
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:", isVisible, "currentVis:",
+        Logger.d(TAG, "SceneNaviViaDetailImpl", "isVisible:", isVisible, "currentVis:",
                 mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
