@@ -2580,4 +2580,36 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         return currentMode;
     }
+    @Override
+    public void onResetSettingConfig() {
+        Logger.d(TAG, "onResetSettingConfig");
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        RoutePackage routePackage = RoutePackage.getInstance();
+        NaviPackage naviPackage = NaviPackage.getInstance();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+            naviPackage.stopNavigation(true);
+            naviPackage.onNaviClose(true);
+            naviPackage.stopSpeech();
+        }
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+            routePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.CRUISE)) {
+            if (mViewModel != null) {
+                mViewModel.stopCruise();
+            }
+        }
+        if ((currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE))) {
+            routePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            return;
+        }
+        if (searchPackage != null) {
+            searchPackage.clearPoiLabelMark();
+            searchPackage.clearLabelMark();
+        } else {
+            Logger.e(TAG, "searchPackage is null");
+        }
+    }
 }
