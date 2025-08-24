@@ -357,7 +357,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onCreate() {
         super.onCreate();
         PermissionUtils.getInstance().setPermissionsObserver(this);
-        StartService.getInstance().registerSdkCallback(TAG, this);
         AgreementPackage.getInstance().init();
         AgreementPackage.getInstance().setAgreementCallback("StartupModel",
                 new AgreementPackage.AgreementCallback() {
@@ -595,12 +594,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         } else {
             Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
+            StartService.getInstance().registerSdkCallback(TAG, this);
             Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
         }
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        Logger.d(TAG, "LoadMapView", "load Map View");
         if (null == mapPackage || null == layerPackage) {
             onSdkInitSuccess();
             return;
@@ -834,6 +835,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             } else {
                 mapPackage.goToCarPosition(mapTypeId);
             }
+            Logger.i(TAG, "startIcon", "map load finish, hide startIcon");
             ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 600);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听

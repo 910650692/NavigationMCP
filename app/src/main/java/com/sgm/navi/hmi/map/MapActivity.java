@@ -167,14 +167,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            if (ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.NONE)) {
-                Logger.e(TAG, "引擎已初始化 直接渲染底图");
+            if (!ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.NONE)) {
+                Logger.e(TAG, "engine&ProtectState ", "引擎已初始化 直接渲染底图");
                 mViewModel.loadMapView(mBinding.mainMapview);
             } else {
-                Logger.e(TAG, "引擎已初始化 但是权限协议弹窗尚未同意");
+                Logger.e(TAG, "engine&ProtectState ", "引擎已初始化 但是权限协议弹窗尚未同意");
             }
         } else {
-            Logger.e(TAG, "引擎未初始化");
+            Logger.e(TAG, "engine&ProtectState ", "引擎未初始化");
         }
     }
 
@@ -288,7 +288,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             Logger.e(TAG, "mViewModel is null");
             return;
         }
-        //initData
+        Logger.d(TAG, "LoadMapView", "doAfterInitSdk load Map View");
         mViewModel.loadMapView(mBinding.mainMapview);
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
@@ -496,12 +496,13 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 showActivateFailedDialog(errCode, msg);
             }
         }
-        mViewModel.reminderDialogReCreate();
+//        mViewModel.reminderDialogReCreate();
         if (mViewModel.isSupportSplitScreen()) {
             mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
             ThreadManager.getInstance().postDelay(() -> {
                 if (mViewModel != null) {
+                    Logger.i(TAG, "startIcon", "splitScreen hide startIcon");
                     mViewModel.hideStartIcon();
                 }
             }, 200);

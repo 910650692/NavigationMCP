@@ -280,14 +280,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
-        Logger.d(TAG, "popAgreementDialog");
+        Logger.d(TAG, "ReminderDialog", "popAgreementDialog");
         if (reminderDialog != null && reminderDialog.isShowing() && mView != null) {
-            Logger.d(TAG, "popAgreementDialog already is show");
+            Logger.d(TAG, "ReminderDialog", "popAgreementDialog already is show");
             return;
         }
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
+                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user commit");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                 mModel.updateFirstLauncherFlag();
@@ -296,12 +297,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
             @Override
             public void onCancelClick() {
+                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user cancel");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
-        Logger.d(TAG, "popAgreementDialog currently on display");
+        Logger.d(TAG, "ReminderDialog", "popAgreementDialog currently on display");
         reminderDialog.show();
         FloatViewManager.getInstance().mRemindDialogShow = true;
         FloatViewManager.getInstance().hideAllCardWidgets(false);
@@ -312,7 +314,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void dismissReminderDialog() {
-        Logger.d(TAG, "reminderDialogDismiss");
+        Logger.d(TAG, "ReminderDialog dismiss");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
@@ -321,7 +323,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void reminderDialogReCreate() {
-        Logger.d(TAG, "reminderDialogReCreate");
+        Logger.d(TAG, "ReminderDialog reCreate");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
@@ -388,7 +390,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     public void hideStartIcon() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            Logger.d(TAG, "hideStartIcon");
+            Logger.d(TAG, "startIcon", "hide startIcon");
             startIconVisibility.set(false);
         }
     }
@@ -397,6 +399,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.set557LogoPic();
         }
+        Logger.d(TAG, "startIcon", "show startIcon");
         startIconVisibility.set(true);
     }
 
@@ -702,6 +705,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        Logger.d(TAG, "LoadMapView", "load Map View");
         mModel.loadMapView(mapSurfaceView);
     }
 
