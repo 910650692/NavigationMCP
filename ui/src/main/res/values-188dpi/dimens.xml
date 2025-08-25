@@ -3990,7 +3990,7 @@
     <!--动态tbt布局-->
     <dimen name="navi_tbt_height">119dp</dimen>
     <dimen name="navi_tbt_height_short">101dp</dimen>
-    <dimen name="navi_tbt_with">640dp</dimen>
+    <dimen name="navi_tbt_with">544.6dp</dimen>
     <!--路口大图位置信息-->>
     <dimen name="navi_cross_left">35dp</dimen>
     <dimen name="navi_cross_top">182dp</dimen>
