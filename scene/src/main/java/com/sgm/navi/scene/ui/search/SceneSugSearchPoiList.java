@@ -492,8 +492,10 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
     public void requestFocusAndShowKeyboard() {
         // 确保视图已经附加到窗口
         mViewBinding.sclSearchTopView.searchBarEditView.post(() -> {
-            mViewBinding.sclSearchTopView.searchBarEditView.requestFocus();
-            showKeyboard();
+            if (mViewBinding != null) {
+                mViewBinding.sclSearchTopView.searchBarEditView.requestFocus();
+                showKeyboard();
+            }
         });
     }
 
