@@ -708,8 +708,11 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             final GpsTrackDepthBean info = getGpsTrackDepthBean(depInfo);
             if (depInfo != null && depInfo.trackPoints != null && depInfo.trackPoints.size() > 0
                     && depInfo.trackPoints.get(0) != null) {
-                Logger.i(TAG, "onCloseGpsTrack: ", depInfo.distance,
+                Logger.i(TAG, "onCloseGpsTrack: ", n32SuccessTag, psSavePath, psFileName,
+                        depInfo.duration, depInfo.distance, depInfo.averageSpeed,
                         depInfo.trackPoints.get(0).n64TickTime);
+            } else {
+                Logger.i(TAG, "onCloseGpsTrack: depInfo is not valid", n32SuccessTag, psSavePath, psFileName);
             }
             callBack.onCloseGpsTrack(n32SuccessTag, psSavePath, psFileName, info);
         }

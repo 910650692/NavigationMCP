@@ -41,7 +41,7 @@ public class History {
     private String mEndPoiName;
 
     @Property(nameInDb = "type")
-    private int mType;
+    private int mType; //0:关键字记录(搜索记录) 1:导航记录 2:行程历史记录
 
     @Property(nameInDb = "updateTime")
     private Date mUpdateTime;
@@ -50,7 +50,7 @@ public class History {
     private boolean mIsCompleted; // 是否存在继续导航信息
 
     @Property(nameInDb = "rideRunType")
-    private int mRideRunType = -1; //行程类型（导航/巡航）
+    private int mRideRunType = -1; //行程类型（1:导航/0:巡航）
 
     @Property(nameInDb = "timeInterval")
     private int mTimeInterval; // 时长  单位:秒
