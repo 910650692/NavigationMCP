@@ -1853,10 +1853,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         }
 
         if (targetMode == curMapMode) {
-            final CallResponse alreadyResponse = CallResponse.createFailResponse(
-                    IVrBridgeConstant.ResponseString.ALREADY_IN+ respTts);
+            final CallResponse alreadyResponse = CallResponse.createSuccessResponse();
             alreadyResponse.setSubCallResult(NaviSubCallResult.NO_ACTION);
-            return alreadyResponse;
+            respTts(alreadyResponse, respCallback);
         } else {
             if (saveCommand) {
                 mCommandList.add(IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW);
