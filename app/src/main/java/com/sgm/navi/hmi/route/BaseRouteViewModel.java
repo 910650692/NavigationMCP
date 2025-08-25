@@ -1481,6 +1481,7 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
      * @param poiInfoEntities 列表数据
      */
     public void showRouteSearchListUI(final List<RouteRestAreaDetailsInfo> poiInfoEntities) {
+        mView.showRouteSearchListUI(poiInfoEntities);
         mCurrentPageHistory.add("2");
         mIncludePageVisibility.set(getCurrentPageUI());
         if (ConvertUtils.isEmpty(poiInfoEntities)) {
@@ -1488,7 +1489,6 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
         } else {
             mSearchNoDataVisibility.set(false);
         }
-        mView.showRouteSearchListUI(poiInfoEntities);
     }
 
     /***

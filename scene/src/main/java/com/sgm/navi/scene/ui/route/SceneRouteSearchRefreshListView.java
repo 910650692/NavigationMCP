@@ -108,6 +108,14 @@ public class SceneRouteSearchRefreshListView extends BaseSceneView<SceneRouteSea
      * @param poiInfoEntities 列表数据
      * */
     public void notifyResultList(final List<RouteRestAreaDetailsInfo> poiInfoEntities) {
-        ThreadManager.getInstance().postUi(() -> mAdapter.setRouteBeanList(poiInfoEntities));
+        if (ThreadManager.getInstance().isMainThread()) {
+            mViewBinding.routeResult.setAdapter(mAdapter);
+            mAdapter.setRouteBeanList(poiInfoEntities);
+        } else {
+            ThreadManager.getInstance().postUi(() -> {
+                mViewBinding.routeResult.setAdapter(mAdapter);
+                mAdapter.setRouteBeanList(poiInfoEntities);
+            });
+        }
     }
 }
