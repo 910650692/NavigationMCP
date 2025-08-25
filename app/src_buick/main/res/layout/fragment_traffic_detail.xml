@@ -119,6 +119,64 @@
             app:layout_constraintEnd_toEndOf="@id/iv_close"
             app:layout_constraintTop_toBottomOf="@id/tv_distance" />
 
+        <!--   8/25 先不做加载UI的修改  隐藏   -->
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:id="@+id/layout_loading_img"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_216"
+            android:layout_marginTop="@dimen/dp_284"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone">
+
+            <com.sgm.navi.ui.view.SkinImageView
+                android:id="@+id/iv_loading"
+                android:layout_width="@dimen/dp_51"
+                android:layout_height="@dimen/dp_51"
+                android:src="@drawable/icon_limit_loading"
+                android:visibility="@{ViewModel.uiState == TrafficEventUiState.LOADING ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@id/tv_loading"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:gravity="center"
+                android:text="@{ViewModel.mLoadingDesc}"
+                android:textColor="@color/main_map_limit_loading"
+                android:textSize="@dimen/sp_26"
+                android:visibility="@{ViewModel.uiState != TrafficEventUiState.SUCCESS ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@+id/tv_retry"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_loading" />
+
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/tv_retry"
+                clickCommand="@{ViewModel.retryLoadAll}"
+                android:layout_width="@dimen/dp_225"
+                android:layout_height="@dimen/dp_58"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@drawable/bg_item_limit_retry"
+                android:gravity="center"
+                android:text="@string/limit_retry"
+                android:textColor="@color/setting_white"
+                android:textSize="@dimen/sp_26"
+                android:visibility="@{ViewModel.uiState == TrafficEventUiState.ERROR ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_loading" />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
+
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_pic"
             android:layout_width="@dimen/dp_0"

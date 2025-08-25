@@ -26,6 +26,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.MapTypeManager;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.ui.action.OnImageLoadListener;
 import com.sgm.navi.ui.action.ViewAdapterKt;
 import com.sgm.navi.ui.base.BaseFragment;
 
@@ -36,7 +37,8 @@ import java.util.Objects;
  * Date: 2025/2/27
  * Description: [在这里描述文件功能]
  */
-public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBinding, TrafficViewModel> {
+public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBinding, TrafficViewModel>
+        implements OnImageLoadListener {
     private static final String TAG = "TrafficEventFragment";
     private Animation animation;
 
@@ -127,9 +129,12 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         Logger.i(TAG, "picUrl:" + picUrl);
         if (TextUtils.isEmpty(picUrl)) {
             mBinding.ivPic.setImageDrawable(null);
+            mBinding.layoutLoadingImg.setVisibility(View.GONE);
+            mBinding.ivPic.setVisibility(View.GONE);
             return;
         }
-        ViewAdapterKt.loadImageUrl(mBinding.ivPic, picUrl, com.sgm.navi.scene.R.drawable.test_pic, com.sgm.navi.scene.R.drawable.test_pic);
+        startAnimation();
+        ViewAdapterKt.loadImageUrl(mBinding.ivPic, picUrl, this);
     }
 
     @Override
@@ -181,4 +186,42 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
         mBinding.tvDecrease.setAlpha(alpha);
     }
 
+    @Override
+    public void onLoadCompleted(boolean isSuccess) {
+        if (isSuccess) {
+            mBinding.ivPic.setVisibility(View.VISIBLE);
+            mBinding.ivLoading.setVisibility(View.GONE);
+            mBinding.tvLoading.setVisibility(View.GONE);
+            mBinding.tvRetry.setVisibility(View.GONE);
+            stopAnimation();
+        } else {
+            stopAnimation();
+            mBinding.ivPic.setVisibility(View.GONE);
+            mBinding.tvRetry.setVisibility(View.VISIBLE);
+            mBinding.tvLoading.setText(R.string.limit_load_fail);
+        }
+    }
+
+    @Override
+    public void onLoadStart() {
+
+    }
+
+    private void startAnimation() {
+        mBinding.layoutLoadingImg.setVisibility(View.VISIBLE);
+        mBinding.tvLoading.setText(R.string.limit_loading);
+        mBinding.ivLoading.setAnimation(animation);
+        mBinding.ivLoading.startAnimation(animation);
+        mBinding.ivLoading.setVisibility(View.VISIBLE);
+        mBinding.tvLoading.setVisibility(View.VISIBLE);
+        mBinding.tvRetry.setVisibility(View.GONE);
+        mBinding.ivPic.setVisibility(View.GONE);
+        animation.start();
+    }
+
+    private void stopAnimation() {
+        mBinding.ivLoading.clearAnimation();
+        mBinding.ivLoading.setVisibility(View.GONE);
+        animation.cancel();
+    }
 }
