@@ -319,6 +319,8 @@ public interface IVrBridgeConstant {
         String ADD_COMPANY_BEFORE_GET = "未找到公司的地址，先去添加吧";
         String ADD_HOME_WITH_SAY = "未找到家的地址，先去添加吧，试试说：设置家的地址";
         String ADD_COMPANY_WITH_SAY = "未找到公司的地址，先去添加吧，试试说：设置公司的地址";
+        String ADD_HOME_READY = "已设置家的地址";
+        String ADD_COMPANY_READY = "已设置公司的地址";
         String CANT_FIND = "未找到";
         String TRY_OTHER = ",试试别的吧";
 
