@@ -167,14 +167,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            if (!ConvertUtils.equals(mViewModel.getCurrentProtectState(), AutoMapConstant.ProtectState.NONE)) {
-                Logger.e(TAG, "engine&ProtectState ", "引擎已初始化 直接渲染底图");
-                mViewModel.loadMapView(mBinding.mainMapview);
-            } else {
-                Logger.e(TAG, "engine&ProtectState ", "引擎已初始化 但是权限协议弹窗尚未同意");
-            }
-        } else {
-            Logger.e(TAG, "engine&ProtectState ", "引擎未初始化");
+            Logger.e(TAG, "onInitView");
+            mViewModel.loadMapView(mBinding.mainMapview);
+            //todo 隐藏加载界面逻辑已经做了对sdk初始化状态的判断，无需在此多加判断
         }
     }
 
