@@ -5,22 +5,25 @@
     tools:ignore="MissingDefaultResource">
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_411"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_225"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
-        android:layout_height="@dimen/dp_157"
-        android:background="@drawable/bg_search_main_tab"
-        android:paddingStart="@dimen/dp_26"
-        android:paddingTop="@dimen/dp_26"
-        android:paddingEnd="@dimen/dp_22">
+        android:minWidth="@dimen/dp_480"
+        android:maxWidth="@dimen/dp_532"
+        android:paddingHorizontal="@dimen/dp_60"
+        android:paddingVertical="@dimen/dp_34">
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewTimeRemaining"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_26"
             android:textSize="@dimen/sp_32"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="回家1小时24分钟"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/textViewEstimatedArrival"
@@ -30,28 +33,32 @@
             android:textSize="@dimen/sp_26"
             android:textColor="@color/search_color_ffffff_70"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewTimeRemaining" />
+            app:layout_constraintTop_toBottomOf="@id/textViewTimeRemaining"
+            tools:text="预计08:21到达"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/buttonGoHome"
             android:layout_width="@dimen/dp_111"
             android:layout_height="@dimen/dp_65"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_39"
+            android:layout_marginStart="@dimen/dp_9"
             android:background="@drawable/bg_navi_go_charge"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/sp_26"
+            app:layout_constraintStart_toEndOf="@+id/textViewTimeRemaining"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-           />
+            tools:text="回家"/>
 
         <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
             android:id="@+id/sk_iv_basic_home_progress"
-            android:layout_width="@dimen/dp_361"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_3"
-            android:layout_marginBottom="@dimen/dp_28"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="@dimen/dp_13"
+            android:layout_marginBottom="@dimen/dp_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewEstimatedArrival" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
