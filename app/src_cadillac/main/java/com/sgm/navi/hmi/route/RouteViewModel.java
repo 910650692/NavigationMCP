@@ -54,4 +54,9 @@ public class RouteViewModel extends BaseRouteViewModel {
     public boolean isLongScreen() {
         return true;
     }
+
+    @Override
+    public boolean isNewAlterCharge() {
+        return true;
+    }
 }

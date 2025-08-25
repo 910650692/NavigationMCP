@@ -157,6 +157,13 @@ public class RouteReplaceSupplementAdapter extends RecyclerView.Adapter<RouteRep
             holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowCurrent.setVisibility(View.GONE);
             holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowTotal.setText(slowTotal.substring(1));
         }
+        if (holder.mRouteReplaceSupplementItemBinding.tvReplacePointFastTitle.getVisibility() == View.GONE
+                && holder.mRouteReplaceSupplementItemBinding.tvReplacePointSlowTitle.getVisibility() == View.GONE) {
+            holder.mRouteReplaceSupplementItemBinding.lyReplaceCharge.setVisibility(View.GONE);
+        } else {
+            holder.mRouteReplaceSupplementItemBinding.lyReplaceCharge.setVisibility(View.VISIBLE);
+        }
+
 
         if (chargeInfo.getCurrentElePrice().startsWith("-")) {
             holder.mRouteReplaceSupplementItemBinding.tvReplacePointSpend.setVisibility(View.GONE);
