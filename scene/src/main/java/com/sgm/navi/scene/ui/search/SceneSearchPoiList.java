@@ -408,7 +408,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         // 遍历所有可见的item
                         for (int i = 0; i < poiInfoEntities.size(); i++) {
-                            if (!ConvertUtils.isEmpty(poiInfoEntities) && !mScreenViewModel.isAlongWaySearch()) {
+                            if (!ConvertUtils.isEmpty(poiInfoEntities) &&
+                                    !ConvertUtils.isEmpty(mSearchResultEntity) &&
+                                    mSearchResultEntity.getSearchType() != AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH &&
+                                    mSearchResultEntity.getSearchType() != AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
                                 final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
                                 poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
                             }
