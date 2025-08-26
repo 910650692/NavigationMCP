@@ -607,7 +607,7 @@ public class BaseNaviGuidanceViewModel extends
     }
 
     /**
-     * @param type 0:退出全览 1:切换全览 2:切换全览并固定
+     * @param type 0:退出全览 1:切换全览 2:切换全览点击样式
      */
     public void naviPreviewSwitch(final int type) {
         mView.naviPreviewSwitch(type);
