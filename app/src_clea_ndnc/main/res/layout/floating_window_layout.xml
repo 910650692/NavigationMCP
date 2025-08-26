@@ -13,7 +13,8 @@
             android:layout_height="@dimen/dp_0"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
         </com.sgm.navi.ui.view.SkinView>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
