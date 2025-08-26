@@ -1,6 +1,7 @@
 package com.sgm.navi.scene.impl.navi;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 import androidx.databinding.ObservableField;
 
@@ -27,12 +28,13 @@ import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailView> implements SearchResultCallback {
 
     public static final String TAG = MapDefaultFinalTag.NAVI_SCENE_VIA_DETAIL_IMPL;
-    private String mCurrentPoiId = null;
+    private NaviViaEntity mCurrentNaviViaEntity;
     private int mSearchId;
     private int powerType = NumberUtils.NUM_ERROR;
 
@@ -99,9 +101,19 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         @Override
         public void run() {
             try {
-                if (null != mCurrentPoiId) {
-                    mSearchId = SearchPackage.getInstance().poiIdSearch(mCurrentPoiId, true);
-                    Logger.i(TAG, "run", "mSearchId:", mSearchId);
+                if (mCurrentNaviViaEntity != null) {
+                    String poiID = mCurrentNaviViaEntity.getPid();
+                    Logger.i(TAG, poiID);
+                    if (!TextUtils.isEmpty(poiID) && !poiID.contains(".") && poiID.startsWith("B")) {
+                        mSearchId = SearchPackage.getInstance().poiIdSearch(poiID, true);
+                        Logger.i(TAG, "run", "mSearchId:", mSearchId);
+                    } else if (!ConvertUtils.isNull(mCurrentNaviViaEntity.getRealPos())) {
+                        mSearchId = SearchPackage.getInstance().geoSearch(
+                                mCurrentNaviViaEntity.getRealPos(), true);
+                        Logger.i(TAG, "run", "mSearchId:", mSearchId);
+                    } else {
+                        Logger.e(TAG, "poiId无效，地址为空，无法进行搜索");
+                    }
                 }
                 ThreadManager.getInstance().postDelay(mSearchPoi,
                         NumberUtils.NUM_3 * NumberUtils.NUM_1000 * NumberUtils.NUM_60);
@@ -119,22 +131,20 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
                 (mCurrentPoiType == AutoMapConstant.PointTypeCode.CHARGING_STATION &&
                         powerType == NumberUtils.NUM_1) ||
                 mCurrentPoiType == AutoMapConstant.PointTypeCode.PARKING_LOT);
-        Logger.i(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
+        Logger.d(TAG, "setShowViaDetail", "isCanShow:", isCanShow, " isNeedShow = ",
                 mIsNeedShow);
         updateSceneVisible(b && isCanShow);
     }
 
     public void updateNewestViaPoint(NaviViaEntity naviViaEntity) {
         if (null != naviViaEntity) {
-            // 相同的pid不进行重复搜索
-            if (mCurrentPoiId != null && mCurrentPoiId.equals(naviViaEntity.getPid())) {
+            // 不搜索重复的点,只有POIID和POS都一样才看作同一个点
+            if (Objects.equals(mCurrentNaviViaEntity, naviViaEntity)) {
                 return;
             }
-            mCurrentPoiId = naviViaEntity.getPid();
-            if (null != mCurrentPoiId) {
-                ThreadManager.getInstance().removeHandleTask(mSearchPoi);
-                ThreadManager.getInstance().postUi(mSearchPoi);
-            }
+            mCurrentNaviViaEntity = naviViaEntity;
+            ThreadManager.getInstance().removeHandleTask(mSearchPoi);
+            ThreadManager.getInstance().postUi(mSearchPoi);
         }
     }
 
@@ -142,7 +152,7 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
      * @param isVisible visible
      */
     public void updateSceneVisible(final boolean isVisible) {
-        Logger.i(TAG, "SceneNaviViaListImpl", "isVisible:", isVisible, "currentVis:",
+        Logger.d(TAG, "SceneNaviViaDetailImpl", "isVisible:", isVisible, "currentVis:",
                 mScreenView.isVisible());
         if(mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?

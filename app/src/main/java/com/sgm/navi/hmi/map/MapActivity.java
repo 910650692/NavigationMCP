@@ -24,7 +24,6 @@ import androidx.databinding.ObservableBoolean;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.utils.ConvertUtils;
-import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.log.Logger;
@@ -65,6 +64,7 @@ import com.sgm.navi.service.logicpaket.route.IRouteResultObserver;
 import com.sgm.navi.hmi.navi.NaviGuidanceFragment;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.scene.RoutePath;
 import com.alibaba.android.arouter.launcher.ARouter;
 import androidx.fragment.app.Fragment;
@@ -89,10 +89,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     private static final String TAG = "MapActivity";
     private static final String KEY_CHANGE_SAVE_INSTANCE = "key_change_save_instance";
-    
+
     // 静态变量跟踪Activity前台状态
     public static boolean isInForeground = false;
-    
+
     // 导航广播接收器
     private BroadcastReceiver navigationReceiver;
 
@@ -105,6 +105,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private Runnable timerRunnable = null;
     private int mCurrentUiMode;
     private ActivateFailedDialog mFailedDialog;
+    private int mSavePageCode = -1;
 
     @Override
     public void onCreateBefore() {
@@ -115,6 +116,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        set557LogoPic();
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setNavigationBarColor(getResources().getColor(R.color.route_charge_param_color));
         mBinding.cruiseLayout.tvCurrentRoadName.setSoundEffectsEnabled(false);
@@ -127,15 +129,21 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mCurrentUiMode = getResources().getConfiguration().uiMode;
         mViewModel.mainBTNVisibility.addOnPropertyChangedCallback(propertyChangedCallback);
         mOpenGuideRunnable = () -> {
-            mViewModel.openGuideFragment();
-            mViewModel.openRouteFragment();
+            try {
+                if (mViewModel != null) {
+                    mViewModel.openGuideFragment();
+                    mViewModel.openRouteFragment();
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
-        
+
         // 注册导航广播接收器
         initNavigationReceiver();
-        
+
         // 处理Intent中的导航请求
         handleNavigationRequest(getIntent());
     }
@@ -184,10 +192,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (mViewModel.judgeAutoProtocol()) {
-                Logger.e(TAG, "引擎已初始化 直接渲染底图");
+                Logger.e(TAG, "onInitView");
                 mViewModel.loadMapView(mBinding.mainMapview);
             }
-            // TODO: 2025/7/29 此处需要拦截所有权限检测，地图已经可用，无需在进行额外开销检测
+            //todo 隐藏加载界面逻辑已经做了对sdk初始化状态的判断，无需在此多加判断
         }
     }
 
@@ -225,7 +233,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_OPEN)
     protected void onResume() {
         super.onResume();
-        isInForeground = true;
         syncFragment();
         if (mViewModel.isSupportSplitScreen()) {
             ScreenTypeUtils.getInstance().checkScreenType(getResources().getDisplayMetrics());
@@ -297,13 +304,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         AppCache.getInstance().setFirstOpenMap(false);
         mViewModel.mainBTNVisibility.removeOnPropertyChangedCallback(propertyChangedCallback);
         if (null != mViewModel) mViewModel.dismissDialog();
-        
+        mViewModel = null;
+
         // 取消注册导航广播接收器
         if (navigationReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(navigationReceiver);
             Logger.d(TAG, "导航广播接收器已取消注册");
         }
-        
+
         Logger.i(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -314,12 +322,17 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void doAfterInitSdk() {
-        //initData
+        if (mViewModel == null) {
+            Logger.e(TAG, "mViewModel is null");
+            return;
+        }
+        Logger.d(TAG, "LoadMapView", "doAfterInitSdk load Map View");
         mViewModel.loadMapView(mBinding.mainMapview);
         // 给限行设置点击事件
         mBinding.includeLimit.setViewModel(mViewModel);
         mBinding.cruiseLayout.setViewModel(mViewModel);
         setChargeGasImage();
+        set557LogoPic();
         mBinding.includeMessageCenter.setViewModel(mViewModel);
 
 
@@ -332,6 +345,14 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
         if (Boolean.FALSE.equals(mViewModel.mIsChangingConfigurations.get()))
             mViewModel.getOnlineForecastArrivedData();
+    }
+
+    public void set557LogoPic() {
+        if (ScreenTypeUtils.getInstance().is557CarMode()) {
+            mBinding.mainImg.setImageResource(R.drawable.logo_startup_557);
+        } else {
+            Logger.e(TAG, "not 557");
+        }
     }
 
     public void setChargeGasImage() {
@@ -351,7 +372,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionUtils.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (permissions.length >0 && permissions != null) {
+            PermissionUtils.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
@@ -444,7 +467,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onMoveMapCenter");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.GONE);
-            mViewModel.setMapCenterInScreen();
+            if (mViewModel != null) {
+                mViewModel.setMapCenterInScreen();
+            }
         });
     }
 
@@ -453,7 +478,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onMoveMapCenter with bundle");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.GONE);
-            mViewModel.setMapCenterInScreen(bundle);
+            if (mViewModel != null) {
+                mViewModel.setMapCenterInScreen(bundle);
+            }
         });
     }
 
@@ -462,7 +489,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onResetMapCenter");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
-            mViewModel.resetMapCenterInScreen();
+            if (mViewModel != null) {
+                mViewModel.resetMapCenterInScreen();
+            }
         });
     }
 
@@ -471,7 +500,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.i(TAG, "onResetMapTabFromDetail");
         ThreadManager.getInstance().postUi(() -> {
             mBinding.searchMainTab.setVisibility(View.VISIBLE);
-            mViewModel.resetVisibleInScreen();
+            if (mViewModel != null) {
+                mViewModel.resetVisibleInScreen();
+            }
         });
     }
 
@@ -481,7 +512,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     @Override
     public void showParkingView() {
-        mViewModel.showParkingView();
+        if (mViewModel != null) {
+            mViewModel.showParkingView();
+        }
     }
 
     @Override
@@ -500,15 +533,17 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             if (!ConvertUtils.equals(errCode, 0) && !ConvertUtils.isEmpty(msg)) {
                 showActivateFailedDialog(errCode, msg);
             }
-            mBinding.mainImg.setImageResource(R.drawable.logo_startup);
-            return;
         }
-        mViewModel.reminderDialogReCreate();
-        mBinding.mainImg.setImageResource(R.drawable.logo_startup);
+//        mViewModel.reminderDialogReCreate();
         if (mViewModel.isSupportSplitScreen()) {
             mViewModel.showStartIcon();
             ScreenTypeUtils.getInstance().setScreenType(newConfig);
-            ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 200);
+            ThreadManager.getInstance().postDelay(() -> {
+                if (mViewModel != null) {
+                    Logger.i(TAG, "startIcon", "splitScreen hide startIcon");
+                    mViewModel.hideStartIcon();
+                }
+            }, 200);
         }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);
@@ -561,7 +596,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     protected void onFragmentSizeChanged(boolean isSpiltFragment) {
         super.onFragmentSizeChanged(isSpiltFragment);
-        if (!isSpiltFragment) {
+        if (!isSpiltFragment && mViewModel != null) {
             mViewModel.stopCruise();
         }
         setMapFocusable(false);
@@ -599,7 +634,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.sceneGoHome.setCallback(new ISceneCallback() {
             @Override
             public void clickGoHomeBtn(int type) {
-                mViewModel.goHomeOrCompany(type);
+                if (mViewModel != null) {
+                    mViewModel.goHomeOrCompany(type);
+                }
             }
         });
     }
@@ -676,13 +713,19 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     }
 
     public void notifyStepOneThirdScreen() {
-        mViewModel.notifyStepOneThirdScreen();
+        if (mViewModel != null) {
+            mViewModel.notifyStepOneThirdScreen();
+        }
     }
 
     public void closeSplitFragment() {
         final BaseFragment baseFragment = mStackManager.getCurrentFragment(mScreenId);
         if (baseFragment instanceof SplitFragment) {
             closeFragment(true);
+            if (mSavePageCode != -1) {
+                callPageCode(mSavePageCode);
+                mSavePageCode = -1;
+            }
         } else {
             Logger.d("screen_change_used", "不包含1/3屏幕布局");
         }
@@ -690,11 +733,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void openGuideFragment() {
         Logger.i(TAG, "closeSplitFragment openGuideFragment");
-        mViewModel.openGuideFragment();
+        if (mViewModel != null) {
+            mViewModel.openGuideFragment();
+        }
     }
 
     public void updateUiOnHomeKeyClick() {
-        mViewModel.updateUiOnHomeKeyClick();
+        if (mViewModel != null) {
+            mViewModel.updateUiOnHomeKeyClick();
+        }
     }
 
     private final Observable.OnPropertyChangedCallback propertyChangedCallback = new Observable.OnPropertyChangedCallback() {
@@ -715,6 +762,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
 
     public void syncFragment() {
         FragmentIntent.syncFragmentList(mScreenId, getSupportFragmentManager());
+    }
+
+    public void savePageCode(int pageCode) {
+        mSavePageCode = pageCode;
     }
 
     public void callPageCode(int pageCode) {
@@ -744,7 +795,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void hideOrShowFragmentContainer(boolean isShow) {
         mBinding.layoutFragment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
-    
+
     /**
      * 初始化导航广播接收器
      */
@@ -755,12 +806,12 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
                 handleNavigationRequest(intent);
             }
         };
-        
+
         IntentFilter filter = new IntentFilter("com.sgm.navi.ACTION_START_NAVIGATION");
         LocalBroadcastManager.getInstance(this).registerReceiver(navigationReceiver, filter);
         Logger.d(TAG, "导航广播接收器已注册");
     }
-    
+
     /**
      * 添加onNewIntent方法处理新的Intent
      */
@@ -770,7 +821,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.d(TAG, "收到新的Intent");
         handleNavigationRequest(intent);
     }
-    
+
     /**
      * 处理导航请求
      */
@@ -778,15 +829,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (intent == null) {
             return;
         }
-        
+
         long routeTaskId = intent.getLongExtra("route_task_id", -1);
-        
+
         // 只要有有效的路线taskId，就处理MCP导航请求
         if (routeTaskId <= 0) {
             Logger.w(TAG, "无效的路线taskId: " + routeTaskId);
             return;
         }
-        
+
         double latitude = intent.getDoubleExtra("latitude", 0);
         double longitude = intent.getDoubleExtra("longitude", 0);
         String poiName = intent.getStringExtra("poi_name");
@@ -795,10 +846,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         String avoidLimit = intent.getStringExtra("avoid_limit");
         boolean isSimulate = intent.getBooleanExtra("simulate", false);
         boolean autoStart = intent.getBooleanExtra("auto_start", true); // 获取原始的auto_start参数
-        
-        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 路线taskId: %d, 偏好: %s, 限行: %s, 模拟: %b, 自动启动: %b", 
+
+        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 路线taskId: %d, 偏好: %s, 限行: %s, 模拟: %b, 自动启动: %b",
             poiName, latitude, longitude, routeTaskId, routePreference, avoidLimit, isSimulate, autoStart));
-            
+
         // 打开RouteFragment并传递所有参数
         if (mViewModel != null) {
             Bundle bundle = new Bundle();
@@ -811,34 +862,34 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             bundle.putString("avoid_limit", avoidLimit);
             bundle.putDouble("latitude", latitude);
             bundle.putDouble("longitude", longitude);
-            
+
             // 创建RouteFragment并传递参数
             Fragment routeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
             mViewModel.addFragment((BaseFragment) routeFragment, bundle);
-            
+
             Logger.d(TAG, "已打开RouteFragment进行MCP导航，taskId: " + routeTaskId + ", autoStart: " + autoStart);
         } else {
             Logger.e(TAG, "mViewModel为null，无法打开RouteFragment");
         }
     }
-    
+
     /**
      * 打开导航界面Fragment
      */
     private void openNaviGuidanceFragment(boolean isSimulate) {
         try {
             Logger.d(TAG, "准备打开NaviGuidanceFragment，模拟模式: " + isSimulate);
-            
+
             // 创建Bundle包含导航参数
             Bundle bundle = new Bundle();
-            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, 
+            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM,
                         isSimulate ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
-            
+
             // 关闭所有Fragment，切换到导航页面
             if (mViewModel != null) {
                 Logger.d(TAG, "关闭所有Fragment并启动导航页面");
                 mViewModel.closeAllFragment();
-                
+
                 // 添加NaviGuidanceFragment，这将触发正常的导航启动流程
                 mViewModel.addFragment(new NaviGuidanceFragment(), bundle);
                 Logger.d(TAG, "NaviGuidanceFragment已添加到Fragment栈");

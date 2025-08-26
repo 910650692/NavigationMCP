@@ -42,8 +42,8 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSpeechPackage.removeObserver("SettingBroadcastModel");
         mSettingPackage.unRegisterSettingChangeCallback("SettingBroadcastModel");
+        mSpeechPackage.removeObserver("SettingBroadcastModel");
     }
 
     /**
@@ -191,8 +191,10 @@ public class SettingBroadcastModel extends BaseModel<SettingBroadcastViewModel> 
     }
 
     @Override
-    public void onVoiceSet(int result) {
-        mViewModel.setCurrentVoice();
+    public void onVoiceSet(String voicePackage, int result, String voiceName, boolean isBoolean) {
+        ThreadManager.getInstance().postUi(() -> {
+            mViewModel.setCurrentVoice();
+        });
     }
 
     public List<String> getRecommendVoiceList() {

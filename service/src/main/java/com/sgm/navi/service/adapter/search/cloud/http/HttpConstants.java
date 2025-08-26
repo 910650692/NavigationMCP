@@ -14,7 +14,7 @@ public class HttpConstants {
     })
     public @interface AppKeyProd {
         String SERVER_ENV = "";
-        String BASE_CLOUD_URL = "http://baiducp.vapps.sgmlink.com/baiducp/";
+        String BASE_CLOUD_URL = "";
         String APP_KEY = "";
         String APP_SECRET = "";
     }

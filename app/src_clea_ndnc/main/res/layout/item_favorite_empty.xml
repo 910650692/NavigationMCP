@@ -20,10 +20,11 @@
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_194"
+            android:layout_marginTop="@dimen/item_favorite_empty_no_favorite_margin_top"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{ViewModel.mTipVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
+            app:visibility="@{ViewModel.mTipVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -50,10 +51,11 @@
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_180"
+            android:layout_marginTop="@dimen/item_favorite_empty_no_data_margin_top"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{ViewModel.mChargingVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
+            app:visibility="@{ViewModel.mChargingVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -92,7 +94,8 @@
             android:layout_marginTop="@dimen/dp_200"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{ViewModel.mChargingNoDataVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
+            app:visibility="@{ViewModel.mChargingNoDataVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -112,7 +115,8 @@
             android:layout_marginTop="@dimen/dp_180"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{ViewModel.mChargingRequestFailedVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
+            app:visibility="@{ViewModel.mChargingRequestFailedVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -142,7 +146,8 @@
             android:layout_marginTop="@dimen/dp_250"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="@{ViewModel.mChargingOfflineVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="gone"
+            app:visibility="@{ViewModel.mChargingOfflineVisibility}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

@@ -165,7 +165,7 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
                         ToastUtils.Companion.getInstance().showCustomToastView("解压完成");
                         break;
                     case OperationStatus.TASK_STATUS_CODE_SUCCESS: // 去使用
-                        mOnItemClickListener.toUseTask(voiceInfo);
+                        mOnItemClickListener.toUseVoice(voiceInfo);
                         ToastUtils.Companion.getInstance().showCustomToastView(voiceInfo.getName() +"语音设置成功");
                         break;
                     case OperationStatus.TASK_STATUS_CODE_DOING:
@@ -217,7 +217,7 @@ public class SettingVoiceBroadcastAdapter extends RecyclerView.Adapter<SettingVo
          * 去使用
          * @param voiceInfo
          */
-        void toUseTask(final VoiceInfo voiceInfo);
+        void toUseVoice(final VoiceInfo voiceInfo);
 
         /**
          * 去使用

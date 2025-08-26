@@ -283,7 +283,7 @@
                 android:id="@+id/scene_navi_parallel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_m_34"
+                android:layout_marginStart="@dimen/dp_m_51"
                 android:visibility="@{ViewModel.mNaviParallelVisibility?View.VISIBLE:View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/scl_top_container"

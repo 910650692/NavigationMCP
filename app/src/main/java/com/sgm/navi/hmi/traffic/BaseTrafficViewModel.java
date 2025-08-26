@@ -146,9 +146,15 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
         if (isSuccess) {
             thumbPrimaseEnable.set(false);
             if (isDoThumb) {
+                mView.setIncreaseBtnColor(true);
+                mView.setDecreaseBtnColor(false);
+                mView.setDecreaseBtnAlpha(0.5f);
                 thumbNumber.set(getFormatThumb(R.string.traffic_increase_format, praise + 1));
             } else {
                 unThumbNumber.set(getFormatThumb(R.string.traffic_decrease_format, criticism + 1));
+                mView.setDecreaseBtnColor(true);
+                mView.setIncreaseBtnColor(false);
+                mView.setIncreaseBtnAlpha(0.5f);
             }
             updatePriseOrCriticism();
         } else {
@@ -227,11 +233,30 @@ public class BaseTrafficViewModel extends BaseViewModel<TrafficEventFragment, Tr
      * @param fyCriticism
      */
     public void updatePrimaseStatus(FyCriticism fyCriticism) {
-        Logger.i(TAG, "updatePrimaseStatus", "isSuccess:" + fyCriticism.isRequestSuccess);
+        Logger.i(TAG, "updatePrimaseStatus", "isSuccess:" + fyCriticism.isRequestSuccess , "   " ,fyCriticism.status);
         if (fyCriticism.isRequestSuccess) {
             thumbPrimaseEnable.set(fyCriticism.status == -1);
+            if (fyCriticism.status != -1) {
+                if (fyCriticism.status == 1) {
+                    mView.setIncreaseBtnColor(true);
+                    mView.setDecreaseBtnColor(false);
+                    mView.setDecreaseBtnAlpha(0.5f);
+                } else {
+                    mView.setDecreaseBtnColor(true);
+                    mView.setIncreaseBtnColor(false);
+                    mView.setIncreaseBtnAlpha(0.5f);
+                }
+            } else {
+                mView.setDecreaseBtnColor(false);
+                mView.setIncreaseBtnColor(false);
+                mView.setDecreaseBtnAlpha(1f);
+                mView.setIncreaseBtnAlpha(1f);
+            }
+
         } else {
             thumbPrimaseEnable.set(false);
+            mView.setDecreaseBtnAlpha(1f);
+            mView.setIncreaseBtnAlpha(1f);
         }
     }
 

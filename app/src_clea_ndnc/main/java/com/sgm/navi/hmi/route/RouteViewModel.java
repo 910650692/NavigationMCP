@@ -20,7 +20,7 @@ public class RouteViewModel extends BaseRouteViewModel {
     }
 
     @Override
-    public boolean isNDCar() {
+    public boolean isNewAlterCharge() {
         return true;
     }
 }

@@ -8,6 +8,6 @@ package com.sgm.navi.service.logicpaket.speech;
  */
 public interface ISpeechObserver {
 
-    void onVoiceSet(int result);
+    void onVoiceSet(String voicePackage, int result, String voiceName, boolean isBoolean);
 
 }

@@ -92,4 +92,8 @@ public interface SignalCallback {
     default void onTotalFuelSaving(int value) {
 
     }
+
+    default void onBatteryIndicatorStatusChange(boolean value) {
+
+    }
 }

@@ -24,10 +24,9 @@ import com.sgm.navi.service.define.navi.CrossImageEntity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 纹理管理类
@@ -62,10 +61,20 @@ public final class TexturePoolManager {
     private static final int MARK_ID_3D_CAR = 0x10001;
 
     //用于存储MarkerId key:layer.getName() + item.getBusinessType() + item.getID()
-    private final ConcurrentHashMap<String, Integer> textureMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CopyOnWriteArrayList<Integer>> textureMap = new ConcurrentHashMap<>();
 
     public void add(String key, Integer value) {
-        textureMap.put(key, value);
+        Logger.e(TAG, "添加纹理到map key ", key, " markerId ", value);
+        try {
+            if (textureMap.containsKey(key)) {
+                textureMap.get(key).add(value);
+            } else {
+                textureMap.putIfAbsent(key, new CopyOnWriteArrayList<>());
+                textureMap.get(key).add(value);
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
+        }
     }
 
     public List<String> getKeys() {
@@ -78,12 +87,11 @@ public final class TexturePoolManager {
         }
         return textureMap.containsKey(key);
     }
-    public int getValueAsInt(String key) {
-        if (ConvertUtils.isEmpty(key)) {
-            return DEF_ERROR_ID;
+    public CopyOnWriteArrayList<Integer> getValueAsInt(String key) {
+        if (ConvertUtils.isEmpty(key) || !textureMap.containsKey(key)) {
+            return new CopyOnWriteArrayList<>();
         }
-        Integer i = textureMap.get(key);
-        return i == null ? DEF_ERROR_ID : i;
+        return textureMap.get(key);
     }
 
     public void removeKey(String key) {
@@ -102,12 +110,18 @@ public final class TexturePoolManager {
         List<String> keys = new ArrayList<>();
         for (String key : textureMap.keySet()) {
             if (key.startsWith(name)) {
-                ids.add(textureMap.get(key));
                 keys.add(key);
             }
         }
         for (String key : keys){
+            CopyOnWriteArrayList<Integer> markerIdList = textureMap.get(key);
+            if (!ConvertUtils.isEmpty(markerIdList)) {
+                ids.addAll(markerIdList);
+            }
             textureMap.remove(key);
+        }
+        if (Logger.openLog && !textureMap.isEmpty() && !ids.isEmpty()) {
+            Logger.d(TAG, "removeKeys 要删除的图层name ", name, " textureMap.keySet ", textureMap.size(), " markerIdList ", ids.size());
         }
         return ids;
     }

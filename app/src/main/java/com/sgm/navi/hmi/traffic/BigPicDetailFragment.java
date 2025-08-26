@@ -79,6 +79,7 @@ public class BigPicDetailFragment extends BaseFragment<FragmentPicDetailBinding,
 
     @Override
     public void onInitData() {
+        startAnimation();
         ViewAdapterKt.loadImageUrl(mBinding.ivPic, url, this);
     }
 
@@ -89,10 +90,10 @@ public class BigPicDetailFragment extends BaseFragment<FragmentPicDetailBinding,
             mBinding.ivLoading.setVisibility(View.GONE);
             mBinding.tvLoading.setVisibility(View.GONE);
             mBinding.tvRetry.setVisibility(View.GONE);
+            stopAnimation();
         } else {
+            stopAnimation();
             mBinding.ivPic.setVisibility(View.GONE);
-            mBinding.ivLoading.setVisibility(View.GONE);
-            mBinding.tvLoading.setVisibility(View.VISIBLE);
             mBinding.tvRetry.setVisibility(View.VISIBLE);
             mBinding.tvLoading.setText(R.string.limit_load_fail);
         }
@@ -108,5 +109,21 @@ public class BigPicDetailFragment extends BaseFragment<FragmentPicDetailBinding,
         mBinding.ivPic.setVisibility(View.GONE);
         mBinding.tvRetry.setVisibility(View.GONE);
         animation.start();
+    }
+
+    private void startAnimation() {
+        mBinding.tvLoading.setText(R.string.limit_loading);
+        mBinding.ivLoading.setAnimation(animation);
+        mBinding.ivLoading.startAnimation(animation);
+        mBinding.ivLoading.setVisibility(View.VISIBLE);
+        mBinding.tvLoading.setVisibility(View.VISIBLE);
+        mBinding.tvRetry.setVisibility(View.GONE);
+        animation.start();
+    }
+
+    private void stopAnimation() {
+        mBinding.ivLoading.clearAnimation();
+        mBinding.ivLoading.setVisibility(View.GONE);
+        animation.cancel();
     }
 }

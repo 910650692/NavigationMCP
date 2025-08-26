@@ -68,6 +68,7 @@
     <string name="navi_switch_to_road_main">已切换至主路</string>
     <string name="navi_switch_to_road_auxiliary">已切换至辅路</string>
     <string name="navi_send_to_phone">已发送至手机</string>
+    <string name="navi_send_to_phone_once_in_ten_minute">10分钟内仅可发送一次目的地到手机</string>
     <string name="navi_no_net">⽹络异常，请检查⽹络后重试</string>
     <string name="navi_no_login">登录高德账号才能使用该功能</string>
     <string name="navi_overview_switch">看全览</string>
@@ -275,6 +276,7 @@
     <string name="oil_type_95">95#</string>
     <string name="oil_type_98">98#</string>
     <string name="oil_price">%s/升</string>
+    <string name="oil_price_unit">升</string>
     <string name="catering_price">¥%d</string>
     <string name="parking_lot_total">共%d</string>
     <string name="parking_lot_status">%d/%d</string>

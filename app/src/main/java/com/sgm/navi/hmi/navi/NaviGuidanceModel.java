@@ -216,7 +216,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return;
         }
         String poiId = endRouteParam.getPoiID();
-        if (!ConvertUtils.isEmpty(poiId)) {
+        Logger.i(TAG, poiId);
+        // 这里只有两种搜索类型：POI搜索和Geo搜索,带”."的是逆地理搜索自行拼接的pid，不可用于逆地理搜索
+        if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
             mEndSearchId = mSearchPackage.poiIdSearch(poiId, true);
             Logger.i(TAG, "mEndSearchId = ", mEndSearchId, " poiId = ", poiId);
         } else if (!ConvertUtils.isNull(endRouteParam.getRealPos())) {
@@ -616,9 +618,6 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 }
             }
         } else {
-            if (mIsViaEmpty) {
-                return;
-            }
             mIsViaEmpty = true;
             mViewModel.showViaDetail(false);
         }
@@ -1786,52 +1785,52 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onMCPRequestNavigation(double latitude, double longitude, 
+    public void onMCPRequestNavigation(double latitude, double longitude,
                                      String poiName, String address, boolean isSimulate) {
         Logger.i(TAG, "onMCPRequestNavigation: " + poiName + " (" + latitude + "," + longitude + "), simulate=" + isSimulate);
-        
+
         ThreadManager.getInstance().postUi(() -> {
             try {
                 // 创建目的地POI
                 PoiInfoEntity destinationPoi = new PoiInfoEntity();
                 destinationPoi.setName(poiName != null ? poiName : "目的地");
                 destinationPoi.setAddress(address != null ? address : "");
-                
+
                 GeoPoint destPoint = new GeoPoint();
                 destPoint.setLat(latitude);
                 destPoint.setLon(longitude);
                 destinationPoi.setPoint(destPoint);
-                
+
                 // 创建路线请求参数
                 RouteRequestParam routeRequest = new RouteRequestParam();
                 routeRequest.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
                 routeRequest.setMPoiInfoEntity(destinationPoi);
                 routeRequest.setMRoutePoiType(RoutePoiType.ROUTE_POI_TYPE_END); // 终点
                 routeRequest.setMIsOnline(true); // 在线路线规划
-                
+
                 Logger.d(TAG, "发起路线规划请求...");
-                
+
                 // 发起路线规划
                 long routeTaskId = mRoutePackage.requestRoute(routeRequest);
-                
+
                 if (routeTaskId > 0) {
                     Logger.d(TAG, "路线规划请求成功，taskId: " + routeTaskId + "，等待路线完成后启动导航");
-                    
+
                     // 延迟执行导航启动流程，等待路线规划完成
                     ThreadManager.getInstance().postDelay(() -> {
                         try {
                             Logger.d(TAG, "开始执行导航启动流程...");
-                            
+
                             // 创建Bundle包含导航参数
                             Bundle bundle = new Bundle();
-                            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM, 
+                            bundle.putInt(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_START_NAVI_SIM,
                                         isSimulate ? AutoMapConstant.NaviType.NAVI_SIMULATE : AutoMapConstant.NaviType.NAVI_GPS);
-                            
+
                             // 关闭所有Fragment，切换到导航页面
                             if (mViewModel != null) {
                                 Logger.d(TAG, "关闭所有Fragment并启动导航页面");
                                 mViewModel.closeAllFragment();
-                                
+
                                 // 添加NaviGuidanceFragment，这将触发正常的导航启动流程
                                 addFragment(new NaviGuidanceFragment(), bundle);
                                 Logger.d(TAG, "NaviGuidanceFragment已添加");
@@ -1843,7 +1842,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 } else {
                     Logger.e(TAG, "路线规划请求失败");
                 }
-                
+
             } catch (Exception e) {
                 Logger.e(TAG, "MCP导航请求处理失败: " + e.getMessage());
             }

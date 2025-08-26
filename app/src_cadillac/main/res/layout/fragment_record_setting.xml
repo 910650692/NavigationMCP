@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/driving_record_setting"
                 android:focusable="false"
-                android:textColor="@color/setting_bg_tab_text_select"
+                android:textColor="@color/setting_black"
                 android:textSize="@dimen/sp_46"
                 android:layout_marginTop="@dimen/dp_52"
                 android:layout_marginStart="@dimen/dp_697"
@@ -83,13 +83,13 @@
                     style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mSwitchRecordSetting}"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_202"
+                    android:layout_height="@dimen/dp_204"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/dp_52"
                     android:layout_marginEnd="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_173">
+                    android:layout_marginTop="@dimen/dp_164">
                     <com.sgm.navi.ui.view.SkinCheckBox
                         clickCommand="@{ViewModel.mSwitchRecordSetting}"
                         android:id="@+id/record_setting_auto_check"
@@ -110,8 +110,8 @@
                         android:layout_marginStart="@dimen/dp_32"
                         android:text="@string/driving_record_auto"
                         android:focusable="false"
-                        android:layout_marginTop="@dimen/dp_40"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:layout_marginTop="@dimen/dp_36"
+                        android:textColor="@color/setting_black"
                         android:textSize="@dimen/sp_46"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/record_setting_auto_check"/>
@@ -124,7 +124,7 @@
                         android:text="@string/driving_record_auto_tip"
                         android:textColor="@color/setting_bg_tab_text_unselect"
                         android:textSize="@dimen/sp_38"
-                        android:layout_marginBottom="@dimen/dp_40"
+                        android:layout_marginBottom="@dimen/dp_34"
                         android:focusable="false"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check_text"/>
@@ -136,7 +136,6 @@
                         android:focusable="false"
                         android:background="@color/setting_line"
                         android:layout_marginTop="@dimen/dp_34"
-                        android:layout_marginEnd="@dimen/dp_52"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
@@ -146,13 +145,13 @@
                     style="@style/style_mfc_config"
                     clickCommand="@{ViewModel.mClearDivingRecord}"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_202"
+                    android:layout_height="@dimen/dp_204"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_marginStart="@dimen/dp_52"
                     android:layout_marginEnd="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_375">
+                    android:layout_marginTop="@dimen/dp_368">
 
                     <com.sgm.navi.ui.view.SkinTextView
                         android:id="@+id/record_setting_clear"
@@ -161,7 +160,7 @@
                         android:layout_marginTop="@dimen/dp_36"
                         android:text="@string/driving_record_clear"
                         android:focusable="false"
-                        android:textColor="@color/setting_bg_tab_text_select"
+                        android:textColor="@color/setting_black"
                         android:textSize="@dimen/sp_46"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/record_setting_auto_check"/>
@@ -184,7 +183,6 @@
                         android:id="@+id/record_setting_clear_btn"
                         android:layout_width="@dimen/dp_208"
                         android:layout_height="@dimen/dp_68"
-                        android:layout_marginTop="@dimen/dp_67"
                         android:layout_marginEnd="@dimen/dp_52"
                         android:background="@drawable/bg_record_setting"
                         android:text="@string/driving_record_clear_toast"
@@ -201,7 +199,6 @@
                         android:focusable="false"
                         android:background="@color/setting_line"
                         android:layout_marginTop="@dimen/dp_34"
-                        android:layout_marginEnd="@dimen/dp_52"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />

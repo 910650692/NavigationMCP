@@ -50,6 +50,7 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
     public NaviSceneId mSceneId;
     // 添加一个标签，scene会被服用，用来判断是哪个模块服用的此view
     private int mViewCategory;
+    private boolean mIsNeedShow;
 
     private INaviSceneEvent mEvent = getNaviSceneEvent();
 
@@ -260,5 +261,13 @@ public abstract class NaviSceneBase<VB extends ViewDataBinding, VM extends BaseS
                             INaviSceneEvent.SceneStateChangeType.SceneShowState :
                     INaviSceneEvent.SceneStateChangeType.SceneCloseState), getSceneId(), isReset);
         }
+    }
+
+    public boolean isNeedShow() {
+        return mIsNeedShow;
+    }
+
+    public void setNeedShow(boolean isNeedShow) {
+        mIsNeedShow = isNeedShow;
     }
 }

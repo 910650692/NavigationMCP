@@ -111,11 +111,11 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private void init() {
         Logger.i(TAG, "init:" + isInited);
         if (!isInited) {
+            isInited = true;
             initParameters();
             initCallBacks();
             initView();
             initAndGetMusicTabStatus();
-            isInited = true;
         }
     }
 
@@ -337,6 +337,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         Logger.i(TAG, "openSelf:" + pageCode);
         // 非导航状态打开对应窗口时候先关闭所有Fragment
         if (!isOnNavigating()) {
+            if (mView != null) {
+                // 在当前线程直接设置，无需post到UI线程
+                mView.setVisibility(View.INVISIBLE);
+                mView.setFocusable(false);
+            }
+
             BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MAP_TYPE.name());
             if (mRoutePackage.isRouteState()) {
                 mRoutePackage.clearRouteLine(MAP_TYPE);
@@ -392,8 +398,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (!isInited) {
                 startService();
             } else if (!ConvertUtils.isNull(mView)) {
-                mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
-                mView.setFocusable(isShow);
+                if (mView.getVisibility() != (isShow ? View.VISIBLE : View.INVISIBLE)) {
+                    mView.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
+                    mView.setFocusable(isShow);
+                }
                 if (isShow) {
                     changeUiTypeOnNaviStatusChanged();
                     MapStateManager.getInstance().vrSendLauncherShow(true);

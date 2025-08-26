@@ -40,6 +40,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
 
     public ReminderDialog(Context context, IBaseDialogClickListener baseDialogClickListener) {
         super(context);
+        Logger.d("ReminderDialog", "constructor");
         setDialogClickListener(baseDialogClickListener);
         mRotateAnim = AnimationUtils.loadAnimation(AppCache.getInstance().getMContext(), R.anim.rotate_animation);
         mRotateAnim.setDuration(2000);
@@ -65,6 +66,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.d("ReminderDialog", "mViewBinding", mViewBinding.toString());
         mWebView = mViewBinding.reminderDetail.reminderWebView;
         configureWebView();
         setOnCancelListener(null);
@@ -138,6 +140,7 @@ public class ReminderDialog extends BaseFullScreenDialog<DialogUseReminderBindin
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         setDialogClickListener(null);
+        Logger.d("ReminderDialog", "onDetachedFromWindow");
     }
 
     private void startLoadingAnimation() {

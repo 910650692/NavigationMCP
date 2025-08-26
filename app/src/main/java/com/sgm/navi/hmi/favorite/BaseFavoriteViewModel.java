@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -68,7 +69,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public BaseFavoriteViewModel(final @NonNull Application application) {
         super(application);
         mDataVisibility = new ObservableField<>(false);
-        mTipVisibility = new ObservableField<>(true);
+        mTipVisibility = new ObservableField<>(false);
         mAddVisibility = new ObservableField<>(false);
         mChargingVisibility = new ObservableField<>(false);
         mChargingNoDataVisibility = new ObservableField<>(false);

@@ -74,12 +74,13 @@ public class ConnectorInfoItem implements Parcelable {
         dest.writeString(mPower);
         dest.writeString(mNationalStandard);
         dest.writeString(mStatus);
-        dest.writeInt((int)mParkingLockFlag);
-        dest.writeInt((int)mLockStatus);
+        dest.writeInt(getmParkingLockFlag());
+        dest.writeInt(getmLockStatus());
         dest.writeString(mParkNo);
         dest.writeString(mIdpUserId);
         dest.writeInt(mPreFlag);
     }
+
 
     @Override
     public int describeContents() {

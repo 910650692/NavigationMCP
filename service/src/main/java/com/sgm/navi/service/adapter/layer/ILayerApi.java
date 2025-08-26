@@ -20,6 +20,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -49,6 +50,12 @@ public interface ILayerApi {
 
     /* 只绘制当前路线 */
     void drawOnlyOneRouteLine(MapType mapTypeId, RequestRouteResult routeResult);
+
+    /* 显示终点名称 */
+    void showEndAreaPoint(MapType mapTypeId, RouteParam routeParam);
+
+    /* 清除终点名称 */
+    void clearEndAreaPoint(MapType mapTypeId);
 
     /* 路线替换补能扎标 */
     void updateRouteReplaceChargePoints(MapType mapTypeId, ArrayList<RouteAlterChargeStationInfo> chargeStationInfos);
@@ -97,6 +104,9 @@ public interface ILayerApi {
 
     /*设置行前拥堵气泡是否显示*/
     boolean setRouteJamBubblesVisible(MapType mapTypeId, boolean isShow);
+
+    /* 更新终点停车场扎标是否显示 */
+    void updateRouteEndPointParkViewVisible(MapType mapTypeId, boolean isShow);
 
     /**
      * 设置路线样式风格
@@ -322,12 +332,6 @@ public interface ILayerApi {
     /*========================================= 移图选点 =========================================*/
 
     /*=========================================↓ 扎标图层 ↓=========================================*/
-
-    /*显示终点区域弹出框图层*/
-    boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult);
-
-    /*清除扎标*/
-    void clearLabelItem(MapType mapTypeId);
 
     /*=========================================↑ 扎标图层 ↑=========================================*/
 }

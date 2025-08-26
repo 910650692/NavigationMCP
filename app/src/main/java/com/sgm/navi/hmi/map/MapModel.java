@@ -25,7 +25,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
@@ -413,6 +412,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onDestroy() {
         super.onDestroy();
+        StartService.getInstance().unregisterSdkCallback(TAG, this);
         if (null == mapPackage) {
             return;
         }
@@ -603,12 +603,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
         } else {
             Logger.e(MapDefaultFinalTag.INIT_SERVICE_TAG, "start navi Service");
+            StartService.getInstance().registerSdkCallback(TAG, this);
             Intent intent = new Intent(AppCache.getInstance().getMContext(), NaviService.class);
             ActivityCompat.startForegroundService(AppCache.getInstance().getMContext(), intent);
         }
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        Logger.d(TAG, "LoadMapView", "load Map View");
         if (null == mapPackage || null == layerPackage) {
             onSdkInitSuccess();
             return;
@@ -842,6 +844,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             } else {
                 mapPackage.goToCarPosition(mapTypeId);
             }
+            Logger.i(TAG, "startIcon", "map load finish, hide startIcon");
             ThreadManager.getInstance().postDelay(() -> mViewModel.hideStartIcon(), 600);
             naviPackage.registerObserver(mViewModel.mScreenId, this);
             // 注册监听
@@ -928,8 +931,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 退出巡航
         stopCruise();
 
-        //三指飞屏 并将MapActivity推至后台
-        openThreeFingerFlyingScreen(touchEvent);
+        //三指飞屏 并将MapActivity推至后台 1118742 分屏时禁止三指手势
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            openThreeFingerFlyingScreen(touchEvent);
+        } else {
+            Logger.e(TAG, "分屏状态，禁止三指飞屏");
+        }
         FloatViewManager.getInstance().hideWidgetsOnMapTouch(touchEvent);
     }
 
@@ -1020,6 +1027,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 if (getTopFragment(PoiDetailsFragment.class)) {
                     closeFragment(true);
                 }
+                setMapCenterInScreen();
                 goToCarPosition();
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
                 Logger.i(TAG, "---" + "goToCarPosition");
@@ -2090,11 +2098,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             Logger.w("MapModel", "DEBUG_TMC: onRouteTMCInfo() 收到空的TMC参数");
             return;
         }
-        
+
         Logger.d("MapModel", "DEBUG_TMC: onRouteTMCInfo() 收到TMC回调: " +
-            "key=" + param.getMKey() + ", isShort=" + param.isMIsShort() + 
+            "key=" + param.getMKey() + ", isShort=" + param.isMIsShort() +
             ", time=" + param.getMTime());
-        
+
         mViewModel.setTMCView(param);
     }
 
@@ -2499,7 +2507,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         isShowMusicTab = isOpenFloat;
         setMapCenterInScreen();
         if (mViewModel != null) {
+            boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
+            Logger.i(TAG, musicTabShow);
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
+            NaviPackage.getInstance().setMIsFloatWindowShow(musicTabShow);
         }
     }
 
@@ -2586,34 +2597,66 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         MapMode currentMode = mapPackage.getCurrentMapMode(MapType.MAIN_SCREEN_MAIN_MAP);
         return currentMode;
     }
+    @Override
+    public void onResetSettingConfig() {
+        Logger.d(TAG, "onResetSettingConfig");
+        String currentNaviStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
+        RoutePackage routePackage = RoutePackage.getInstance();
+        NaviPackage naviPackage = NaviPackage.getInstance();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
+            naviPackage.stopNavigation(true);
+            naviPackage.onNaviClose(true);
+            naviPackage.stopSpeech();
+        }
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+            routePackage.abortRequest(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.CRUISE)) {
+            if (mViewModel != null) {
+                mViewModel.stopCruise();
+            }
+        }
+        if ((currentNaviStatus.equals(NaviStatus.NaviStatusType.SELECT_ROUTE))) {
+            routePackage.clearRestArea(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearWeatherView(MapType.MAIN_SCREEN_MAIN_MAP);
+            routePackage.clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
+            return;
+        }
+        if (searchPackage != null) {
+            searchPackage.clearPoiLabelMark();
+            searchPackage.clearLabelMark();
+        } else {
+            Logger.e(TAG, "searchPackage is null");
+        }
+    }
 
     @Override
     public void onShowSearchResult(int taskId, SearchResultEntity searchResultEntity, SearchRequestParameter requestParameter) {
         Logger.d(TAG, "MCP UI显示搜索结果: taskId=" + taskId + ", 搜索类型=" + searchResultEntity.getSearchType());
-        
+
         try {
             // 通过ViewModel触发导航到搜索结果页面
             if (mViewModel != null) {
                 // 创建Bundle数据
                 Bundle bundle = SearchFragmentFactory.createKeywordFragment(
-                        AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, // 源页面标识  
+                        AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, // 源页面标识
                         searchResultEntity.getSearchType(), // 搜索类型
                         searchResultEntity.getKeyword(), // 搜索关键词
                         null // 搜索位置（PoiInfoEntity类型，暂时传null）
                 );
-                
+
                 // 添加MCP标识，表示这是MCP搜索结果，不需要重新搜索
                 bundle.putBoolean("MCP_SEARCH_RESULT", true);
                 bundle.putParcelable("MCP_SEARCH_ENTITY", searchResultEntity);
-                
+
                 // 通过ViewModel显示搜索结果
                 mViewModel.showMCPSearchResult(taskId, searchResultEntity, bundle);
-                
+
                 Logger.d(TAG, "MCP搜索结果页面显示请求已发送");
             } else {
                 Logger.e(TAG, "ViewModel为空，无法显示MCP搜索结果");
             }
-            
+
         } catch (Exception e) {
             Logger.e(TAG, "MCP显示搜索结果失败", e);
         }

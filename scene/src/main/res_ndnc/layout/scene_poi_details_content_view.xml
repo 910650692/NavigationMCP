@@ -226,7 +226,7 @@
                         android:id="@+id/siv_arrival_capacity"
                         android:layout_width="@dimen/dp_36"
                         android:layout_height="@dimen/dp_36"
-                        android:src="@drawable/img_electricity_medium_42"
+                        tools:src="@drawable/img_electricity_medium_42"
                         android:visibility="@{(ScenePoiDetailContentView.mPowerType == 1) ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/poi_arrival_capacity"
                         app:layout_constraintEnd_toStartOf="@+id/poi_arrival_capacity"

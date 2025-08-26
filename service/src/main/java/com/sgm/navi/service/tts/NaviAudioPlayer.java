@@ -297,8 +297,12 @@ public class NaviAudioPlayer {
     public void releaseAudioTrack(int reqId) {
         AudioTrack audioTrack = mAudioTrackMap.get(reqId);
         if (null != audioTrack) {
-            audioTrack.stop();
-            audioTrack.release();
+            if (audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+                if (audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
+                    audioTrack.stop();
+                }
+                audioTrack.release();
+            }
             audioTrack = null;
         }
         mAudioTrackMap.remove(reqId);

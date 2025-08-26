@@ -6,9 +6,30 @@
       "Bash(git checkout backup-mcp-working -- app/src/main/res/values-en/strings.xml app/src/main/res/values/strings.xml)",
       "Bash(git checkout backup-mcp-working -- utils/build.gradle)",
       "Bash(adb logcat -d)",
-      "mcp__fetch__fetch"
+      "mcp__fetch__fetch",
+      "Bash(jar tf mcpservice-manager-0.5.0.aar)",
+      "Bash(jar tf classes.jar)",
+      "Bash(javap -cp classes.jar com.sgm.mcp.protocol.annotations.McpTool)",
+      "Bash(javap -p -s com.sgm.mcp.client.McpClient)",
+      "Bash(javap -p -s com.sgm.mcp.protocol.annotations.McpTool)",
+      "Bash(javap -p -s com.sgm.mcp.protocol.annotations.McpParam)",
+      "Bash(javap -p -s com.sgm.mcp.core.Mcp$Builder)",
+      "Bash(javap -p -s com.sgm.mcp.service.IServerLifecycle)",
+      "Bash(javap -p -s com.sgm.mcp.IMcpCallback)",
+      "Read(/E:\\e\\SGM\\SGMNavigation\\app\\libs/**)",
+      "Bash(jar xf ../mcpservice-manager-0.5.0.aar)",
+      "Bash(grep -n \"@McpTool\\|@McpParam\" app/src/main/java/com/sgm/navi/mcp/tools/LocationTools.java)"
     ],
     "deny": [],
-    "ask": []
-  }
+    "ask": [],
+    "additionalDirectories": [
+      "E:\\e\\SGM\\SGMNavigation\\app\\libs"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "%USERPROFILE%\\.claude\\ccline\\ccline.exe",
+    "padding": 0
+  },
+  "outputStyle": "Explanatory"
 }

@@ -1,6 +1,7 @@
 package com.sgm.navi.service.logicpaket.l2;
 
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.adapter.l2.CleaCanData;
 import com.sgm.navi.service.adapter.l2.L2Adapter;
 import com.sgm.navi.service.adapter.l2.L2DriveObserver;
 import com.sgm.navi.service.adapter.l2.RoadGroupData;
@@ -102,7 +103,7 @@ public class L2Package {
         return mL2Adapter.getScGeoPoint(curSegIdx, curLinkIdx, curPointIdx);
     }
 
-    public List<RoadGroupData> getRoadGroupData() {
-        return mL2Adapter.getRoadGroupData();
+    public CleaCanData getRoadGroupData(long pathID) {
+        return mL2Adapter.getRoadGroupData(pathID);
     }
 }

@@ -3990,7 +3990,14 @@
     <!--动态tbt布局-->
     <dimen name="navi_tbt_height">119dp</dimen>
     <dimen name="navi_tbt_height_short">101dp</dimen>
-    <dimen name="navi_tbt_with">640dp</dimen>
+    <dimen name="navi_tbt_with">544.8dp</dimen>
+    <!--路口大图位置信息-->>
+    <dimen name="navi_cross_left">60dp</dimen>
+    <dimen name="navi_cross_top">178dp</dimen>
+    <dimen name="navi_cross_right">605dp</dimen>
+    <dimen name="navi_cross_bottom">512dp</dimen>
+    <dimen name="navi_cross_split_left">684dp</dimen>
+    <dimen name="navi_cross_split_right">1229dp</dimen>
     <!--1/3屏路口大图高度-->
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
@@ -4020,10 +4027,11 @@
     <dimen name="bg_charge_number_item_corner">12dp</dimen>
     <dimen name="bg_search_main_tab_corner">20dp</dimen>
 
-    <dimen name="navi_main_tap_margin_start">64dp</dimen>
+    <dimen name="navi_main_tap_margin_start">30dp</dimen>
     <dimen name="navi_main_tap_margin_top">80dp</dimen>
-    <dimen name="navi_main_tap_margin_bottom">128dp</dimen>
+    <dimen name="navi_main_tap_margin_bottom">94dp</dimen>
     <dimen name="navi_main_tap_margin_end">64dp</dimen>
+    <dimen name="navi_main_tab_margin_top">46dp</dimen>
     <dimen name="navi_main_limit_margin_end">64dp</dimen>
     <dimen name="navi_main_tap_height">86dp</dimen>
     <dimen name="navi_main_parking_margin_end">132dp</dimen>
@@ -4078,4 +4086,6 @@
     <dimen name="scene_srv_add_via_list_max_height">545dp</dimen>
     <dimen name="terminal_parking_result_view_max_height">743dp</dimen>
     <dimen name="route_search_service_page_max_height">518dp</dimen>
+    <dimen name="item_favorite_empty_no_favorite_margin_top">55dp</dimen>
+    <dimen name="item_favorite_empty_no_data_margin_top">40dp</dimen>
 </resources>

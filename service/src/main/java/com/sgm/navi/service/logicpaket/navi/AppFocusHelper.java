@@ -8,7 +8,9 @@ import android.content.Context;
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.logicpaket.cruise.CruisePackage;
+import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListener, CarAppFocusManager.OnAppFocusOwnershipCallback {
 
@@ -95,11 +97,15 @@ public class AppFocusHelper implements CarAppFocusManager.OnAppFocusChangedListe
         if (ConvertUtils.equals(appType, CarAppFocusManager.APP_FOCUS_TYPE_NAVIGATION) && mIsCarMapNavigating) {
             Logger.d(TAG, "车机地图导航焦点被收回，退出导航/巡航");
             mIsCarMapNavigating = false;
-            NaviPackage.getInstance().stopNavigation(false);
+            if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NAVING)){
+                NaviPackage.getInstance().stopNavigation(false);
+            }
 
             CruisePackage cruise = CruisePackage.getInstance();
             if (cruise != null) {
-                cruise.stopCruiseWithFocusLost();
+                if (NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.CRUISE)){
+                    cruise.stopCruiseWithFocusLost();
+                }
             }
         }
     }

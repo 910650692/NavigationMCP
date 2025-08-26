@@ -24,7 +24,7 @@ android {
         applicationId "com.sgm.navi.hmi"
         minSdk IS_PAD_RUN.toBoolean() ? Integer.parseInt(libs.versions.padminSdk.get()) : Integer.parseInt(libs.versions.minSdk.get())
         targetSdk Integer.parseInt(libs.versions.targetSdk.get())
-        versionCode 1
+        versionCode 1001
         versionName generateTime() + ".1"
         buildConfigField("String", "MAP_SDK", "$MAP_SDK")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

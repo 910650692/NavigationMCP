@@ -86,6 +86,11 @@ public class ThreadManager {
         mThreadHandler.removeTask(runnable);
     }
 
+    public void runOnUiThread(Runnable runnable) {
+        if (isMainThread()) runnable.run();
+        else postUi(runnable);
+    }
+
     public void postUi(Runnable runnable) {
         mThreadHandler.postUi(runnable);
     }

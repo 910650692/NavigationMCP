@@ -3,10 +3,12 @@ package com.sgm.navi.ui.action
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.android.utils.log.Logger
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -100,6 +102,7 @@ fun loadImageUrl(imgView: ImageView, imgUrl: String, onImageLoadListener: OnImag
     Glide.with(imgView.context).load(imgUrl).addListener(
         object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                Logger.e("onLoadFailed")
                 onImageLoadListener.onLoadCompleted(false)
                 return false
             }
@@ -111,6 +114,7 @@ fun loadImageUrl(imgView: ImageView, imgUrl: String, onImageLoadListener: OnImag
                 dataSource: DataSource,
                 isFirstResource: Boolean
             ): Boolean {
+                Logger.e("onResourceReady")
                 onImageLoadListener.onLoadCompleted(true)
                 return false
             }

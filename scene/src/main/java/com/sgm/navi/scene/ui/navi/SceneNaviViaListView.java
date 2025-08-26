@@ -173,6 +173,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
                     final PoiInfoEntity poiInfo = new PoiInfoEntity();
                     poiInfo.setPid(entity.getPid());
                     poiInfo.setPoint(entity.getRealPos());
+                    poiInfo.setName(entity.getName());
                     Bundle bundle = SearchFragmentFactory.
                             createPoiDetailsFragment(
                                     AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,

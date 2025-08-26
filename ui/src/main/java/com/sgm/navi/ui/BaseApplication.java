@@ -20,7 +20,9 @@ public class BaseApplication extends Application implements Application.Activity
     @Override
     public void onCreate() {
         super.onCreate();
-        Logger.i(TAG, "应用进程创建");
+        Logger.i(TAG, "应用进程创建",
+                "current version code", ProcessManager.getVersionCode(getApplicationContext()),
+                "current version name", ProcessManager.getVersionName(getApplicationContext()));
         UtilsManager.init(this);
         if (DeviceUtils.isCar(this) && getSystemService(UserManager.class).isSystemUser()) {
             Logger.d(TAG, "NaviApp_Exit CurrentisSystemuser,killprocess");

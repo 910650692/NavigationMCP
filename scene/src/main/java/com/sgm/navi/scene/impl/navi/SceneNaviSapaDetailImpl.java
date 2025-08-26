@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.impl.navi;
 
+import android.text.TextUtils;
+
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
@@ -261,12 +263,16 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             } else {
                 Logger.i(TAG, "sapaItem.getPos() is empty! Name:", sapaItem.getName());
             }
-            if (!ConvertUtils.isEmpty(poiId)) {
+            Logger.i(TAG, poiId);
+            if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
                 // 进行PoiId搜索 为了途经点添加功能
                 mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId, true);
-                Logger.d(TAG, "poiId = ", poiId, " mSapaSearchId = ", mSapaSearchId, " Name:", sapaItem.getName());
+                Logger.d(TAG, " mSapaSearchId = ", mSapaSearchId, " Name:", sapaItem.getName());
+            } else if (!ConvertUtils.isNull(sapaItem.getPos())){
+                mSapaSearchId = SearchPackage.getInstance().geoSearch(sapaItem.getPos(), true);
+                Logger.d(TAG, " mSapaSearchId = ", mSapaSearchId, " Name:", sapaItem.getName());
             } else {
-                Logger.i(TAG, "poiId is empty! Name:", sapaItem.getName());
+                Logger.e(TAG, "poiId无效，地址为空，无法进行搜索");
             }
         } else {
             Logger.e(TAG, "sapaItem is null");

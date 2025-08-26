@@ -1005,10 +1005,16 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     @Override
     public void onRouteAllRoutePoiInfo(final RequestRouteResult requestRouteResult) {
         mRouteParams = requestRouteResult.getMRouteParams();
-        mViewModel.getEndName().set(mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP).getName());
         if (!ConvertUtils.isEmpty(mViewModel)) {
             ThreadManager.getInstance().postUi(() -> mViewModel.setViaListUI(mRouteParams, requestRouteResult.getMRouteWay()));
         }
+        RouteParam endParam = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (endParam == null) {
+            Logger.e(TAG , "end param is null");
+            return;
+        }
+        mViewModel.getEndName().set(endParam.getName());
+
     }
 
     @Override
@@ -1050,7 +1056,13 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     public void onRouteRequest() {
         mRoutePackage.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
         //清除搜索图层扎标
-        mSearchPackage.clearLabelMark();
+        mSearchPackage.clearPoiLabelMark();
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_CHILD_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_CENTRAL);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_CHARGE_STATION);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_POINT);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_Line_Road);
+        mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_PARENT_PARK);
         clearWeatherView();
         clearRestArea();
         clearRestrictionView();
@@ -1145,7 +1157,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
             }
 
             //TODO CR
-            if (mViewModel != null && mViewModel.isNDCar()) {
+            if (mViewModel != null && mViewModel.isNewAlterCharge()) {
                 if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
                         && mRouteChargeStationParam.getMRouteSupplementParams() != null
                         && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
@@ -1171,7 +1183,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         }
 
         //TODO CR
-        if (mViewModel != null && mViewModel.isNDCar()) {
+        if (mViewModel != null && mViewModel.isNewAlterCharge()) {
             if (!ConvertUtils.isEmpty(mViewModel) && mRouteChargeStationParam != null
                     && mRouteChargeStationParam.getMRouteSupplementParams() != null
                     && !mRouteChargeStationParam.getMRouteSupplementParams().isEmpty()
@@ -1288,7 +1300,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
                 }
 
                 //TODO CR
-                if (mViewModel != null && mViewModel.isNDCar()) {
+                if (mViewModel != null && mViewModel.isNewAlterCharge()) {
                     final Fragment chargeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.NEW_ALTER_CHARGE_FRAGMENT).navigation();
                     final Bundle chargeBundle = new Bundle();
                     chargeBundle.putParcelable(AutoMapConstant.RouteBundleKey.BUNDLE_KEY_ALTER_CHARGE_STATION,
@@ -1371,11 +1383,7 @@ public void onImmersiveStatusChange(final MapType mapTypeId, final ImersiveStatu
         Logger.d(TAG, "不在选路态");
         return;
     }
-    if (currentImersiveStatus == ImersiveStatus.IMERSIVE) {
-        if (mCurrentImersiveStatus != currentImersiveStatus) {
-            mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
-        }
-    } else {
+    if (currentImersiveStatus != ImersiveStatus.IMERSIVE) {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             mViewModel.cancelTimer();
         }
@@ -1590,6 +1598,10 @@ public void setPoint() {
 
     public int getSearchLoadingType() {
         return mSearchLoadingType;
+    }
+
+    public void showPreview() {
+        mRoutePackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
     }
 
     @Override

@@ -283,12 +283,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      * 高德服务权限弹窗
      */
     public void popAgreementDialog() {
+        Logger.d(TAG, "ReminderDialog", "popAgreementDialog");
         if (reminderDialog != null && reminderDialog.isShowing() && mView != null) {
+            Logger.d(TAG, "ReminderDialog", "popAgreementDialog already is show");
             return;
         }
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
+                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user commit");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
                 mModel.updateFirstLauncherFlag();
@@ -297,11 +300,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
             @Override
             public void onCancelClick() {
+                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user cancel");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.CANCEL_AUTO_PROTOCOL);
                 FloatViewManager.getInstance().showAllCardWidgets();
             }
         });
+        Logger.d(TAG, "ReminderDialog", "popAgreementDialog currently on display");
         reminderDialog.show();
         FloatViewManager.getInstance().mRemindDialogShow = true;
         FloatViewManager.getInstance().hideAllCardWidgets(false);
@@ -312,6 +317,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void dismissReminderDialog() {
+        Logger.d(TAG, "ReminderDialog dismiss");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
@@ -320,6 +326,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void reminderDialogReCreate() {
+        Logger.d(TAG, "ReminderDialog reCreate");
         if (reminderDialog != null && reminderDialog.isShowing()) {
             reminderDialog.dismiss();
             reminderDialog = null;
@@ -385,10 +392,17 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void hideStartIcon() {
-        startIconVisibility.set(false);
+        if (StartService.getInstance().checkSdkIsAvailable()) {
+            Logger.d(TAG, "startIcon", "hide startIcon");
+            startIconVisibility.set(false);
+        }
     }
 
     public void showStartIcon() {
+        if (mView != null) {
+            mView.set557LogoPic();
+        }
+        Logger.d(TAG, "startIcon", "show startIcon");
         startIconVisibility.set(true);
     }
 
@@ -539,7 +553,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_TYPE, AutoMapConstant.SearchType.SEARCH_KEYWORD);
             bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_KEYWORD, keyword);
             bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_POI_LIST, null);
-            addFragment(new SearchResultFragment(), bundle);
+            addPoiDetailsFragment(new SearchResultFragment(), bundle);
         } catch (Exception e) {
             Logger.e(SEARCH_HMI_TAG, "skipFragment: Exception occurred", e);
         }
@@ -694,6 +708,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void loadMapView(IBaseScreenMapView mapSurfaceView) {
+        Logger.d(TAG, "LoadMapView", "load Map View");
         mModel.loadMapView(mapSurfaceView);
     }
 
@@ -1429,10 +1444,15 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void showToast(@StringRes int res) {
         if (Looper.getMainLooper() != Looper.myLooper()) {
             ThreadManager.getInstance().postUi(() -> {
-                ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+                if (mView != null) {
+                    ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+                }
+
             });
         } else {
-            ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+            if (mView != null) {
+                ToastUtils.Companion.getInstance().showCustomToastView(mView.getString(res));
+            }
         }
     }
 
@@ -1477,10 +1497,29 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (ConvertUtils.isEmpty(endPoint)) {
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, endPoint);
-        bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
-        addFragment(new RouteFragment(), bundle);
+        switch (mModel.getNaviStatus()) {
+            case NaviStatus.NaviStatusType.SELECT_ROUTE,
+                    NaviStatus.NaviStatusType.ROUTING,
+                    NaviStatus.NaviStatusType.NAVING:
+                //当前为导航态，更换目的地直接发起快速导航
+                final RouteRequestParam routeRequestParam = new RouteRequestParam();
+                routeRequestParam.setMPoiInfoEntity(endPoint);
+                routeRequestParam.setMRoutePoiType(RoutePoiType.ROUTE_POI_TYPE_END);
+                routeRequestParam.setMMapTypeId(MapType.MAIN_SCREEN_MAIN_MAP);
+                RoutePackage.getInstance().requestRoute(routeRequestParam);
+                break;
+            case NaviStatus.NaviStatusType.NO_STATUS,
+                    NaviStatus.NaviStatusType.CRUISE,
+                    NaviStatus.NaviStatusType.LIGHT_NAVING:
+                //打开算路界面
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, endPoint);
+                bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+                addFragment(new RouteFragment(), bundle);
+                break;
+            default:
+                break;
+        }
     }
 
     public void startNaviForRouteOver() {
@@ -1704,7 +1743,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             case INaviConstant.OpenIntentPage.ROUTE_PAGE:
                 final PoiInfoEntity endPoint = ExportIntentParam.getPoiInfo();
                 if (null != endPoint) {
-                    startRoute(endPoint);
+                    openRoute(endPoint);
                 }
                 ExportIntentParam.setPoiInfo(null);
                 break;

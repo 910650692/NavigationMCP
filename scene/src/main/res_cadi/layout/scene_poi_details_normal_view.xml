@@ -42,17 +42,17 @@
             android:focusable="false"
             android:background="@color/route_line_color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_gas_oil_list" />
+            app:layout_constraintTop_toBottomOf="@+id/poi_child_list" />
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_business_hours_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_38"
             android:layout_marginEnd="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_child_list">
+            app:layout_constraintTop_toBottomOf="@+id/poi_details_sub_line">
 
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/poi_business_hours"

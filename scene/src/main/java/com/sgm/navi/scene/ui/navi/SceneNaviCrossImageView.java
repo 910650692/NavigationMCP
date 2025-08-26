@@ -191,4 +191,10 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
     public void setNextText(String text) {
         mViewBinding.stvTextNext.setText(text);
     }
+
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onWindowSideChanged(isOpenFloat);
+        }
+    }
 }

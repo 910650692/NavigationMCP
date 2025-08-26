@@ -21,6 +21,7 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.route.RouteChargeStationParam;
+import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.ArrayList;
@@ -57,6 +58,16 @@ public class LayerAdapterImplD implements ILayerApi {
 
     @Override
     public void drawRouteLine(MapType mapTypeId, RequestRouteResult routeResult) {
+
+    }
+
+    @Override
+    public void showEndAreaPoint(MapType mapTypeId, RouteParam routeParam) {
+
+    }
+
+    @Override
+    public void clearEndAreaPoint(MapType mapTypeId) {
 
     }
 
@@ -403,12 +414,7 @@ public class LayerAdapterImplD implements ILayerApi {
     }
 
     @Override
-    public boolean updatePopSearchPointInfo(MapType mapTypeId, LayerItemLabelResult labelResult) {
-        return true;
-    }
-
-    @Override
-    public void clearLabelItem(MapType mapTypeId) {
+    public void updateRouteEndPointParkViewVisible(MapType mapTypeId, boolean isShow) {
 
     }
 }

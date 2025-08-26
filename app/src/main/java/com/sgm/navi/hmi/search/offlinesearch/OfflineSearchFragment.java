@@ -80,6 +80,8 @@ public class OfflineSearchFragment extends BaseFragment<OfflineSearchFragmentLay
 
     @Override
     protected void onBackPressed() {
-        mBinding.offlineCityList.closeSearchFragment();
+        if (mBinding != null) {
+            mBinding.offlineCityList.closeSearchFragment();
+        }
     }
 }

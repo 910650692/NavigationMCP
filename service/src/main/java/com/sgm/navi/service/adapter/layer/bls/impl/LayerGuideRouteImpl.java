@@ -78,6 +78,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     private ArrayList<PathInfo> mPathInfoList = new ArrayList<>();
     private ArrayList<RoutePoint> mViaList = new ArrayList<>();
     private RoutePoints mPathPoints;
+    private LayerItemRouteEndPoint mEndPoint;
 
     public LayerGuideRouteImpl(BizControlService bizService, MapView mapView, Context context, MapType mapType) {
         super(bizService, mapView, context, mapType);
@@ -123,8 +124,8 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             }
             case BizRouteType.BizRouteTypeEndPoint -> {
                 if (item instanceof RoutePathPointItem endPoint) {
-                    int pathId = (int) endPoint.getPathId();
-                    if (pathId == LayerPointItemType.ROUTE_POINT_END_PARK.ordinal()) {
+                    Logger.d(TAG, "isShowParkView ", mEndPoint.isShowParkView());
+                    if (!ConvertUtils.isEmpty(mEndPoint) && mEndPoint.isShowParkView()) {
                         type = LayerPointItemType.ROUTE_POINT_END_PARK;
                     } else {
                         //除终点停车场扎标外 其余终点类型扎标无需下发点击事件
@@ -311,6 +312,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 !isNaving) {
             showPreviewView();
         }
+        if (null == mEndPoint) {
+            mEndPoint = new LayerItemRouteEndPoint();
+        }
         updatePaths();
     }
 
@@ -340,14 +344,32 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 !isNaving) {
             showPreviewView();
         }
+        if (null == mEndPoint) {
+            mEndPoint = new LayerItemRouteEndPoint();
+        }
         updatePaths();
     }
 
     /* 更新终点扎标数据 */
     public void updateRouteEndPoint(LayerItemRouteEndPoint endPoint) {
         Logger.d(TAG, getMapType(), "updateRoutePoints endPoint ", endPoint.toString());
+        mEndPoint = endPoint;
         getStyleAdapter().updateRoutePoints(endPoint);
         getLayerGuideRouteControl().updateStyle(BizRouteType.BizRouteTypeEndPoint);
+    }
+
+    /* 更新终点停车场扎标是否显示 */
+    public void updateRouteEndPointParkViewVisible(boolean isShow) {
+        Logger.d(TAG, getMapType(), " isShow ", isShow, " mEndPoint is null ", ConvertUtils.isEmpty(mEndPoint));
+        if (!ConvertUtils.isEmpty(mEndPoint)) {
+            boolean showParkView = mEndPoint.isShowParkView();
+            Logger.d(TAG, getMapType(), " isShow ", isShow, " showParkView ", showParkView);
+            if (showParkView != isShow) {
+                mEndPoint.setShowParkView(isShow);
+                getStyleAdapter().updateRoutePoints(mEndPoint);
+                getLayerGuideRouteControl().updateStyle(BizRouteType.BizRouteTypeEndPoint);
+            }
+        }
     }
 
     /**
@@ -759,6 +781,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 point.mPos = new Coord3DDouble(info.getMEndPoints().get(t).getMPos().getLon()
                         , info.getMEndPoints().get(t).getMPos().getLat()
                         , info.getMEndPoints().get(t).getMPos().getZ());
+                Logger.d(TAG, "endPoint lat ", point.mPos.lat, " lon ", point.mPos.lon);
                 infos.mEndPoints.add(point);
             }
         }
@@ -999,7 +1022,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         ArrayList<?> pathInfoList = routeResult.getMLineLayerParam().getMPathInfoList();
-        setPathInfos(pathInfoList, 0);
+        int selectIndex = routeResult.getMLineLayerParam().getMSelectIndex();
+        Logger.d(TAG, getMapType(), "setPathInfoByRouteResult selectIndex = " + selectIndex);
+        setPathInfos(pathInfoList, Math.max(selectIndex, 0));
         Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
     }
 
@@ -1011,7 +1036,9 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             return;
         }
         ArrayList<?> pathInfoList = routeResult.getMLineLayerParam().getMPathInfoList();
-        setPathInfos(pathInfoList, 0, isShowOnePath);
+        int selectIndex = routeResult.getMLineLayerParam().getMSelectIndex();
+        Logger.d(TAG, getMapType(), "setPathInfoByRouteResult selectIndex = " + selectIndex);
+        setPathInfos(pathInfoList, Math.max(selectIndex, 0), isShowOnePath);
         Logger.d(TAG, getMapType(), "setPathInfoByRouteResult pathInfoList size =", pathInfoList.size());
     }
 
@@ -1173,9 +1200,10 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
      */
     public void clearPaths() {
         Logger.d(TAG, getMapType(), "clearPaths");
-        getLayerGuideRouteControl().clearPaths();
         getLayerGuideRouteControl().clearPathsCacheData();
+        getLayerGuideRouteControl().clearPaths();
         getLayerRoadFacilityControl().clearAllItems();
+        mEndPoint = null;
     }
 
     /**

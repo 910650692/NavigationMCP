@@ -192,11 +192,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             return;
         }
         ScaleInfo scaleInfo = new ScaleInfo();
-        scaleInfo.bgScale = 0.7;
-        scaleInfo.poiScale = 0.7;
-        scaleInfo.bubbleScale = 0.7;
+        scaleInfo.bgScale = 0.8;
+        scaleInfo.poiScale = 0.8;
+        scaleInfo.bubbleScale = 0.8;
         if (null != getMapview().getLayerMgr()) {
-            Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.7");
+            Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.8");
             getMapview().getLayerMgr().setAllPointLayerItemsScale(scaleInfo);
         }
     }
@@ -649,7 +649,8 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         getMapview().removeMapviewObserver(this);
         getMapService().destroyMapView(getMapview());
         setDefaultMapView(null);
-        getDefaultDevice().attachSurfaceToDevice(null);
+        // TODO: 2025/8/21 根据高德回复 无需手动调用
+//        getDefaultDevice().attachSurfaceToDevice(null);
         getDefaultDevice().removeDeviceObserver(this);
         getMapService().destroyDevice(getDefaultDevice());
     }
@@ -1007,5 +1008,12 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
 
     public int getScaleLineLength() {
         return getMapview().getOperatorScale().getScaleLineLength();
+    }
+
+    public void updateLayerStyle() {
+        Logger.d(TAG, mapType, "updateLayerStyle mapView=" + getMapview());
+        if (getMapview() != null) {
+            getMapview().getLayerMgr().updateStyle();
+        }
     }
 }

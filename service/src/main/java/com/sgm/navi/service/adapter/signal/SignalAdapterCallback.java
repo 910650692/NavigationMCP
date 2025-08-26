@@ -77,4 +77,8 @@ public interface SignalAdapterCallback {
     default void onTotalFuelSaving(int value) {
 
     }
+
+    default void onBatteryIndicatorStatusChange(boolean value) {
+
+    }
 }

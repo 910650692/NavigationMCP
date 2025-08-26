@@ -1515,7 +1515,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             //如果是图库应用或距上一次调用间隔大于30s
             mReversePkgMap.replace(clientPkg, currentMillis);
             final GeoPoint geoPoint = new GeoPoint(baseGeoPoint.getLon(), baseGeoPoint.getLat());
-            mGeoSearchId = SearchPackage.getInstance().geoSearch(geoPoint, true);
+            mGeoSearchId = SearchPackage.getInstance().geoSearchNearby(geoPoint, true);
             return mGeoSearchId;
         } else {
             return -1;

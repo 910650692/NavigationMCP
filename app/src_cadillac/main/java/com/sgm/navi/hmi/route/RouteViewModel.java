@@ -49,4 +49,14 @@ public class RouteViewModel extends BaseRouteViewModel {
         }
         return NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.SELECT_ROUTE);
     }
+
+    @Override
+    public boolean isLongScreen() {
+        return true;
+    }
+
+    @Override
+    public boolean isNewAlterCharge() {
+        return true;
+    }
 }

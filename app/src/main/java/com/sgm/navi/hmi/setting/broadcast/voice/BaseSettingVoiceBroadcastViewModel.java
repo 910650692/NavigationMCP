@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.setting.broadcast.voice;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -17,10 +18,8 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.define.code.UserDataCode;
-import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.voice.OperationStatus;
 import com.sgm.navi.service.define.voice.VoiceInfo;
-import com.sgm.navi.service.greendao.setting.SettingManager;
 import com.sgm.navi.ui.action.Action;
 import com.sgm.navi.ui.base.BaseViewModel;
 
@@ -70,20 +69,12 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
 
     public Action mSwitchDefaultVoice = () -> {
         if(Boolean.FALSE.equals(mIsDefaultVoiceUsed.getValue())){
-            mIsDefaultVoiceUsed.setValue(true);
-            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, "default");
-            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, "default");
-            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME,
-                    ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
-            SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PATH, GBLCacheFilePath.DEFAULT_VOICE_PATH);
-            mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH, ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name) +"语音设置成功");
-            mView.setCurrentVoice();
-            mView.unSelectAllVoices();
-            mView.resetVoiceId();
-            ToastUtils.Companion.getInstance().showCustomToastView(
-                    ResourceUtils.Companion.getInstance()
-                            .getString(R.string.setting_broadcast_voice_current_name) + "语音设置成功");
-            sendBuryPointForSetVoice(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
+            ThreadManager.getInstance().runAsync(() -> {
+                mModel.setVoice(GBLCacheFilePath.DEFAULT_VOICE_PATH, "default",
+                        ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name),
+                        "default", true);
+                sendBuryPointForSetVoice(ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name));
+            });
         }
     };
 
@@ -119,6 +110,23 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
         replaceVoiceInfo(id, taskCode, percent);
     }
 
+    public void onVoiceSet(String voicePackage, int result, String voiceName, boolean isBoolean) {
+        ThreadManager.getInstance().postUi(() -> {
+            mIsDefaultVoiceUsed.setValue(isBoolean);
+            mView.setCurrentVoice();
+            if (!TextUtils.isEmpty(voicePackage)) {
+                if (TextUtils.equals(voicePackage, "default")) {
+                    mView.unSelectAllVoices();
+                    mView.resetVoiceId();
+                } else {
+                    mView.setSingleChoice(Integer.parseInt(voicePackage));
+                }
+            }
+            mModel.synthesize(voiceName + "语音设置成功");
+            ToastUtils.Companion.getInstance().showCustomToastView(voiceName + "语音设置成功");
+        });
+    }
+
     public void getRecommendVoiceList(){
         recommendVoiceList = mModel.getRecommendVoiceList();
     }
@@ -151,18 +159,13 @@ public class BaseSettingVoiceBroadcastViewModel extends BaseViewModel<SettingVoi
      * 操作
      * @param voiceInfo
      */
-    public void toUseTask(final VoiceInfo voiceInfo){
-        Logger.e(TAG, "toUseTask: " + voiceInfo.getId());
-        mIsDefaultVoiceUsed.setValue(false);
-        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PACKAGE, String.valueOf(voiceInfo.getId()));
-        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_ICON, voiceInfo.getImageUrl());
-        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_NAME, voiceInfo.getName());
-        SettingManager.getInstance().insertOrReplace(SettingController.KEY_SETTING_VOICE_PATH, voiceInfo.getFilePath());
-        mModel.setVoice(voiceInfo.getFilePath(), voiceInfo.getName() +"语音设置成功");
-        mView.setCurrentVoice();
-        mView.setSingleChoice(voiceInfo.getId());
-
-        sendBuryPointForSetVoice(voiceInfo.getName());
+    public void toUseVoice(final VoiceInfo voiceInfo){
+        Logger.e(TAG, "toUseVoice: " + voiceInfo.getId());
+        ThreadManager.getInstance().runAsync(() -> {
+            mModel.setVoice(voiceInfo.getFilePath(), String.valueOf(voiceInfo.getId()),
+                    voiceInfo.getName(), voiceInfo.getImageUrl(), false);
+            sendBuryPointForSetVoice(voiceInfo.getName());
+        });
     }
 
     /**

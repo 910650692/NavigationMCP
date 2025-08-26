@@ -188,7 +188,13 @@ public final class MapStateManager {
             mCurNaviStatus = naviStatus;
             updateNaviStatus(naviStatus);
             if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(naviStatus)) {
-                final int size = mRouteList.size();
+                int size = mRouteList.size();
+                if (size == 0) {
+                    RequestRouteResult routeResult = RoutePackage.getInstance().getRequestRouteResult(MapType.MAIN_SCREEN_MAIN_MAP);
+                    if (null != routeResult && null != routeResult.getMRouteLineInfos()) {
+                        size = routeResult.getMRouteLineInfos().size();
+                    }
+                }
                 Logger.w(IVrBridgeConstant.TAG, "路线size = " + size);
                 mBuilder.setPathCount(size);
                 final int result = AMapStateUtils.saveMapState(mBuilder.build());
@@ -822,7 +828,7 @@ public final class MapStateManager {
                 || ProcessStatus.AppRunStatus.PAUSED == appRunStatus
                 || ProcessStatus.AppRunStatus.STOPPED == appRunStatus) {
             openMap(appRunStatus);
-            if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus) {
+            if (ProcessStatus.AppRunStatus.DESTROYED == appRunStatus || mLauncherDeskMode == 1) {
                 saveCommand = true;
             }
         } else if (null != AppCache.getInstance().getMContext()) {

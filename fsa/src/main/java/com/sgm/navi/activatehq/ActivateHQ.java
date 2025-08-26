@@ -41,11 +41,11 @@ public final class ActivateHQ {
     private final static String HQ = "HQ";
     private static int QUERY_ORDER_NUM = 0;
     private final long[] mDelays = {
-            AutoMapConstant.DELAY_MINUTE * 2,
-            AutoMapConstant.DELAY_MINUTE * 5,
-            AutoMapConstant.DELAY_MINUTE * 5
+            AutoMapConstant.DELAY_TEN_SECONDS,
+            AutoMapConstant.DELAY_TEN_SECONDS * 2,
+            AutoMapConstant.DELAY_TEN_SECONDS * 2
     };
-    private int mIndex = 0;
+
     private AtomicInteger mNetFailedRetryCount = new AtomicInteger(0);
 
     private AdasManager mAdasManager;
@@ -55,7 +55,6 @@ public final class ActivateHQ {
         DEVICES_ID = CalibrationPackage.getInstance().getDeviceId();
         SYS_VERSION = "1.0";
         API_VERSION = "1.0";
-        mIndex = 0;
         QUERY_ORDER_NUM = 0;
         mNetFailedRetryCount.set(0);
         mNetRetryExecutor = Executors.newScheduledThreadPool(1);
@@ -80,6 +79,10 @@ public final class ActivateHQ {
      * @param manager adasManager
      */
     public void init(final AdasManager manager) {
+        if (CalibrationPackage.getInstance().adasConfigurationType() != 8) {
+            Logger.e(TAG, "not GMC L2++ configuration");
+            return;
+        }
         this.mAdasManager = manager;
         startActivate();
     }
@@ -91,6 +94,11 @@ public final class ActivateHQ {
         ThreadManager.getInstance().runAsync(new Runnable() {
             @Override
             public void run() {
+                if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.APP_KEY))) {
+                    Logger.e(TAG, "AppKey无需再次请求");
+                    postUUID();
+                    return;
+                }
                 testAppKey();
             }
         });
@@ -121,7 +129,7 @@ public final class ActivateHQ {
                         public void run() {
                             testAppKey();
                         }
-                    }, mDelays[retryIndex], TimeUnit.MINUTES);
+                    }, mDelays[retryIndex], TimeUnit.SECONDS);
                 } else {
                     Logger.e(TAG, "请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -137,14 +145,13 @@ public final class ActivateHQ {
      */
     private void postUUID() {
         Logger.e(TAG, "postUUID: ");
-//        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, "");
-//        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
-//            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
-//            Logger.e(TAG, "UUID静态变量为空，数据库存有UUID = ", UUID);
-//            mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
-//            readyCreateOrder();
-//            return;
-//        }
+        if (!ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY))) {
+            UUID = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.UUID_KEY);
+            Logger.e(TAG, "UUID静态变量为空，数据库存有UUID = ", UUID);
+            mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
+            readyCreateOrder();
+            return;
+        }
 
         final UuidRequest uuidRequest = new UuidRequest(API_VERSION, TEST_APP_ID, SYS_VERSION, DEVICES_ID);
         Logger.e(TAG, "uuid req : ", uuidRequest);
@@ -156,11 +163,8 @@ public final class ActivateHQ {
                 }
                 UUID = response.getMVin();
                 CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.UUID_KEY, UUID);
-                //todo adas要测试，直接传下单成功与uuid
-                mAdasManager.setUUID(UUID, UuidSubStatus.Subscribed);
-                Logger.e(TAG, "！！！！！成功发送UUID到ADAS服务 : ", UUID);
-                //mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
-                //readyCreateOrder();
+                mAdasManager.setUUID(UUID, UuidSubStatus.Unknown);
+                readyCreateOrder();
             }
 
             @Override
@@ -182,7 +186,7 @@ public final class ActivateHQ {
                         public void run() {
                             postUUID();
                         }
-                    }, mDelays[retryIndex], TimeUnit.MINUTES);
+                    }, mDelays[retryIndex], TimeUnit.SECONDS);
                 } else {
                     Logger.e(TAG, "uuid请求网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -197,7 +201,6 @@ public final class ActivateHQ {
      * 准备下单
      */
     public void readyCreateOrder() {
-        CommonManager.getInstance().insertOrReplace(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID, "");
         final String orderId = CommonManager.getInstance().getValueByKey(AutoMapConstant.ActivateOrderTAG.HQ_ORDER_ID);
         if (!ConvertUtils.isEmpty(orderId)) {
             Logger.e(TAG, "有订单号记录，直接查询订单 : ", orderId);
@@ -234,7 +237,7 @@ public final class ActivateHQ {
                             public void run() {
                                 readyCreateOrder();
                             }
-                        }, mDelays[retryIndex], TimeUnit.MINUTES);
+                        }, mDelays[retryIndex], TimeUnit.SECONDS);
                     } else {
                         Logger.e(TAG, "网络失败重试次数用完，等待下次点火");
                         if (!mNetRetryExecutor.isShutdown()) {
@@ -263,7 +266,6 @@ public final class ActivateHQ {
 
         if (!ConvertUtils.equals(UUID, uuid) && !ConvertUtils.isEmpty(uuid)) {
             Logger.e(TAG, "UUID constant = ", UUID, " ; UUID in database = ", uuid);
-            UUID = uuid;
         }
         Logger.e(TAG, "UUID = ", UUID);
         final CreateOrderRequest createOrderReq = new CreateOrderRequest(API_VERSION, TEST_APP_ID, UUID, HQ);
@@ -295,7 +297,7 @@ public final class ActivateHQ {
                         public void run() {
                             createCloudOrder();
                         }
-                    }, mDelays[retryIndex], TimeUnit.MINUTES);
+                    }, mDelays[retryIndex], TimeUnit.SECONDS);
                 } else {
                     Logger.e(TAG, "下单网络失败重试次数用完，等待下次点火");
                     if (!mNetRetryExecutor.isShutdown()) {
@@ -317,9 +319,9 @@ public final class ActivateHQ {
         final AtomicInteger retryCount = new AtomicInteger(0);
         final int maxRetries = 3;
         final long[] delays = {
+                AutoMapConstant.DELAY_MINUTE,
                 AutoMapConstant.DELAY_MINUTE * 2,
-                AutoMapConstant.DELAY_MINUTE * 5,
-                AutoMapConstant.DELAY_MINUTE * 5
+                AutoMapConstant.DELAY_MINUTE * 2
         };
         final AtomicReference<Runnable> taskRef = new AtomicReference<>();
         if (!mNetRetryExecutor.isShutdown()) {
@@ -355,7 +357,7 @@ public final class ActivateHQ {
                             } else if (ConvertUtils.equals(statusBean.getMOrderStatus(), "3")) {
                                 ++QUERY_ORDER_NUM;
                                 Logger.e(TAG, "HQ下单失败" + QUERY_ORDER_NUM + "次");
-                                if (QUERY_ORDER_NUM <= 3) {
+                                if (QUERY_ORDER_NUM < 3) {
                                     createCloudOrder();
                                 } else {
                                     Logger.e(TAG, "云端返回失败订单结果，重新下单次数用完，等待下次启动车辆");
@@ -395,11 +397,11 @@ public final class ActivateHQ {
             }
         };
         taskRef.set(task);
-        executor.schedule(task, delays[0], TimeUnit.MINUTES);
+        executor.schedule(task, 8, TimeUnit.SECONDS);
 
         try {
             // 总超时 = 所有可能延迟之和 + 缓冲时间（例如15分钟）
-            final long totalTimeout = Arrays.stream(delays).sum() + 1; // 2+5+5 +1=13分钟
+            final long totalTimeout = Arrays.stream(delays).sum() + 1;
             return future.get(totalTimeout, TimeUnit.MINUTES);
         } catch (CancellationException e) {
             executor.shutdownNow();
@@ -437,7 +439,6 @@ public final class ActivateHQ {
 
         if (!ConvertUtils.equals(ORDER_ID, orderId) && !ConvertUtils.isEmpty(orderId)) {
             Logger.e(TAG, "ORDER_ID constant = ", ORDER_ID, " ; orderId in database = ", orderId);
-            ORDER_ID = orderId;
         }
         Logger.e(TAG, "ORDER_ID = ", ORDER_ID);
         final QueryOrderRequest queryOrderRequest = new QueryOrderRequest(SYS_VERSION, TEST_APP_ID, UUID, ORDER_ID);

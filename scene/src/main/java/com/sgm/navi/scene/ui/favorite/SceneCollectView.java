@@ -379,12 +379,12 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                         @Override
                         public void onCommitClick() {
                             mIsAsyncData = true;
-                            mViewBinding.naviBroadcastLarge.performClick();
+                            refreshData();
                         }
                         @Override
                         public void onCancelClick() {
                             mIsAsyncData = false;
-                            mViewBinding.naviBroadcastLarge.performClick();
+                            refreshData();
                         }
                     })
                     .setContent(getContext().getString(R.string.search_async_sgm_data))
@@ -392,6 +392,22 @@ public class SceneCollectView extends BaseSceneView<SceneCollectViewBinding, Sce
                     .build().show();
         }
     };
+
+    private void refreshData(){
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"refreshData",mIsAsyncData);
+        if(ConvertUtils.isNull(mAdapter) || ConvertUtils.isNull(mScreenViewModel) || ConvertUtils.isNull(mViewBinding)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"refreshData mAdapter or mScreenViewModel or mViewBinding is null");
+            return;
+        }
+        hideEmptyView();
+        mAdapter.notifyList(new ArrayList<>());
+        if(mIsAsyncData){
+            // 获取收藏数据
+            mScreenViewModel.queryCollectStation(mParams);
+        }else{
+            mViewBinding.sllNoCharge.setVisibility(VISIBLE);
+        }
+    }
 
     private void registerBroadcast(){
         final IntentFilter intentFilter = new IntentFilter();

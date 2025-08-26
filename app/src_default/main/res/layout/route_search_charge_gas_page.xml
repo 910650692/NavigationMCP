@@ -163,7 +163,7 @@
                 android:text="@string/route_expected_battery_depletion"
                 android:textColor="@color/text_route_defult"
                 android:textSize="@dimen/sp_22"
-                android:visibility="@{ViewModel.getRouteProgressChargeExhaustVisibility() ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/route_charge_exhaustion_point"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_exhaustion_point"
                 app:layout_constraintStart_toStartOf="@+id/route_charge_exhaustion_point" />

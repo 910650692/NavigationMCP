@@ -23,7 +23,7 @@
         android:id="@+id/route_end_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_120"
         android:src="@drawable/layer_icon_route_end_default"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +38,7 @@
         android:background="@drawable/layer_image_route_end_business_hours_bg"
         android:paddingHorizontal="@dimen/dp_12"
         android:gravity="center"
+        android:visibility="gone"
         android:textColor="@color/layer_route_via_charge_time_text_color"
         android:textSize="@dimen/sp_24"
         app:layout_constraintBottom_toTopOf="@+id/route_end_bg"
@@ -50,9 +51,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginBottom="@dimen/dp_4"
         android:src="@drawable/layer_image_parking_available"
         app:layout_constraintEnd_toEndOf="@+id/route_end_bg"
         app:layout_constraintStart_toStartOf="@+id/route_end_bg"
-        app:layout_constraintTop_toBottomOf="@+id/route_end_bg" />
+        app:layout_constraintBottom_toTopOf="@+id/route_end_business" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

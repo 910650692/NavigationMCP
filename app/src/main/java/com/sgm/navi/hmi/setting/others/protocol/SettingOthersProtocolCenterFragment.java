@@ -57,6 +57,7 @@ public class SettingOthersProtocolCenterFragment extends BaseFragment<FragmentPr
         }
 
         mBinding.protocolCenterPolicy.setVisibility(View.VISIBLE);
+        mBinding.protocolCenterContainer.scrollTo(0, 0);
     }
 
     /**

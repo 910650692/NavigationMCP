@@ -292,8 +292,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
             case NaviConstant.SapaItemsType.SPAS_LIST://服务区
                 if (!ConvertUtils.isEmpty(sapaInfoEntity.getList())) {
                     SapaInfoEntity.SAPAItem sapaItem = sapaInfoEntity.getList().get(0);
-                    String servicePoiId = sapaItem.getServicePOIID();
-                    servicePoiIdSearch(servicePoiId);
+                    servicePoiIdSearch(sapaItem);
                     // 显示只有服务区的布局
                     mViewVisible.set(0);
                     updateOnlyServiceData(sapaItem);
@@ -318,8 +317,7 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                     // 设置临近态判断，如果距离小于5公里，则显示临近态
                     boolean showNearly = distance <= NEARLY_DISTANCE;
                     if (sapaItem.getType() == NaviConstant.SapaItemsType.SPAS_LIST) {//第一个是服务区，第二个是收费站
-                        String servicePoiId = sapaItem.getServicePOIID();
-                        servicePoiIdSearch(servicePoiId);
+                        servicePoiIdSearch(sapaItem);
                         if (showNearly) {
                             mViewVisible.set(0);
                             updateOnlyServiceData(sapaItem);
@@ -348,15 +346,24 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
         }
     }
 
-    private void servicePoiIdSearch(String poiId) {
+    private void servicePoiIdSearch(SapaInfoEntity.SAPAItem sapaItem) {
+        String poiId = sapaItem.getServicePOIID();
         Logger.i(TAG, "currentServicePoiId = ", mCurrentServicePoiId, " poiId = ", poiId);
         int powerType = OpenApiHelper.powerType();
         // 电车和插混的才搜索显示充电桩的信息
         if (powerType == 1 || powerType == 2) {
-            if (!mCurrentServicePoiId.equals(poiId)) {
+            if (!mCurrentServicePoiId.equals(poiId) && !TextUtils.isEmpty(poiId) &&
+                    poiId.contains(".") && poiId.startsWith("B")) {
                 mTaskId = SearchPackage.getInstance().poiIdSearch(poiId, true);
                 Logger.i(TAG, "search servicePoiID taskId = ", mTaskId);
                 mCurrentServicePoiId = poiId;
+            } else if (!mCurrentServicePoiId.equals(poiId) &&
+                    !ConvertUtils.isNull(sapaItem.getPos())) {
+                mTaskId = SearchPackage.getInstance().geoSearch(sapaItem.getPos(), true);
+                Logger.i(TAG, "search servicePoiID taskId = ", mTaskId);
+                mCurrentServicePoiId = poiId;
+            } else {
+                Logger.e(TAG, "poiId无效，地址为空，无法进行搜索");
             }
         }
 

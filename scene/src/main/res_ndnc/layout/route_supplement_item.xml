@@ -205,13 +205,13 @@
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/tv_supplement_spend_image"
             android:background="@drawable/img_route_money_unselect"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
             android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginTop="@dimen/dp_22"
+            android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintStart_toEndOf="@+id/ly_supplement_charge"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
-            app:layout_goneMarginStart="@dimen/dp_61"/>
+            app:layout_goneMarginStart="@dimen/dp_0"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_supplement_spend"
@@ -236,6 +236,7 @@
             android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintStart_toEndOf="@+id/tv_supplement_spend"
             app:layout_constraintTop_toBottomOf="@+id/tv_supplement_distance"
+            app:layout_goneMarginStart="@dimen/dp_0"
             tool:text="需下高速"/>
 
         <com.sgm.navi.ui.view.SkinImageView

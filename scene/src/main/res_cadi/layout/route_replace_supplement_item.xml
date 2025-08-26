@@ -14,13 +14,13 @@
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/ly_route_supplement_poi"
-        android:layout_width="@dimen/dp_477"
-        android:layout_height="@dimen/dp_173">
+        android:layout_width="@dimen/dp_718"
+        android:layout_height="@dimen/dp_238">
 
         <com.sgm.navi.ui.view.SkinView
             android:background="@drawable/bg_replace_supplement_item"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_159"/>
+            android:layout_height="@dimen/dp_216"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_replace_point_index"
@@ -28,9 +28,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/tab_list_route_tab_list_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginStart="@dimen/dp_26"
-            android:layout_marginTop="@dimen/dp_22"
+            android:textSize="@dimen/sp_32"
+            android:layout_marginStart="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_26"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tool:text="备选1" />
@@ -39,14 +39,14 @@
             android:id="@+id/tv_replace_point_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/dp_256"
+            android:maxWidth="@dimen/dp_411"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_30"
-            android:layout_marginStart="@dimen/dp_7"
-            android:layout_marginTop="@dimen/dp_20"
+            android:textSize="@dimen/sp_38"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_22"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_replace_point_index"
             tool:text="金桥国家电网充电站充电站" />
@@ -57,8 +57,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginTop="@dimen/dp_16"
+            android:textSize="@dimen/sp_32"
+            android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintTop_toBottomOf="@+id/tv_replace_point_index"
             app:layout_constraintStart_toStartOf="@+id/tv_replace_point_index"
             tool:text="198km" />
@@ -66,8 +66,8 @@
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/view_replace_point_line"
             android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_7"
+            android:layout_height="@dimen/dp_27"
+            android:layout_marginStart="@dimen/dp_14"
             android:background="@color/text_color_route_item_no_select"
             app:layout_constraintTop_toTopOf="@+id/tv_replace_point_distance"
             app:layout_constraintStart_toEndOf="@+id/tv_replace_point_distance"
@@ -77,13 +77,13 @@
             android:id="@+id/tv_replace_point_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/dp_211"
+            android:maxWidth="@dimen/dp_371"
             android:gravity="center"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/text_color_route_item_no_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginStart="@dimen/dp_7"
+            android:textSize="@dimen/sp_32"
+            android:layout_marginStart="@dimen/dp_14"
             app:layout_constraintTop_toTopOf="@+id/tv_replace_point_distance"
             app:layout_constraintStart_toEndOf="@+id/view_replace_point_line"
             tool:text="世纪大道123号(近陆家嘴近陆" />
@@ -92,8 +92,8 @@
             android:id="@+id/ly_replace_charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_34"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_replace_point_distance">
 
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/route_cricle_dot_gerrn_color"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 android:text="@string/charge_title_fast" />
 
             <com.sgm.navi.ui.view.SkinTextView
@@ -112,8 +112,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/text_color_route_item_select"
-                android:textSize="@dimen/sp_26"
-                android:layout_marginStart="@dimen/dp_7"
+                android:textSize="@dimen/sp_32"
+                android:layout_marginStart="@dimen/dp_10"
                 app:layout_constraintStart_toEndOf="@+id/tv_replace_point_fast_title"
                 app:layout_constraintTop_toTopOf="@+id/tv_replace_point_fast_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_replace_point_fast_title"
@@ -125,11 +125,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/text_color_route_item_no_select"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 app:layout_constraintStart_toEndOf="@+id/tv_replace_point_fast_current"
                 app:layout_constraintTop_toTopOf="@+id/tv_replace_point_fast_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_replace_point_fast_title"
-                app:layout_goneMarginStart="@dimen/dp_7"
+                app:layout_goneMarginStart="@dimen/dp_10"
                 tool:text="/88"/>
 
             <com.sgm.navi.ui.view.SkinTextView
@@ -138,9 +138,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/route_charge_orange_color"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 android:text="@string/charge_title_slow"
-                android:layout_marginStart="@dimen/dp_14"
+                android:layout_marginStart="@dimen/dp_24"
                 app:layout_constraintStart_toEndOf="@+id/tv_replace_point_fast_total"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -151,8 +151,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/text_color_route_item_select"
-                android:textSize="@dimen/sp_26"
-                android:layout_marginStart="@dimen/dp_7"
+                android:textSize="@dimen/sp_32"
+                android:layout_marginStart="@dimen/dp_10"
                 app:layout_constraintStart_toEndOf="@+id/tv_replace_point_slow_title"
                 app:layout_constraintTop_toTopOf="@+id/tv_replace_point_slow_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_replace_point_slow_title"
@@ -164,11 +164,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/text_color_route_item_no_select"
-                android:textSize="@dimen/sp_26"
+                android:textSize="@dimen/sp_32"
                 app:layout_constraintStart_toEndOf="@+id/tv_replace_point_slow_current"
                 app:layout_constraintTop_toTopOf="@+id/tv_replace_point_slow_title"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_replace_point_slow_title"
-                app:layout_goneMarginStart="@dimen/dp_7"
+                app:layout_goneMarginStart="@dimen/dp_10"
                 tool:text="/88"/>
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
@@ -176,13 +176,13 @@
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/tv_replace_point_spend_image"
             android:background="@drawable/img_route_money_unselect"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_14"
-            android:layout_marginTop="@dimen/dp_22"
+            android:layout_width="@dimen/dp_42"
+            android:layout_height="@dimen/dp_42"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_26"
             app:layout_constraintStart_toEndOf="@+id/ly_replace_charge"
             app:layout_constraintTop_toBottomOf="@+id/tv_replace_point_distance"
-            app:layout_goneMarginStart="@dimen/dp_18"/>
+            app:layout_goneMarginStart="@dimen/dp_34"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/tv_replace_point_spend"
@@ -190,8 +190,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginTop="@dimen/dp_14"
+            android:textSize="@dimen/sp_32"
+            android:layout_marginTop="@dimen/dp_24"
             app:layout_constraintStart_toEndOf="@+id/tv_replace_point_spend_image"
             app:layout_constraintTop_toBottomOf="@+id/tv_replace_point_distance"
             tool:text="1.76/度"/>
@@ -202,21 +202,22 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/text_color_route_item_select"
-            android:textSize="@dimen/sp_26"
-            android:layout_marginStart="@dimen/dp_14"
+            android:textSize="@dimen/sp_32"
+            android:layout_marginStart="@dimen/dp_28"
             app:layout_constraintStart_toEndOf="@+id/tv_replace_point_spend"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_24"
             app:layout_constraintTop_toBottomOf="@+id/tv_replace_point_distance"
+            app:layout_goneMarginStart="@dimen/dp_34"
             tool:text="需下高速"/>
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/bt_replace"
-            android:layout_width="@dimen/dp_95"
-            android:layout_height="@dimen/dp_44"
+            android:layout_width="@dimen/dp_128"
+            android:layout_height="@dimen/dp_64"
             android:background="@drawable/bg_replace_button_item"
-            android:layout_marginTop="@dimen/dp_60"
-            android:layout_marginEnd="@dimen/dp_26"
-            android:textSize="@dimen/sp_30"
+            android:layout_marginTop="@dimen/dp_75"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:textSize="@dimen/sp_38"
             android:gravity="center"
             android:textColor="@color/route_white"
             android:text="@string/route_replace"

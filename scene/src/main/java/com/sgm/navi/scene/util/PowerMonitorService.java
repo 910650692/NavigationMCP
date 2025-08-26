@@ -22,8 +22,8 @@ import java.util.concurrent.ScheduledFuture;
 public class PowerMonitorService implements SignalCallback {
     private static final String TAG = "PowerMonitorService";
     private static final long INTERVAL = 120;//间隔事件2分钟即120秒
-    private static final float EDGE_DISTANCE = 50f; // 续航里程小于50KM提醒
-    private final boolean mIsPureGasCar; // 是否是纯油车
+    private static final float EDGE_DISTANCE = 48f; // 续航里程小于48KM提醒
+    private final boolean mIsPureEVCar; // 是否纯电车
     private final CopyOnWriteArrayList<OnPowerChangeListener> mPowerChangeListener;
     private final SignalPackage mSignalPackage;
     private final CalibrationPackage mCalibrationPackage;
@@ -33,7 +33,7 @@ public class PowerMonitorService implements SignalCallback {
         mSignalPackage = SignalPackage.getInstance();
         mPowerChangeListener = new CopyOnWriteArrayList<>();
         mCalibrationPackage = CalibrationPackage.getInstance();
-        mIsPureGasCar = mCalibrationPackage.powerType() == PowerType.E_VEHICLE_ENERGY_FUEL;
+        mIsPureEVCar = mCalibrationPackage.powerType() == PowerType.E_VEHICLE_ENERGY_ELECTRIC;
     }
 
     public void startSchedule() {
@@ -95,13 +95,14 @@ public class PowerMonitorService implements SignalCallback {
         // 剩余电量可以跑的距离
         final float electRemainCanRunDis = mSignalPackage.getHighVoltageBatteryPropulsionRange();
         final float totalCanRunDis = gasRemainCanRunDis + electRemainCanRunDis;
-        if (mIsPureGasCar) {
-            gasCarDistanceChange(totalCanRunDis);
+        if (mIsPureEVCar) {
+            electricCarDistanceChange(electRemainCanRunDis);
         } else {
-            electricCarDistanceChange(totalCanRunDis);
+            gasCarDistanceChange(gasRemainCanRunDis);
         }
         final double costTime = (System.currentTimeMillis() - startTime) / 1000f;
-        Logger.d(TAG, "checkRemainBattery", "costTime", costTime, "秒");
+        Logger.d(TAG, "checkRemainBattery", "costTime", costTime, "秒", "gasRemainCanRunDis:", gasRemainCanRunDis,
+                "electRemainCanRunDis:", electRemainCanRunDis, "totalCanRunDis:", totalCanRunDis);
     }
 
     /***

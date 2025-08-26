@@ -228,6 +228,13 @@ public class RouteSupplementAdapter extends RecyclerView.Adapter<RouteSupplement
             holder.mRouteSupplementItemBinding.tvSupplementSlowTotal.setText(slowTotal.substring(1));
         }
 
+        if (holder.mRouteSupplementItemBinding.tvSupplementFastTitle.getVisibility() == View.GONE
+                && holder.mRouteSupplementItemBinding.tvSupplementSlowTitle.getVisibility() == View.GONE) {
+            holder.mRouteSupplementItemBinding.lySupplementCharge.setVisibility(View.GONE);
+        } else {
+            holder.mRouteSupplementItemBinding.lySupplementCharge.setVisibility(View.VISIBLE);
+        }
+
         if (chargeInfo.getCurrentElePrice().startsWith("-")) {
             holder.mRouteSupplementItemBinding.tvSupplementSpendImage.setVisibility(View.GONE);
             holder.mRouteSupplementItemBinding.tvSupplementSpend.setVisibility(View.GONE);

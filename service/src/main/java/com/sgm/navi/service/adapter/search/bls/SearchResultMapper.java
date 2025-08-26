@@ -678,7 +678,14 @@ public final class SearchResultMapper {
         final CityInfo cityInfo = buildCityInfo(result, poiPoint);
 
         // 构建 PoiInfoEntity
-        final PoiInfoEntity poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo,result);
+        final PoiInfoEntity poiInfoEntity;
+        if (requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.GEO_SEARCH_NEARBY) {
+            //获取逆地理近似地址
+            poiInfoEntity = buildPoiInfoEntity(poiItem, cityInfo);
+        } else {
+            //获取逆地理准确地址
+            poiInfoEntity = buildPoiInfoEntity(poiItem, poiPoint, cityInfo,result);
+        }
 
         // 设置 POI 列表并返回结果
         searchResultEntity.setPoiList(Collections.singletonList(poiInfoEntity));
@@ -704,6 +711,31 @@ public final class SearchResultMapper {
                 .setPos(result.pos)
                 .setAddress(result.pos)
                 .setCityPoint(poiPoint);
+    }
+
+    /**
+     * 构建 PoiInfoEntity
+     * @param poiItem NearestPoi
+     * @param cityInfo  CityInfo
+     * @return PoiInfoEntity
+     */
+    private PoiInfoEntity buildPoiInfoEntity(final NearestPoi poiItem,
+                                             final CityInfo cityInfo) {
+        final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+        GeoPoint geoPoint = new GeoPoint(poiItem.point.lon, poiItem.point.lat);
+        poiInfoEntity.setPointTypeCode(poiItem.typecode)
+                .setDistance(formatDistanceArrayInternal(poiItem.distance))
+                .setSort_price(poiItem.distance)
+                .setPoint(geoPoint)
+                .setAdCode(poiItem.nAdCode)
+                .setPhone(poiItem.tel)
+                .setBusinessTime("")
+                .setName(poiItem.name)
+                .setAddress(poiItem.address)
+                .setCityInfo(cityInfo);
+        Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "address: " + poiItem.address
+                + " ,name: " + poiItem.name);
+        return poiInfoEntity;
     }
 
     /**

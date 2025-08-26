@@ -111,6 +111,6 @@ public class SceneRouteResultListView extends BaseSceneView<SceneRouteResultList
      * @param routeIndex 路线索引
      * */
     public void updateSelectRouteUI(final int routeIndex) {
-        mAdapter.setSelectIndex(routeIndex);
+        if(null != mAdapter) mAdapter.setSelectIndex(routeIndex);
     }
 }

@@ -573,6 +573,7 @@ public final class VoiceSearchManager {
         switch (mSearchType) {
             case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                 updateHomeCompany(poiInfo);
+                responseHomeCompanyPoiCallback(true);
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.NAVI_TO_HOME_COMPANY:
@@ -680,6 +681,28 @@ public final class VoiceSearchManager {
     }
 
     /**
+     * 是否通过PoiCallback来回复设置家-公司结果.
+     *
+     * @param usePoiCallback true:使用PoiCallback  false:使用RespCallback.
+     */
+    private void responseHomeCompanyPoiCallback(final boolean usePoiCallback) {
+        final CallResponse homeCompanyResponse;
+
+        if (IVrBridgeConstant.DestType.HOME.equals(mPoiType)) {
+            homeCompanyResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ADD_HOME_READY);
+        } else {
+            homeCompanyResponse = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ADD_COMPANY_READY);
+        }
+        homeCompanyResponse.setNeedPlayMessage(true);
+        if (usePoiCallback && null != mPoiCallback) {
+            mPoiCallback.onResponse(homeCompanyResponse);
+        } else if (null != mRespCallback) {
+            mRespCallback.onResponse(homeCompanyResponse);
+        }
+
+    }
+
+    /**
      * 根据选中目的地发起算路.
      *
      * @param endPoi  目的地Poi信息
@@ -709,9 +732,7 @@ public final class VoiceSearchManager {
         final boolean inRoute = NaviStatus.NaviStatusType.ROUTING.equals(curStatus)
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus);
         if (inNavi || inRoute) {
-            if (inRoute) {
-                mPlanRouteResult = 1;
-            } else {
+            if (inNavi) {
                 mPlanRouteResult = -1;
             }
             RoutePackage.getInstance().requestRouteFromSpeech(requestParam);
@@ -1173,6 +1194,7 @@ public final class VoiceSearchManager {
             case IVrBridgeConstant.VoiceSearchType.SET_HOME_COMPANY:
                 //设置家/公司地址为选择的poi
                 updateHomeCompany(poiInfo);
+                responseHomeCompanyPoiCallback(false);
                 sendClosePage();
                 break;
             case IVrBridgeConstant.VoiceSearchType.WITH_PASS_BY:
@@ -1185,6 +1207,7 @@ public final class VoiceSearchManager {
                 mAlongToAround = false;
                 mPlanRouteResult = 1;
                 RoutePackage.getInstance().addViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, poiInfo);
+                mRespCallback.onResponse(CallResponse.createSuccessResponse(""));
                 break;
             case IVrBridgeConstant.VoiceSearchType.ADD_FAVORITE:
                 addCommonFavorite(poiInfo, false);
@@ -1379,9 +1402,10 @@ public final class VoiceSearchManager {
 
         if (!TextUtils.isEmpty(mSortValue)) {
             //继续执行条件筛选
-            final String sortValue = mSortValue;
-            mSortValue = "";
-            SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, sortValue);
+            ThreadManager.getInstance().asyncDelay(() -> {
+                SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                mSortValue = "";
+            }, 500, TimeUnit.MILLISECONDS);
         } else {
             responseSearchWithResult();
         }
@@ -1573,6 +1597,7 @@ public final class VoiceSearchManager {
         if (size == 1) {
             if (geoSearch) {
                 updateHomeCompany(mSearchResultList.get(0));
+                responseHomeCompanyPoiCallback(true);
             } else {
                 // 非逆地理搜结果只有一个，需要等待poi详情搜结果返回再处理
                 mWaitPoiSearch = true;
@@ -1592,25 +1617,12 @@ public final class VoiceSearchManager {
             return;
         }
 
-        Logger.w(IVrBridgeConstant.TAG, "setHomeCompany poiName: " + poiInfo.getName());
         final int type;
-        final String tts;
         if (IVrBridgeConstant.DestType.HOME.equals(mPoiType)) {
-            //家
             type = 1;
-            tts = "已设置家的地址";
         } else {
-            //公司
             type = 2;
-            tts = "已设置公司的地址";
         }
-
-        if (null != mPoiCallback) {
-            final CallResponse homeCompanyResponse = CallResponse.createSuccessResponse(tts);
-            homeCompanyResponse.setNeedPlayMessage(true);
-            mPoiCallback.onResponse(homeCompanyResponse);
-        }
-
         saveHomeCompany(poiInfo, type);
     }
 
@@ -1632,10 +1644,6 @@ public final class VoiceSearchManager {
             poiInfo.setPid(poiInfo.getPoint().getLon() + "_" + poiInfo.getPoint().getLat());
         }
         BehaviorPackage.getInstance().addFavorite(poiInfo, type);
-
-        if (mRespCallback != null) {
-            mRespCallback.onResponse(CallResponse.createSuccessResponse());
-        }
     }
 
     /**

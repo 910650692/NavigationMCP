@@ -227,7 +227,7 @@ public interface IVrBridgeConstant {
 
         String NOT_SUPPORT_LIGHT_NAVI = "暂不支持切换经典导航";
         String NOT_SUPPORT_THIS_FUNCTION = "不支持此功能";
-        String NOT_SUPPORT_OPERATE = "不支持的操作类型";
+        String NOT_SUPPORT_OPERATE = "不支持的指令类型";
 
         String ALREADY_IN_NAVI = "当前已在导航中";
         String LETS_GO = "开始出发";
@@ -319,6 +319,8 @@ public interface IVrBridgeConstant {
         String ADD_COMPANY_BEFORE_GET = "未找到公司的地址，先去添加吧";
         String ADD_HOME_WITH_SAY = "未找到家的地址，先去添加吧，试试说：设置家的地址";
         String ADD_COMPANY_WITH_SAY = "未找到公司的地址，先去添加吧，试试说：设置公司的地址";
+        String ADD_HOME_READY = "已设置家的地址";
+        String ADD_COMPANY_READY = "已设置公司的地址";
         String CANT_FIND = "未找到";
         String TRY_OTHER = ",试试别的吧";
 
@@ -472,6 +474,9 @@ public interface IVrBridgeConstant {
         String UN_SUPPORT_SORT = "当前搜索结果不支持排序";
 
         String UN_SUPPORT_IN_NAVI = "导航态不支持此指令";
+
+        String ROAD_ASSIGN_DONE = "搞定";
+        String ROAD_ASSIGN_NO = "收到";
     }
 
     interface PoiPageType {
@@ -491,6 +496,7 @@ public interface IVrBridgeConstant {
     }
 
     String CHANGING_ROUTE_CONFIRM = "UPDATE_CHANGING_ROUTE";
+
     interface RouteChargeType {
         int SEARCH = 3;
         int REFRESH = 5;
@@ -498,5 +504,14 @@ public interface IVrBridgeConstant {
 
     String HIDE_OVERLAY_ACTION = "patac.intent.ACTION_BROADCAST_HIDE_ALLAPPS";
     String PKG_SUSTEMUI = "com.android.systemui";
+
+    interface MultipleRoundAction {
+        String CONFIRM = "CONFIRM";
+        String NO = "CONFIRM_NO";
+    }
+    interface RoadAssignAction {
+        String ASSIGN = "ASSIGNED_ROAD";
+        String NON_ASSIGN = "NON_ASSIGNED_ROAD";
+    }
 
 }

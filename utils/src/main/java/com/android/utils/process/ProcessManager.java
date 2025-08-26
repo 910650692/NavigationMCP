@@ -154,6 +154,26 @@ public class ProcessManager {
         }
     }
 
+    public static String getVersionName(Context context) {
+        String versionName = "";
+        try {
+            versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
+    public static long getVersionCode(Context context) {
+        long versionCode = 0;
+        try {
+            versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).getLongVersionCode();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
     public interface ProcessForegroundStatus {
         default void isAppInForeground(boolean appInForegroundStatus) {
 

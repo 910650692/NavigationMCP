@@ -45,6 +45,7 @@ import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.RouteCurrentPathParam;
 import com.sgm.navi.service.define.route.ScSegmentInfo;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 
 import java.util.ArrayList;
@@ -1147,13 +1148,17 @@ public class L2Adapter {
         return null;
     }
 
-    public List<RoadGroupData> getRoadGroupData() {
-        PathInfo pathInfo = getPathInfo();
+    public CleaCanData getRoadGroupData(long pathID) {
+        PathInfo pathInfo = OpenApiHelper.getPathInfo(MapType.MAIN_SCREEN_MAIN_MAP, pathID);
         if (pathInfo == null) {
             return null;
         }
+        CleaCanData cleaCanData = new CleaCanData();
         List<RoadGroupData> roadGroupDatas = new ArrayList<>();
+        cleaCanData.setRoadGroupDatas(roadGroupDatas);
         LinkInfo previousLinkInfo = null;
+        long totalLength = 0;
+        long totalTime = 0;
         long travelTime = 0;
         int roadLength = 0;
         long segmentCount = pathInfo.getSegmentCount();
@@ -1168,6 +1173,8 @@ public class L2Adapter {
                 if (linkInfo == null) {
                     continue;
                 }
+                totalLength += linkInfo.getLength();
+                totalTime += linkInfo.getTravelTime();
                 if (previousLinkInfo != null && previousLinkInfo.getStatus() != linkInfo.getStatus()) {
                     if (roadLength > 65535) {
                         int lengthNum = roadLength / 65535;
@@ -1209,7 +1216,10 @@ public class L2Adapter {
         roadGroupData.setStatus(previousLinkInfo.getStatus());
         roadGroupData.setRoadLength(roadLength);
         roadGroupDatas.add(roadGroupData);
-        return roadGroupDatas;
+
+        cleaCanData.setTotalLength(totalLength);
+        cleaCanData.setTotalTime(totalTime);
+        return cleaCanData;
     }
 
     public void postL2Thread(Runnable runnable) {

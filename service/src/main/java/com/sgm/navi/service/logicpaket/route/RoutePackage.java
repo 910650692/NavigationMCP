@@ -23,6 +23,7 @@ import com.sgm.navi.service.adapter.calibration.CalibrationAdapter;
 import com.sgm.navi.service.adapter.engine.EngineAdapter;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.mapdata.MapDataAdapter;
+import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.adapter.position.PositionAdapter;
@@ -37,6 +38,7 @@ import com.sgm.navi.service.define.layer.refix.LayerItemLabelResult;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
+import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.route.EvRangeOnRouteInfo;
@@ -105,7 +107,7 @@ import lombok.Getter;
  * date 2024/11/24
  * Description TODO
  */
-final public class RoutePackage implements RouteResultObserver, QueryRestrictedObserver {
+final public class RoutePackage implements RouteResultObserver, QueryRestrictedObserver, GuidanceObserver {
     private static final String TAG = MapDefaultFinalTag.ROUTE_SERVICE_TAG;
     private SignalPackage mSignalPackage;
     private CalibrationPackage mCalibrationPackage;
@@ -194,6 +196,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
     public void initRouteService() {
         mRouteAdapter.initRouteService();
         mRouteAdapter.registerRouteObserver(RouteAdapter.REGISTRE_FROM_ROUTE, this);
+        mNaviAdapter.registerObserver("RoutePackage", this);
         mBlAosAdapter.addRestrictedObserver("routePackage", this);
     }
 
@@ -697,6 +700,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (param.isMIsOnline() && Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             //无网络无离线数据，直接提示不算路
             if (MapDataAdapter.getInstance().getAllDownLoadedList() == null || MapDataAdapter.getInstance().getAllDownLoadedList().isEmpty()) {
+                reGetParamList(MapType.MAIN_SCREEN_MAIN_MAP);
                 callBackFailMsg(param.getMMapTypeId(), "无网络连接，请检查网络后重试");
                 return NumberUtils.NUM_ERROR;
             }
@@ -934,7 +938,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         final List<RouteParam> routeParams = mViaRouteParams.get(mapTypeId);
         removeRouteParam(routeParams, oldPoiInfoEntity);
-        if (routeParams != null && routeParams.size() >= 5) {
+        if (routeParams != null && routeParams.size() >= AutoMapConstant.MAX_ROUTE_VIA) {
             callBackFailMsg(mapTypeId, "途经点添加失败：最多只能添加5个途径点");
             return;
         }
@@ -1419,7 +1423,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      */
     public boolean isMaxRouteParam(final MapType mapTypeId) {
         final List<RouteParam> allPoiParamList = getAllPoiParamList(mapTypeId);
-        if (allPoiParamList.size() < 7) {
+        if (allPoiParamList.size() < AutoMapConstant.MAX_ROUTE_VIA + 2) {
             return false;
         }
         return true;
@@ -1434,6 +1438,12 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+        RouteParam endParam = getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (endParam == null) {
+            Logger.e(TAG, "end param is null");
+            return;
+        }
+        showEndAreaPoint(MapType.MAIN_SCREEN_MAIN_MAP, endParam);
     }
 
     /**
@@ -1483,10 +1493,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             Logger.d(TAG, "showRoutePark routeLineLayerParam is null");
             return;
         }
-        final LayerItemLabelResult layerItemLabelResult = new LayerItemLabelResult();
-        layerItemLabelResult.setPointType(LayerItemLabelResult.ILabelLayerPointType.LABEL_POINT_TYPE_PARK);
-        layerItemLabelResult.setPos(routeLineLayerParam.getMRouteLinePoints().getMEndPoints().get(0).getMPos());
-        mLayerAdapter.updatePopSearchPointInfo(mapTypeId, layerItemLabelResult);
+        mLayerAdapter.updateRouteEndPointParkViewVisible(mapTypeId, true);
     }
 
     /**
@@ -1501,9 +1508,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         }
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.clearRouteLine(mapTypeId);
-            mLayerAdapter.clearLabelItem(mapTypeId);
             mLayerAdapter.setCarLogoVisible(mapTypeId, true);
             mLayerAdapter.clearSearchPOILayerItems(mapTypeId, LayerPointItemType.SEARCH_PARENT_PARK);
+            mLayerAdapter.clearEndAreaPoint(mapTypeId);
         });
         removeAllRouteInfo(mapTypeId);
     }
@@ -1514,7 +1521,9 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void clearEndParkPoint(final MapType mapTypeId) {
-        ThreadManager.getInstance().execute(() -> mLayerAdapter.clearLabelItem(mapTypeId));
+        ThreadManager.getInstance().execute(() -> {
+            mLayerAdapter.updateRouteEndPointParkViewVisible(mapTypeId, false);
+        });
     }
 
     /**
@@ -1679,6 +1688,25 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         } catch (Exception e) {
             Logger.e(TAG, "clear Rest Area: " + e.getMessage());
         }
+    }
+
+    /**
+     * 终点名称扎标
+     *
+     * @param mapTypeId 屏幕ID
+     * @param routeParam 终点
+     */
+    public void showEndAreaPoint(MapType mapTypeId, RouteParam routeParam) {
+        mLayerAdapter.showEndAreaPoint(mapTypeId, routeParam);
+    }
+
+    /**
+     * 清除终点名称扎标
+     *
+     * @param mapTypeId 屏幕ID
+     */
+    public void clearEndAreaPoint(MapType mapTypeId) {
+        mLayerAdapter.clearEndAreaPoint(mapTypeId);
     }
 
     /**
@@ -2234,6 +2262,22 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             }
             routeResultObserver.cancelTimer();
         }
+    }
+
+    @Override
+    public void onPlayTTS(SoundInfoEntity info) {
+
+    }
+
+    @Override
+    public void onPlayRing(int type) {
+
+    }
+
+    @Override
+    public void onNaviStop() {
+        Logger.d(TAG, "onNaviStop: ");
+        removeAllRouteInfo(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     private static final class Helper {

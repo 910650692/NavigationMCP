@@ -111,6 +111,7 @@ public class SceneRouteDetailsResultListView extends BaseSceneView<SceneRouteDet
             return;
         }
         mRouteLineSegmentInfos = routeLineSegmentInfos;
+        mViewBinding.routeDetailResultList.setAdapter(mRouteDetailsResultsAdapter);
         mRouteDetailsResultsAdapter.setAdapterResult(routeLineSegmentInfos, mIsAvoid);
     }
 

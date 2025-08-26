@@ -47,6 +47,7 @@
     <color name="route_charge_button_text_color">#B3FFFFFF</color>
     <color name="route_progressBar_color">#4ABA59</color>
     <color name="route_logo_color">#19181D</color>
+    <color name="route_long_screen_add_via_hide">#B3FFFFFF</color>
     <color name="route_white">#FFFFFFFF</color>
     <color name="route_switch_button_off">#2C2D36</color>
     <color name="floating_search_item_night">#FFFFFF</color>
@@ -156,7 +157,7 @@
 
     <color name="toast_bg_base">#FF191A21</color>
     <color name="toast_text">#FFFFFFFF</color>
-    <color name="setting_offline_no_search_hint">#FFFFFFFF</color>
+    <color name="setting_offline_no_search_hint">#B3FFFFFF</color>
     <color name="setting_other_about_bg_btn">#26B2AFC2</color>
     <color name="scroller_bar_color">#99ffffff</color>
     <color name="always_white">#FFFFFFFF</color>

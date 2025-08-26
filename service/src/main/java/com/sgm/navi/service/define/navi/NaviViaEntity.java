@@ -4,6 +4,8 @@ import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.route.ChargingInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
 
+import java.util.Objects;
+
 public class NaviViaEntity {
     private String mPid;
     private GeoPoint mRealPos; // 实际位置坐标(必选)
@@ -129,5 +131,14 @@ public class NaviViaEntity {
 
     public void setmArriveTimeStamp(long mArriveTimeStamp) {
         this.mArriveTimeStamp = mArriveTimeStamp;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        NaviViaEntity that = (NaviViaEntity) obj;
+        if (!Objects.equals(mPid, that.mPid)) return false;
+        return Objects.equals(mRealPos, that.mRealPos);
     }
 }

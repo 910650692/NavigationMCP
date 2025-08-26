@@ -18,7 +18,7 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_route_charge_progress"
             android:layout_width="@dimen/dp_1222"
-            android:layout_height="@dimen/dp_254"
+            android:layout_height="@dimen/dp_306"
             android:layout_marginStart="@dimen/dp_840"
             android:background="@drawable/bg_shadow_navi_cadillac"
             android:clickable="true"
@@ -34,7 +34,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/dp_1016"
                 android:layout_height="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_46"
+                android:layout_marginTop="@dimen/dp_98"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -49,10 +49,10 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_start"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:layout_marginStart="@dimen/dp_32"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_75"
                 android:focusable="false"
                 android:scaleType="centerCrop"
                 android:src="@drawable/img_route_logo_2d"
@@ -61,7 +61,7 @@
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/route_charge_progress_icons"
-                android:layout_width="@dimen/dp_1016"
+                android:layout_width="@dimen/dp_1124"
                 android:layout_height="match_parent"
                 android:focusable="false"
                 app:layout_constraintEnd_toEndOf="@+id/route_charge_progress"
@@ -70,10 +70,10 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_exhaustion_point"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
                 android:layout_marginStart="@dimen/dp_60"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_75"
                 android:layout_marginEnd="@dimen/dp_56"
                 android:focusable="false"
                 android:src="@drawable/img_route_charge_exhaustion_point"
@@ -84,9 +84,9 @@
 
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/route_charge_end"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_width="@dimen/dp_54"
+                android:layout_height="@dimen/dp_54"
+                android:layout_marginTop="@dimen/dp_75"
                 android:layout_marginEnd="@dimen/dp_32"
                 android:focusable="false"
                 android:src="@drawable/img_route_charge_end_point"
@@ -203,8 +203,11 @@
                     android:id="@+id/search_label_filter"
                     android:layout_marginStart="@dimen/dp_40"
                     android:layout_marginEnd="@dimen/dp_40"
+                    android:layout_marginTop="@dimen/dp_32"
                     android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@+id/search_offline_hint"
                     android:layout_width="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_height="wrap_content"/>
                 <com.sgm.navi.ui.view.PullToRefreshLayout
                     android:id="@+id/pull_refresh_layout"

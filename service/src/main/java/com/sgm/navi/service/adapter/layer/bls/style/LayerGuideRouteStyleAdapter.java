@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -212,6 +213,11 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "更新终点扎标信息 data " + data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
+                            final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
+                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
+                            if (null != parkView) {
+                                parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
+                            }
                             int restNum = data.getRestNum();
                             if (restNum > 0) {
                                 final LayerPointItemType pointType = data.getEndPointType();
@@ -236,6 +242,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
+                            if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
+                                textView.setVisibility(VISIBLE);
+                            }
                             safetySetText(textView, data.getBusinessHours());
                         }
 
@@ -251,6 +260,11 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "onFocusProcess 更新终点扎标信息 data " + data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
+                            final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
+                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
+                            if (null != parkView) {
+                                parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
+                            }
                             int restNum = data.getRestNum();
                             if (restNum > 0) {
                                 final LayerPointItemType pointType = data.getEndPointType();
@@ -275,6 +289,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             }
                             Logger.d(TAG, "onFocusProcess 终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
+                            if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
+                                textView.setVisibility(VISIBLE);
+                            }
                             safetySetText(textView, data.getBusinessHours());
                         }
                     };
@@ -632,6 +649,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             mRouteEndPoint.setRestNum(result.getRestNum());
             mRouteEndPoint.setBusinessHours(result.getBusinessHours());
             mRouteEndPoint.setEndPointType(result.getEndPointType());
+            mRouteEndPoint.setShowParkView(result.isShowParkView());
 //            mRouteControl.updateStyle(BizRouteType.BizRouteTypeEndPoint);
         }
     }
@@ -704,7 +722,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
     //转换终点扎标数据
     private void setRouteEndPoint() {
         mRouteEndPoint.setRestNum(-1);
+        mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
+        if (Logger.openLog) {
+            Logger.d(TAG, "selectPathIndex ", selectPathIndex);
+        }
+        if (selectPathIndex < 0) {
+            Logger.e(TAG, "selectPathIndex is invalid: ", selectPathIndex);
+            return;
+        }
         if (ConvertUtils.isNull(mRouteResult)) {
             return;
         }
@@ -713,31 +739,30 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.v(TAG, "mRouteLineInfos is Empty");
             return;
         }
+        if (selectPathIndex >= mRouteLineInfos.size()) {
+            Logger.e(TAG, "selectPathIndex out of bounds: ", selectPathIndex + " vs size: ", mRouteLineInfos.size());
+            return;
+        }
         int mCarType = CalibrationPackage.getInstance().powerType();
-        if (selectPathIndex < mRouteLineInfos.size()) {
-            if (mCarType == 0 || mCarType == 2) {
-                final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
-                        .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
-                Logger.d(TAG, "getRemainGasPercent: " + num);
-                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
-                if (num != 0) {
-                    mRouteEndPoint.setRestNum(num);
-                } else {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                    mRouteEndPoint.setRestNum(-1);
-                }
+        if (mCarType == 0 || mCarType == 2) {
+            final int num = GasCarTipManager.getInstance().getRemainGasPercent(ConvertUtils
+                    .convertMetersToKilometers(mRouteLineInfos.get(selectPathIndex).getMDistance()));
+            Logger.d(TAG, "getRemainGasPercent: " + num);
+            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_OIL);
+            if (num != 0) {
+                mRouteEndPoint.setRestNum(num);
             } else {
-                if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
-                    mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
-                } else {
-                    mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-                    mRouteEndPoint.setRestNum(-1);
-                }
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                mRouteEndPoint.setRestNum(-1);
             }
         } else {
-            mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
-            Logger.v(TAG, "selectPathIndex < mRouteLineInfos.size()");
+            if (mRouteLineInfos.get(selectPathIndex).isMCanBeArrive()) {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END_BATTERY);
+                mRouteEndPoint.setRestNum(mRouteLineInfos.get(selectPathIndex).getMRemainPercent());
+            } else {
+                mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
+                mRouteEndPoint.setRestNum(-1);
+            }
         }
         Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
                 mRouteEndPoint.getRestNum() + " BusinessHours is " + mRouteEndPoint.getBusinessHours());

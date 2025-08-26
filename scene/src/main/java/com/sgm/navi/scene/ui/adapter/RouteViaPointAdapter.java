@@ -40,6 +40,10 @@ public class RouteViaPointAdapter extends RecyclerView.Adapter<RouteViaPointAdap
         notifyDataSetChanged();
     }
 
+    public List<RouteParam> getRouteParams() {
+        return mRouteParams;
+    }
+
     public void setDeleteViaPointListener(final OnDeleteViaPointClickListener itemClickListener) {
         this.mItemClickListener = itemClickListener;
     }

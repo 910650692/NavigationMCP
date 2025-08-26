@@ -275,6 +275,8 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
 
     @Override
     protected void onBackPressed() {
-        mBinding.scenePoiDetailContentView.onBackPressed();
+        if (mBinding != null) {
+            mBinding.scenePoiDetailContentView.onBackPressed();
+        }
     }
 }

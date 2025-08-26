@@ -49,9 +49,10 @@ public class SpeechAdapter {
         }
     }
 
-    public void setVoice(String irfPath) {
+    public void setVoice(final String irfPath, final String voicePackage, final String voiceName,
+                         final String voiceIcon, final boolean isBoolean) {
         if (mSpeechApi != null) {
-            mSpeechApi.setVoice(irfPath);
+            mSpeechApi.setVoice(irfPath, voicePackage, voiceName, voiceIcon, isBoolean);
         }
     }
 

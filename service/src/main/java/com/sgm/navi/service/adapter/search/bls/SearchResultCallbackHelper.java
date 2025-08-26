@@ -68,6 +68,7 @@ public class SearchResultCallbackHelper {
                 resultList = handlePoiSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.GEO_SEARCH:
+            case AutoMapConstant.SearchType.GEO_SEARCH_NEARBY:
                 resultList = handleGeoSearch(requestParameterBuilder, result);
                 break;
             case AutoMapConstant.SearchType.ALONG_WAY_SEARCH:

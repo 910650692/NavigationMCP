@@ -1,5 +1,7 @@
 package com.sgm.navi.service.adapter.speech.bls;
 
+import android.text.TextUtils;
+
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
@@ -44,12 +46,17 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
             mSpeechService = (SpeechSynthesizeService) ServiceMgr.getServiceMgrInstance()
                 .getBLService(SingleServiceID.SpeechSynthesizeSingleServiceID);
         mInitResult = mSpeechService.init(this);
-        String path = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PATH);
-        if (mInitResult == 0 && path != null && !path.isEmpty()) {
-            int voiceResult = setVoice(path);
-            Logger.i(TAG, "mInitResult：", mInitResult, " voiceResult：", voiceResult, " path：", path);
+        String irfPath = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PATH);
+        String voicePackage = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_PACKAGE);
+        String voiceName = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_NAME);
+        String voiceIcon = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_VOICE_ICON);
+        if (mInitResult == 0 && !TextUtils.isEmpty(irfPath) && !TextUtils.isEmpty(voicePackage)
+                && !TextUtils.isEmpty(voiceName) && !TextUtils.isEmpty(voiceIcon)) {
+            int voiceResult = setVoice(irfPath, voicePackage, voiceName, voiceIcon,
+                    TextUtils.equals(voicePackage, "default") ? true : false);
+            Logger.i(TAG, "mInitResult：", mInitResult, " voiceResult：", voiceResult, " irfPath：", irfPath);
         } else {
-            Logger.w(TAG, "mInitResult: ", mInitResult, " path：", path);
+            Logger.w(TAG, "mInitResult: ", mInitResult, " irfPath：", irfPath);
         }
     }
 
@@ -90,12 +97,13 @@ public class SpeechAdapterImpl implements ISpeechSynthesizeObserver, ISpeechApi 
      * @return 返回码，是否设置成功 errorcode.common.Service.ErrorCodeOK：表示设置成功。
      */
     @Override
-    public int setVoice(String irfPath) {
+    public int setVoice(final String irfPath, final String voicePackage, final String voiceName,
+                        final String voiceIcon, final boolean isBoolean) {
         int result = mSpeechService.setVoice(irfPath);
         Logger.i(TAG, "result：", result, " irfPath：", irfPath);
 
         for (ISpeechAdapterCallback callback : mSpeechAdapterCallback) {
-            callback.onVoiceSet(result);
+            callback.onVoiceSet(irfPath, result, voicePackage, voiceName, voiceIcon, isBoolean);
         }
 
         return result;

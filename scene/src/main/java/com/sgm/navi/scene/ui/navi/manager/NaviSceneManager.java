@@ -63,6 +63,7 @@ public class NaviSceneManager implements INaviSceneEvent {
     private void onShowScene(NaviSceneId cardId, SceneInfo info) {
             NaviSceneBase newSceneBase = getSceneById(cardId);
             if (!ConvertUtils.isEmpty(newSceneBase)) { // 先判断集合中是否已经包含该场景
+                newSceneBase.setNeedShow(true);
                 if (ConvertUtils.isEmpty(showSceneList)) { // 如果showSceneList为空则直接展示
                     Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片", "newSceneBase:", newSceneBase.getSceneName());
                     showScene(newSceneBase, info);
@@ -81,6 +82,10 @@ public class NaviSceneManager implements INaviSceneEvent {
                             }
                             NaviSceneBase oldSceneView = temporaryList.get(i);
                             int sceneRule = getSceneRule(oldSceneView.getSceneId(), cardId);
+                            if (!newSceneBase.isNeedShow()) {
+                                Logger.i(TAG, "新卡片被关闭，不再需要展示", "newSceneBase:", newSceneBase.getSceneName());
+                                return;
+                            }
                             switch (sceneRule) {
                                 case NaviSceneRule.SCENE_SHOW_AND_SHOW -> {
                                     if (Logger.openLog) {
@@ -115,6 +120,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                                     }
                                     showScene(newSceneBase, info);
                                     closeScene(oldSceneView);
+                                    checkSceneReset(oldSceneView.getSceneId());
                                 }
                                 default -> {
                                     if (Logger.openLog) {
@@ -135,6 +141,7 @@ public class NaviSceneManager implements INaviSceneEvent {
         if (ConvertUtils.isEmpty(sceneBase)) {
             return;
         }
+        sceneBase.setNeedShow(false);
         if (NaviSceneBase.SCENE_STATE_CLOSE == sceneBase.getSceneState()) {
             return;
         }

@@ -632,6 +632,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 builder.append(VoiceConvertUtil.formatTime(compareTime)).append("，确定切换吗");
                 response = CallResponse.createSuccessResponse(builder.toString());
+                response.setSubCallResult(NaviSubCallResult.RESP_CONFIRM_AGAIN);
                 break;
             default:
                 mNewRoute = null;
@@ -834,6 +835,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 }
                 builder.append(VoiceConvertUtil.formatTime(compareTime)).append("，确定切换吗");
                 response = CallResponse.createSuccessResponse(builder.toString());
+                response.setSubCallResult(NaviSubCallResult.RESP_CONFIRM_AGAIN);
                 break;
             default:
                 Logger.w(IVrBridgeConstant.TAG, "unHandle avoidRoad type: " + changeType);
@@ -1851,10 +1853,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         }
 
         if (targetMode == curMapMode) {
-            final CallResponse alreadyResponse = CallResponse.createFailResponse(
-                    IVrBridgeConstant.ResponseString.ALREADY_IN+ respTts);
+            final CallResponse alreadyResponse = CallResponse.createSuccessResponse();
             alreadyResponse.setSubCallResult(NaviSubCallResult.NO_ACTION);
-            return alreadyResponse;
+            respTts(alreadyResponse, respCallback);
         } else {
             if (saveCommand) {
                 mCommandList.add(IVrBridgeConstant.VoiceCommandAction.CHANGE_VIEW);
@@ -2166,13 +2167,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         final CallResponse response;
         if (ConvertUtils.equals("CONFIRM_NO", type)) {
             if (MapStateManager.getInstance().isNaviStatus()) {
-                if (null != mNewRoute) {
-                    response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
-                    response.setNeedPlayMessage(true);
-                    mNewRoute = null;
-                } else {
-                    response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.UN_SUPPORT_IN_NAVI);
-                }
+                response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.UN_SUPPORT_IN_NAVI);
             } else {
                 VoiceSearchManager.getInstance().sendClosePage();
                 response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.OK);
@@ -2397,6 +2392,46 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
     @Override
     public CallResponse onVolumeAdjust(final NaviControlParam naviControlParam, final RespCallback callback) {
         return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_THIS_FUNCTION);
+    }
+
+    /**
+     * 通用多轮确认与否
+     *
+     * @param action    "CONFIRM"：确认；"CONFIRM_NO"：取消
+     * @param intention 确认环节对应的意图，"ASSIGNED_ROAD"：走xx路；"NON_ASSIGNED_ROAD"：不走xx路
+     * @param respCallback 异步结果回调.
+     *
+     * @return CallResponse.
+     */
+    @Override
+    public CallResponse onMultipleRoundsConfirmOrNot(String action, String intention, RespCallback respCallback) {
+        if (Logger.openLog) {
+            Logger.d(IVrBridgeConstant.TAG, "multipleRound", action, intention);
+        }
+        final CallResponse response;
+        switch (action) {
+            case IVrBridgeConstant.MultipleRoundAction.CONFIRM:
+                //确认
+                if (null != mNewRoute) {
+                    NaviPackage.getInstance().selectMainPathID(mNewRoute.getPathId());
+                }
+                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ROAD_ASSIGN_DONE);
+                break;
+            case IVrBridgeConstant.MultipleRoundAction.NO:
+                //取消
+                response = CallResponse.createSuccessResponse(IVrBridgeConstant.ResponseString.ROAD_ASSIGN_NO);
+                break;
+            default:
+                response = CallResponse.createNotSupportResponse(IVrBridgeConstant.ResponseString.NOT_SUPPORT_OPERATE);
+                break;
+        }
+
+        if (null != respCallback) {
+            response.setNeedPlayMessage(true);
+            respCallback.onResponse(response);
+        }
+
+        return CallResponse.createSuccessResponse();
     }
 
     /**

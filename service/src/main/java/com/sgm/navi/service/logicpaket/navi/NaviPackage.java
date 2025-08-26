@@ -145,6 +145,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Getter
     @Setter
     private NaviDriveReportEntity mNaviDriveReportEntity;
+    @Getter
+    private String mArriveTime = "";
+    @Getter
+    @Setter
+    private boolean mIsFloatWindowShow;
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -232,7 +237,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             mapPackage.setMapLabelClickable(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NAVING);
             //清除终点停车场扎标
-            mLayerAdapter.clearLabelItem(MapType.MAIN_SCREEN_MAIN_MAP);
+            mLayerAdapter.updateRouteEndPointParkViewVisible(MapType.MAIN_SCREEN_MAIN_MAP, false);
             mLayerAdapter.setCarLogoVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
             if (mAppFocusHelper != null) {
                 mAppFocusHelper.startCarMapNavigation();
@@ -646,6 +651,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void onNaviInfo(final NaviEtaInfo naviETAInfo) {
         Logger.i(TAG, "onNaviInfo: ");
         mCurrentNaviEtaInfo = naviETAInfo;
+        if (mCurrentNaviEtaInfo != null) {
+            int time = mCurrentNaviEtaInfo.getRemainTime();
+            mArriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
+            Logger.i(TAG, mArriveTime);
+        }
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
@@ -1605,9 +1615,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         }
         setPreviewStatus(false);
         setFixedOverViewStatus(false);
+        mLayerAdapter.clearAllSearchLayerItems(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.setVisibleGuideSignalLight(MapType.MAIN_SCREEN_MAIN_MAP, false);
         clearRouteLine(MapType.MAIN_SCREEN_MAIN_MAP);
         mLayerAdapter.setStartPointVisible(MapType.MAIN_SCREEN_MAIN_MAP, true);
+        mLayerAdapter.clearEndAreaPoint(MapType.MAIN_SCREEN_MAIN_MAP);
     }
 
     /**
@@ -1618,7 +1630,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void clearRouteLine(final MapType mapTypeId) {
         ThreadManager.getInstance().execute(() -> {
             mLayerAdapter.clearRouteLine(mapTypeId);
-            mLayerAdapter.clearLabelItem(mapTypeId);
             mLayerAdapter.setCarLogoVisible(mapTypeId, true);
         });
     }

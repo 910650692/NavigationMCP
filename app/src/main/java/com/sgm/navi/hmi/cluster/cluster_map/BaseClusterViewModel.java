@@ -17,6 +17,7 @@ import com.sgm.navi.service.define.map.IBaseScreenMapView;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.ui.base.BaseViewModel;
 
 import java.util.regex.Matcher;
@@ -76,7 +77,7 @@ public class BaseClusterViewModel extends BaseViewModel<ClusterActivity, Cluster
             return;
         }
         String mArriveDay = TimeUtils.getArriveDay(time);
-        String mArriveTime = TimeUtils.getArriveTime(AppCache.getInstance().getMContext(), time);
+        String mArriveTime = NaviPackage.getInstance().getMArriveTime();
         String mRemainInfo = TimeUtils.getRemainingMileage(AppCache.getInstance().getMContext(), distance);
             Logger.i(TAG, "showArriveInfo");
             if (!TextUtils.isEmpty(mArriveTime)) {

@@ -1,10 +1,13 @@
 package com.sgm.navi.scene.impl.navi;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import androidx.databinding.ObservableField;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.log.Logger;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -16,11 +19,15 @@ import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.layer.refix.LayerItemCrossEntity;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.android.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.ui.base.BaseFragment;
+import com.sgm.navi.ui.base.StackManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +36,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_CROSS_IMAGE_IMPL;
     private final NaviPackage mNaviPackage;
     private final LayerPackage mLayerPackage;
+    private final SplitScreenManager mSplitScreenManager;
 
     private ImersiveStatus mImersiveStatus;
     /**
@@ -50,6 +58,7 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         super(screenView);
         mNaviPackage = NaviPackage.getInstance();
         mLayerPackage = LayerPackage.getInstance();
+        mSplitScreenManager = SplitScreenManager.getInstance();
         init();
         mNextManeuverVisible = new ObservableField<>(false);
     }
@@ -59,29 +68,59 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
      */
     private void init() {
         Logger.i(TAG, "init");
-        mScreenView.setRectChange2DRoadCross(new RectChangeListener() {
-            @Override
-            public void onRectChange(final View view, final AutoUIViewRect newRect,
-                                     final AutoUIViewRect oldRect) {
-                if (newRect == null || ConvertUtils.isNull(mRoadCrossInfo)) {
-                    Logger.e(TAG, "newRect is null:", (newRect == null),
-                            "mRoadCrossInfo is null:", (mRoadCrossInfo == null));
-                    return;
-                }
-                Logger.i(TAG, "newRect ", newRect, ",mIsShowCrossImage：", mIsShowCrossImage,
-                        "is2D:", (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D));
-                // 当UI区域首次显示时，需要主动触发BL显示路口大图（2D矢量路口大图第一次显示的时候默认隐藏）
-                if (mIsShowCrossImage && mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
-                    mNaviPackage.setRoadCrossRect(mMapTypeId, newRect.getLocationOnScreen());
-                    mIsSetRect = true;
-                    showLayerCross();
-                }
-            }
-        });
+        boolean isFloatWindowShow = NaviPackage.getInstance().isMIsFloatWindowShow();
+        if (isFloatWindowShow && ScreenTypeUtils.getInstance().isFullScreen()) {
+            setRightPoint();
+        } else {
+            setLeftPoint();
+        }
         // 初始默认关闭，有数据后会打开
         notifySceneStateChange(false);
     }
 
+    private void setLeftPoint() {
+        int left = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_left);
+        int right = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_right);
+        int top = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_top);
+        int bottom = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_bottom);
+        Rect rect = new Rect(left, top, right, bottom);
+        mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
+        mIsSetRect = true;
+        if (isCanShowCross()) {
+            showLayerCross();
+        }
+    }
+
+    public void setRightPoint() {
+        int left = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_split_left);
+        int right = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_split_right);
+        int top = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_top);
+        int bottom = mScreenView.getResources().getDimensionPixelSize(
+                com.sgm.navi.ui.R.dimen.navi_cross_bottom);
+        Rect rect = new Rect(left, top, right, bottom);
+        mNaviPackage.setRoadCrossRect(mMapTypeId, rect);
+        mIsSetRect = true;
+        if (isCanShowCross()) {
+            showLayerCross();
+        }
+    }
+
+    private boolean isCanShowCross() {
+        // 只有当前fragment是引导并且路口大图显示区域展示的时候才显示路口大图
+        BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(
+                MapType.MAIN_SCREEN_MAIN_MAP.name());
+        boolean isNavi = currentFragment != null && currentFragment.getClass().getSimpleName().
+                equals("NaviGuidanceFragment");
+        Logger.i(TAG, isNavi);
+        return isNavi && (mScreenView != null && mScreenView.isVisible());
+    }
     public void hideCross() {
         Logger.i(TAG, "hideCross");
         if (!ConvertUtils.isNull(mRoadCrossInfo)) {
@@ -98,6 +137,15 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         // 确保路口大图期间退出导航时及时隐藏
         if (mRoadCrossInfo != null) {
             onCrossImageInfo(false, mRoadCrossInfo);
+        }
+    }
+
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        Logger.i(TAG, "onWindowSideChanged isOpenFloat:", isOpenFloat);
+        if (isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen()) {
+            setRightPoint();
+        } else {
+            setLeftPoint();
         }
     }
 
@@ -149,8 +197,6 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
             if (mIsShowCrossImage) {
                 return;
             }
-            // 首先切换路口大图标记
-            mIsShowCrossImage = true;
             mRoadCrossInfo = naviImageInfo;
             // 显示路口大图
             setRoadCrossVisible(true);
@@ -186,10 +232,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
         }
         Logger.i(TAG, "mRoadCrossInfo.getType()= ", mRoadCrossInfo.getType(), ",visible= ",
                 visible);
-        mIsShowCrossImage = visible;
         if (visible) {
             if (mRoadCrossInfo.getType() != NaviConstant.CrossType.CROSS_TYPE_3_D) {
-                notifySceneStateChange(true);
                 showLayerCross();
             }
         } else {
@@ -220,6 +264,8 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
                 onCrossImageInfo(false, mRoadCrossInfo);
             }
         } else {
+            mIsShowCrossImage = true;
+            notifySceneStateChange(true);
             if (null != mCallBack) {
                 NextManeuverEntity nextManeuverEntity = mCallBack.getNextManeuverEntity();
                 if (nextManeuverEntity == null) {

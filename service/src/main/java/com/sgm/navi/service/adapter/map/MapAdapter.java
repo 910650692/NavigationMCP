@@ -295,4 +295,8 @@ public class MapAdapter {
     public int getScaleLineLength(MapType mapType) {
         return mIMapApi.getScaleLineLength(mapType);
     }
+
+    public void updateLayerStyle(MapType mapTypeId) {
+        mIMapApi.updateLayerStyle(mapTypeId);
+    }
 }

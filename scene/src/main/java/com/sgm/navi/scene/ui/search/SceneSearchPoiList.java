@@ -409,7 +409,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                     if (!ConvertUtils.isEmpty(poiInfoEntities)) {
                         // 遍历所有可见的item
                         for (int i = 0; i < poiInfoEntities.size(); i++) {
-                            if (!ConvertUtils.isEmpty(poiInfoEntities) && !mScreenViewModel.isAlongWaySearch()) {
+                            if (!ConvertUtils.isEmpty(poiInfoEntities) &&
+                                    !ConvertUtils.isEmpty(mSearchResultEntity) &&
+                                    mSearchResultEntity.getSearchType() != AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH &&
+                                    mSearchResultEntity.getSearchType() != AutoMapConstant.SearchType.ALONG_WAY_SEARCH) {
                                 final PoiInfoEntity poiInfoEntity = poiInfoEntities.get(i);
                                 poiInfoEntity.setMIsVisible(i >= firstVisiblePosition && i <= lastVisiblePosition);
                             }
@@ -1383,6 +1386,15 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             mViewBinding.searchTextBarView.ivSearch.setVisibility(GONE);
         } else {
             mViewBinding.searchTextBarView.csFilter.setVisibility(GONE);
+        }
+        refreshPullStatus();
+    }
+
+    private void refreshPullStatus() {
+        if(!ConvertUtils.isNull(mViewBinding)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mPageNum: "+mPageNum+" ,maxPageNum: "+maxPageNum);
+            mViewBinding.pullRefreshLayout.setCanRefresh(mPageNum != 1);
+            mViewBinding.pullRefreshLayout.setCanLoadMore(mPageNum != maxPageNum);
         }
     }
 
@@ -2392,6 +2404,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mViewBinding.searchResultNoData.setVisibility(isShow ? GONE : View.VISIBLE);
         mViewBinding.recyclerSearchResult.setVisibility(isShow ? GONE : View.VISIBLE);
         mViewBinding.pullRefreshLayout.setVisibility(isShow ? GONE : View.VISIBLE);
+        mViewBinding.searchFilterView.searchFilterRoot.setVisibility(GONE);
+        mIsFilterViewShow = false;
         if (!ConvertUtils.isNull(mAnimator)) {
             if (isShow && !mAnimator.isRunning()) {
                 mAnimator.start();
