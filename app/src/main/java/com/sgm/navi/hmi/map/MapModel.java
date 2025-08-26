@@ -56,6 +56,7 @@ import com.sgm.navi.hmi.navi.PhoneAddressDialog;
 import com.sgm.navi.hmi.permission.PermissionUtils;
 import com.sgm.navi.hmi.poi.PoiDetailsFragment;
 import com.sgm.navi.hmi.route.RouteFragment;
+import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.parking.TerminalParkingFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
@@ -1050,7 +1051,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     private boolean parkingViewExist() {
         return getBottomNaviVisibility() || (getTopFragment(PoiDetailsFragment.class)
-                && mapPackage.isSearchPoiDetailsFragment()) &&
+                && mapPackage.isSearchPoiDetailsFragment() &&
+                !StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(),MainSearchFragment.class.getSimpleName())) &&
                 NaviStatusPackage.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.NO_STATUS)
                 || getTopFragment(TrafficEventFragment.class);
     }
