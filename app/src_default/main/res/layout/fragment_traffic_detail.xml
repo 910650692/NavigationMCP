@@ -22,7 +22,6 @@
         android:layout_width="@dimen/dp_545"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_search_main_tab"
-        android:minHeight="@dimen/dp_608"
         android:layout_marginTop="@dimen/dp_34"
         android:layout_marginStart="@dimen/dp_34"
         android:paddingBottom="@dimen/dp_20">
@@ -274,7 +273,7 @@
             android:id="@+id/loading_layout"
             layout="@layout/layout_traffic_loading"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
+            android:layout_height="@dimen/dp_608"
             android:visibility="@{(ViewModel.uiState == TrafficEventUiState.SUCCESS) ? View.GONE: View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

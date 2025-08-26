@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -1265,7 +1266,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         final String avgCost;
         if (mPoiInfoEntity.getAverageCost() == -1) {
             avgCost = DEFATULE_STRING;
+            mViewBinding.scenePoiDetailsCateringView.poiCateringPrice.setVisibility(GONE);
             mViewBinding.scenePoiDetailsCateringView.poiCateringPricePerPerson.setVisibility(GONE);
+            mViewBinding.scenePoiDetailsCateringView.poiCateringMarkValueLayout.setGravity(Gravity.START);
         } else {
             avgCost = getContext().getString(R.string.catering_price, mPoiInfoEntity.getAverageCost());
             mViewBinding.scenePoiDetailsCateringView.poiCateringPricePerPerson.

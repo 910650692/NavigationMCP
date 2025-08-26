@@ -60,7 +60,7 @@
                     android:id="@+id/search_icon"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:src="@drawable/search_poi_icon_sw1225"
+                    android:src="@drawable/search_poi_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,7 +68,7 @@
                     android:id="@+id/poi_icon"
                     android:layout_width="@dimen/dp_49"
                     android:layout_height="@dimen/dp_49"
-                    android:src="@drawable/search_poi_icon_sw1225"
+                    android:src="@drawable/search_poi_icon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
