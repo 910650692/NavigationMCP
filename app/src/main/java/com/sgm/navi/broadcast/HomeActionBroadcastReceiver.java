@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.RemoteException;
+import android.provider.Settings;
 
 import com.android.utils.log.Logger;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
@@ -26,34 +28,62 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
     public static boolean isRegister = false;
     public static final String HOME_CLICK_ACTION = "com.patac.launcher.action.NOTIFY_LAUNCHER_RESUME";
     public static final String APPTRAY_CLICK_EVENT_ACTION = "com.patac.systemui.intent.action.ACTION_APPTRAY_CLICK_EVENT";
-
+    private final String LAUNCHER_FOREGROUND_STATE_KEY = "launcher_foreground_state";
+    private final int LAUNCHER_BACKGROUND = 0;
+    private final int LAUNCHER_FOREGROUND = 1;
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null || intent.getAction() == null) return;
         Logger.d(TAG, "HOME_CLICK_ACTION or APPTRAY_CLICK_EVENT_ACTION", intent.getAction());
 
         // 区分dock栏点击Home还是导航图标
+        String action = intent.getAction();
         String sourceName = intent.getStringExtra("SourceName"); // 新增参数
-        if (intent.getAction().equals(HOME_CLICK_ACTION)
-                || (intent.getAction().equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName == null)) {
-            final boolean isNaviDeskBg = FloatViewManager.getInstance().isNaviDeskBg();
-            final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
-            final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
-            Logger.d(TAG, "HOME_CLICK_ACTION", isNaviDeskBg, isEmpty, isFullScreen);
-            if (isNaviDeskBg && isEmpty && isFullScreen) {
-                FloatViewManager.getInstance().setCardWidgetStatus(false);
-                FloatViewManager.getInstance().showAllCardWidgets();
-            }
-            if (isEmpty) {
-                final BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
-                if (baseActivity instanceof MapActivity) {
-                    ((MapActivity)baseActivity).updateUiOnHomeKeyClick();
-                }else {
-                    Logger.w(TAG, "Current activity is not MapActivity or is null");
+
+        if (action.equals(HOME_CLICK_ACTION)
+                || (action.equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName == null)) {
+            handleHomeOrAppTrayClick();
+        }else if ((action.equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName != null)){
+            // 获取launcher是否在前台的状态 1 = 前台，0 = 后台
+            int value = Settings.Global.getInt(context.getContentResolver(), LAUNCHER_FOREGROUND_STATE_KEY, LAUNCHER_BACKGROUND);
+            Logger.d(TAG, "launcher 当前状态: ", value);
+            if (value == 0){
+                FloatViewManager.getInstance().hideAllCardWidgets(false);
+            }else {
+                try {
+                    // true = 当前卡片显示
+                    if (FloatViewManager.getInstance().isAppWidgetHidden()){
+                        FloatViewManager.getInstance().hideAllCardWidgets(false);
+                    }else {
+                        handleHomeOrAppTrayClick();
+                    }
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
                 }
             }
-        }else if ((intent.getAction().equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName != null)){
-            FloatViewManager.getInstance().hideAllCardWidgets(false);
+        }
+    }
+
+    private void handleHomeOrAppTrayClick() {
+        final boolean isNaviDeskBg = FloatViewManager.getInstance().isNaviDeskBg();
+        final boolean isEmpty = StackManager.getInstance().getFragmentSize(MapType.MAIN_SCREEN_MAIN_MAP.name()) <= 0;
+        final boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+
+        Logger.d(TAG, "HOME_CLICK_ACTION", isNaviDeskBg, isEmpty, isFullScreen);
+        // 条件1：在导航桌面背景、无Fragment、全屏状态下显示卡片组件
+        if (isNaviDeskBg && isEmpty && isFullScreen) {
+            FloatViewManager.getInstance().setCardWidgetStatus(false);
+            FloatViewManager.getInstance().showAllCardWidgets();
+        }
+
+        // 无Fragment时更新UI
+        if (isEmpty) {
+            final BaseActivity baseActivity = StackManager.getInstance().getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+            if (baseActivity instanceof MapActivity) {
+                ((MapActivity)baseActivity).updateUiOnHomeKeyClick();
+            }else {
+                Logger.w(TAG, "Current activity is not MapActivity or is null");
+            }
         }
     }
 

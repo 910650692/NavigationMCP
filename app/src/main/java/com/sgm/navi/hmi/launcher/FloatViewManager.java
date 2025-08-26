@@ -359,6 +359,11 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
         });
     }
 
+    public boolean isAppWidgetHidden() throws RemoteException {
+        int launcherMode = mLauncherModeManager.getLauncherMode(PatacLauncherModeConfig.LAUNCHER_MODE);
+        return launcherMode == PatacLauncherModeConfig.SHOW_APP_WIDGET_AND_WEATHER;
+    }
+
     private void starTimer() {
         Logger.i(TAG, "starTimer");
         try {
