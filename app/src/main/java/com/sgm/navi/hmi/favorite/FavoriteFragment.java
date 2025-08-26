@@ -516,6 +516,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
      * @param type o: favorite list, 1: station list
      */
     public void updateFavoriteView(final ArrayList<PoiInfoEntity> list, final int type) {
+        Logger.i(TAG, "updateFavoriteView: type -> ", type);
         mFavoriteList = list;
         if (Logger.openLog) {
             Logger.i(TAG, "setFavoriteData -> ", mFavoriteList);

@@ -202,8 +202,10 @@ public class AccountAdapterImpl implements IAccountApi {
     public int accountLogoutRequest() {
         if (mAccountService != null) {
             final AccountLogoutRequest logoutReq = new AccountLogoutRequest();
+            Logger.i("accountLogoutRequest: logoutReq = " + logoutReq);
             return mAccountService.executeRequest(logoutReq);
         } else {
+            Logger.i("accountLogoutRequest: mAccountService == null");
             return -1;
         }
     }

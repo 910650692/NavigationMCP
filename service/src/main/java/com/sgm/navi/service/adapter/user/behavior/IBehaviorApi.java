@@ -122,4 +122,9 @@ public interface IBehaviorApi {
      */
     void startSync();
 
+    /**
+     * isSyncSdkServiceSyncing
+     */
+    boolean isSyncSdkServiceSyncing();
+
 }

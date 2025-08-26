@@ -451,4 +451,15 @@ public class BehaviorAdapterImpl implements IBehaviorApi {
         mAdapterImplHelper.syncFrequentData();
     }
 
+    /**
+     * 获取是否数据正在同步.
+     *
+     * @return com.autonavi.gbl.util.errorcode.common.Service.ErrorCodeOK = 0 正在同步
+     */
+    @Override
+    public boolean isSyncSdkServiceSyncing() {
+        boolean result = mSyncSdkService.isSyncing() == 0;
+        Logger.i(TAG, "isSyncSdkServiceSyncing: result = " + result);
+        return result;
+    }
 }

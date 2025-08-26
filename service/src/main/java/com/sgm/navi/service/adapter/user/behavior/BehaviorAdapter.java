@@ -158,6 +158,13 @@ final public class BehaviorAdapter {
         mBehaviorApi.startSync();
     }
 
+    /**
+     * isSyncSdkServiceSyncing
+     */
+    public boolean isSyncSdkServiceSyncing() {
+        return mBehaviorApi.isSyncSdkServiceSyncing();
+    }
+
     public static BehaviorAdapter getInstance() {
         return Helper.BA;
     }

@@ -435,7 +435,10 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
                 new GWsTserviceInternalLinkAutoReportRequestParam();
         gWsTserviceInternalLinkAutoReportRequestParam.bizType = 1;//业务类型；必填，目前只需要填写1，代表停车位置。
         gWsTserviceInternalLinkAutoReportRequestParam.data = GsonUtils.toJson(msgCarInfo);
-
+        if (Logger.openLog) {
+            Logger.d(TAG, "sendReqWsTserviceInternalLinkAutoReport: gWsTserviceInternalLinkAutoReportRequestParam = ",
+                    gWsTserviceInternalLinkAutoReportRequestParam.bizType, gWsTserviceInternalLinkAutoReportRequestParam.data);
+        }
         if (mBLAosService != null) {
             return mBLAosService.sendReqWsTserviceInternalLinkAutoReport(gWsTserviceInternalLinkAutoReportRequestParam, this);
         } else {
