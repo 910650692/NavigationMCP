@@ -134,7 +134,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         switch (currentMapMode) {
             case NORTH_2D:
             case UP_2D:
-                mMapPackage.setZoomLevel(mMapTypeId, 14);
+                mMapPackage.setZoomLevel(mMapTypeId, 15);
                 break;
             case UP_3D:
                 mMapPackage.setZoomLevel(mMapTypeId, 17);
