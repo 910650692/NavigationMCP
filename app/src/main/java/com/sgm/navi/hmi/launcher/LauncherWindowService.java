@@ -562,7 +562,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 }
             }
         });
-        widthAnimator.setDuration(165);
+        widthAnimator.setDuration(200);
         widthAnimator.start();
     }
 
