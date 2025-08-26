@@ -720,7 +720,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public void setMapCenterInScreen() {
         Logger.i(TAG, "setMapCenterInScreen");
         BaseFragment baseFragment = StackManager.getInstance().getCurrentFragment(MapType.MAIN_SCREEN_MAIN_MAP.name());
-        if (baseFragment instanceof MainSearchFragment || baseFragment instanceof SettingFragment || baseFragment instanceof NaviGuidanceFragment) {
+        if (baseFragment instanceof MainSearchFragment || (baseFragment instanceof SettingFragment &&
+                !NaviPackage.getInstance().getFixedOverViewStatus() &&
+                !NaviPackage.getInstance().getClusterFixOverViewStatus()) &&
+                !NaviPackage.getInstance().getPreviewStatus()
+                || baseFragment instanceof NaviGuidanceFragment) {
             mModel.setMapCenterInScreen();
             mModel.goToCarPosition();
             mModel.refreshMapMode();
@@ -765,11 +769,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (baseFragment instanceof MainSearchFragment ||
                 (baseFragment instanceof SettingFragment &&
                         !NaviPackage.getInstance().getFixedOverViewStatus() &&
-                        !NaviPackage.getInstance().getClusterFixOverViewStatus())) {
+                        !NaviPackage.getInstance().getClusterFixOverViewStatus()) &&
+                        !NaviPackage.getInstance().getPreviewStatus()) {
             mModel.setMapCenterInScreen();
             mModel.goToCarPosition();
             mModel.refreshMapMode();
         } else if ((baseFragment instanceof NaviGuidanceFragment) &&
+                !NaviPackage.getInstance().getFixedOverViewStatus() &&
                 !NaviPackage.getInstance().getPreviewStatus() &&
                 !NaviPackage.getInstance().getClusterFixOverViewStatus()) {
             mModel.setMapCenterInScreen();

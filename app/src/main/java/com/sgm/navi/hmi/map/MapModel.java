@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -760,8 +761,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void resetMapCenterInScreen() {
         Logger.i(TAG, "resetMapCenterInScreen");
         setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, true);
-        goToCarPosition();
         setMapCenterInScreen();
+        goToCarPosition();
         mViewModel.showOrHideSelfParkingView(false);
         stopCruise();
         refreshMapMode();
@@ -1147,6 +1148,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     mViewModel.closeMessageCenter(false);
                 }
             }
+            setMapCenterInScreen();
+            goToCarPosition();
         }
         if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
             //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
