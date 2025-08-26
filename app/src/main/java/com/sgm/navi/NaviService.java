@@ -94,11 +94,9 @@ public class NaviService extends Service {
         } else {
             startForeground(FOREGROUND_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE);
         }
-        ThreadManager.getInstance().execute(() -> {
-            boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
-            Logger.e(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
-            if (sdkStatus) StartService.getInstance().startInitSdk();
-        });
+        boolean sdkStatus = StartService.getInstance().checkSdkIsNeedInit();
+        Logger.e(TAG, "校验Sdk是否需要初始化sdkStatus：", sdkStatus);
+        if (sdkStatus) StartService.getInstance().startInitSdk();
     }
 
     @Override
