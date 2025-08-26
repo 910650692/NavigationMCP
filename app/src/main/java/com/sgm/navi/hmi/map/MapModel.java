@@ -937,6 +937,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             layerPackage.setDynamicLevelLock(MapType.MAIN_SCREEN_MAIN_MAP,DynamicLevelMode.DYNAMIC_LEVEL_GUIDE,true);
         }
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
     }
 
     @Override
