@@ -2383,6 +2383,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
     }
 
+    public SearchResultEntity getSearchResultEntity() {
+        return mSearchResultEntity;
+    }
+
+
     public void onBackPressed() {
         if(null != mScreenViewModel) mScreenViewModel.closeFragment();
     }

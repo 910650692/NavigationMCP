@@ -341,4 +341,17 @@ public class BasePoiDetailsViewModel extends BaseViewModel<PoiDetailsFragment, P
         }
         return 0;
     }
+
+    public SearchResultEntity getSearchResultEntity() {
+        if (mModel != null) {
+            return mModel.getSearchResultEntity();
+        }
+        return null;
+    }
+
+    public void setSearchResultEntity(SearchResultEntity searchResultEntity) {
+        if (mModel != null) {
+            mModel.setSearchResultEntity(searchResultEntity);
+        }
+    }
 }

@@ -241,6 +241,15 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mViewModel != null && mBinding != null) {
+            mViewModel.setSearchResultEntity(mBinding.scenePoiDetailContentView.getSearchResultEntity());
+
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mViewModel != null) {

@@ -273,6 +273,13 @@ public class PoiDetailsModel extends BaseModel<PoiDetailsViewModel> implements S
         this.mPoiType = poiType;
     }
 
+    public SearchResultEntity getSearchResultEntity() {
+        return mSearchResultEntity;
+    }
+
+    public void setSearchResultEntity(SearchResultEntity searchResultEntity) {
+        this.mSearchResultEntity = searchResultEntity;
+    }
 
 
 }
