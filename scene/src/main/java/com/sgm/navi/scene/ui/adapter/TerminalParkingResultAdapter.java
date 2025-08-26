@@ -112,9 +112,15 @@ public class TerminalParkingResultAdapter extends RecyclerView.Adapter<TerminalP
         }
         // 获取当前 POI 信息
         final PoiInfoEntity poiEntity = mPoiEntities.get(position);
-        final ParkingInfo parkingInfo = poiEntity.getParkingInfoList().get(0);
+        List<ParkingInfo> parkingInfoList = poiEntity.getParkingInfoList();
+        if(ConvertUtils.isEmpty(parkingInfoList)){
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "position", position, "parkingInfoList is Null");
+            // 后续代码无需在执行，跳过此条数据
+            return;
+        }
+        final ParkingInfo parkingInfo = parkingInfoList.get(0);
 
-        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "position: " + poiEntity.getParkingInfoList().size());
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "position: " + parkingInfoList.size());
 
         // 设置停车场基本信息
         holder.mTerminalParkingItemBinding.sktvParkingItemNum.setText(String.valueOf(position + 1));
