@@ -38,6 +38,18 @@ public class ToolRegistry {
     }
     
     /**
+     * 注销工具
+     */
+    public synchronized void unregisterTool(String name) {
+        RegisteredTool removed = registeredTools.remove(name);
+        if (removed != null) {
+            Log.d(TAG, "工具注销成功: " + name + " from " + removed.packageName);
+        } else {
+            Log.w(TAG, "尝试注销不存在的工具: " + name);
+        }
+    }
+    
+    /**
      * 工具是否存在
      */
     public synchronized boolean hasTool(String name) {

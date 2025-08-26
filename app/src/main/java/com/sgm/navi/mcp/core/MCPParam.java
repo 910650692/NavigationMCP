@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 /**
  * MCP工具方法参数注解
  * 用于标记MCP工具方法的参数信息
+ * 兼容新SDK字段格式
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
@@ -16,11 +17,6 @@ public @interface MCPParam {
      * 参数名称
      */
     String name();
-    
-    /**
-     * 参数类型
-     */
-    MCPDataType type() default MCPDataType.STRING;
     
     /**
      * 参数描述
@@ -36,4 +32,9 @@ public @interface MCPParam {
      * 默认值（如果有）
      */
     String defaultValue() default "";
+    
+    /**
+     * 参数类型（保留用于内部处理）
+     */
+    MCPDataType type() default MCPDataType.STRING;
 }

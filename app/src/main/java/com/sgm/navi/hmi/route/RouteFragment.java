@@ -69,6 +69,7 @@ import com.sgm.navi.service.define.route.RouteLineInfo;
 import com.sgm.navi.service.define.route.RouteLineSegmentInfo;
 import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RoutePageLevel;
+import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePriorityType;
 import com.sgm.navi.service.define.route.RouteRequestParam;
@@ -1290,8 +1291,8 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         assert bundle != null;
         
         // 处理MCP导航请求
-        final boolean autoStart = bundle.getBoolean("auto_start", false);
-        if (autoStart) {
+        final long mcpRouteTaskId = bundle.getLong("route_task_id", -1);
+        if (mcpRouteTaskId != -1) {
             handleMcpNavigationRequest(bundle);
             return;
         }
@@ -1360,10 +1361,13 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         double longitude = bundle.getDouble("longitude", 0);
         String poiName = bundle.getString("poi_name");
         String address = bundle.getString("address");
+        String routePreference = bundle.getString("route_preference");
+        String avoidLimit = bundle.getString("avoid_limit");
         boolean isSimulate = bundle.getBoolean("simulate", false);
+        boolean autoStart = bundle.getBoolean("auto_start", true); // 从bundle读取auto_start参数
         
-        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 模拟: %b", 
-            poiName, latitude, longitude, isSimulate));
+        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 偏好: %s, 限行: %s, 模拟: %b, 自动启动: %b", 
+            poiName, latitude, longitude, routePreference, avoidLimit, isSimulate, autoStart));
         
         // 设置UI标题
         if (!ConvertUtils.isEmpty(poiName)) {
@@ -1387,10 +1391,64 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
         routeRequestParam.setMPoiInfoEntity(poiInfoEntity);
         routeRequestParam.setMRoutePoiType(com.sgm.navi.service.define.route.RoutePoiType.ROUTE_POI_TYPE_END);
         
+        // 解析并设置路线偏好参数
+        if (routePreference != null && !routePreference.trim().isEmpty()) {
+            try {
+                RoutePreferenceID preferenceId = null;
+                switch (routePreference.toLowerCase().trim()) {
+                    case "recommend":
+                        preferenceId = RoutePreferenceID.PREFERENCE_RECOMMEND;
+                        break;
+                    case "avoid_congestion":
+                        preferenceId = RoutePreferenceID.PREFERENCE_AVOIDCONGESTION;
+                        break;
+                    case "less_charge":
+                        preferenceId = RoutePreferenceID.PREFERENCE_LESSCHARGE;
+                        break;
+                    case "no_highway":
+                        preferenceId = RoutePreferenceID.PREFERENCE_NOTHIGHWAY;
+                        break;
+                    case "highway_first":
+                        preferenceId = RoutePreferenceID.PREFERENCE_FIRSTHIGHWAY;
+                        break;
+                    case "fastest_speed":
+                        preferenceId = RoutePreferenceID.PREFERENCE_FASTESTSPEED;
+                        break;
+                    default:
+                        Logger.w(TAG, "RouteFragment: 未知的路线偏好参数: " + routePreference + "，使用系统默认设置");
+                        break;
+                }
+                
+                if (preferenceId != null) {
+                    routeRequestParam.setMRoutePreferenceID(preferenceId);
+                    Logger.d(TAG, "RouteFragment: 应用路线偏好 " + preferenceId.name() + " 到路线规划请求");
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, "RouteFragment: 解析路线偏好参数失败: " + e.getMessage());
+            }
+        } else {
+            Logger.d(TAG, "RouteFragment: 未指定路线偏好，使用系统默认设置");
+        }
+        
+        // 处理避开限行参数
+        if (avoidLimit != null && !avoidLimit.trim().isEmpty()) {
+            Logger.d(TAG, "RouteFragment: 接收到避开限行参数: " + avoidLimit);
+            // 将限行参数设置到RouteRequestParam中
+            routeRequestParam.setMAvoidLimit(avoidLimit);
+        }
+        
         mViewModel.requestRoute(routeRequestParam);
         
-        // 设置自动导航标志，路线规划完成后自动启动导航
-        mViewModel.setAutoStartNavigation(true, isSimulate);
+        // 根据auto_start参数决定是否自动启动导航
+        if (autoStart) {
+            Logger.d(TAG, "MCP导航请求设置为自动启动导航");
+            mViewModel.setAutoStartNavigation(true, isSimulate);
+        } else {
+            Logger.d(TAG, "MCP导航请求设置为显示路线后等待用户确认");
+            // 路线规划完成后仅显示路线，不自动启动导航
+            // ViewModel会在路线规划完成后显示路线选择界面
+
+        }
     }
 
     @Override

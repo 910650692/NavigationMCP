@@ -193,6 +193,7 @@
                 android:value="navigation_tools" />
         </service>
 
+
         <receiver
             android:name="com.sgm.navi.broadcast.HomeActionBroadcastReceiver"
             android:enabled="true"

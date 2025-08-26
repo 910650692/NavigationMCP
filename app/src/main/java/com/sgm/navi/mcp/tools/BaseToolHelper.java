@@ -89,7 +89,7 @@ public class BaseToolHelper implements MCPSearchCallback {
      */
     public void addGeoSearchTask(int taskId, CompletableFuture<String> future) {
         pendingGeoSearchTasks.put(taskId, future);
-        Log.d(TAG, "添加geoSearch任务: " + taskId);
+        // Log.d(TAG, "添加geoSearch任务: " + taskId);
     }
     
     /**
@@ -207,7 +207,7 @@ public class BaseToolHelper implements MCPSearchCallback {
         CompletableFuture<String> future = pendingGeoSearchTasks.remove(taskId);
         if (future != null && !future.isDone()) {
             future.complete(address);
-            Log.d(TAG, "geoSearch任务完成: taskId=" + taskId + ", address=" + address);
+            // Log.d(TAG, "geoSearch任务完成: taskId=" + taskId + ", address=" + address);
         }
     }
     
@@ -231,7 +231,7 @@ public class BaseToolHelper implements MCPSearchCallback {
                     address = firstPoi.getName();
                 }
                 
-                Log.d(TAG, "提取地址信息: " + address);
+                // Log.d(TAG, "提取地址信息: " + address);
                 return address;
             }
         } catch (Exception e) {

@@ -2087,8 +2087,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onRouteTMCInfo(RouteTMCParam param) {
         if (ConvertUtils.isEmpty(param)) {
+            Logger.w("MapModel", "DEBUG_TMC: onRouteTMCInfo() 收到空的TMC参数");
             return;
         }
+        
+        Logger.d("MapModel", "DEBUG_TMC: onRouteTMCInfo() 收到TMC回调: " +
+            "key=" + param.getMKey() + ", isShort=" + param.isMIsShort() + 
+            ", time=" + param.getMTime());
+        
         mViewModel.setTMCView(param);
     }
 

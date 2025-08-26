@@ -779,43 +779,46 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             return;
         }
         
-        boolean autoStart = intent.getBooleanExtra("auto_start", false);
-        if (!autoStart) {
+        long routeTaskId = intent.getLongExtra("route_task_id", -1);
+        
+        // 只要有有效的路线taskId，就处理MCP导航请求
+        if (routeTaskId <= 0) {
+            Logger.w(TAG, "无效的路线taskId: " + routeTaskId);
             return;
         }
         
-        long routeTaskId = intent.getLongExtra("route_task_id", -1);
         double latitude = intent.getDoubleExtra("latitude", 0);
         double longitude = intent.getDoubleExtra("longitude", 0);
         String poiName = intent.getStringExtra("poi_name");
         String address = intent.getStringExtra("address");
+        String routePreference = intent.getStringExtra("route_preference");
+        String avoidLimit = intent.getStringExtra("avoid_limit");
         boolean isSimulate = intent.getBooleanExtra("simulate", false);
+        boolean autoStart = intent.getBooleanExtra("auto_start", true); // 获取原始的auto_start参数
         
-        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 路线taskId: %d, 模拟: %b", 
-            poiName, latitude, longitude, routeTaskId, isSimulate));
+        Logger.d(TAG, String.format("处理MCP导航请求: %s (%.6f, %.6f), 路线taskId: %d, 偏好: %s, 限行: %s, 模拟: %b, 自动启动: %b", 
+            poiName, latitude, longitude, routeTaskId, routePreference, avoidLimit, isSimulate, autoStart));
             
-        if (routeTaskId > 0) {
-            // 打开RouteFragment并传递自动导航参数
-            if (mViewModel != null) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("auto_start", true);
-                bundle.putBoolean("simulate", isSimulate);
-                bundle.putLong("route_task_id", routeTaskId);
-                bundle.putString("poi_name", poiName);
-                bundle.putString("address", address);
-                bundle.putDouble("latitude", latitude);
-                bundle.putDouble("longitude", longitude);
-                
-                // 创建RouteFragment并传递参数
-                Fragment routeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                mViewModel.addFragment((BaseFragment) routeFragment, bundle);
-                
-                Logger.d(TAG, "已打开RouteFragment进行MCP导航，taskId: " + routeTaskId);
-            } else {
-                Logger.e(TAG, "mViewModel为null，无法打开RouteFragment");
-            }
+        // 打开RouteFragment并传递所有参数
+        if (mViewModel != null) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("auto_start", autoStart); // 保持原始的auto_start值
+            bundle.putBoolean("simulate", isSimulate);
+            bundle.putLong("route_task_id", routeTaskId);
+            bundle.putString("poi_name", poiName);
+            bundle.putString("address", address);
+            bundle.putString("route_preference", routePreference);
+            bundle.putString("avoid_limit", avoidLimit);
+            bundle.putDouble("latitude", latitude);
+            bundle.putDouble("longitude", longitude);
+            
+            // 创建RouteFragment并传递参数
+            Fragment routeFragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
+            mViewModel.addFragment((BaseFragment) routeFragment, bundle);
+            
+            Logger.d(TAG, "已打开RouteFragment进行MCP导航，taskId: " + routeTaskId + ", autoStart: " + autoStart);
         } else {
-            Logger.w(TAG, "无效的路线taskId: " + routeTaskId);
+            Logger.e(TAG, "mViewModel为null，无法打开RouteFragment");
         }
     }
     

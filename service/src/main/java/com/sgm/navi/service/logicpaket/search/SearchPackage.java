@@ -974,12 +974,21 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
      */
     public int geoSearch(final GeoPoint geoPoint, final boolean isSilent) {
         Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "Executing geoSearch search.");
+        
         final SearchRequestParameter requestParameterBuilder = new SearchRequestParameter.Builder()
                 .isSilentSearch(isSilent)
                 .searchType(AutoMapConstant.SearchType.GEO_SEARCH)
                 .poiLoc(geoPoint)
                 .build();
-        return mSearchAdapter.geoSearch(requestParameterBuilder);
+        
+        int taskId = mSearchAdapter.geoSearch(requestParameterBuilder);
+        
+        // 如果是MCP调用，记录任务
+        if (mcpSearchCallback != null && taskId > 0) {
+            mcpTasks.add(taskId);
+        }
+        
+        return taskId;
     }
 
     /**

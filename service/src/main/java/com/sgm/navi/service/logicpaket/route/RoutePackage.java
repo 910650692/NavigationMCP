@@ -716,7 +716,17 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             perfrenceId = param.getMRoutePreferenceID();
         }
         final String platNum = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_VEHICLE_NUMBER);
-        final String mVoidLimit = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
+        
+        // 优先使用MCP传入的限行参数，如果没有则使用系统设置
+        String mVoidLimit;
+        if (param.getMAvoidLimit() != null) {
+            mVoidLimit = param.getMAvoidLimit();
+            Logger.d(TAG, "使用MCP传入的限行参数: " + mVoidLimit);
+        } else {
+            mVoidLimit = SettingManager.getInstance().getValueByKey(SettingController.KEY_SETTING_GUIDE_AVOID_LIMIT);
+            Logger.d(TAG, "使用系统设置的限行参数: " + mVoidLimit);
+        }
+        
         initBevCarData();
         setCarType();
         mRouteAdapter.setRequestControl(perfrenceId, platNum, "true".equals(mVoidLimit), mNaviStatusAdapter.isGuidanceActive());
@@ -2136,25 +2146,41 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
      * @param mapTypeId 屏幕ID
      */
     public void refreshHomeOfficeTMC(final MapType mapTypeId, final boolean isHome) {
+        Logger.i(TAG, "DEBUG_TMC: refreshHomeOfficeTMC() 开始，isHome=" + isHome);
+        
         final PoiInfoEntity poiInfoEntity = isHome ? BehaviorPackage.getInstance().getHomeFavoriteInfo()
                 : BehaviorPackage.getInstance().getCompanyFavoriteInfo();
+                
         if (ConvertUtils.isEmpty(poiInfoEntity) || ConvertUtils.isEmpty(poiInfoEntity.getPoint())) {
+            Logger.w(TAG, "DEBUG_TMC: " + (isHome ? "家地址" : "公司地址") + "数据为空，无法刷新TMC");
             Logger.i(TAG, "通勤预测没有数据");
             return;
         }
+        
+        Logger.i(TAG, "DEBUG_TMC: " + (isHome ? "家地址" : "公司地址") + "数据: " + 
+            poiInfoEntity.getName() + " (" + poiInfoEntity.getPoint().getLat() + "," + poiInfoEntity.getPoint().getLon() + ")");
+        
         //避免通勤打断正常算路
-        if (NavistatusAdapter.getInstance().getCurrentNaviStatus().equals(NaviStatus.NaviStatusType.ROUTING)) {
+        String currentNaviStatus = NavistatusAdapter.getInstance().getCurrentNaviStatus();
+        if (currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING)) {
+            Logger.i(TAG, "DEBUG_TMC: 当前正在算路中(" + currentNaviStatus + ")，不触发通勤TMC计算");
             Logger.i(TAG, "正在算路中不触发通勤");
             return;
         }
+        
+        Logger.i(TAG, "DEBUG_TMC: 当前导航状态: " + currentNaviStatus + "，开始进行TMC路线规划");
+        
         final RouteParam endParam = getRouteParamFromPoiInfoEntity(poiInfoEntity, RoutePoiType.ROUTE_POI_TYPE_END);
         final List<RouteParam> routeParams = new ArrayList<>();
         routeParams.add(getLocationParam());
         routeParams.add(endParam);
+        
         RouteRequestParam param = new RouteRequestParam();
         param.setMMapTypeId(mapTypeId);
         param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_YAW);
         param.setRouteRequestCallBackType(isHome ? 0 : 1);
+        
+        Logger.i(TAG, "DEBUG_TMC: 发起TMC路线规划请求，callbackType=" + param.getRouteRequestCallBackType());
         mRouteAdapter.requestRoute(param, routeParams);
     }
 

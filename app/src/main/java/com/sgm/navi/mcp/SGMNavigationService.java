@@ -9,14 +9,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+// 原始MCP Core引用
 import com.sgm.navi.mcp.core.Mcp;
+
+// Tools类（需要修改注解）
 import com.sgm.navi.mcp.tools.LocationTools;
 import com.sgm.navi.mcp.tools.SearchTools;
 import com.sgm.navi.mcp.tools.NavigationTools;
+import com.sgm.navi.mcp.tools.FavoriteTools;
+import com.sgm.navi.mcp.tools.SettingTools;
+
+// AIDL interfaces from mcp-coordinator
+import com.sgm.navi.mcp.ISGMNavigationService;
+import com.sgm.navi.mcp.ToolRequest;
+import com.sgm.navi.mcp.ToolResponse;
+import com.sgm.navi.mcp.IMCPService;
+
+import java.util.Arrays;
+import java.util.List;
+import androidx.annotation.NonNull;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.hmi.R;
@@ -30,8 +46,10 @@ public class SGMNavigationService extends Service {
     private static final String CHANNEL_ID = "SGM_MCP_SERVICE";
     private static final int NOTIFICATION_ID = 1001;
     
-    private IMCPService mcpCoordinatorService;
-    private boolean isConnectedToCoordinator = false;
+    // 旧版本AIDL连接（保留作为备用）
+    // private IMCPService mcpCoordinatorService;
+    // private boolean isConnectedToCoordinator = false;
+    
 
     @Override
     public void onCreate() {
@@ -42,91 +60,137 @@ public class SGMNavigationService extends Service {
         createNotificationChannel();
         startForeground(NOTIFICATION_ID, createNotification());
         
-        // 连接到MCP协调中心
-        connectToMCPCoordinator();
+        // 先连接到coordinator，然后再初始化MCP core
+        initLegacyToolRegistration();
     }
     
     /**
-     * 连接到MCP协调中心
+     * 初始化原始MCP core
      */
-    private void connectToMCPCoordinator() {
+    private void initMcp() {
         try {
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.sgm.navi.hmi", 
-                "com.sgm.navi.mcp.coordinator.MCPCoordinatorService"));
+            Log.d(TAG, "🚀 初始化原始MCP Core");
+            updateNotification("正在初始化MCP Core...");
             
-            boolean result = bindService(intent, mcpCoordinatorConnection, Context.BIND_AUTO_CREATE);
-            Log.d(TAG, "连接MCP协调中心: " + (result ? "成功" : "失败"));
+            // 创建工具实例并注册到MCP core
+            LocationTools locationTools = new LocationTools();
+            SearchTools searchTools = new SearchTools();
+            NavigationTools navigationTools = new NavigationTools();
+            FavoriteTools favoriteTools = new FavoriteTools();
+            SettingTools settingTools = new SettingTools();
+            
+            // 注册所有工具到原始MCP core
+            Mcp.registerTool(locationTools);
+            Mcp.registerTool(searchTools);
+            Mcp.registerTool(navigationTools);
+            Mcp.registerTool(favoriteTools);
+            Mcp.registerTool(settingTools);
+            
+            Log.d(TAG, "✅ MCP Core初始化完成，已注册 " + Mcp.getRegisteredToolCount() + " 个工具");
+            updateNotification("MCP服务就绪 - " + Mcp.getRegisteredToolCount() + " 个工具");
             
         } catch (Exception e) {
-            Log.e(TAG, "连接MCP协调中心失败: " + e.getMessage());
+            Log.e(TAG, "❌ MCP Core初始化失败", e);
+            updateNotification("MCP初始化失败: " + e.getMessage());
         }
     }
     
-    private final ServiceConnection mcpCoordinatorConnection = new ServiceConnection() {
+    
+    /**
+     * 使用传统AIDL方式注册工具到coordinator（备用方案）
+     */
+    private void initLegacyToolRegistration() {
+        ThreadManager.getInstance().execute(() -> {
+            try {
+                Log.d(TAG, "🔄 启动传统AIDL工具注册...");
+                
+                // 连接到MCP协调中心 - 使用传统AIDL接口
+                Intent intent = new Intent();
+                ComponentName componentName = new ComponentName(
+                    "com.sgm.navi.hmi", 
+                    "com.sgm.navi.mcp.coordinator.MCPCoordinatorService"
+                );
+                intent.setComponent(componentName);
+                // 不设置action，让coordinator返回默认的传统AIDL接口
+                
+                boolean bindResult = bindService(intent, legacyMcpConnection, Context.BIND_AUTO_CREATE);
+                Log.d(TAG, bindResult ? "✅ 传统AIDL连接请求成功" : "❌ 传统AIDL连接请求失败");
+                
+            } catch (Exception e) {
+                Log.e(TAG, "❌ 传统AIDL工具注册失败", e);
+            }
+        });
+    }
+    
+    // 传统AIDL连接
+    private IMCPService legacyMcpService;
+    private boolean isLegacyConnected = false;
+    
+    private final ServiceConnection legacyMcpConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mcpCoordinatorService = IMCPService.Stub.asInterface(service);
-            isConnectedToCoordinator = true;
-            Log.d(TAG, "✅ 已连接到MCP协调中心");
+            legacyMcpService = IMCPService.Stub.asInterface(service);
+            isLegacyConnected = true;
             
-            updateNotification("已连接，正在注册工具...");
+            Log.d(TAG, "✅ 传统AIDL - 已连接到MCP协调中心，开始初始化MCP Core...");
             
-            // 注册导航工具到协调中心
-            registerNavigationTools();
+            // 配置MCP Core并注册工具
+            registerLegacyTools();
+            
+            // 现在初始化MCP Core（此时coordinator服务已连接）
+            initMcp();
         }
-
+        
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mcpCoordinatorService = null;
-            isConnectedToCoordinator = false;
-            Log.d(TAG, "❌ 与MCP协调中心连接断开");
-            
-            updateNotification("连接断开，等待重连...");
+            legacyMcpService = null;
+            isLegacyConnected = false;
+            Log.w(TAG, "⚠️ 传统AIDL - MCP协调中心连接断开");
         }
     };
     
     /**
-     * 注册导航工具到MCP协调中心
+     * 使用传统AIDL方式注册工具（从ToolProvider自动提取信息）
      */
-    private void registerNavigationTools() {
-        ThreadManager.getInstance().execute(() -> {
-            if (mcpCoordinatorService != null && isConnectedToCoordinator) {
-                try {
-                    // 1. 设置MCP协调中心服务连接
-                    Mcp.setMCPCoordinatorService(mcpCoordinatorService);
-                    
-                    // 2. 创建各类工具实例并使用注解驱动注册
-                    LocationTools locationTools = new LocationTools();
-                    SearchTools searchTools = new SearchTools();
-                    NavigationTools navigationTools = new NavigationTools();
-                    
-                    // 3. 注册所有工具类
-                    Mcp.registerTool(locationTools);
-                    Mcp.registerTool(searchTools);
-                    Mcp.registerTool(navigationTools);
-                    
-                    int registeredCount = Mcp.getRegisteredToolCount();
-                    String[] toolNames = Mcp.getRegisteredToolNames();
-                    
-                    Log.d(TAG, 
-                        String.format("✅ SGM导航工具注册完成，共注册 %d 个工具: %s", 
-                        registeredCount, String.join(", ", toolNames)));
-                        
-                    Log.d(TAG, "🚀 SGM导航工具模块已就绪，包含位置、搜索、导航三大功能");
-                    
-                    updateNotification("工具已注册 (" + registeredCount + "个)，服务就绪");
-                } catch (Exception e) {
-                    Log.e(TAG, "❌ 导航工具注册失败: " + e.getMessage());
-                }
+    private void registerLegacyTools() {
+        if (legacyMcpService == null) {
+            Log.e(TAG, "❌ 传统AIDL - MCP服务未连接");
+            return;
+        }
+        
+        Log.d(TAG, "📝 传统AIDL - 配置MCP Core使用coordinator服务");
+
+        try {
+            // 将coordinator服务设置到MCP Core
+            Mcp.setMCPCoordinatorService(legacyMcpService);
+            
+            // 现在MCP Core可以自动注册工具到coordinator
+            // initMcp()中的Mcp.registerTool()调用现在会工作
+            
+            // 获取已注册的工具数量
+            String[] toolNames = Mcp.getRegisteredToolNames();
+            Log.d(TAG, "✅ MCP Core已连接coordinator，共有 " + toolNames.length + " 个工具");
+            
+            for (String toolName : toolNames) {
+                Log.d(TAG, "   🔧 工具: " + toolName);
             }
-        });
+            
+            updateNotification("MCP Core已连接coordinator - " + toolNames.length + " 个工具");
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ 配置MCP Core失败", e);
+            updateNotification("MCP Core配置失败: " + e.getMessage());
+        }
+
     }
+    
+    
+    
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "客户端绑定SGM导航服务");
-        return navigationBinder;
+        return navigationBinder;  // 暂时保留原有的AIDL Binder接口
     }
 
     // 注意：这里使用的AIDL接口来自mcp-coordinator模块
@@ -136,20 +200,22 @@ public class SGMNavigationService extends Service {
             String toolName = request.getToolName();
             String parameters = request.getParameters();
             
-            Log.d(TAG, "收到工具调用请求: " + toolName);
+            Log.d(TAG, "📞 收到工具调用请求: " + toolName + " (参数: " + parameters + ")");
             
             try {
-                // 使用MCP核心引擎调用工具
+                // 使用原始MCP core调用工具
                 String result = Mcp.invokeTool(toolName, parameters);
                 
+                Log.d(TAG, "✅ 工具调用成功: " + toolName);
                 return new ToolResponse(toolName, result, true);
                 
             } catch (Exception e) {
-                Log.e(TAG, "工具调用失败: " + toolName, e);
+                Log.e(TAG, "❌ 工具调用失败: " + toolName, e);
                 return new ToolResponse(toolName, "工具调用失败: " + e.getMessage(), false);
             }
         }
     };
+    
 
     /**
      * 创建通知渠道
@@ -174,7 +240,7 @@ public class SGMNavigationService extends Service {
     private Notification createNotification() {
         return new Notification.Builder(this, CHANNEL_ID)
             .setContentTitle("SGM MCP服务")
-            .setContentText("正在连接MCP协调中心...")
+            .setContentText("正在初始化新SDK连接...")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .build();
     }
@@ -197,11 +263,21 @@ public class SGMNavigationService extends Service {
     public void onDestroy() {
         super.onDestroy();
         
-        // 断开与MCP协调中心的连接
-        if (isConnectedToCoordinator) {
-            unbindService(mcpCoordinatorConnection);
+        Log.d(TAG, "🛑 SGM导航MCP服务正在停止...");
+        
+        // 断开传统AIDL连接
+        if (isLegacyConnected && legacyMcpService != null) {
+            try {
+                unbindService(legacyMcpConnection);
+                Log.d(TAG, "✅ 传统AIDL连接已断开");
+            } catch (Exception e) {
+                Log.w(TAG, "⚠️ 断开传统AIDL连接时出现异常", e);
+            } finally {
+                legacyMcpService = null;
+                isLegacyConnected = false;
+            }
         }
         
-        Log.d(TAG, "SGM导航MCP服务停止");
+        Log.d(TAG, "🏁 SGM导航MCP服务已完全停止");
     }
 }

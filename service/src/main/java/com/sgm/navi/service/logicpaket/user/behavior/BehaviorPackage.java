@@ -185,16 +185,46 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
      */
     public PoiInfoEntity getHomeFavoriteInfo() {
         PoiInfoEntity poiInfoEntity = null;
-        if (isLogin()) { // 用户已登录，从云端获取数据
+        boolean isLogin = isLogin();
+        Logger.i(TAG, "DEBUG_STARTUP: getHomeFavoriteInfo() 开始，登录状态: " + isLogin);
+        
+        if (isLogin) { // 用户已登录，从云端获取数据
+            Logger.i(TAG, "DEBUG_STARTUP: 从云端获取家地址数据");
             if (mBehaviorAdapter != null) {
                 poiInfoEntity = mBehaviorAdapter.getHomeFavoriteInfo();
+                if (poiInfoEntity != null) {
+                    Logger.i(TAG, "DEBUG_STARTUP: 云端家地址获取成功: " + 
+                        poiInfoEntity.getName() + " (" + poiInfoEntity.getPoint().getLat() + "," + poiInfoEntity.getPoint().getLon() + ")");
+                } else {
+                    Logger.i(TAG, "DEBUG_STARTUP: 云端家地址为空");
+                }
+            } else {
+                Logger.w(TAG, "DEBUG_STARTUP: BehaviorAdapter为空");
             }
         } else { // 用户未登录，从本地获取数据
+            Logger.i(TAG, "DEBUG_STARTUP: 从本地数据库获取家地址数据");
             final List<Favorite> favoriteList = mManager.getValueByCommonName(UserDataCode.FAVORITE_TYPE_HOME);
+            Logger.i(TAG, "DEBUG_STARTUP: 本地家地址记录数量: " + (favoriteList != null ? favoriteList.size() : 0));
+            
             if (!ConvertUtils.isEmpty(favoriteList)) {
-                poiInfoEntity = getPoiInfoEntity(favoriteList.get(0));
+                Favorite favorite = favoriteList.get(0);
+                Logger.i(TAG, "DEBUG_STARTUP: 找到本地家地址记录 - ID: " + favorite.getMItemId() + 
+                    ", 名称: " + favorite.getMName() + 
+                    ", 坐标: (" + favorite.getMPointY() + "," + favorite.getMPointX() + ")" +
+                    ", 更新时间: " + favorite.getMUpdateTime());
+                poiInfoEntity = getPoiInfoEntity(favorite);
+            } else {
+                Logger.i(TAG, "DEBUG_STARTUP: 本地没有找到家地址记录");
             }
         }
+        
+        if (poiInfoEntity != null) {
+            Logger.i(TAG, "DEBUG_STARTUP: 最终返回家地址: " + poiInfoEntity.getName() + 
+                " (" + poiInfoEntity.getPoint().getLat() + "," + poiInfoEntity.getPoint().getLon() + ")");
+        } else {
+            Logger.w(TAG, "DEBUG_STARTUP: 最终返回家地址为null");
+        }
+        
         return poiInfoEntity;
     }
 

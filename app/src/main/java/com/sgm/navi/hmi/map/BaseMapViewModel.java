@@ -1516,20 +1516,27 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void setTMCView(RouteTMCParam param) {
+        Logger.d("BaseMapViewModel", "DEBUG_TMC: setTMCView() 收到TMC参数: " + 
+            "key=" + param.getMKey() + ", isShort=" + param.isMIsShort() + ", time=" + param.getMTime());
 
         //0代表家  1代表公司
         if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
-            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+            String inAroundText = ResourceUtils.Companion.getInstance().getString(R.string.map_in_around);
+            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址距离很近，设置为: " + inAroundText);
+            homeTime.set(inAroundText);
         }
         if (Boolean.TRUE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
             companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
         }
 
         if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
+            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址TMC更新 - 原时间: " + homeTime.get() + ", 新时间: " + param.getMTime());
             homeTime.set(param.getMTime());
             if ("计算中...".equals(param.getMTime())) {
+                Logger.d("BaseMapViewModel", "DEBUG_TMC: 时间显示为计算中，设置为就在附近");
                 homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
             }
+            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址最终时间设置为: " + homeTime.get());
             if (mView != null) {
                 mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
             }

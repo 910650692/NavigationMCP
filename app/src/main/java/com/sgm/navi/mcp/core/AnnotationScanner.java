@@ -56,6 +56,28 @@ public class AnnotationScanner {
     }
     
     /**
+     * 根据Java类型自动推断MCPDataType
+     * 与新SDK保持一致：不依赖注解type字段，完全基于Java反射
+     */
+    private static MCPDataType inferMCPDataType(Class<?> javaType) {
+        if (javaType == String.class) {
+            return MCPDataType.STRING;
+        } else if (javaType == int.class || javaType == Integer.class) {
+            return MCPDataType.INTEGER;
+        } else if (javaType == long.class || javaType == Long.class ||
+                   javaType == double.class || javaType == Double.class ||
+                   javaType == float.class || javaType == Float.class) {
+            return MCPDataType.NUMBER;
+        } else if (javaType == boolean.class || javaType == Boolean.class) {
+            return MCPDataType.BOOLEAN;
+        } else if (javaType.isArray() || List.class.isAssignableFrom(javaType)) {
+            return MCPDataType.ARRAY;
+        } else {
+            return MCPDataType.OBJECT;
+        }
+    }
+    
+    /**
      * 提取方法参数信息
      */
     private static List<ParameterInfo> extractParameterInfo(Method method) {
@@ -67,13 +89,18 @@ public class AnnotationScanner {
             if (paramAnnotation != null) {
                 ParameterInfo paramInfo = new ParameterInfo();
                 paramInfo.name = paramAnnotation.name();
-                paramInfo.type = paramAnnotation.type();
+                // 使用自动类型推断，不再依赖注解type字段
+                paramInfo.type = inferMCPDataType(parameter.getType());
                 paramInfo.description = paramAnnotation.description();
                 paramInfo.required = paramAnnotation.required();
                 paramInfo.defaultValue = paramAnnotation.defaultValue();
                 paramInfo.javaType = parameter.getType();
                 
                 parameterInfos.add(paramInfo);
+                
+                // 调试日志：显示类型推断结果
+                Log.d(TAG, "参数 " + paramInfo.name + " - Java类型: " + parameter.getType().getSimpleName() + 
+                      " -> MCP类型: " + paramInfo.type);
             }
         }
         

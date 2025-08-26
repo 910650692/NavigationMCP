@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -237,21 +238,90 @@ public class ReflectionInvoker {
                 case STRING:
                     return params.get(paramName).getAsString();
                 case INTEGER:
-                    return params.get(paramName).getAsInt();
+                    JsonElement intElement = params.get(paramName);
+                    if (intElement.isJsonPrimitive()) {
+                        JsonPrimitive intPrimitive = intElement.getAsJsonPrimitive();
+                        if (intPrimitive.isNumber()) {
+                            return intPrimitive.getAsInt();
+                        } else if (intPrimitive.isString()) {
+                            // 支持字符串到整数的转换
+                            try {
+                                return Integer.parseInt(intPrimitive.getAsString().trim());
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "无法将字符串 '" + intPrimitive.getAsString() + "' 转换为整数");
+                                return 0;
+                            }
+                        }
+                    }
+                    return intElement.getAsInt();
                 case NUMBER:
+                    JsonElement numElement = params.get(paramName);
                     if (paramInfo.javaType == int.class || paramInfo.javaType == Integer.class) {
-                        return params.get(paramName).getAsInt();
+                        if (numElement.isJsonPrimitive() && numElement.getAsJsonPrimitive().isString()) {
+                            try {
+                                return Integer.parseInt(numElement.getAsString().trim());
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "无法将字符串转换为整数: " + numElement.getAsString());
+                                return 0;
+                            }
+                        }
+                        return numElement.getAsInt();
                     } else if (paramInfo.javaType == double.class || paramInfo.javaType == Double.class) {
-                        return params.get(paramName).getAsDouble();
+                        if (numElement.isJsonPrimitive() && numElement.getAsJsonPrimitive().isString()) {
+                            try {
+                                return Double.parseDouble(numElement.getAsString().trim());
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "无法将字符串转换为双精度: " + numElement.getAsString());
+                                return 0.0;
+                            }
+                        }
+                        return numElement.getAsDouble();
                     } else if (paramInfo.javaType == float.class || paramInfo.javaType == Float.class) {
-                        return params.get(paramName).getAsFloat();
+                        if (numElement.isJsonPrimitive() && numElement.getAsJsonPrimitive().isString()) {
+                            try {
+                                return Float.parseFloat(numElement.getAsString().trim());
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "无法将字符串转换为浮点数: " + numElement.getAsString());
+                                return 0.0f;
+                            }
+                        }
+                        return numElement.getAsFloat();
                     } else if (paramInfo.javaType == long.class || paramInfo.javaType == Long.class) {
-                        return params.get(paramName).getAsLong();
+                        if (numElement.isJsonPrimitive() && numElement.getAsJsonPrimitive().isString()) {
+                            try {
+                                return Long.parseLong(numElement.getAsString().trim());
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "无法将字符串转换为长整数: " + numElement.getAsString());
+                                return 0L;
+                            }
+                        }
+                        return numElement.getAsLong();
                     } else {
-                        return params.get(paramName).getAsString();
+                        return numElement.getAsString();
                     }
                 case BOOLEAN:
-                    return params.get(paramName).getAsBoolean();
+                    JsonElement element = params.get(paramName);
+                    if (element.isJsonPrimitive()) {
+                        JsonPrimitive primitive = element.getAsJsonPrimitive();
+                        if (primitive.isBoolean()) {
+                            return primitive.getAsBoolean();
+                        } else if (primitive.isString()) {
+                            // 支持字符串到布尔的转换
+                            String strValue = primitive.getAsString().toLowerCase().trim();
+                            // 明确处理 true 值
+                            if ("true".equals(strValue) || "1".equals(strValue) || "yes".equals(strValue)) {
+                                return true;
+                            }
+                            // 明确处理 false 值
+                            if ("false".equals(strValue) || "0".equals(strValue) || "no".equals(strValue)) {
+                                return false;
+                            }
+                            // 对于其他值，记录警告并返回默认值
+                            Log.w(TAG, "无法识别的布尔值: '" + strValue + "'，使用默认值 false");
+                            return false;
+                        }
+                    }
+                    return element.getAsBoolean();
                 case OBJECT:
                 case ARRAY:
                 default:
