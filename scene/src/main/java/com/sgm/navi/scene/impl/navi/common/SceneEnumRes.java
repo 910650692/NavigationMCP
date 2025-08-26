@@ -723,7 +723,7 @@ public final class SceneEnumRes {
             case LaneActionAheadAndNUll:
                 return new AutoUIDrawable(
                         R.drawable.img_optimal_lane_0_0_day);
-            case LaneActionAheadAndNUllNoAction, LaneActionEmptyNoAction, LaneActionEmpty:
+            case LaneActionAheadAndNUllNoAction:
                 return new AutoUIDrawable(
                         R.drawable.img_disable_lane_0_day);
             case LaneActionLeftAndNUll:
@@ -903,6 +903,8 @@ public final class SceneEnumRes {
             case LaneActionTidal:
                 return new AutoUIDrawable(
                         R.drawable.img_optimal_lane_25_day);
+            case LaneActionEmptyNoAction, LaneActionEmpty:
+                return new AutoUIDrawable(R.drawable.img_disable_lane_empty);
             case LaneLabor:
                 return new AutoUIDrawable(
                         R.drawable.img_lane_labor_day);
