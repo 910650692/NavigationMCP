@@ -200,6 +200,7 @@ public final class SearchResultMapper {
                 || requestParameterBuilder.getSearchType() == AutoMapConstant.SearchType.ROUTE_TERMINAL_PARK_SEARCH) {
             //终点停车场列表最多提供8个
             limitListToSize(poiList, 8);
+            sortList(poiList,requestParameterBuilder.getPoiLoc());
         }
         searchResultEntity.setMaxPageNum(result.total / 10 + 1);
         searchResultEntity.setTotal(result.total);
@@ -1533,5 +1534,34 @@ public final class SearchResultMapper {
          */
         final String regex = "^150900|15090[3-9]$";
         return Pattern.matches(regex, typeCode);
+    }
+
+    /**
+     * 根据POI点到指定终点的距离对POI列表进行排序
+     *
+     * @param poiList POI信息列表
+     * @param endPoint 终点位置
+     */
+    private void sortList(List<PoiInfoEntity> poiList,GeoPoint endPoint){
+        if(!ConvertUtils.isEmpty(poiList) && !ConvertUtils.isNull(endPoint)){
+            Collections.sort(poiList, new Comparator<PoiInfoEntity>() {
+                @Override
+                public int compare(PoiInfoEntity startInfo, PoiInfoEntity endInfo) {
+                    if(!ConvertUtils.isNull(startInfo.getPoint()) && !ConvertUtils.isNull(endInfo.getPoint())){
+                      int startDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(startInfo.getPoint(),endPoint);
+                      int endDistance = SearchPackage.getInstance().calcStraightDistanceWithInt(endInfo.getPoint(),endPoint);
+                      return Integer.compare(startDistance, endDistance);
+                    }
+                    // 将坐标无效的POI排在列表末尾
+                    if (ConvertUtils.isNull(startInfo.getPoint()) && ConvertUtils.isNull(endInfo.getPoint())) {
+                        return 0;
+                    } else if (ConvertUtils.isNull(startInfo.getPoint())) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+        }
     }
 }
