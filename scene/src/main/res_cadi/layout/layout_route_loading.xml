@@ -17,7 +17,7 @@
             <com.sgm.navi.ui.view.SkinImageView
                 android:id="@+id/iv_loading"
                 android:layout_width="@dimen/dp_60"
-                android:scaleType="center"
+                android:scaleType="centerCrop"
                 android:layout_height="@dimen/dp_60"
                 android:layout_marginStart="@dimen/dp_54"
                 android:src="@drawable/img_loading_progress" />
