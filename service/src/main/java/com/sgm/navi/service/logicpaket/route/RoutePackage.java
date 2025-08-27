@@ -1428,6 +1428,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+        //只有主屏需要绘制终点名称扎标
+        if (mapTypeId != MapType.MAIN_SCREEN_MAIN_MAP) {
+            Logger.d(TAG, "show RouteLine not main screen");
+            return;
+        }
         RouteParam endParam = getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
         if (endParam == null) {
             Logger.e(TAG, "end param is null");
