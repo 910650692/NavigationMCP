@@ -116,6 +116,7 @@ public final class CommonManager {
      * @param value 对应值
      */
     public void insertUserInfo(final String key, final String value) {
+        Logger.i(TAG, "insertUserInfo: ", key, value);
         final CommonSetting setting = new CommonSetting();
         setting.setMName(key);
         setting.setMValue(value);
@@ -134,7 +135,7 @@ public final class CommonManager {
                 .unique();
         if (commonSetting != null) {
             String value = commonSetting.getMValue();
-            Logger.i(TAG, key, value);
+            Logger.i(TAG, "getValueByKey: ", key, value);
             return value;
         } else {
             return "";
@@ -152,7 +153,7 @@ public final class CommonManager {
                 .unique();
         unique.setMValue(value);
         mCommonSettingDao.update(unique);
-
+        Logger.i(TAG, "deleteValue: ", key, value);
         if (UserDataCode.SETTING_FIRST_LAUNCH.equals(key)) {
             updateFirstLaunchValue(value);
         }
@@ -167,7 +168,7 @@ public final class CommonManager {
                 .where(CommonSettingDao.Properties.MName.eq(key))
                 .buildDelete()
                 .executeDeleteWithoutDetachingEntities();
-
+        Logger.i(TAG, "deleteValue: ", key);
         if (UserDataCode.SETTING_FIRST_LAUNCH.equals(key)) {
             updateFirstLaunchValue("");
         }
@@ -177,6 +178,7 @@ public final class CommonManager {
      * 清空全部数据
      */
     public void deleteAll() {
+        Logger.i(TAG, "deleteAll: ");
         mCommonSettingDao.deleteAll();
         updateFirstLaunchValue("");
     }

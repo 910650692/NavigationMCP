@@ -44,6 +44,11 @@ public class AccountAdapterImpl implements IAccountApi {
     }
 
     @Override
+    public void refreshUserInfo() {
+        mAdapterImplHelper.refreshUserInfo();
+    }
+
+    @Override
     public void registerCallBack(final String key, final AccountAdapterCallBack callBack) {
         mAdapterImplHelper.registerCallBack(key, callBack);
     }

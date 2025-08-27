@@ -632,7 +632,12 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             return;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "notifyMessage: PlanPrefPushMsg ", msg.content.planPrefs.size());
+            if (msg != null && msg.content != null && msg.content.planPrefs != null) {
+                Logger.d(TAG, "notifyMessage: PlanPrefPushMsg ", msg.content.planPrefs.size());
+                if (msg.content.planPrefs.size() > 0) {
+                    Logger.d(TAG, "notifyMessage: PlanPrefPushMsg planPref = ", msg.content.planPrefs.get(0));
+                }
+            }
         }
         ArrayList<Integer> planPrefs = msg.content.planPrefs;
         if (planPrefs != null && planPrefs.size() > 0) {

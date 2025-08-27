@@ -6,15 +6,18 @@ import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.file.FileUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
+import com.autonavi.gbl.aosclient.BLAosServiceManager;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.user.account.AccountService;
 import com.autonavi.gbl.user.account.model.AccountCheckResult;
 import com.autonavi.gbl.user.account.model.AccountLogoutResult;
+import com.autonavi.gbl.user.account.model.AccountProfile;
 import com.autonavi.gbl.user.account.model.AccountProfileResult;
 import com.autonavi.gbl.user.account.model.AccountRegisterResult;
 import com.autonavi.gbl.user.account.model.AccountServiceParam;
@@ -33,9 +36,11 @@ import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.GBLCacheFilePath;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.account.AccountAdapterCallBack;
+import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
+import com.sgm.navi.service.greendao.CommonManager;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -44,20 +49,27 @@ import java.util.Hashtable;
 public class AccountAdapterImplHelper implements IAccountServiceObserver {
     private static final String TAG = MapDefaultFinalTag.ACCOUNT_SERVICE_TAG;
     private AccountService mAccountService;
+    private BLAosServiceManager mBlAosServiceManager;
     private final AccountManager mAccountManager;
     private final Hashtable<String, AccountAdapterCallBack> mAccountResultHashtable;
     private String mEmail;
+    private final CommonManager mCommonManager;
 
     protected AccountAdapterImplHelper(final AccountService accountService) {
         mAccountResultHashtable = new Hashtable<>();
         mAccountService = accountService;
         mAccountManager = AccountManager.get(AppCache.getInstance().getMContext());
+        mCommonManager = CommonManager.getInstance();
+        mCommonManager.init();
     }
 
     protected void initAccountService() {
-        if(null == mAccountService)
+        if (null == mAccountService)
             mAccountService = (AccountService) ServiceMgr.getServiceMgrInstance()
                     .getBLService(SingleServiceID.AccountSingleServiceID);
+        if (null == mBlAosServiceManager)
+            mBlAosServiceManager = (BLAosServiceManager) ServiceMgr.getServiceMgrInstance().getBLService(SingleServiceID.AosSingleServiceID);
+
         // 构造初始化参数
         final AccountServiceParam param = new AccountServiceParam();
         param.dataPath = GBLCacheFilePath.ACCOUNT_PATH;
@@ -66,9 +78,25 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         //FileUtils.createDIR(param.dataPath);
         // 服务初始化
         final int res = mAccountService.init(param);
-        Logger.i(TAG, "initAccountService: initSetting=" , res);
+        Logger.i(TAG, "initAccountService: initSetting=", res);
         // 添加回调观察者
         mAccountService.addObserver(this);
+        refreshUserInfo();
+    }
+
+    public void refreshUserInfo() {
+        if (mAccountService == null ||
+                ServiceInitStatus.ServiceInitDone != mAccountService.isInit()) {
+            Logger.i(TAG, "refreshUserInfo: mAccountService is not OK");
+            return;
+        }
+        if (mAccountService.getUserData() == null || TextUtils.isEmpty(mAccountService.getUserData().uid)) {
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO,
+                    GsonUtils.toJson(convertAccountProfile(new AccountProfile())));
+        } else {
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO,
+                    GsonUtils.toJson(convertAccountProfile(mAccountService.getUserData())));
+        }
     }
 
     /**
@@ -201,6 +229,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         if (result != null && result.code == 1) {
             Logger.i(TAG, "AccountLogoutResult notify: res=" + result.code + "; taskId=" + taskId);
             Logger.i(TAG, "状态: 已登出 ");
+            mBlAosServiceManager.setUid("");
         } else {
             Logger.i(TAG, "登出失败 ");
         }
@@ -332,7 +361,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     }
 
     /**
-     * 转换登录信息
+     * 转换SDK的用户信息
      * @param result 登录结果
      * @return 登录信息
      */
@@ -347,6 +376,21 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
                     result.profile.avatar,result.profile.mobile));
         }
         return info;
+    }
+
+    /**
+     * 转换SDK的用户信息
+     * @param result 登录结果
+     * @return 登录信息
+     */
+    private AccountProfileInfo convertAccountProfile(final AccountProfile result) {
+        if (result != null) {
+            Logger.i(TAG, "convertAccountProfile: nickname=", result.nickname);
+            mEmail = result.email;
+            return convertAccountProfileInfo(result.uid, result.username, result.nickname,
+                    result.avatar, result.mobile);
+        }
+        return new AccountProfileInfo();
     }
 
     /**
