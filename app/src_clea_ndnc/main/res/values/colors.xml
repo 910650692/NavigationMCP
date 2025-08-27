@@ -12,7 +12,7 @@
     <color name="authorization_agree_color">#2461EA</color>
     <color name="authorization_disagree_color">#33787880</color>
     <color name="use_reminder_color">#245FEA</color>
-    <color name="main_map_limit_bg_color">#26B2AFC2</color>
+    <color name="main_map_limit_bg_color">#E5E6EE</color>
     <color name="main_map_limit_number_color">#FFF8F8FA</color>
     <color name="main_map_limit_retry_button_color">#FF2461EA</color>
     <color name="message_center_operate">#FF2461EA</color>
