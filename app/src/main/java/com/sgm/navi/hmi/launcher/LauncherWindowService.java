@@ -39,6 +39,7 @@ import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
 import com.sgm.navi.hmi.navi.NaviGuidanceModel;
+import com.sgm.navi.service.define.navi.CrossImageEntity;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
@@ -102,6 +103,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private boolean isConnected;
     private static boolean isInitialized = false;
     private int moveDistance;
+    private int mMoveStartDistance;
     private ValueAnimator widthAnimator;
 
     private LauncherWindowService() {
@@ -218,7 +220,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private NaviTmcInfo mLastTmcInfo;
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.d(TAG,"onUpdateTMCLightBar");
+        Logger.d(TAG, "onUpdateTMCLightBar");
         mLastTmcInfo = naviTmcInfo;
         if (!ConvertUtils.isNull(mBinding)) {
             mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
@@ -325,6 +327,20 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
                 mBinding.sceneNaviEta.onNaviInfo(mNaviEtaInfo);
                 mBinding.sceneNaviTmc.onNaviInfo(mNaviEtaInfo);
+
+                if (mCrossImgIsOnShowing) {
+                    // 路口大图信息更新
+                    mBinding.sceneNaviTbt.onCrossImageInfo(mCrossImgIsOnShowing, crossImageEntity);
+                    // 防止获取路程首次计算错误
+                    if (mMoveStartDistance == 0) {
+                        mMoveStartDistance = etaInfo.getRemainDist();
+                    }
+                    int moveDistanceRoad = mMoveStartDistance - etaInfo.getRemainDist();
+                    Logger.d(TAG, "moveDistanceRoad = " + moveDistanceRoad + " mMoveStartDistance = " + mMoveStartDistance);
+                    mBinding.sceneNaviTbt.updateCrossProgress(moveDistanceRoad);
+                } else {
+                    mMoveStartDistance = etaInfo.getRemainDist();
+                }
             }
         });
     }
@@ -432,10 +448,10 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 }
 
                 // 大图显示后隐藏车道线和光柱图
-                if (isVisible && mBinding.sceneNaviLanes != null && mBinding.sceneNaviTmc != null) {
-                    mBinding.sceneNaviLanes.setVisibility(isVisible ? View.GONE : View.VISIBLE);
-                    mBinding.sceneNaviTmc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+                if (isVisible) {
+                    mBinding.sceneNaviLanes.setVisibility(View.GONE);
                 }
+                mBinding.sceneNaviTmc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
             });
         }
     }
@@ -483,8 +499,15 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isNull(mBinding) && !visible) {
                 mBinding.ivCross.setVisibility(View.GONE);
+                mBinding.sceneNaviTbt.onCrossImageInfo(false);
             }
         });
+    }
+
+    public CrossImageEntity crossImageEntity;
+    @Override
+    public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
+        crossImageEntity = naviImageInfo;
     }
 
     private void changeUiTypeOnNaviStatusChanged() {
@@ -499,10 +522,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (isNavigating && mLastTmcInfo != null) {
                 mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
                 mBinding.sceneNaviTmc.onUpdateTMCLightBar(mLastTmcInfo);
-                Logger.d(TAG,"重新绘制光柱图最新数据");
+                Logger.d(TAG, "重新绘制光柱图最新数据");
             }
             // 3. 新增逻辑：如果路口大图正在显示，强制隐藏车道线（首次进入时也生效）
-            mBinding.sceneNaviLanes.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
+            if (mCrossImgIsOnShowing){
+                mBinding.sceneNaviLanes.setVisibility(View.GONE);
+            }
             mBinding.sceneNaviTmc.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
         });
     }
@@ -514,7 +539,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
                 if (mCrossImgIsOnShowing) {
                     mBinding.sceneNaviLanes.setVisibility(View.GONE);
-                }else {
+                } else {
                     mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
                 }
                 mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
@@ -534,7 +559,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     @Override
     public void onWindowSideChanged(boolean isOpenFloat) {
-        if (mBinding == null){
+        if (mBinding == null) {
             return;
         }
 
