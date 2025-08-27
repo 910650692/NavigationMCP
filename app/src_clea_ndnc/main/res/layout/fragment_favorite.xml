@@ -63,10 +63,11 @@
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/rv_favorite_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/layout_top"/>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/layout_top"
