@@ -18,10 +18,10 @@
     <string name="load_url_failed">未能成功获取协议内容</string>
     <string name="load_url_retry">重试</string>
 
-    <string name="service_terms_url_light">https://cache.amap.com/h5/h5/publish/241/index.html</string>
-    <string name="service_terms_url_dark">https://cache.amap.com/h5/h5/publish/241/index.html</string>
-    <string name="privacy_policy_url_light">https://cache.amap.com/h5/h5/publish/238/index.html</string>
-    <string name="privacy_policy_url_dark">https://cache.amap.com/h5/h5/publish/238/index.html</string>
+    <string name="service_terms_url_light">https://cache.gaode.com/activity/auto_legal_instrument/index.html</string>
+    <string name="service_terms_url_dark">https://cache.gaode.com/activity/auto_legal_instrument/index.html</string>
+    <string name="privacy_policy_url_light">https://cache.gaode.com/activity/auto_legal_instrument/privacyPolicy.html</string>
+    <string name="privacy_policy_url_dark">https://cache.gaode.com/activity/auto_legal_instrument/privacyPolicy.html</string>
 
     <string name="reminder_page_service_title">高德服务条款</string>
     <string name="reminder_page_privacy_title">高德隐私权政策</string>
@@ -453,6 +453,8 @@
     <string name="setting_broadcast_voice_recommend">高德标准语音</string>
     <string name="setting_broadcast_voice_has_update">有更新</string>
     <string name="setting_broadcast_voice_no_net">无网络连接，请检查网络后重试</string>
+    <string name="setting_others_syncing">数据同步中，请稍候重试</string>
+    <string name="setting_others_sync_success">同步成功</string>
     <string name="setting_others_account">登录高德账号</string>
     <string name="setting_others_account_detail">收藏夹/历史账号可同步至车</string>
     <string name="setting_others_account_logout">退出绑定后需要重新扫码绑定</string>
@@ -795,8 +797,4 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="zhi_jia">切智驾</string>
-    
-    <!-- MCP导航权限相关字符串 -->
-    <string name="permission_start_navigation_label">Start Navigation Permission</string>
-    <string name="permission_start_navigation_desc">Allow MCP tools to start navigation functionality</string>
 </resources>
