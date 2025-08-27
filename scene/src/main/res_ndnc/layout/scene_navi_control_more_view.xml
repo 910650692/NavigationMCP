@@ -12,8 +12,11 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        clickCommand="@{naviControl.backControl}"
         android:background="@drawable/bg_shadow_navi_buick"
         android:paddingHorizontal="@dimen/dp_34"
         android:paddingVertical="@dimen/dp_34">
@@ -21,7 +24,6 @@
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_545"
             android:layout_height="@dimen/dp_272"
-            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

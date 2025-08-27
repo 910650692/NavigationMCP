@@ -13,6 +13,8 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_root"
+        clickCommand="@{naviControl.backControl}"
         android:layout_width="@dimen/dp_922"
         android:layout_height="@dimen/dp_514"
         android:paddingVertical="@dimen/dp_51"
