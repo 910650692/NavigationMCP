@@ -825,8 +825,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             //通知launcher隐藏遮罩
             notifyLauncher(true);
+            if (mNaviStatusPackage.getCurrentNaviStatus() != NaviStatus.NaviStatusType.NAVING) {
+                layerPackage.setDefaultCarMode(mapTypeId);
+            }
             mSettingPackage.setSettingChangeCallback(mapTypeId.name(), this);
-            layerPackage.setDefaultCarMode(mapTypeId);
             mapPackage.setMapCenter(mapTypeId, new GeoPoint(positionPackage.getLastCarLocation().getLongitude(),
                     positionPackage.getLastCarLocation().getLatitude()));
             signalPackage.registerObserver(mapTypeId.name(), this);
