@@ -832,6 +832,7 @@ public class TimeUtils {
         String restTime = "";
         String minuteString = context.getString(R.string.tbt_time_minute_unit);
         String hourString = context.getString(R.string.tbt_time_hour_unit);
+        String dayString = context.getString(R.string.tbt_time_day_unit);
 
         long minute = (second + 30) / 60;
 
@@ -846,10 +847,16 @@ public class TimeUtils {
             // 大于1小时，显示小时数
             long hour = minute / 60;
             minute = minute % 60;
-            if (minute > 0) {
-                restTime = hour + hourString + minute + minuteString;
+            if (hour >= 24) {
+                long day = hour / 24;
+                hour = hour % 24;
+                restTime = day + dayString + hour + hourString;
             } else {
-                restTime = hour + hourString;
+                if (minute > 0) {
+                    restTime = hour + hourString + minute + minuteString;
+                } else {
+                    restTime = hour + hourString;
+                }
             }
         }
         return restTime;

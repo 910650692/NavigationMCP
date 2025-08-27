@@ -17,6 +17,7 @@
     <string name="now">现在</string>
     <string name="tbt_time_hour_unit">小时</string>
     <string name="tbt_time_minute_unit">分钟</string>
+    <string name="tbt_time_day_unit">天</string>
     <string name="navi_parking_tight">紧张</string>
     <string name="navi_parking_adequate">充足</string>
     <string name="navi_open_loc_log">开启定位日志</string>
