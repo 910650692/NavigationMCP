@@ -48,7 +48,7 @@ public class CollectModel extends BaseModel<CollectViewModel> implements Setting
     public ArrayList<PoiInfoEntity> getFavoriteListAsync() {
         ArrayList<PoiInfoEntity> list = BehaviorPackage.getInstance().getFavoritePoiData();
         // 过滤掉无详细地址的收藏info
-        list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
+//        list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
         return list;
     }
 

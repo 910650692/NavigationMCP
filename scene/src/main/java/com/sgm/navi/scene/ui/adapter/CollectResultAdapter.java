@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -132,6 +133,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
         holder.mResultItemBinding.ivNaviIcon.setImageDrawable(ResourceUtils.Companion.getInstance()
                 .getDrawable(R.drawable.img_basic_ic_navi));
         holder.mResultItemBinding.textNavi.setTextColor(ResourceUtils.Companion.getInstance().getColor(R.color.search_quick_tab_view_color));
+        resetCollectConstraintLayout(position, holder);
         if (mSearchPackage.isAlongWaySearch()) {
             if (RoutePackage.getInstance().isBelongRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))
                     && !RoutePackage.getInstance().isStartOrEndRouteParam(MapType.MAIN_SCREEN_MAIN_MAP, mPoiEntities.get(position))) {
@@ -252,7 +254,7 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             holder.mResultItemBinding.swipeMenuLayout.smoothClose();
             final List<PoiInfoEntity> poiInfoEntityList = BehaviorPackage.getInstance().getFavoritePoiData();
             // 过滤掉无详细地址的收藏info
-            poiInfoEntityList.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
+//            poiInfoEntityList.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
             ThreadManager.getInstance().postUi(() -> {
                 notifyList(poiInfoEntityList);
             });
@@ -277,6 +279,19 @@ public class CollectResultAdapter extends RecyclerView.Adapter<CollectResultAdap
             }
             holder.mResultItemBinding.swipeMenuLayout.quickClose();
         });
+    }
+
+    private void resetCollectConstraintLayout(int position, ResultHolder holder){
+        if(!ConvertUtils.isNull(holder)
+                && !ConvertUtils.isEmpty(mPoiEntities)
+                && position >= 0
+                && position < mPoiEntities.size()
+                && mCollectionType == AutoMapConstant.CollectionType.COLLECTION){
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) holder.mResultItemBinding.poiName.getLayoutParams();
+            params.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID;
+            params.bottomToTop = !ConvertUtils.isNull(mPoiEntities.get(position)) && mPoiEntities.get(position).getAddress().isEmpty() ? -1 : holder.mResultItemBinding.poiAddress.getId(); // 清空约束
+            holder.mResultItemBinding.poiName.setLayoutParams(params);
+        }
     }
 
     @Override
