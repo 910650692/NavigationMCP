@@ -1,6 +1,8 @@
 package com.sgm.navi.service.logicpaket.setting;
 
 
+import com.android.utils.log.Logger;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
@@ -29,6 +31,7 @@ public final class SettingUpdateObservable {
      * @param observer 监听
      */
     public void addObserver(final String key, final SettingUpdateObserver observer) {
+        Logger.e("addSettingUpdateObservable", " call path : ", key);
         if (!mObservers.contains(observer)) {
             mObservers.put(key, observer);
         }
@@ -40,6 +43,7 @@ public final class SettingUpdateObservable {
      * @param observer 监听
      */
     public void removeObserver(final String key, final SettingUpdateObserver observer) {
+        Logger.e("removeSettingUpdateObservable", " call path : ", key);
         mObservers.remove(key,observer);
     }
 

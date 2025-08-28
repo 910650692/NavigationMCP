@@ -333,7 +333,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mapVisibleAreaDataManager = MapVisibleAreaDataManager.getInstance();
         addGestureListening();//添加收拾监听
         NaviStatusPackage.getInstance().registerObserver(TAG, this);
-        SettingUpdateObservable.getInstance().addObserver(TAG, this);
         mapPackage.addTimeHelper(timeHelper);
         speedMonitor.registerSpeedCallBack();
         speedMonitor.registerCallBack(this);
@@ -395,6 +394,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
         // 注册媒体悬浮窗广播
         FloatWindowReceiver.registerCallback(TAG, this);
+        SettingUpdateObservable.getInstance().addObserver(TAG, this);
     }
 
     @Override
