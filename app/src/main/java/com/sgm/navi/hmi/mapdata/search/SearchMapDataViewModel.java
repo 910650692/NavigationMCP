@@ -24,6 +24,12 @@ public class SearchMapDataViewModel extends BaseViewModel<SearchMapDataFragment,
         return new SearchMapDataModel();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mView = null;
+    }
+
     /**
      * 通过搜索关键字获取行政区域adcode列表
      * @param keyword

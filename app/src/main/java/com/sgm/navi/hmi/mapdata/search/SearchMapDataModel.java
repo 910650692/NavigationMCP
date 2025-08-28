@@ -29,6 +29,8 @@ public class SearchMapDataModel extends BaseModel<SearchMapDataViewModel> implem
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mapDataPackage.unRegisterCallBack("SearchMapDataModel", this);
+        mViewModel = null;
     }
 
     /**

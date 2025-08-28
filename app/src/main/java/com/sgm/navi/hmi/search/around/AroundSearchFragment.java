@@ -104,6 +104,7 @@ public class AroundSearchFragment extends BaseFragment<FragmentAroundBinding, Ar
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mViewModel = null;
     }
 
     @Override

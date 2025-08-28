@@ -56,6 +56,12 @@ public class SearchMapDataFragment extends BaseFragment<FragmentSearchMapDataBin
         requestFocusAndShowKeyboard();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel = null;
+    }
+
     /**
      * 初始化离线搜索view
      */

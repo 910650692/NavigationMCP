@@ -60,6 +60,7 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mViewModel = null;
     }
 
     @Override

@@ -38,6 +38,12 @@ public class MapDataViewModel extends BaseViewModel<MapDataFragment, MapDataMode
         return new MapDataModel();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mView = null;
+    }
+
     /**
      * 获取全部省份+城市数据
      * @param isCheck

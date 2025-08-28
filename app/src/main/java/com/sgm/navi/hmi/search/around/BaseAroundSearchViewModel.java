@@ -17,6 +17,12 @@ public class BaseAroundSearchViewModel extends BaseViewModel<AroundSearchFragmen
         return new AroundSearchModel();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mView = null;
+    }
+
     public Action getRootClick() {
         return mRootClick;
     }

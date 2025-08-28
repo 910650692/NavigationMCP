@@ -25,6 +25,12 @@ public class BaseMainSearchViewModel extends BaseViewModel<MainSearchFragment, M
         return new MainSearchModel();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mView = null;
+    }
+
     private final Action mRootClick = () -> {
     };
 
