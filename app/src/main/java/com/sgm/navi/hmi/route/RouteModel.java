@@ -1093,7 +1093,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
     }
 
     @Override
-    public void onReRouteError() {
+    public void onReRouteError(int routeType, String errorMsg) {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             Logger.i(TAG, "静默算路失败");
             mViewModel.hideProgressUI(false);

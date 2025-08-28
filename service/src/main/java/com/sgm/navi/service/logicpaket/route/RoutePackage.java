@@ -156,6 +156,21 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         return false;
     }
 
+    /**
+     * 获取报错信息是否需要离线
+     *
+     * @param errorCode 错误码
+     * @return 返回是否
+     */
+    public boolean isOfflineError(final int errorCode) {
+        for (int i : mOfflineRouteErrorCode) {
+            if (errorCode == i) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Getter
     private Map<MapType, Integer> mSelectRouteIndex;
     private Map<MapType, Long> mRequestId;
@@ -532,7 +547,18 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
                     continue;
                 }
-                routeResultObserver.onReRouteError();
+                String reRouteErrorMsg;
+                if (isOfflineError(errorCode)) {
+                    reRouteErrorMsg = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw_error);
+                } else {
+                    reRouteErrorMsg = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw_offline_error);
+                }
+                if (requestRouteResult == null) {
+                    routeResultObserver.onReRouteError(RoutePriorityType.ROUTE_TYPE_COMMON, reRouteErrorMsg);
+                } else {
+                    routeResultObserver.onReRouteError(requestRouteResult.getMRouteType(), reRouteErrorMsg);
+                }
+
             }
         }
 
