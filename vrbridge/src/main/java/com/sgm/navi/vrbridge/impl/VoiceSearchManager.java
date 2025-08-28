@@ -663,7 +663,11 @@ public final class VoiceSearchManager {
     private void responseSearchEmpty() {
         if (null != mPoiCallback) {
             final CallResponse response = CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.NO_RESULT_TRY_OTHER);
-            response.setNeedPlayMessage(true);
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                response.setSubCallResult(NaviSubCallResult.RESP_REQUEST_FAILURE_NETWORK_ERROR);
+            } else {
+                response.setSubCallResult(NaviSubCallResult.RESP_POI_EMPTY);
+            }
             mPoiCallback.onResponse(response);
         }
     }
@@ -675,7 +679,11 @@ public final class VoiceSearchManager {
         if (null != mPoiCallback) {
             final CallResponse response = CallResponse.createFailResponse(
                     IVrBridgeConstant.ResponseString.SEARCH + mKeyword + IVrBridgeConstant.ResponseString.EMPTY_RESULT_TRY_OTHER);
-            response.setNeedPlayMessage(true);
+            if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
+                response.setSubCallResult(NaviSubCallResult.RESP_REQUEST_FAILURE_NETWORK_ERROR);
+            } else {
+                response.setSubCallResult(NaviSubCallResult.RESP_POI_EMPTY);
+            }
             mPoiCallback.onResponse(response);
         }
     }
