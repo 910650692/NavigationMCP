@@ -14,6 +14,7 @@ import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.define.map.MapType;
 import com.android.utils.ScreenTypeUtils;
+import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.StackManager;
 
@@ -30,36 +31,54 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
     public static final String APPTRAY_CLICK_EVENT_ACTION = "com.patac.systemui.intent.action.ACTION_APPTRAY_CLICK_EVENT";
     private final String LAUNCHER_FOREGROUND_STATE_KEY = "launcher_foreground_state";
     private final int LAUNCHER_BACKGROUND = 0;
-    private final int LAUNCHER_FOREGROUND = 1;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent == null || intent.getAction() == null) return;
-        Logger.d(TAG, "HOME_CLICK_ACTION or APPTRAY_CLICK_EVENT_ACTION", intent.getAction());
-
         // 区分dock栏点击Home还是导航图标
         String action = intent.getAction();
         String sourceName = intent.getStringExtra("SourceName"); // 新增参数
+        Logger.d(TAG, "action = ", intent.getAction());
 
-        if (action.equals(HOME_CLICK_ACTION)
-                || (action.equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName == null)) {
-            handleHomeOrAppTrayClick();
-        }else if ((action.equals(APPTRAY_CLICK_EVENT_ACTION) && sourceName != null)){
-            // 获取launcher是否在前台的状态 1 = 前台，0 = 后台
-            int value = Settings.Global.getInt(context.getContentResolver(), LAUNCHER_FOREGROUND_STATE_KEY, LAUNCHER_BACKGROUND);
-            Logger.d(TAG, "launcher 当前状态: ", value);
-            if (value == 0){
-                FloatViewManager.getInstance().hideAllCardWidgets(false);
-            }else {
-                try {
-                    // true = 当前卡片显示
-                    if (FloatViewManager.getInstance().isAppWidgetHidden()){
-                        FloatViewManager.getInstance().hideAllCardWidgets(false);
-                    }else {
-                        handleHomeOrAppTrayClick();
-                    }
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
+        // Cadi 处理卡片
+        if (BuildConfig.FLAVOR.equals("cadi")) {
+            if (action.equals(HOME_CLICK_ACTION)){
+                Logger.d(TAG, "Cadi sourceName = ", sourceName);
+                if (sourceName == null){
+                    handleHomeOrAppTrayClick();
+                    return;
                 }
+
+                // 获取launcher是否在前台的状态 1 = 前台，0 = 后台
+                int value = Settings.Global.getInt(context.getContentResolver(), LAUNCHER_FOREGROUND_STATE_KEY, LAUNCHER_BACKGROUND);
+                Logger.d(TAG, "launcher 当前状态: ", value);
+                if (value == 0){
+                    FloatViewManager.getInstance().hideAllCardWidgets(false);
+                }else {
+                    try {
+                        // true = 当前卡片显示
+                        if (FloatViewManager.getInstance().isAppWidgetHidden()){
+                            FloatViewManager.getInstance().hideAllCardWidgets(false);
+                        }else {
+                            handleHomeOrAppTrayClick();
+                        }
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+            return;
+        }
+
+        // ND 557 处理卡片
+        if (BuildConfig.FLAVOR.equals("clea_8255") || BuildConfig.FLAVOR.equals("clea_8775")) {
+            if (action.equals(APPTRAY_CLICK_EVENT_ACTION)){
+                Logger.d(TAG, "ND 557 sourceName = ", sourceName);
+                if (sourceName == null){
+                    handleHomeOrAppTrayClick();
+                    return;
+                }
+                FloatViewManager.getInstance().hideAllCardWidgets(false);
             }
         }
     }
