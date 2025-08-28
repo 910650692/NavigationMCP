@@ -110,7 +110,6 @@ import java.util.concurrent.TimeUnit;
 public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private static final String TAG = "BaseMapViewModel";
-    private boolean mFirstLaunch = false;
     private boolean mInitSdkSuccess = false;
 
     public ObservableBoolean startIconVisibility;
@@ -222,7 +221,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
         checkAgreementRights();
-        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
+        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && mModel.isAllowAutoAgreement()) {
             mModel.checkAuthorizationExpired();
         }
     }
@@ -251,17 +250,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void checkPrivacyRights() {
-        mFirstLaunch = mModel.isFirstLauncher();
-        Logger.e(TAG, "checkPrivacyRights: ", mFirstLaunch);
-        if (mFirstLaunch) {
+        if (!mModel.isAllowAutoAgreement()) {
+            Logger.e(TAG, "checkAutoAgreement");
             popAgreementDialog();
         } else {
             mModel.checkPermission();
         }
-    }
-
-    public boolean judgeAutoProtocol() {
-        return mModel.judgeAutoProtocol();
     }
 
     public void startTime() {
@@ -288,10 +282,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user commit");
+                Logger.d(TAG, "ReminderDialog", " popAgreementDialog user commit");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
-                mModel.updateFirstLauncherFlag();
+                mModel.allowAutoAgreement(true);
                 mModel.checkPermission();
             }
 
@@ -424,8 +418,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mIsContinueNaviNotified.set(true);
                 mModel.checkContinueNavi();
             }
-            mFirstLaunch = mModel.isFirstLauncher();
-            if (mModel.isAllowSGMAgreement() && !mFirstLaunch) {
+            if (mModel.isAllowSGMAgreement() && mModel.isAllowAutoAgreement()) {
                 mModel.checkAuthorizationExpired();
             }
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
@@ -1657,14 +1650,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void exitSelf() {
-        final String restartFlag = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH);
+        final boolean isAutoAgreed = mModel.isAllowAutoAgreement();
         final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
         final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
-        Logger.e(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
-        if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
+        Logger.e(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: isAllowAutoAgreement = ", isAutoAgreed, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
+        if (closeDelay && isAutoAgreed) {
             return;
         }
-        if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
+        if (!isAutoAgreed || naviDesk) {
             if (mModel.isAllowSGMAgreement()) {
                 //如果未同意外部大协议，restartFlag也是空的，此时不能走重启逻辑
                 ThreadManager.getInstance().asyncDelay(() -> {
@@ -1673,7 +1666,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 }, 800, TimeUnit.MILLISECONDS);
             }
         }
-        //closeAllFragment();
         moveToBack();
         ThreadManager.getInstance().asyncDelay(() -> {
             Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");

@@ -534,6 +534,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         mCommonManager.insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "1");
     }
 
+    public boolean isAllowAutoAgreement() {
+        return AgreementPackage.getInstance().isAllowAutoAgreement();
+    }
+
+    public void allowAutoAgreement(boolean state) {
+        AgreementPackage.getInstance().allowAutoAgreement(state);
+    }
+
+
     public void checkPermission() {
         Logger.e(TAG, "checkPermission");
         if (PermissionUtils.getInstance().checkoutPermission()) {
@@ -583,15 +592,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         FloatViewManager.getInstance().hideAllCardWidgets(false);
     }
 
-    public boolean judgeAutoProtocol() {
-        return isAllowSGMAgreement() && !isFirstLauncher();
-    }
-
     public void startInitEngine() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
             if (null == mapPackage || null == layerPackage) {
                 onSdkInitSuccess();
-            } else if (isAllowSGMAgreement() && !isFirstLauncher()) {
+            } else if (isAllowSGMAgreement() && isAllowAutoAgreement()) {
                 checkAuthorizationExpired();
             }
         } else {

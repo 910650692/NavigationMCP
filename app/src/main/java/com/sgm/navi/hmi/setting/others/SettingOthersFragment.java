@@ -17,6 +17,7 @@ import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.setting.SettingManager;
+import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.speech.SpeechPackage;
 import com.sgm.navi.service.logicpaket.voice.VoicePackage;
@@ -221,7 +222,7 @@ public class SettingOthersFragment extends BaseFragment<FragmentSettingOthersBin
                                 ResourceUtils.Companion.getInstance().getString(R.string.setting_broadcast_voice_current_name),
                                 "default", true);
                         VoicePackage.getInstance().resetVoiceList();
-                        CommonManager.getInstance().insertOrReplace(UserDataCode.SETTING_FIRST_LAUNCH, "");
+                        AgreementPackage.getInstance().allowAutoAgreement(false);
                         CommonManager.getInstance().insertOrReplace(UserDataCode.GUIDE_LOGIN_LAST_TIME, "");
                         mViewModel.clearAll();
                         mViewModel.resetSetting();

@@ -34,6 +34,7 @@ public class AgreementPackage {
      * @param callback 回调
      */
     public synchronized void setAgreementCallback(final String key, final AgreementCallback callback) {
+        Logger.e(TAG, "register path : ", key);
         if (callback != null && !mAgreementCallbackList.contains(callback)) {
             mAgreementCallbackList.put(key, callback);
         }
@@ -56,9 +57,17 @@ public class AgreementPackage {
                 new AgreementManager.AgreementManagerCallback() {
                     @Override
                     public void agreementCallback(boolean isSGMAgreed) {
-                        Logger.d(TAG, "agreementCallback: isSGMAgreed = ", isSGMAgreed);
+                        Logger.e(TAG, "agreementCallback: isSGMAgreed = ", isSGMAgreed);
                         for (AgreementCallback callback : mAgreementCallbackList.values()) {
                             callback.agreementCallback(isSGMAgreed);
+                        }
+                    }
+
+                    @Override
+                    public void agreementAutoCallBack(boolean isAutoAgreed) {
+                        Logger.e(TAG, "agreementCallback: isAutoAgreed = ", isAutoAgreed);
+                        for (AgreementCallback callback : mAgreementCallbackList.values()) {
+                            callback.agreementAutoCallback(isAutoAgreed);
                         }
                     }
                 });
@@ -83,6 +92,14 @@ public class AgreementPackage {
         return mAgreementManager.isAllowSGMAgreement();
     }
 
+    public void allowAutoAgreement(boolean state) {
+        mAgreementManager.allowAutoAgreement(state);
+    }
+
+    public boolean isAllowAutoAgreement() {
+        return mAgreementManager.isAllowAutoAgreement();
+    }
+
     /**
      * 打开SGM协议弹窗.
      *
@@ -97,6 +114,10 @@ public class AgreementPackage {
          * @param isSGMAgreed   SGM协议状态
          */
         default void agreementCallback(boolean isSGMAgreed) {
+
+        }
+
+        default void agreementAutoCallback(boolean isAutoAgreed) {
 
         }
     }

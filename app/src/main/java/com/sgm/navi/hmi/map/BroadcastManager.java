@@ -48,11 +48,12 @@ public class BroadcastManager implements SettingUpdateObservable.SettingUpdateOb
                 Logger.d(TAG, "已经在发送广播，忽略重复请求");
                 return;
             }
-            final boolean checkFlag = !ConvertUtils.isEmpty(CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH));
-            Logger.d(TAG, "sendBroadcast: checkFlag = ", checkFlag,
+            final boolean isAutoAgreed = AgreementPackage.getInstance().isAllowAutoAgreement();
+            final boolean isSGMAgreed = AgreementPackage.getInstance().isAllowSGMAgreement();
+            Logger.d(TAG, "sendBroadcast: isAutoAgreed = ", isAutoAgreed,
                     "PrivacyStatus = ", SettingPackage.getInstance().getPrivacyStatus(),
-                    "AllowSGMAgreement = ", AgreementPackage.getInstance().isAllowSGMAgreement());
-            if (!(checkFlag && SettingPackage.getInstance().getPrivacyStatus() && AgreementPackage.getInstance().isAllowSGMAgreement())) {
+                    "isSGMAgreed = ", isSGMAgreed);
+            if (!(isAutoAgreed && SettingPackage.getInstance().getPrivacyStatus() && isSGMAgreed)) {
                 Logger.e(TAG, "有权限未满足，不发送广播");
                 return;
             }
@@ -102,10 +103,10 @@ public class BroadcastManager implements SettingUpdateObservable.SettingUpdateOb
     public void onUpdateSetting(String key, boolean value) {
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
             if (!value) {
-                Logger.d(TAG, "隐私被拒绝，发送退出广播");
+                Logger.e(TAG, "隐私被拒绝，发送退出广播");
                 sendSpiCollectingStopBroadcast();
             } else {
-                Logger.d(TAG, "隐私被同意，发送开始广播");
+                Logger.e(TAG, "隐私被同意，发送开始广播");
                 sendSpiCollectingBroadcast();
             }
         }

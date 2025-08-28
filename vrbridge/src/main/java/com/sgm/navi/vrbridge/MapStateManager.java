@@ -25,7 +25,6 @@ import com.sgm.navi.service.define.route.RoutePreferenceID;
 import com.sgm.navi.service.define.setting.SettingController;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
-import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 import com.sgm.navi.service.logicpaket.map.IMapPackageCallback;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
@@ -151,32 +150,26 @@ public final class MapStateManager {
     private final AgreementPackage.AgreementCallback mAgreementCallback = new AgreementPackage.AgreementCallback() {
         @Override
         public void agreementCallback(final boolean isSGMAgreed) {
-            if (Logger.openLog) {
-                Logger.d(IVrBridgeConstant.TAG, "agreement", isSGMAgreed);
-            }
+            //上汽条款
+            Logger.e(IVrBridgeConstant.TAG, "SGMAgreement", isSGMAgreed);
+            updatePrivacy();
+        }
+
+        @Override
+        public void agreementAutoCallback(boolean isAutoAgreed) {
+            //高德条款
+            Logger.e(IVrBridgeConstant.TAG, "AutoAgreement", isAutoAgreed);
             updatePrivacy();
         }
     };
 
-    //高德条款
-    private final CommonManager.ISettingDaoChangeListener mSettingDaoChangeListener = new CommonManager.ISettingDaoChangeListener() {
-        @Override
-        public void onFirstLauncherChanged(String value) {
-            if (Logger.openLog) {
-                Logger.d(IVrBridgeConstant.TAG, "firstLauncher", value);
-            }
-            updatePrivacy();
-        }
-    };
 
     //位置权限
     private final SettingUpdateObservable.SettingUpdateObserver mSettingUpdateObserver = new SettingUpdateObservable.SettingUpdateObserver() {
         @Override
         public void onUpdateSetting(String key, boolean value) {
             if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
-                if (Logger.openLog) {
-                    Logger.d(IVrBridgeConstant.TAG, "locationStatus", value);
-                }
+                Logger.e(IVrBridgeConstant.TAG, "locationStatus", value);
                 updatePrivacy();
             }
         }
@@ -441,7 +434,6 @@ public final class MapStateManager {
      */
     private void registerCallback() {
         AgreementPackage.getInstance().setAgreementCallback(TAG, mAgreementCallback);
-        CommonManager.getInstance().registerObserver(TAG, mSettingDaoChangeListener);
         SettingUpdateObservable.getInstance().addObserver(TAG, mSettingUpdateObserver);
         ProcessManager.addIsAppInForegroundCallback(mForeGroundCallback);
         AccountPackage.getInstance().registerCallBack(TAG, mAccountCallBack);
@@ -462,15 +454,10 @@ public final class MapStateManager {
      */
     private boolean getVoicePrivacyStatus() {
         final boolean sgmAgreement = AgreementPackage.getInstance().isAllowSGMAgreement();
-        CommonManager.getInstance().init();
-        final boolean firstLauncher = TextUtils.isEmpty(
-                CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH));
+        final boolean autoAgreement = AgreementPackage.getInstance().isAllowAutoAgreement();
         final boolean locationStatus = SettingPackage.getInstance().getPrivacyStatus();
-        if (Logger.openLog) {
-            Logger.d(IVrBridgeConstant.TAG, "sgmAgreement", sgmAgreement, "firstLauncher", firstLauncher, "locationStatus", locationStatus);
-        }
-
-        return sgmAgreement && !firstLauncher && locationStatus;
+        Logger.e(IVrBridgeConstant.TAG, "sgmAgreement", sgmAgreement, "autoAgreement", autoAgreement, "locationStatus", locationStatus);
+        return sgmAgreement && autoAgreement && locationStatus;
     }
 
     //更新语音隐私协议端状态

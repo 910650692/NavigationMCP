@@ -73,6 +73,14 @@ public class AgreementManager implements IAgreementCallBack {
         }
     }
 
+    @Override
+    public void agreementCallback(boolean isAutoAgreed, int autoType) {
+        Logger.e(TAG, "isAutoAgreed = ", isAutoAgreed, "autoType", isAutoAgreed);
+        for (AgreementManagerCallback callback : mAgreementManagerCallbackList.values()) {
+            callback.agreementAutoCallBack(isAutoAgreed);
+        }
+    }
+
     /**
      * 设置是否同意了SGM协议.
      *
@@ -99,6 +107,17 @@ public class AgreementManager implements IAgreementCallBack {
         return mAgreementState;
     }
 
+    public void allowAutoAgreement(boolean state) {
+        Logger.d(TAG, "setAllowAutoAgreement state : ", state);
+        mAgreementDataSourceRepository.allowBaiduMapAgreement(state);
+    }
+
+    public boolean isAllowAutoAgreement() {
+        final boolean state = mAgreementDataSourceRepository.isBaiduMapAgreementAllowed();
+        Logger.d(TAG, "getAllowAutoAgreement state : ", state);
+        return state;
+    }
+
     /**
      * 打开SGM协议弹窗.
      *
@@ -115,6 +134,10 @@ public class AgreementManager implements IAgreementCallBack {
          * @param isSGMAgreed   SGM协议状态
          */
         default void agreementCallback(boolean isSGMAgreed) {
+
+        }
+
+        default void agreementAutoCallBack(boolean isAutoAgreed) {
 
         }
     }
