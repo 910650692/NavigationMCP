@@ -38,6 +38,12 @@ public interface MsgPushAdapterCallback {
     void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs);
 
     /**
+     * 手机发送目的地推送消息通知
+     * @param routeMsgPushInfo
+     */
+    void notifyDestinationPushMessage(RouteMsgPushInfo routeMsgPushInfo);
+
+    /**
      * 手机发送退出路线
      */
     void notifyQuitNaviPushMessage();

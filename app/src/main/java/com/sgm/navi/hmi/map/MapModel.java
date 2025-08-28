@@ -1594,27 +1594,31 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         });
     }
 
+    private void startPushMessageRoute(RouteMsgPushInfo routeMsgPushInfo){
+        switch (getNaviStatus()) {
+            case NaviStatus.NaviStatusType.SELECT_ROUTE,
+                 NaviStatus.NaviStatusType.ROUTING,
+                 NaviStatus.NaviStatusType.NAVING:
+                mRoutePackage.requestRouteRestoration(routeMsgPushInfo, MapType.MAIN_SCREEN_MAIN_MAP);
+                break;
+            case NaviStatus.NaviStatusType.NO_STATUS,
+                 NaviStatus.NaviStatusType.CRUISE,
+                 NaviStatus.NaviStatusType.LIGHT_NAVING:
+                Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE, routeMsgPushInfo);
+                addFragment((BaseFragment) fragment, bundle);
+                break;
+            default:
+                break;
+        }
+    }
+
     @Override
     public void notifyAimRoutePushMessage(RouteMsgPushInfo routeMsgPushInfo) {
         ThreadManager.getInstance().postUi(() -> {
             Logger.i(TAG, "notifyAimRoutePushMessage " , routeMsgPushInfo.getMName());
-            switch (getNaviStatus()) {
-                case NaviStatus.NaviStatusType.SELECT_ROUTE,
-                     NaviStatus.NaviStatusType.ROUTING,
-                     NaviStatus.NaviStatusType.NAVING:
-                    mRoutePackage.requestRouteRestoration(routeMsgPushInfo, MapType.MAIN_SCREEN_MAIN_MAP);
-                    break;
-                case NaviStatus.NaviStatusType.NO_STATUS,
-                     NaviStatus.NaviStatusType.CRUISE,
-                     NaviStatus.NaviStatusType.LIGHT_NAVING:
-                    Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Route.ROUTE_FRAGMENT).navigation();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_MSG_PUSH_OPEN_ROUTE_TYPE, routeMsgPushInfo);
-                    addFragment((BaseFragment) fragment, bundle);
-                    break;
-                default:
-                    break;
-            }
+            startPushMessageRoute(routeMsgPushInfo);
         });
     }
 
@@ -1676,6 +1680,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             Logger.i(TAG, "notifyPlanPrefPushMessage ", planPref);
         }
+    }
+
+    @Override
+    public void notifyDestinationPushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+        ThreadManager.getInstance().postUi(() -> {
+            Logger.i(TAG, "notifyDestinationPushMessage " , routeMsgPushInfo.getMName());
+            startPushMessageRoute(routeMsgPushInfo);
+        });
     }
 
     @Override
