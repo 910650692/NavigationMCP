@@ -143,6 +143,9 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 }
             }
         }
+        if (Logger.openLog) {
+            Logger.i(TAG, "搜索默认扎标");
+        }
         return super.provideLayerItemStyleJson(layer, item);
     }
 
@@ -331,7 +334,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             Logger.e(TAG, "updateSearchResult poiInfoEntityList is Empty");
             return;
         }
-        Logger.d(TAG, "updateSearchResult");
+        Logger.d(TAG, "updateSearchResult listSize ", poiInfoEntityList.size());
         mPoiInfoList.get().clear();
         mPoiInfoList.get().addAll(poiInfoEntityList);
     }
@@ -477,6 +480,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     return customUpdatePairs;
                 }
                 boolean focus = item.getFocus();
+                int offset = 0;
                 int slowFree = chargeStationInfo.slowFree;
                 int slowTotal = chargeStationInfo.slowTotal;
                 int fastFree = chargeStationInfo.fastFree;
@@ -487,57 +491,48 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     customUpdatePairs.add(createUpdateStylePair("div_slow", "display:none;"));
                     isSlowShow = false;
                 } else {
+                    customUpdatePairs.add(createUpdateStylePair("div_slow", "display:flex;"));
                     if (slowFree < 0) {
                         customUpdatePairs.add(createUpdateValuePair("id_slow", slowTotal + ""));
                     } else {
                         customUpdatePairs.add(createUpdateValuePair("id_slow", slowFree + "/" + slowTotal));
+                        if (slowFree >= 10 && slowTotal >= 10) {
+                            offset += focus ? 16 : 12;
+                        } else if (slowFree >= 10 || slowTotal >= 10) {
+                            offset += focus ? 8 : 6;
+                        }
                     }
                 }
                 if (fastTotal == 0) {
                     customUpdatePairs.add(createUpdateStylePair("div_fast", "display:none;"));
                     isFastShow = false;
                 } else {
+                    customUpdatePairs.add(createUpdateStylePair("div_fast", "display:flex;"));
                     if (fastFree < 0) {
                         customUpdatePairs.add(createUpdateValuePair("id_fast", fastTotal + ""));
                     } else {
                         customUpdatePairs.add(createUpdateValuePair("id_fast", fastFree + "/" + fastTotal));
+                        if (fastTotal >= 10 && fastFree >= 10) {
+                            offset += focus ? 16 : 12;
+                        } else if (fastTotal >= 10 || fastFree >= 10) {
+                            offset += focus ? 8 : 6;
+                        }
                     }
                 }
                 if (!isSlowShow && !isFastShow) {
                     customUpdatePairs.add(createUpdateStylePair("detail_info", "display:none;"));
-                } else if (isSlowShow && isFastShow){
-                    if (focus) {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:200px;"));
-                    } else {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:140px;"));
-                    }
-                } else if (isSlowShow){
-                    if (focus) {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:120px;"));
-                    } else {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:90px;"));
-                    }
                 } else {
-                    if (focus) {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:130px;"));
-                    } else {
-                        customUpdatePairs.add(createUpdateStylePair("detail_info", "margin-start:92px;"));
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "display:flex;"));
+                    if (!isSlowShow || !isFastShow) {
+                        customUpdatePairs.add(createUpdateStylePair("div_padding", "display:none;"));
                     }
-                }
-                if (focus) {
-                    customUpdatePairs.add(createUpdateStylePair("id_fast","font-size:24px;"));
-                    customUpdatePairs.add(createUpdateStylePair("id_slow","font-size:24px;"));
-                    customUpdatePairs.add(createUpdateStylePair("div_title","font-size:24px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","margin-top:90px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-top:13px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-bottom:13px;"));
-                } else {
-                    customUpdatePairs.add(createUpdateStylePair("id_fast","font-size:20px;"));
-                    customUpdatePairs.add(createUpdateStylePair("id_slow","font-size:20px;"));
-                    customUpdatePairs.add(createUpdateStylePair("div_title","font-size:20px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","margin-top:5px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-top:5px;"));
-                    customUpdatePairs.add(createUpdateStylePair("detail_info","padding-bottom:5px;"));
+                    if (isSlowShow && isFastShow) {
+                        offset += focus ? 35 : 30;
+                        customUpdatePairs.add(createUpdateStylePair("div_padding", "display:flex;"));
+                    }
+                    int defaultOffset = focus ? 65 : 50;
+                    offset += defaultOffset;
+                    customUpdatePairs.add(createUpdateStylePair("detail_info", "left:" + offset + "px;"));
                 }
                 if (isNightMode) {
                     customUpdatePairs.add(createUpdateStylePair("id_fast","color:#ffffff;"));
