@@ -574,10 +574,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRequestRouteResults)) {
             return;
         }
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        if (requestRouteResult == null) {
             return;
         }
-        mRequestRouteResults.get(mapTypeId).setMRouteParams(routeParams);
+        requestRouteResult.setMRouteParams(routeParams);
         if (routeParams.size() >= NumberUtils.NUM_2) {
             routeParams.remove(routeParams.size() - NumberUtils.NUM_1);
             routeParams.remove(NumberUtils.NUM_0);
@@ -592,7 +593,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
-            routeResultObserver.onRouteAllRoutePoiInfo(mRequestRouteResults.get(mapTypeId));
+            routeResultObserver.onRouteAllRoutePoiInfo(requestRouteResult);
         }
     }
 
