@@ -50,7 +50,7 @@
                 android:maxLines="1"
                 android:textColor="@color/search_deep_text_day"
                 android:textColorHint="@color/search_shallow_text_day"
-                android:textSize="@dimen/sp_52"
+                android:textSize="@dimen/sp_46"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_search"
                 app:layout_constraintStart_toEndOf="@+id/iv_close"
@@ -59,8 +59,8 @@
             <com.sgm.navi.ui.view.SkinImageView
                 style="@style/style_mfc_config"
                 android:id="@+id/iv_search"
-                android:layout_width="@dimen/dp_96"
-                android:layout_height="@dimen/dp_96"
+                android:layout_width="@dimen/dp_74"
+                android:layout_height="@dimen/dp_74"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:src="@mipmap/icon_search40"
                 android:background="@drawable/bg_base_mfc_cadillac_bg_selector"
@@ -92,13 +92,13 @@
                 android:id="@+id/scl_gas_station"
                 clickCommand="@{() -> MainSearchView.onClickQuickSearch(0)}"
                 android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintWidth_percent="0.25">
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_gas_station"
-                    android:layout_width="@dimen/dp_96"
-                    android:layout_height="@dimen/dp_96"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_25"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_gas_station"
@@ -131,8 +131,8 @@
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_pull_up"
-                    android:layout_width="@dimen/dp_96"
-                    android:layout_height="@dimen/dp_96"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_25"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_pull_up"
@@ -165,8 +165,8 @@
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_gourmet"
-                    android:layout_width="@dimen/dp_96"
-                    android:layout_height="@dimen/dp_96"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_25"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_gourmet"
@@ -199,8 +199,8 @@
 
                 <com.sgm.navi.ui.view.SkinImageView
                     android:id="@+id/iv_car_washing"
-                    android:layout_width="@dimen/dp_96"
-                    android:layout_height="@dimen/dp_96"
+                    android:layout_width="@dimen/dp_74"
+                    android:layout_height="@dimen/dp_74"
                     android:layout_marginTop="@dimen/dp_25"
                     android:focusable="false"
                     android:src="@drawable/img_basic_ic_car_washing"
