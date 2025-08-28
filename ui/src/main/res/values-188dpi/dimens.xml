@@ -4002,8 +4002,8 @@
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">22dp</dimen>
-    <dimen name="launcher_position_left">34dp</dimen>
+    <dimen name="launcher_position_top">-12dp</dimen>
+    <dimen name="launcher_position_left">5dp</dimen>
     <!-- 后排屏CarLogo距离顶部高度 -->
     <dimen name="rear_screen_car_logo_top">838dp</dimen>
 
@@ -4027,7 +4027,7 @@
     <dimen name="bg_charge_number_item_corner">12dp</dimen>
     <dimen name="bg_search_main_tab_corner">20dp</dimen>
 
-    <dimen name="navi_main_tap_margin_start">4dp</dimen>
+    <dimen name="navi_main_tap_margin_start">5dp</dimen>
     <dimen name="navi_main_tap_margin_top">85dp</dimen>
     <dimen name="navi_main_tap_margin_bottom">96dp</dimen>
     <dimen name="navi_main_tap_margin_end">34dp</dimen>
