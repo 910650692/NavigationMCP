@@ -10,19 +10,20 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="@dimen/dp_1110"
-        android:layout_height="@dimen/dp_1078"
-        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:layout_width="@dimen/dp_1680"
+        android:layout_height="@dimen/dp_1102"
+        android:layout_marginStart="@dimen/dp_259"
+        android:background="@drawable/bg_shadow_navi_cadillac"
         android:clickable="true"
-        android:padding="@dimen/dp_34">
+        android:padding="@dimen/dp_51">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/setting_close"
             clickCommand="@{ViewModel.mCloseFragment}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
             android:layout_marginStart="@dimen/dp_22"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_48"
             android:contentDescription="@string/app_currency_close"
             android:src="@drawable/img_setting_close"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,51 +32,51 @@
         <com.sgm.navi.ui.view.SkinTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginTop="@dimen/dp_52"
             android:text="@string/favorite_item_rename"
-            android:textSize="@dimen/sp_29"
+            android:textSize="@dimen/sp_52"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinEditText
             android:id="@+id/setting_favorite_rename"
-            android:layout_width="@dimen/dp_798"
-            android:layout_height="@dimen/dp_86"
-            android:layout_marginStart="@dimen/dp_34"
-            android:layout_marginTop="@dimen/dp_126"
+            android:layout_width="@dimen/dp_1202"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginStart="@dimen/dp_52"
+            android:layout_marginTop="@dimen/dp_168"
             android:background="@drawable/bg_favorite_rename_edittext"
             android:gravity="center_vertical"
             android:hint="@string/favorite_item_rename_hint"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingStart="@dimen/dp_27"
+            android:paddingStart="@dimen/dp_39"
             android:paddingEnd="@dimen/dp_100"
             android:textColor="@color/black"
             android:textColorHint="@color/color_black_70"
             android:textCursorDrawable="@drawable/shape_edittext_cursor"
-            android:textSize="@dimen/sp_29"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinTextView
             clickCommand="@{ViewModel.mRenameFinish}"
-            android:layout_width="@dimen/dp_155"
-            android:layout_height="@dimen/dp_76"
-            android:layout_marginEnd="@dimen/dp_34"
+            android:layout_width="@dimen/dp_240"
+            android:layout_height="@dimen/dp_120"
+            android:layout_marginEnd="@dimen/dp_52"
             android:background="@drawable/bg_setting_preference_select"
             android:gravity="center"
             android:text="@string/favorite_item_rename_confirm"
             android:textColor="@color/always_white"
-            android:textSize="@dimen/sp_29"
+            android:textSize="@dimen/sp_46"
             app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/setting_favorite_rename" />
 
         <com.sgm.navi.ui.view.SkinImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_22"
+            android:layout_width="@dimen/dp_74"
+            android:layout_height="@dimen/dp_74"
+            android:layout_marginEnd="@dimen/dp_24"
             android:src="@drawable/img_off"
             app:layout_constraintBottom_toBottomOf="@+id/setting_favorite_rename"
             app:layout_constraintEnd_toEndOf="@+id/setting_favorite_rename"
