@@ -82,16 +82,16 @@ public class AccountQRCodeLoginFragment extends BaseFragment<FragmentQrcodeLogin
      */
     private void initSlidePage() {
         final List<SlideItem> slideItems = new ArrayList<>();
-        slideItems.add(new SlideItem(R.mipmap.icon_account_car_connect,
+        slideItems.add(new SlideItem(R.mipmap.icon_setting_car_remote,
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_1),
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_1_tip)));
-        slideItems.add(new SlideItem(R.mipmap.icon_account_connect,
+        slideItems.add(new SlideItem(R.mipmap.icon_setting_seamless_interaction,
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_2),
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_2_tip)));
-        slideItems.add(new SlideItem(R.mipmap.icon_account_find_car,
+        slideItems.add(new SlideItem(R.mipmap.icon_setting_finding_car,
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_3),
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_3_tip)));
-        slideItems.add(new SlideItem(R.mipmap.icon_account_sync_data,
+        slideItems.add(new SlideItem(R.mipmap.icon_setting_data_sync,
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_4),
                 ResourceUtils.Companion.getInstance().getString(R.string.car_connect_unLogin_function_4_tip)));
 

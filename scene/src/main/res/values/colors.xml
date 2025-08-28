@@ -196,6 +196,7 @@
     <color name="main_map_limit_icon_stroke_color">#4B535D</color>
     <color name="main_map_limit_title_color">#FF000000</color>
     <color name="main_map_reduce">#383839</color>
+    <color name="main_map_scale_icon_color">#FFFFFF</color>
     <color name="setting_downloading_color">#2461EA</color>
 
     <!--透明度-->
