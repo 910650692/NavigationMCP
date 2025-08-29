@@ -1781,6 +1781,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
+            mViewBinding.scenePoiDetailsNormalView.poiChildList.setVisibility(GONE);
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_DELETE_AROUND) {

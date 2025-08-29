@@ -21,7 +21,8 @@
             android:id="@+id/poi_child_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_10"
+            app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
@@ -52,7 +53,7 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_26"
             android:layout_marginEnd="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/line">

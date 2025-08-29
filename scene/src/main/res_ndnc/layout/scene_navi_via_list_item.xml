@@ -71,7 +71,7 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_name"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_38"
                 android:layout_marginStart="@dimen/dp_27"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
@@ -96,8 +96,8 @@
             <com.sgm.navi.ui.view.SkinTextView
                 android:id="@+id/stv_add_via_distance"
                 android:layout_width="@dimen/dp_0"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_23"
+                android:layout_height="@dimen/dp_33"
+                android:layout_marginBottom="@dimen/dp_21"
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
@@ -129,7 +129,7 @@
                 android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_26"
                 app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
-                app:layout_constraintEnd_toStartOf="@id/stv_arrive_default"
+                app:layout_constraintEnd_toStartOf="@+id/stv_arrival_day"
                 app:layout_constraintTop_toTopOf="@id/stv_add_via_distance"
                 tools:text="12:50" />
 
@@ -137,13 +137,13 @@
                 android:id="@+id/stv_arrival_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_14"
                 android:gravity="center"
                 android:lineSpacingExtra="@dimen/sp_1"
                 android:textColor="@color/navi_color_000000_70"
                 android:textSize="@dimen/sp_20"
-                android:translationY="@dimen/dp_10"
-                app:layout_constraintBottom_toTopOf="@id/stv_arrive_time"
-                app:layout_constraintStart_toEndOf="@id/stv_arrive_time"
+                app:layout_constraintBottom_toBottomOf="@id/stv_add_via_distance"
+                app:layout_constraintEnd_toStartOf="@+id/stv_arrive_default"
                 tools:text="+2" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>

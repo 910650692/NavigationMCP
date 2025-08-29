@@ -12,9 +12,9 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/poi_child_layout"
         android:layout_width="@dimen/dp_222"
-        android:layout_height="@dimen/dp_64"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingLeft="@dimen/dp_12"
+        android:layout_height="@dimen/dp_65"
+        android:paddingRight="@dimen/dp_14"
+        android:paddingLeft="@dimen/dp_14"
         android:background="@drawable/custom_filter_item_bg_selector_day">
 
         <com.sgm.navi.ui.view.SkinTextView
@@ -40,7 +40,7 @@
             tools:text="40%"
             android:textColor="@drawable/custom_filter_sub_item_text_bg_selector_day"
             android:textSize="@dimen/sp_22"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/child_title"
             app:layout_constraintBottom_toBottomOf="parent"

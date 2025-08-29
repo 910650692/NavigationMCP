@@ -44,8 +44,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="#MARK_NO_SCORLLABLE"
-            android:layout_marginTop="@dimen/dp_44"
-            app:layout_goneMarginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_17"
+            app:layout_goneMarginTop="@dimen/dp_2"
             app:layout_constraintTop_toBottomOf="@+id/poi_scenic_spot_price"
             app:layout_constraintStart_toStartOf="parent"/>
     </com.sgm.navi.ui.view.SkinConstraintLayout>

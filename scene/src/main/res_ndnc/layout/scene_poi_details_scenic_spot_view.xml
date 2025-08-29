@@ -130,6 +130,7 @@
             android:id="@+id/poi_scenic_spot_hours_layout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_26"
             android:orientation="horizontal"
             app:layout_constraintStart_toEndOf="@+id/poi_scenic_spot_hours_title"
             app:layout_constraintTop_toTopOf="@+id/poi_scenic_spot_hours_title">
