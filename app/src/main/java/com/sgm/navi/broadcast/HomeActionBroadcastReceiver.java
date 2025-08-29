@@ -38,11 +38,11 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
         // 区分dock栏点击Home还是导航图标
         String action = intent.getAction();
         String sourceName = intent.getStringExtra("SourceName"); // 新增参数
-        Logger.d(TAG, "action = ", intent.getAction());
 
         // Cadi 处理卡片
         if (BuildConfig.FLAVOR.equals("cadi")) {
-            if (action.equals(HOME_CLICK_ACTION)){
+            Logger.d(TAG, "Cadi action = ", action);
+            if (action.equals(APPTRAY_CLICK_EVENT_ACTION)){
                 Logger.d(TAG, "Cadi sourceName = ", sourceName);
                 if (sourceName == null){
                     handleHomeOrAppTrayClick();
@@ -72,7 +72,8 @@ public class HomeActionBroadcastReceiver extends BroadcastReceiver {
 
         // ND 557 处理卡片
         if (BuildConfig.FLAVOR.equals("clea_8255") || BuildConfig.FLAVOR.equals("clea_8775")) {
-            if (action.equals(APPTRAY_CLICK_EVENT_ACTION)){
+            Logger.d(TAG, "ND 557 action = ", action);
+            if (action.equals(HOME_CLICK_ACTION)){
                 Logger.d(TAG, "ND 557 sourceName = ", sourceName);
                 if (sourceName == null){
                     handleHomeOrAppTrayClick();
