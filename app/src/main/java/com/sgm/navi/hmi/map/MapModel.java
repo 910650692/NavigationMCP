@@ -299,8 +299,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         layerPackage = LayerPackage.getInstance();
         positionPackage = PositionPackage.getInstance();
         mapDataPackage = MapDataPackage.getInstance();
-        restrictedPackage = AosRestrictedPackage.getInstance();
-        restrictedPackage.addRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT, this);
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
         settingManager = SettingManager.getInstance();
@@ -395,6 +393,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         // 注册媒体悬浮窗广播
         FloatWindowReceiver.registerCallback(TAG, this);
         SettingUpdateObservable.getInstance().addObserver(TAG, this);
+        restrictedPackage = AosRestrictedPackage.getInstance();
+        restrictedPackage.addRestrictedObserver(IAosRestrictedObserver.KEY_OBSERVER_LIMIT, this);
     }
 
     @Override
