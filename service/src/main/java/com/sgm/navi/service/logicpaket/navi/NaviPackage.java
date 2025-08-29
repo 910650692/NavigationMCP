@@ -1143,8 +1143,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         Logger.d(TAG, "setRoadCrossRect", rect.toShortString());
-        mLayerAdapter.updateRoadCrossRect(surfaceViewId, rect);
-        mapPackage.updateScreenshotRect(surfaceViewId, rect);
+        LayerAdapter.getInstance().updateRoadCrossRect(surfaceViewId, rect);
+        MapPackage.getInstance().updateScreenshotRect(surfaceViewId, rect);
         hasSetCrossRect = true;
     }
 
