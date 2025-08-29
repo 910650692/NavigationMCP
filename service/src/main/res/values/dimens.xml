@@ -1208,10 +1208,10 @@
     <dimen name="dp_m_102">-102dp</dimen>
 
     <!--引导全览的时候距离屏幕两边的距离-->
-    <dimen name="margin_screen_left">@dimen/dp_1208</dimen>
-    <dimen name="margin_screen_right">@dimen/dp_618</dimen>
-    <dimen name="margin_screen_top">@dimen/dp_137</dimen>
-    <dimen name="margin_screen_bottom">@dimen/dp_137</dimen>
+    <dimen name="margin_screen_left">1208dp</dimen>
+    <dimen name="margin_screen_right">618dp</dimen>
+    <dimen name="margin_screen_top">137dp</dimen>
+    <dimen name="margin_screen_bottom">137dp</dimen>
 
     <!--占位使用，分屏只有ND-->
     <dimen name="margin_screen_left_one_to_three">@dimen/dp_0</dimen>
@@ -1220,9 +1220,9 @@
     <dimen name="margin_screen_bottom_one_to_three">@dimen/dp_0</dimen>
 
     <!--算路全览的时候距离屏幕两边的距离-->
-    <dimen name="route_margin_screen_left">@dimen/dp_1208</dimen>
-    <dimen name="route_margin_screen_right">@dimen/dp_618</dimen>
-    <dimen name="route_margin_screen_top">@dimen/dp_137</dimen>
-    <dimen name="route_margin_screen_bottom">@dimen/dp_137</dimen>
+    <dimen name="route_margin_screen_left">1208dp</dimen>
+    <dimen name="route_margin_screen_right">618dp</dimen>
+    <dimen name="route_margin_screen_top">137dp</dimen>
+    <dimen name="route_margin_screen_bottom">137dp</dimen>
 
 </resources>

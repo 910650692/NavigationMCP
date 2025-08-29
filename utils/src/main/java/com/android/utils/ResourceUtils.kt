@@ -6,11 +6,13 @@ import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
-import android.util.TypedValue
+import android.util.Log
+import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.android.utils.log.Logger
 
 /**
  * @Introduce: 资源管理.
@@ -21,9 +23,22 @@ import androidx.annotation.StringRes
 class ResourceUtils private constructor() {
     private var mContext: Context? = null
     private var mResources: Resources? = null
+    private var mDensity: Float? = null
+    private var mDensityDpi: Int? = null
     fun init(context: Context?) {
         mContext = context?.applicationContext
         mResources = mContext!!.resources
+        val wm = context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val display = wm.defaultDisplay
+        val realMetrics = DisplayMetrics()
+        display.getRealMetrics(realMetrics)
+        mDensity = realMetrics.density
+        mDensityDpi = realMetrics.densityDpi
+        if (mDensity == null || mDensityDpi == null) {
+            mResources!!.displayMetrics.density = mDensity as Float
+            mResources!!.displayMetrics.densityDpi = mDensityDpi as Int
+            Logger.e("ResourceUtils" , "dpi ", mResources!!.displayMetrics.densityDpi)
+        }
     }
 
     fun clearCache() {
@@ -61,6 +76,7 @@ class ResourceUtils private constructor() {
      * @return 返回一个定义的dip值乘以屏幕密度（density 密度比例）
      */
     fun getDimensionPixelSize(@DimenRes resId: Int): Int {
+        Logger.e("ResourceUtils" , "dpi ", mResources!!.displayMetrics.densityDpi)
         return mResources!!.getDimensionPixelSize(resId)
     }
 
