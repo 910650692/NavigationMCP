@@ -12,22 +12,18 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.transition.ChangeBounds;
-import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -38,8 +34,9 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
-import com.sgm.navi.hmi.navi.NaviGuidanceModel;
+import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
+import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
@@ -74,7 +71,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
  * Description: [在这里描述文件功能]
  */
 public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
-        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver {
+        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver, ISceneCallback {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -273,6 +270,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 PixelFormat.TRANSLUCENT
         );
 
+        if (mBinding != null) {
+            mBinding.sceneNaviCrossImage.addSceneCallback(this);
+            Logger.d(TAG, "SceneCallback registered successfully");
+        }
+        mNextManeuverEntity = new NextManeuverEntity();
+
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         int top = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
         int left = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_left);
@@ -446,6 +449,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 if (!isVisible) {
                     mBinding.ivCross.setVisibility(View.GONE);
                 }
+                mBinding.sceneNaviCrossImage.setVisibility(isVisible ? View.VISIBLE : View.GONE);
 
                 // 大图显示后隐藏车道线和光柱图
                 if (isVisible) {
@@ -508,6 +512,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     @Override
     public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
         crossImageEntity = naviImageInfo;
+        mBinding.sceneNaviCrossImage.onCrossImageInfo(isShowImage, naviImageInfo);
     }
 
     private void changeUiTypeOnNaviStatusChanged() {
@@ -624,6 +629,32 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         isConnected = false;
         Logger.d(TAG, "onNetDisConnect: isConnected=" + isConnected);
         onNetStatusChange(isConnected);
+    }
+
+    private NextManeuverEntity mNextManeuverEntity;
+    @Override
+    public NextManeuverEntity getNextManeuverEntity() {
+        return mNextManeuverEntity;
+    }
+
+    public void updateNextStatus(boolean isVisible, boolean isOffLine) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextManeuverVisible(isVisible);
+            mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+        }
+    }
+
+    public void updateNextIcon(int resource, BitmapDrawable drawable) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextIconResource(resource);
+            mNextManeuverEntity.setNextIconDrawable(drawable);
+        }
+    }
+
+    public void updateNextText(String text) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextText(text);
+        }
     }
 
     @Override

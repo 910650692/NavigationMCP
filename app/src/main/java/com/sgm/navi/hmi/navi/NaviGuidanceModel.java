@@ -1537,6 +1537,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextIconResource(resource);
             mNextManeuverEntity.setNextIconDrawable(drawable);
+            LauncherWindowService.getInstance().updateNextIcon(resource,drawable);
         }
     }
 
@@ -1545,6 +1546,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextManeuverVisible(isVisible);
             mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+            LauncherWindowService.getInstance().updateNextStatus(isVisible,isOffLine);
         }
     }
 
@@ -1557,6 +1559,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void updateNextText(String text) {
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextText(text);
+            LauncherWindowService.getInstance().updateNextText(text);
         }
     }
 
