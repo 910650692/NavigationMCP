@@ -13,6 +13,7 @@ import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizSearchControl;
 import com.autonavi.gbl.layer.SearchAlongWayLayerItem;
 import com.autonavi.gbl.layer.SearchChargeStationLayerItem;
+import com.autonavi.gbl.layer.SearchChildLayerItem;
 import com.autonavi.gbl.layer.model.BizChargeStationInfo;
 import com.autonavi.gbl.layer.model.BizSearchType;
 import com.autonavi.gbl.layer.model.SearchAlongWayExtraData;
@@ -540,6 +541,21 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 } else {
                     customUpdatePairs.add(createUpdateStylePair("id_fast","color:#000000;"));
                     customUpdatePairs.add(createUpdateStylePair("id_slow","color:#000000;"));
+                }
+                break;
+            }
+            case BizSearchType.BizSearchTypePoiChildPoint: {
+                if (item instanceof SearchChildLayerItem childLayerItem) {
+                    int childType = childLayerItem.getMChildType();
+                    boolean focus = item.getFocus();
+                    if (Logger.openLog) {
+                        Logger.d(TAG, "搜索子点类型: ", childType, " focus ", focus);
+                    }
+                    if (focus) {
+                        customUpdatePairs.add(createUpdateStylePair("child_name", "left:10px;"));
+                    } else {
+                        customUpdatePairs.add(createUpdateStylePair("child_name", "left:0px;"));
+                    }
                 }
             }
         }
