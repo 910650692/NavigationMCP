@@ -65,6 +65,8 @@ public class MainSearchFragment extends BaseFragment<MainFragmentSearchBinding, 
 
     @Override
     protected void onBackPressed() {
-        mBinding.searchView.closeSearchFragment();
+        if (mBinding != null) {
+            mBinding.searchView.closeSearchFragment();
+        }
     }
 }

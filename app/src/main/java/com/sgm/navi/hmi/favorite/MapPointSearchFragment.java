@@ -113,6 +113,8 @@ public class MapPointSearchFragment extends BaseFragment<FragmentMapPointSearchB
 
     @Override
     protected void onBackPressed() {
-        mBinding.mapPointSearchView.onBackPressed();
+        if (mBinding != null) {
+            mBinding.mapPointSearchView.onBackPressed();
+        }
     }
 }

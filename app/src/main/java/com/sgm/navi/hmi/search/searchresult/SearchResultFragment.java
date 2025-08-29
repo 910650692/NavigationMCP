@@ -260,6 +260,8 @@ public class SearchResultFragment extends BaseFragment<FragmentSearchResultBindi
 
     @Override
     protected void onBackPressed() {
-        mBinding.scenePoiList.onBackPressed();
+        if (mBinding != null) {
+            mBinding.scenePoiList.onBackPressed();
+        }
     }
 }
