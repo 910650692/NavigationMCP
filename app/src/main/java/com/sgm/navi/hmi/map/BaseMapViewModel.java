@@ -24,6 +24,7 @@ import androidx.lifecycle.Lifecycle;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
@@ -1650,6 +1651,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void exitSelf() {
+        SplitScreenManager.getInstance().setBlockEnterSplit();
         final boolean isAutoAgreed = mModel.isAllowAutoAgreement();
         final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
         final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
