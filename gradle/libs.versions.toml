@@ -53,8 +53,8 @@ netvcupro = "0.3.3"
 protobean = "0.5.20"
 leakcanary = "2.14"
 gbPatacPrivacy = "1.1.45"
-cadiPrivacy = "1.2.18"
-ndncPrivacy = "1.2.25"
+cadiPrivacy = "1.2.28.1"
+ndncPrivacy = "1.2.28"
 
 [libraries]
 adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava", version.ref = "adapterRxjava" }

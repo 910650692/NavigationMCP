@@ -74,8 +74,8 @@ public class AgreementManager implements IAgreementCallBack {
     }
 
     @Override
-    public void agreementCallback(boolean isAutoAgreed, int autoType) {
-        Logger.e(TAG, "isAutoAgreed = ", isAutoAgreed, "autoType", isAutoAgreed);
+    public void agreementCallback(boolean isSGMAgreed, boolean isAutoAgreed, int autoType) {
+        Logger.e(TAG, "isSGMAgreed = ", isSGMAgreed, "isAutoAgreed = ", isAutoAgreed, "autoType", autoType);
         for (AgreementManagerCallback callback : mAgreementManagerCallbackList.values()) {
             callback.agreementAutoCallBack(isAutoAgreed);
         }
