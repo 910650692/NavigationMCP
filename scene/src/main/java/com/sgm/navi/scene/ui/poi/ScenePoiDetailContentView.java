@@ -1785,7 +1785,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_DELETE_AROUND) {
             //删除途径点POI详情页面，不需要展示子点列表
-            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsNormalView.poiChildList.setVisibility(View.GONE);
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
         }
         mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setOnClickListener(v -> {
