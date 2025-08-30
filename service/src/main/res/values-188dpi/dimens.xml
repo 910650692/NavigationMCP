@@ -13,6 +13,12 @@
     <dimen name="margin_screen_top_one_to_three">425dp</dimen>
     <dimen name="margin_screen_bottom_one_to_three">300dp</dimen>
 
+    <!--后排屏全览的时候距离屏幕两边的距离-->
+    <dimen name="margin_screen_left_rear_screen">@dimen/dp_898</dimen>
+    <dimen name="margin_screen_right_rear_screen">@dimen/dp_282</dimen>
+    <dimen name="margin_screen_top_rear_screen">@dimen/dp_164</dimen>
+    <dimen name="margin_screen_bottom_rear_screen">@dimen/dp_227</dimen>
+
     <!--算路全览的时候距离屏幕两边的距离-->
     <dimen name="route_margin_screen_left">681dp</dimen>
     <dimen name="route_margin_screen_right">204dp</dimen>
