@@ -13,7 +13,6 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -171,7 +170,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -1163,14 +1161,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             setMapCenterInScreen();
             goToCarPosition();
-        }
-        if (NaviStatus.NaviStatusType.NO_STATUS.equals(naviStatus) && !mSettingPackage.getPrivacyStatus()) {
-            //导航结束，判断当前隐私协议状态，如果为拒绝，退出应用
-            if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
-                if (authorizationRequestDialog != null && !authorizationRequestDialog.isShowing()) {
-                    mViewModel.exitSelf();
-                }
-            }
         }
     }
 
@@ -2375,7 +2365,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.i(NAVI_EXIT,"key", key, "value", value);
         if (SettingController.KEY_SETTING_PRIVACY_STATUS.equals(key)) {
             if (!value) {
-                ThreadManager.getInstance().postDelay(() -> mViewModel.exitSelf(), 200);
+                ThreadManager.getInstance().postDelay(() -> mViewModel.handlePrivacyCancel(), 200);
             }
         }
     }

@@ -24,10 +24,8 @@ import androidx.lifecycle.Lifecycle;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
-import com.android.utils.SplitScreenManager;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
@@ -56,14 +54,12 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.AutoMapConstant.PoiType;
-import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedArea;
 import com.sgm.navi.service.define.aos.RestrictedAreaDetail;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.sgm.navi.service.define.bean.GeoPoint;
-import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
@@ -83,13 +79,11 @@ import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
-import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
@@ -101,7 +95,6 @@ import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -1650,31 +1643,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    public void exitSelf() {
-        SplitScreenManager.getInstance().setBlockEnterSplit();
-        final boolean isAutoAgreed = mModel.isAllowAutoAgreement();
-        final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
-        final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
-        Logger.e(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: isAllowAutoAgreement = ", isAutoAgreed, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
-        if (closeDelay && isAutoAgreed) {
-            return;
+    public void handlePrivacyCancel() {
+        if (!mModel.isAllowAutoAgreement()) {
+            //点击重启的情况
+            closeAllFragment();
         }
-        if (!isAutoAgreed || naviDesk) {
-            if (mModel.isAllowSGMAgreement()) {
-                //如果未同意外部大协议，restartFlag也是空的，此时不能走重启逻辑
-                ThreadManager.getInstance().asyncDelay(() -> {
-                    Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
-                    ProcessManager.restartProcess(mApplication);
-                }, 800, TimeUnit.MILLISECONDS);
-            }
-        }
-        moveToBack();
-        ThreadManager.getInstance().asyncDelay(() -> {
-            Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
-            if (mView != null) {
-                mView.finish();
-            }
-        }, 400, TimeUnit.MILLISECONDS);
+        //todo暂时定为直接检查权限，后续补齐ue交互漏洞
+        checkAgreementRights();
     }
 
     public void chargePreTipDialog(String status) {
