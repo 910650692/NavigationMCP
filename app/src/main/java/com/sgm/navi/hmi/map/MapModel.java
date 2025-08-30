@@ -910,7 +910,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，全揽");
         } else {
-            goToCarPosition();
+            // 延迟500ms再执行，防止分屏后地图中心点设置位置不生效
+            ThreadManager.getInstance().postDelay(() -> {
+                goToCarPosition();
+            },500);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，重新设置自车位置");
         }
 
@@ -2515,7 +2518,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onWindowSideChanged(boolean isOpenFloat) {
         Logger.d(TAG, "悬浮窗开关：" + isOpenFloat);
         isShowMusicTab = isOpenFloat;
-        setMapCenterInScreen();
+        if (ScreenTypeUtils.getInstance().isFullScreen()) {
+            setMapCenterInScreen();
+            goToCarPosition();
+        }
         if (mViewModel != null) {
             boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
             Logger.i(TAG, musicTabShow);

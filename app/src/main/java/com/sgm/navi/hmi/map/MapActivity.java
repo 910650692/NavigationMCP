@@ -752,4 +752,13 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void hideOrShowFragmentContainer(boolean isShow) {
         mBinding.layoutFragment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        boolean windowFlag = intent.getBooleanExtra("windowFlag", false);
+        if (windowFlag) {
+            mViewModel.mainBTNVisibility.set(false);
+        }
+    }
 }

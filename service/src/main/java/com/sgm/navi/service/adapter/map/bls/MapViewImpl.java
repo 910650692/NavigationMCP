@@ -124,6 +124,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     private IMapAdapterCallback callback;
     private Rect crossImgScreenshotRect;
     private boolean screenShotSwitch = false;
+    private MapDevice mapDevice = null;
 
     public MapViewImpl(Context context, MapType mapType, MapService mapService) {
         this(context, null);
@@ -158,7 +159,6 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         devAttribute.samples = 2;//TODO 性能优化配置 全屏抗锯齿倍数
         ServiceMgr.getServiceMgrInstance().setUiLooper(deviceId, ThreadManager.getInstance().getLooper(LooperType.valueOf(mapType.name())));
         Logger.d(TAG, mapType, "createMapDevice deviceId=", deviceId);
-        MapDevice mapDevice = null;
         if(null != getMapService()){
             mapDevice = getMapService().createDevice(deviceId, devAttribute, this);
         }
@@ -328,7 +328,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
     }
 
     public void setMapCenter(GeoPoint geoPoint) {
-        getMapview().getOperatorPosture().setMapCenter(geoPoint.getLon(), geoPoint.getLat(), 0, true, true);
+        getMapview().getOperatorPosture().setMapCenter(geoPoint.getLon(), geoPoint.getLat(), 0, false, true);
         Logger.d(TAG, mapType, " setMapCenter");
     }
 
@@ -509,6 +509,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         }
         Logger.d(TAG, mapType, "goToCarPosition ", getMapview().getMapLeftTop().x);
         getMapview().goToPosition(pos, bAnimation);
+        resetTickCount(100);
     }
 
     /**
