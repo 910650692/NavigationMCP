@@ -113,6 +113,9 @@ public class AgreementManager implements IAgreementCallBack {
     }
 
     public boolean isAllowAutoAgreement() {
+        if (!DeviceUtils.isCar(mContext)) {
+            return true;
+        }
         final boolean state = mAgreementDataSourceRepository.isBaiduMapAgreementAllowed();
         Logger.d(TAG, "getAllowAutoAgreement state : ", state);
         return state;
