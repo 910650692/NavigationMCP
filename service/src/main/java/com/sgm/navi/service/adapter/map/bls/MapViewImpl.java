@@ -137,9 +137,7 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         initOperatorBusiness();
         initTheme(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
         initSkyBox(ThemeUtils.INSTANCE.isNightModeEnabled(getContext()));
-        if (mapType == MapType.HUD_MAP) {
-            initLayerItemsScale();
-        }
+        initLayerItemsScale();
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapType, " 初始化 底图成功");
     }
 
@@ -195,11 +193,29 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
             return;
         }
         ScaleInfo scaleInfo = new ScaleInfo();
-        scaleInfo.bgScale = 0.8;
-        scaleInfo.poiScale = 0.8;
-        scaleInfo.bubbleScale = 0.8;
-        if (null != getMapview().getLayerMgr()) {
+        boolean needInit = false;
+        if (mapType == MapType.HUD_MAP) {
+            scaleInfo.bgScale = 0.8;
+            scaleInfo.poiScale = 0.8;
+            scaleInfo.bubbleScale = 0.8;
+            needInit = true;
             Logger.d(TAG, "初始化HUD屏图层图元显示比例为0.8");
+        } else {
+            MapViewPortParam mapviewPort = getMapview().getMapviewPort();
+            if (!ConvertUtils.isEmpty(mapviewPort)) {
+                long screenHeight = mapviewPort.screenHeight;
+                long screenWidth = mapviewPort.screenWidth;
+                Logger.d(TAG, "initLayerItemsScale screenWidth ", screenWidth, " screenHeight ", screenHeight);
+                if (screenWidth == 3000) {
+                    scaleInfo.bgScale = 1.1;
+                    scaleInfo.poiScale = 1.1;
+                    scaleInfo.bubbleScale = 1.1;
+                    needInit = true;
+                    Logger.d(TAG, "初始化557车型图层图元显示比例为1.1");
+                }
+            }
+        }
+        if (null != getMapview().getLayerMgr() && needInit) {
             getMapview().getLayerMgr().setAllPointLayerItemsScale(scaleInfo);
         }
     }
