@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.android.utils.ScreenTypeUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.google.gson.JsonObject;
@@ -71,6 +73,11 @@ public class PoiPushReceiver extends BroadcastReceiver {
                     return;
                 }
 
+                //如果是1/3屏，切换到全屏
+                if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+                    SplitScreenManager.getInstance().switchNaviToFullScreen();
+                }
+                //应用前后台
                 final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
                 if (appForeGroundStatus) {
                     //App已经打开 ，Package回调打开对应界面

@@ -60,8 +60,13 @@ public class HistoryManager {
             Logger.i(TAG, "insertOrReplace history is null");
             return;
         }
-        Logger.i(TAG, "name:" + history.getMEndPoiName(), " id:", history.getMId(),
-                " pid:", history.getMPoiId(), " Completed:", history.getMIsCompleted());
+        if (Logger.openLog) {
+            Logger.i(TAG, "insertOrReplace: mId:", history.getMId(), " mType:", history.getMType(),
+                    " mRideRunType:", history.getMRideRunType(), " mStartTime:", history.getMStartTime(),
+                    " mTimeInterval:", history.getMTimeInterval(), " mEndPoiName:", history.getMEndPoiName(),
+                    " mPoiId:", history.getMPoiId(), " mKeyWord:", history.getMKeyWord(),
+                    " mRunDistance:", history.getMRunDistance(), " mIsCompleted:", history.getMIsCompleted());
+        }
         history.setMUpdateTime(new Date());
         mSearchHistoryDao.insertOrReplace(history);
     }
@@ -72,15 +77,17 @@ public class HistoryManager {
      */
     private void update(final History info) {
         if (ConvertUtils.isNull(info)) {
-            Logger.i(TAG, "update info is null");
+            Logger.i(TAG, "update: info is null");
             return;
         }
         if (mSearchHistoryDao == null) {
-            Logger.i(TAG, "mSearchHistoryDao is null");
+            Logger.i(TAG, "update: mSearchHistoryDao is null");
             return;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "update name:" + (info != null ? info.getMEndPoiName() : "info==null"));
+            Logger.d(TAG, "update: name:" + (info != null ? info.getMEndPoiName() : "info==null"),
+                    " mId:", info.getMId(), " mType:", info.getMType(), " mRideRunType:", info.getMRideRunType(),
+                    " mPoiId:", info.getMPoiId(), " mKeyWord:", info.getMKeyWord());
         }
         mSearchHistoryDao.update(info);
     }
@@ -90,6 +97,9 @@ public class HistoryManager {
      * @param id 唯一值
      */
     public void deleteValue(final long id) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "deleteValue: id:", id);
+        }
         mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MId.eq(id))
                 .buildDelete()
@@ -100,6 +110,9 @@ public class HistoryManager {
      * 清空全部数据
      */
     public void deleteAll() {
+        if (Logger.openLog) {
+            Logger.d(TAG, "deleteAll:");
+        }
         mSearchHistoryDao.deleteAll();
     }
 
@@ -109,6 +122,9 @@ public class HistoryManager {
      * @return History
      */
     public History getValueByKey(final int id) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "getValueByKey: id:", id);
+        }
         return mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MId.eq(id))
                 .unique();
@@ -119,7 +135,10 @@ public class HistoryManager {
      * @param keyWord 数据type
      * @return History
      */
-    public  List<History> getValueByType(final String keyWord) {
+    public List<History> getValueByType(final String keyWord) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "getValueByType: keyWord:", keyWord);
+        }
         return mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MKeyWord.eq(keyWord))
                 .list();
@@ -130,6 +149,9 @@ public class HistoryManager {
      * @param keyWord 数据keyword
      */
     public void deleteValueByKey(final String keyWord) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "deleteValueByKey: keyWord:", keyWord);
+        }
         mSearchHistoryDao.queryBuilder()
                .where(HistoryDao.Properties.MKeyWord.eq(keyWord))
                .buildDelete()
@@ -144,11 +166,14 @@ public class HistoryManager {
      */
     public boolean isDataExist(final int type, final String poiId) {
         final List<History> histories;
-
         histories = mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MRideRunType.eq(type),
                         HistoryDao.Properties.MPoiId.eq(poiId))
                 .list();
+        if (Logger.openLog) {
+            Logger.d(TAG, "isDataExist: type:", type, " poiId:", poiId,
+                    " isDataExist:", !histories.isEmpty());
+        }
         return !histories.isEmpty();
     }
 
@@ -159,6 +184,9 @@ public class HistoryManager {
      * @return History
      */
     public List<History> getValueByType(final int type) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "getValueByType: type:", type);
+        }
         return mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MType.eq(type))
                 .orderDesc(HistoryDao.Properties.MStartTime)
@@ -170,6 +198,9 @@ public class HistoryManager {
      * @param type 数据type
      */
     public void deleteValueByKey(final int type) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "deleteValueByKey: type:", type);
+        }
         mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MType.eq(type))
                 .buildDelete()
@@ -182,6 +213,9 @@ public class HistoryManager {
      * @param runType 数据类型
      */
     public void deleteValueByFileName(final String id, final int runType) {
+        if (Logger.openLog) {
+            Logger.d(TAG, "deleteValueByFileName: id:", id, " runType:", runType);
+        }
         mSearchHistoryDao.queryBuilder()
                 .where(HistoryDao.Properties.MPoiId.eq(id),
                         HistoryDao.Properties.MRideRunType.eq(runType))

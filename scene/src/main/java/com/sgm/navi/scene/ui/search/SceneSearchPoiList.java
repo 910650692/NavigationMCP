@@ -136,6 +136,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private RoutePackage mRoutePackage;
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
+    private int mTabIndex = -1;
 
     private Runnable mOfflineRunnable = new Runnable() {
         @Override
@@ -190,6 +191,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         setupFilterActions();
         setupChildListActions();
         mCurrentSelectedQuick = -1;
+        mTabIndex = -1;
         mSearchContainer = mViewBinding.searchContainer;
         mRoutePackage = RoutePackage.getInstance();
         initLoadAnim(mViewBinding.ivLoading);
@@ -1281,6 +1283,13 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 }
             }
 
+            // 当获取不到数据时，终点和起点周边搜需要清空原来的扎标并移图到对应地图中心点
+            if(!ConvertUtils.isNull(searchResultEntity) && mTabIndex > 0){
+                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "mTabIndex: " + mTabIndex);
+                mScreenViewModel.clearListLabel();
+                mScreenViewModel.setMapCenter(mTabIndex);
+            }
+
             return;
         }
         //有数据时，隐藏异常提示界面
@@ -1655,6 +1664,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     @Override
     public void onTabListGasChargeClick(final int tabIndex) {
         mScreenViewModel.onTabListGasChargeClick(mResultEntity.getKeyword(), tabIndex);
+        mTabIndex = tabIndex;
         showLoading(true);
         mViewBinding.routeRightTabListChargeScene.updateUi();
         mViewBinding.overlayInterceptor.setVisibility(VISIBLE);

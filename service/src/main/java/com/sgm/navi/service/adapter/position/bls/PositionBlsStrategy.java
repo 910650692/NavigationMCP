@@ -189,6 +189,7 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
      */
     @Override
     public void onLocInfoUpdate(LocInfo locInfo) {
+        Logger.i(TAG, "onLocInfoUpdate: locInfo is null?", locInfo == null);
         if (null != locInfo && !ConvertUtils.isEmpty(locInfo.matchInfo) &&
                 null != locInfo.matchInfo.get(0)) {
             int isOnRoad = locInfo.matchInfo.get(0).isOnGuideRoad;
@@ -203,6 +204,8 @@ public class PositionBlsStrategy implements IPosLocInfoObserver, IPosMapMatchFee
             return;
         }
         updateLocation(locInfoBean, locInfo);
+        Logger.i(TAG, "onLocInfoUpdate: locInfoBean = ", locInfoBean.getLongitude(),
+                locInfoBean.getLatitude());
         if (locInfoBean != null) {
             mSdkLocStatus = LocStatus.ON_LOCATION_OK;
         }

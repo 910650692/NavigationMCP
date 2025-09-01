@@ -18,8 +18,9 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/item_root_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="wrap_content"
         android:paddingStart="@dimen/dp_128"
+        android:paddingVertical="@dimen/dp_7"
         android:focusable="false">
 
         <com.sgm.navi.ui.view.SkinImageView
@@ -34,11 +35,14 @@
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/route_detail_info_item_child_description"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_528"
             android:layout_height="wrap_content"
             android:textColor="@color/text_color_route_item_no_select"
             android:textSize="@dimen/sp_38"
             android:focusable="false"
+            android:lines="2"
+            android:ellipsize="end"
+            android:gravity="center|left"
             android:layout_marginStart="@dimen/dp_16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

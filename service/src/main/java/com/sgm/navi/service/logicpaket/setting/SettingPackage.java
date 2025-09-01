@@ -562,8 +562,8 @@ public final class SettingPackage implements SettingAdapterCallback {
                     break;
             }
         } else {
-            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
-            LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, CarModeType.CAR_MODE_DEFAULT);
+//            LayerPackage.getInstance().setCarMode(MapType.MAIN_SCREEN_MAIN_MAP, CarModeType.CAR_MODE_DEFAULT);
+//            LayerPackage.getInstance().setCarMode(MapType.CLUSTER_MAP, CarModeType.CAR_MODE_DEFAULT);
             setCarMode(CarModeType.CAR_MODE_DEFAULT);
         }
         return carMode;

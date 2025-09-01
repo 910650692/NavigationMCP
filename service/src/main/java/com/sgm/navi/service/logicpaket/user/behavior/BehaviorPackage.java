@@ -515,6 +515,13 @@ final public class BehaviorPackage implements BehaviorAdapterCallBack, AccountCa
         mBehaviorAdapter.startSync();
     }
 
+    /**
+     * isSyncSdkServiceSyncing
+     */
+    public boolean isSyncSdkServiceSyncing() {
+        return mBehaviorAdapter.isSyncSdkServiceSyncing();
+    }
+
     @Override
     public void notifyFavorite(final int eventType, final int exCode) {
         for (BehaviorCallBack observer : mCallBacks) {

@@ -55,6 +55,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
     private final UserTrackPackage mUserTrackPackage;
     private final CalibrationPackage mCalibrationPackage;
     private final ActivatePackage mActivatePackage;
+    private final MapPackage mMapPackage;
     private int mTaskId;
     private int mListSearchType = -1;
     public int getMTaskId() {
@@ -68,6 +69,7 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         this.mUserTrackPackage = UserTrackPackage.getInstance();
         this.mCalibrationPackage = CalibrationPackage.getInstance();
         this.mActivatePackage = ActivatePackage.getInstance();
+        this.mMapPackage = MapPackage.getInstance();
     }
 
     @Override
@@ -96,6 +98,20 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
         }
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
         mSearchPackage.clearTypeMark(LayerPointItemType.SEARCH_POI_CENTRAL);
+    }
+
+    public void setMapCenter(int tabIndex){
+        if(tabIndex == 1){
+            final RouteParam endPoint = mRoutePackage.getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
+            if (endPoint != null && !ConvertUtils.isEmpty(endPoint.getRealPos())) {
+                mMapPackage.setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP, endPoint.getRealPos());
+            }
+        } else {
+            final GeoPoint userLoc = mSearchPackage.getCurrentLocation();
+            if(!ConvertUtils.isNull(userLoc)){
+                mMapPackage.setMapCenter(MapType.MAIN_SCREEN_MAIN_MAP,userLoc);
+            }
+        }
     }
 
     @Override

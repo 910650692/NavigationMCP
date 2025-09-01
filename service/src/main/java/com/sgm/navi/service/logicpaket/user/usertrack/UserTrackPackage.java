@@ -749,7 +749,14 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
             mHistory.setMEndPoint(endLoc.toString());
             mHistory.setMRunDistance((int)depInfo.getDistance());// 该行程行驶距离
             final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            final String startTime = dateFormat.format(points.get(0).getN64TickTime());
+            String startTime;
+            try {
+                long timestamp = Long.parseLong(parts[0]);
+                startTime = dateFormat.format(timestamp);
+            } catch (NumberFormatException e) {
+                Logger.w(TAG, "时间戳格式无效: ", parts[0]);
+                startTime = "--";
+            }
             mHistory.setMStartTime(startTime); // 该行程开始时间
             mHistory.setMRideRunType(Integer.parseInt(rideRunType)); // 行程类型（导航/巡航）
             mHistory.setMTimeInterval((int)depInfo.getDuration()); // 驾驶时长

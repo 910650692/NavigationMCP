@@ -113,9 +113,12 @@ public final class MapViewPoolManager implements IMapAdapterCallback {
     public boolean createMapView(MapType mapTypeId) {
         if (!mapViewPools.containsKey(mapTypeId)) {
             Logger.d(TAG, mapTypeId, "  创建底图 :");
-            MapViewImpl mapView = new MapViewImpl(AppCache.getInstance().getMContext(), mapTypeId, getMapService());
-            mapView.setCallbacks(this);
-            mapViewPools.put(mapTypeId, mapView);
+            MapService service = getMapService();
+            if (service != null) {
+                MapViewImpl mapView = new MapViewImpl(AppCache.getInstance().getMContext(), mapTypeId, service);
+                mapView.setCallbacks(this);
+                mapViewPools.put(mapTypeId, mapView);
+            }
         }
         return mapViewPools.containsKey(mapTypeId);
     }

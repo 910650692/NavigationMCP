@@ -112,6 +112,6 @@
             android:focusable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_168"/>
+            android:layout_marginTop="@dimen/dp_161"/>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

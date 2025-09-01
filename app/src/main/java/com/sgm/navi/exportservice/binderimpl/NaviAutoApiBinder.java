@@ -6,6 +6,8 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ScreenTypeUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -438,6 +440,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
                     mRouteRequestAfterSearch = false;
                     if (success && null != firstPoi) {
                         Logger.d(TAG, "onSilentSearchResult: null != poiInfo");
+                        judgeFullScreen();
                         processJumpPage(INaviConstant.OpenIntentPage.ROUTE_PAGE, "", firstPoi);
                     } else {
                         hasProcess = false;
@@ -1486,6 +1489,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         }
 
         mSearchKeyword = keyword;
+        judgeFullScreen();
+
         final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
         if (appForeGroundStatus) {
             //App已经打开 ，打开地图并通过Package回调打开对应界面
@@ -1579,6 +1584,8 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         endPoint.setLat(geoPoint.getLat());
         endPoint.setLon(geoPoint.getLon());
         poiInfoEntity.setPoint(endPoint);
+
+        judgeFullScreen();
 
         final boolean appForeGroundStatus = ProcessManager.isAppInForeground();
         if (appForeGroundStatus) {
@@ -1747,6 +1754,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         }
 
         Logger.d(TAG, pkgName + "backHome");
+        judgeFullScreen();
         processJumpPage(INaviConstant.OpenIntentPage.GO_HOME, "", null);
     }
 
@@ -1757,6 +1765,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         }
 
         Logger.d(TAG, pkgName + "goCompany");
+        judgeFullScreen();
         processJumpPage(INaviConstant.OpenIntentPage.GO_COMPANY, "", null);
     }
 
@@ -1777,6 +1786,7 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
         }
 
         Logger.d(TAG, pkgName + "basicSearch");
+        judgeFullScreen();
         processJumpPage(INaviConstant.OpenIntentPage.SEARCH_PAGE, "", null);
     }
 
@@ -1839,4 +1849,14 @@ public class NaviAutoApiBinder extends INaviAutoApiBinder.Stub implements StartS
             default -> 0;
         };
     }
+
+    /**
+     * 当前如果为1/3屏，切换到全屏.
+     */
+    private void judgeFullScreen() {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            SplitScreenManager.getInstance().switchNaviToFullScreen();
+        }
+    }
+
 }

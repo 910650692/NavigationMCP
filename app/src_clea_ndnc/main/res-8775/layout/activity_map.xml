@@ -435,12 +435,11 @@
             app:viewModel="@{ViewModel}"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/navi_main_tap_margin_start"
             android:visibility="@{ViewModel.cruiseVisibility ? View.VISIBLE : View.GONE}"
             android:layout_marginTop="@dimen/dp_85"
             app:layout_constraintStart_toEndOf="@id/float_window"
             app:layout_constraintTop_toTopOf="parent"/>
-
-
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/root_guide_login"

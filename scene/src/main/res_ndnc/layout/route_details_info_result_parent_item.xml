@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/dp_124"/>
+            android:layout_marginTop="@dimen/dp_119"/>
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

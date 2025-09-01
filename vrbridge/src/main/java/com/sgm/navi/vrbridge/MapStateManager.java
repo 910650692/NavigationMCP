@@ -3,6 +3,8 @@ package com.sgm.navi.vrbridge;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.android.utils.ScreenTypeUtils;
+import com.android.utils.SplitScreenManager;
 import com.android.utils.log.Logger;
 import com.android.utils.process.ProcessManager;
 import com.android.utils.process.ProcessStatus;
@@ -931,6 +933,15 @@ public final class MapStateManager {
      */
     public int getRouteChargeType() {
         return mChargingRouteType;
+    }
+
+    /**
+     * 当前如果为1/3屏，切换到全屏.
+     */
+    public void judgeFullScreen() {
+        if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
+            SplitScreenManager.getInstance().switchNaviToFullScreen();
+        }
     }
 
 }

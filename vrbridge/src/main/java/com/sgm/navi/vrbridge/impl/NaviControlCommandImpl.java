@@ -524,6 +524,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             return;
         }
 
+        MapStateManager.getInstance().judgeFullScreen();
         boolean hasMatched = false;
         int chooseIndex = -1;
         final List<RouteLineInfo> routeLineList = MapStateManager.getInstance().getRouteList();
@@ -600,6 +601,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * @param respCallback 执行结果回调.
      */
     private void chooseRoadWhenNavigation(final String road, final RespCallback respCallback) {
+        MapStateManager.getInstance().judgeFullScreen();
         final NaviExchangeEntity naviExchangeEntity = NaviPackage.getInstance()
                 .getExchangeResult(road, 1, MapType.MAIN_SCREEN_MAIN_MAP);
         final int changeType = naviExchangeEntity.getExchangeType();
@@ -720,6 +722,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             return;
         }
 
+        MapStateManager.getInstance().judgeFullScreen();
         final List<RouteLineInfo> routeLineList = MapStateManager.getInstance().getRouteList();
         try {
             final int size = routeLineList.size();
@@ -804,6 +807,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      * @param respCallback RespCallback，执行结果回调.
      */
     private void avoidRoadWhenNavigation(final String road, final RespCallback respCallback) {
+        MapStateManager.getInstance().judgeFullScreen();
         final NaviExchangeEntity naviExchangeEntity = NaviPackage.getInstance().getExchangeResult(road, 0, MapType.MAIN_SCREEN_MAIN_MAP);
         final int changeType = naviExchangeEntity.getExchangeType();
         final StringBuilder builder = new StringBuilder();
@@ -1055,6 +1059,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         if (Logger.openLog) {
             Logger.d(IVrBridgeConstant.TAG, "onCommonPoiSet: sessionId = ", sessionId, ", poiType = ", poiType, ", poi = ", poi);
         }
+        MapStateManager.getInstance().judgeFullScreen();
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
         if (saveCommand) {
             mCommandList.add(IVrBridgeConstant.VoiceCommandAction.COLLECT_COMMON);
@@ -1113,6 +1118,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             if (Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "ask location lon: ", lon, ", lat: ", lat);
             }
+            MapStateManager.getInstance().judgeFullScreen();
             final GeoPoint geoPoint = new GeoPoint(lon, lat);
             VoiceSearchManager.getInstance().queryCurrentLocationDetail(IVrBridgeConstant.VoiceSearchType.SHOW_POI_DETAIL,
                     geoPoint, respCallback);
@@ -1637,6 +1643,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             Logger.e(IVrBridgeConstant.TAG, "session or passBy is empty");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.PASS_BY_PARAM_EMPTY);
         }
+        MapStateManager.getInstance().judgeFullScreen();
         MapStateManager.getInstance().openMapWhenBackground();
 
         if (!MapStateManager.getInstance().isNaviStatus()) {
@@ -1902,16 +1909,24 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
             final RouteParam routeParam = RoutePackage.getInstance().getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
             if (null != routeParam) {
                 final PoiInfoEntity poiInfo = getPoiInfoEntity(routeParam);
-                BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
-                final StringBuilder builder = new StringBuilder("已收藏目的地");
-                final String name = poiInfo.getName();
-                final String address = poiInfo.getAddress();
-                if (!TextUtils.isEmpty(name)) {
-                    builder.append(name);
-                } else if (!TextUtils.isEmpty(address)) {
-                    builder.append(address);
+                final CallResponse destResponse;
+                if (null == poiInfo || null == poiInfo.getPoint()) {
+                    destResponse = CallResponse.createNotSupportResponse("获取目的地信息为空，无法收藏");
+                } else {
+                    if (TextUtils.isEmpty(poiInfo.getPid())) {
+                        poiInfo.setPid(poiInfo.getPoint().getLon() + "_" + poiInfo.getPoint().getLat());
+                    }
+                    BehaviorPackage.getInstance().addFavorite(poiInfo, 0);
+                    final StringBuilder builder = new StringBuilder("已收藏目的地");
+                    final String name = poiInfo.getName();
+                    final String address = poiInfo.getAddress();
+                    if (!TextUtils.isEmpty(name)) {
+                        builder.append(name);
+                    } else if (!TextUtils.isEmpty(address)) {
+                        builder.append(address);
+                    }
+                    destResponse = CallResponse.createSuccessResponse(builder.toString());
                 }
-                final CallResponse destResponse = CallResponse.createSuccessResponse(builder.toString());
                 destResponse.setNeedPlayMessage(true);
                 respTts(destResponse, respCallback);
             } else {
@@ -1971,6 +1986,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onFavoriteOpen(final RespCallback respCallback) {
+        MapStateManager.getInstance().judgeFullScreen();
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
         Logger.d(IVrBridgeConstant.TAG, "onFavoriteOpen, inNavigation:", inNavigation, ", saveCommand:", saveCommand);
@@ -2014,7 +2030,7 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
      */
     @Override
     public CallResponse onSearchListOpen(final RespCallback respCallback) {
-
+        MapStateManager.getInstance().judgeFullScreen();
         final boolean inNavigation = MapStateManager.getInstance().isNaviStatus();
         final boolean saveCommand = MapStateManager.getInstance().openMapWhenBackground();
         Logger.d(IVrBridgeConstant.TAG, "onSearchListOpen, inNavigation:", inNavigation, ", saveCommand:", saveCommand);
@@ -2327,6 +2343,14 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
         return NaviControlCommandListener.super.onRouteSelectInMapView(index, isAutoNavi);
     }
 
+    /**
+     * 语音补能规划.
+     *
+     * @param confirm  UPDATE_CHANGING_ROUTE
+     * @param respCallback 异步执行结果.
+     *
+     * @return CallResponse 同步执行结果.
+     */
     @Override
     public CallResponse onUpdateChangingRoute(String confirm, RespCallback respCallback) {
         if (Logger.openLog) {

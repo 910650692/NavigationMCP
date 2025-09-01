@@ -18,6 +18,7 @@ import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.user.account.AccountCallBack;
 import com.sgm.navi.service.logicpaket.user.account.AccountPackage;
+import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackCallBack;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.ui.base.BaseModel;
@@ -31,12 +32,14 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
     private final UserTrackPackage mUserTrackPackage;
     private final AccountPackage mAccountPackage;
     private final HistoryManager mHistoryManager;
+    private final BehaviorPackage mBehaviorPackage;
 
     public DrivingRecordModel() {
         mUserTrackPackage = UserTrackPackage.getInstance();
         mAccountPackage = AccountPackage.getInstance();
         mHistoryManager = HistoryManager.getInstance();
         mHistoryManager.init();
+        mBehaviorPackage = BehaviorPackage.getInstance();
     }
 
     @Override
@@ -55,8 +58,12 @@ public class DrivingRecordModel extends BaseModel<DrivingRecordViewModel> implem
     /**
      * 从sdk获取行程数据列表保存到本地
      */
-    public void getDrivingRecordData() {
+    public boolean getDrivingRecordData() {
+        if (mBehaviorPackage.isSyncSdkServiceSyncing()){
+            return false;
+        }
         mUserTrackPackage.getDrivingRecordData();
+        return true;
     }
 
     /**

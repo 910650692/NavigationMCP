@@ -415,7 +415,7 @@ public class BaseFavoriteViewModel extends BaseViewModel<FavoriteFragment, Favor
     public Map<String, Integer> getPopupData() {
         return new HashMap<>(){{
             put("homeOfficeY", -105);
-            put("frequentY", -130);
+            put("frequentY", -140);
             put("addButtonMargin", 20);
         }};
     }

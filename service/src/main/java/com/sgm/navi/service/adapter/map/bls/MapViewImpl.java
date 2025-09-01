@@ -158,8 +158,11 @@ public class MapViewImpl extends MapSurfaceView implements IMapviewObserver, IMa
         devAttribute.samples = 2;//TODO 性能优化配置 全屏抗锯齿倍数
         ServiceMgr.getServiceMgrInstance().setUiLooper(deviceId, ThreadManager.getInstance().getLooper(LooperType.valueOf(mapType.name())));
         Logger.d(TAG, mapType, "createMapDevice deviceId=", deviceId);
-        return ConvertUtils.isNullRequire(getMapService().createDevice(deviceId, devAttribute, this),
-                "获取对应的 MapService 失败 : " + mapType);
+        MapDevice mapDevice = null;
+        if(null != getMapService()){
+            mapDevice = getMapService().createDevice(deviceId, devAttribute, this);
+        }
+        return ConvertUtils.isNullRequire(mapDevice, "获取对应的 MapService 失败 : " + mapType);
     }
 
     private MapView createMapView() {

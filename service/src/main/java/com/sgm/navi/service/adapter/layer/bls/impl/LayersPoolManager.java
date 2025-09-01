@@ -108,7 +108,9 @@ public final class LayersPoolManager implements ILayerAdapterCallBack {
 
     private void createLayerPool(MapType mapTypeId) {
         Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId, " 创建图层池");
-        MapView mapView = MapViewPoolManager.getInstance().getMapViewImpl(mapTypeId).getMapview();
+        MapView mapView = null;
+        if(MapViewPoolManager.getInstance().isMapViewExist(mapTypeId))
+         mapView = MapViewPoolManager.getInstance().getMapViewImpl(mapTypeId).getMapview();
         if (mapView != null) {
             LayersPool layersPool = new LayersPool(getBizControlService(), mapView, AppCache.getInstance().getMContext(), mapTypeId);
             layersPools.put(mapTypeId, layersPool);

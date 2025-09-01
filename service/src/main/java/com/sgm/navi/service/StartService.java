@@ -84,7 +84,7 @@ public class StartService {
     }
 
     public void startInitSdk() {
-        Logger.e(TAG, "start SDK......");
+        Logger.e(TAG, "first start SDK......");
         startEngine();
     }
 
@@ -143,6 +143,7 @@ public class StartService {
             if (!parseErrorCode()) {
                 engineActive = -1;
                 Logger.e(TAG, "startEngine parseErrorCode failed engineActive = -1");
+                conformFailCallback(engineActive, "startEngine parseErrorCode failed");
                 return;
             }
             checkExternalStorageAvailable();
@@ -332,6 +333,7 @@ public class StartService {
      * 反初始化引擎
      */
     public void unSdkInit() {
+        Logger.e(TAG, "unInit SDK start......");
         EnginePackage.getInstance().removeEngineObserver(TAG);
         MapPackage.getInstance().unInitMapService();
         LayerPackage.getInstance().unInitLayerService();
@@ -342,6 +344,7 @@ public class StartService {
         EnginePackage.getInstance().unInitEngine();
         ActivatePackage.getInstance().unInit();
         engineActive = -1;
+        Logger.e(TAG, "unInit SDK end......");
     }
 
     private void parseErrorCode(ErrorCode errorCode, JSONObject jsonObject) throws JSONException {

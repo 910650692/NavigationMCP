@@ -92,8 +92,8 @@ public class BaseDrivingRecordViewModel extends BaseViewModel<DrivingRecordFragm
     /**
      * 从sdk获取行程数据列表保存到本地
      */
-    public void getDrivingRecordData() {
-        mModel.getDrivingRecordData();
+    public boolean getDrivingRecordData() {
+        return mModel.getDrivingRecordData();
     }
 
     /**

@@ -17,86 +17,94 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/poi_catering_price"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/search_color_ffffff"
-            android:textSize="@dimen/sp_52"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="¥35" />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/poi_catering_price_per_person"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/search_quick_tab_view_color"
-            android:textSize="@dimen/sp_26"
-            android:text="@string/catering_avg_price"
-            app:layout_constraintStart_toEndOf="@+id/poi_catering_price"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_catering_price"
-            />
-
-        <com.sgm.navi.ui.view.SkinTextView
-            android:id="@+id/poi_catering_mark_value"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textColor="@color/poi_details_bottom_icon"
-            android:textSize="@dimen/sp_36"
-            android:layout_marginEnd="@dimen/dp_24"
-            app:layout_constraintEnd_toStartOf="@+id/poi_catering_mark_layout"
-            app:layout_constraintTop_toTopOf="@id/poi_catering_price"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_catering_price"
-            tools:text="4.7"
-            android:text="4.7"/>
-        
         <com.sgm.navi.ui.view.SkinLinearLayout
-            android:id="@+id/poi_catering_mark_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_48"
-            android:background="@drawable/bg_catering_mark"
-            android:orientation="horizontal"
+            android:id="@+id/poi_catering_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingStart="@dimen/dp_9"
-            android:paddingEnd="@dimen/dp_9"
-            app:layout_constraintTop_toTopOf="@id/poi_catering_price"
-            app:layout_constraintBottom_toBottomOf="@+id/poi_catering_price">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/poi_catering_mark_img1"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/img_collect_48" />
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_catering_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/search_color_ffffff"
+                android:textSize="@dimen/sp_46"
+                tools:text="¥35" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/poi_catering_mark_img2"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/img_collect_48" />
+            <com.sgm.navi.ui.view.SkinTextView
+                android:id="@+id/poi_catering_price_per_person"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/catering_avg_price"
+                android:textColor="@color/search_quick_tab_view_color"
+                android:textSize="@dimen/sp_38" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/poi_catering_mark_img3"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/img_collect_48" />
+            <com.sgm.navi.ui.view.SkinLinearLayout
+                android:id="@+id/poi_catering_mark_value_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/poi_catering_mark_img4"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/img_collect_48" />
+                <com.sgm.navi.ui.view.SkinTextView
+                    android:id="@+id/poi_catering_mark_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:maxLines="1"
+                    android:text="4.7"
+                    android:textColor="@color/poi_details_bottom_icon"
+                    android:textSize="@dimen/sp_38"
+                    tools:text="4.7" />
 
-            <com.sgm.navi.ui.view.SkinImageView
-                android:id="@+id/poi_catering_mark_img5"
-                android:layout_width="@dimen/dp_42"
-                android:layout_height="@dimen/dp_42"
-                android:src="@drawable/img_collect2_48" />
+                <com.sgm.navi.ui.view.SkinLinearLayout
+                    android:id="@+id/poi_catering_mark_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_48"
+                    android:background="@drawable/bg_catering_mark"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_9"
+                    android:paddingEnd="@dimen/dp_9">
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/poi_catering_mark_img1"
+                        android:layout_width="@dimen/dp_42"
+                        android:layout_height="@dimen/dp_42"
+                        android:src="@drawable/img_collect_48" />
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/poi_catering_mark_img2"
+                        android:layout_width="@dimen/dp_42"
+                        android:layout_height="@dimen/dp_42"
+                        android:src="@drawable/img_collect_48" />
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/poi_catering_mark_img3"
+                        android:layout_width="@dimen/dp_42"
+                        android:layout_height="@dimen/dp_42"
+                        android:src="@drawable/img_collect_48" />
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/poi_catering_mark_img4"
+                        android:layout_width="@dimen/dp_42"
+                        android:layout_height="@dimen/dp_42"
+                        android:src="@drawable/img_collect_48" />
+
+                    <com.sgm.navi.ui.view.SkinImageView
+                        android:id="@+id/poi_catering_mark_img5"
+                        android:layout_width="@dimen/dp_42"
+                        android:layout_height="@dimen/dp_42"
+                        android:src="@drawable/img_collect2_48" />
+                </com.sgm.navi.ui.view.SkinLinearLayout>
+            </com.sgm.navi.ui.view.SkinLinearLayout>
         </com.sgm.navi.ui.view.SkinLinearLayout>
 
         <View
@@ -106,7 +114,7 @@
             android:layout_marginTop="@dimen/dp_26"
             android:background="@color/setting_text_gray"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/poi_catering_mark_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/poi_catering_layout" />
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/poi_catering_hours_layout"

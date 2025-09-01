@@ -32,8 +32,9 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
     private SettingCheckDialog mDeleteDivingRecordDialog;
     private RecordLoadingDialog mRecordLoadingDialog;
     private int mCurrentIndex = 0;
+    private boolean mGetDrivingRecordDataSuccess = false;
 
-    String selectedText = "导航历史";
+    String mSelectedText = "导航历史";
     private ArrayList<DrivingRecordDataBean> mDataList = new ArrayList<>();
 
     @Override
@@ -58,18 +59,32 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
     public void onInitData() {
         ThreadManager.getInstance().runAsync(() -> {
             mViewModel.isLogin(); // 判断用户当前登录状态
-            mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
-            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+            refreshDrivingRecordView("导航历史");
         });
     }
 
     @Override
     public void onHiddenChanged(final boolean hidden) {
         if (!hidden) {
-            if ("导航历史".equals(selectedText)) {
+            refreshDrivingRecordView(mSelectedText);
+        }
+    }
+
+    private void refreshDrivingRecordView(String selectedText) {
+        if (!mGetDrivingRecordDataSuccess) {
+            mGetDrivingRecordDataSuccess = mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+        }
+        if ("导航历史".equals(selectedText)) {
+            if (mGetDrivingRecordDataSuccess) {
                 mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
-            } else if ("巡航历史".equals(selectedText)) {
+            } else {
+                updateDrivingRecordView(new ArrayList<>());
+            }
+        } else if ("巡航历史".equals(selectedText)) {
+            if (mGetDrivingRecordDataSuccess) {
                 mViewModel.getDrivingRecordCruiseDataList(); // 从本地获取巡航行程历史数据
+            } else {
+                updateDrivingRecordView(new ArrayList<>());
             }
         }
     }
@@ -176,17 +191,17 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
                     return;
                 }
                 // 执行你想要的操作，例如获取被选中的文本
-                selectedText = checkedRadioButton.getText().toString();
+                mSelectedText = checkedRadioButton.getText().toString();
                 // 打印或处理选中的文本
-                Logger.d("RadioGroup", "选中的文本: " + selectedText);
+                Logger.d("RadioGroup", "选中的文本: " + mSelectedText);
                 if (R.id.driving_record_tab_1 == i){
                     headerBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.setting_white));
                     headerBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
-                    mViewModel.getDrivingRecordDataList();
+                    refreshDrivingRecordView("导航历史");
                 } else if (R.id.driving_record_tab_2 == i) {
                     headerBinding.drivingRecordTab1.setTextColor(getResources().getColor(R.color.setting_bg_tab_text_unselect));
                     headerBinding.drivingRecordTab2.setTextColor(getResources().getColor(R.color.setting_white));
-                    mViewModel.getDrivingRecordCruiseDataList();
+                    refreshDrivingRecordView("巡航历史");
                 }
             }
         });
@@ -241,13 +256,28 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
         if (itemHeaderBinding == null) {
             return;
         }
+        if (!mGetDrivingRecordDataSuccess) {
+            mGetDrivingRecordDataSuccess = mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
+        }
+        if (!mGetDrivingRecordDataSuccess){
+            ToastUtils.Companion.getInstance().showCustomToastView(
+                    ResourceUtils.Companion.getInstance().getString(R.string.setting_others_syncing));
+            return;
+        }
         int checkedRadioButtonId = itemHeaderBinding.drivingRecordTabGroup.getCheckedRadioButtonId();
         if (R.id.driving_record_tab_1 == checkedRadioButtonId) {
-            mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+            if (mGetDrivingRecordDataSuccess) {
+                mViewModel.getDrivingRecordDataList(); // 从本地获取导航行程历史数据
+            } else {
+                updateDrivingRecordView(new ArrayList<>());
+            }
         } else if (R.id.driving_record_tab_2 == checkedRadioButtonId) {
-            mViewModel.getDrivingRecordCruiseDataList(); // 从本地获取巡航行程历史数据
+            if (mGetDrivingRecordDataSuccess) {
+                mViewModel.getDrivingRecordCruiseDataList(); // 从本地获取巡航行程历史数据
+            } else {
+                updateDrivingRecordView(new ArrayList<>());
+            }
         }
-
     }
 
     /**
