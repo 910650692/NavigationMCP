@@ -252,6 +252,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     @HookMethod(eventName = BuryConstant.EventName.AMAP_CLOSE)
     protected void onDestroy() {
+        dismissActivateFailedDialog();
         PermissionUtils.getInstance().remove();
         stopTime();
         // 退出的时候主动保存一下最后的定位信息
@@ -392,10 +393,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * @param msg 错误信息
      */
     public void showActivateFailedDialog(final int errCode, final String msg) {
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            Logger.e(TAG, "dialog showing");
-            return;
-        }
+        dismissActivateFailedDialog();
         mFailedDialog = new ActivateFailedDialog(this, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
@@ -411,8 +409,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * 关闭弹窗
      */
     public void dismissActivateFailedDialog() {
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            mFailedDialog.dismiss();
+        if (mFailedDialog != null) {
+            if (mFailedDialog.isShowing()) {
+                mFailedDialog.dismiss();
+            }
             mFailedDialog.unInitContext();
             mFailedDialog = null;
         }
