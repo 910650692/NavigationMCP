@@ -57,6 +57,7 @@ import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.route.RouteWeatherInfo;
+import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.tts.NaviAudioPlayer;
 
 import java.util.ArrayList;
@@ -501,6 +502,7 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
             final SoundInfoEntity soundInfo = new SoundInfoEntity();
             String info = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw);
             soundInfo.setText(info);
+            soundInfo.setRangeType(NumberUtils.NUM_1010);
             if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
                 for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
                     if (guidanceObserver != null) {

@@ -66,6 +66,7 @@ import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
+import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
@@ -1462,9 +1463,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
             Logger.i(TAG, "离线状态，不支持手动切换路线");
             if (pathId != OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP)) {
-                ToastUtils.Companion.getInstance().showCustomToastView(
+                ThreadManager.getInstance().postUi(() ->
+                        ToastUtils.Companion.getInstance().showCustomToastView(
                         ResourceUtils.Companion.getInstance().
-                                getString(com.sgm.navi.scene.R.string.net_error));
+                                getString(com.sgm.navi.scene.R.string.net_error)));
+
             }
             return;
         }
@@ -1533,6 +1536,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextIconResource(resource);
             mNextManeuverEntity.setNextIconDrawable(drawable);
+            LauncherWindowService.getInstance().updateNextIcon(resource,drawable);
         }
     }
 
@@ -1541,6 +1545,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextManeuverVisible(isVisible);
             mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+            LauncherWindowService.getInstance().updateNextStatus(isVisible,isOffLine);
         }
     }
 
@@ -1553,6 +1558,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void updateNextText(String text) {
         if (null != mNextManeuverEntity) {
             mNextManeuverEntity.setNextText(text);
+            LauncherWindowService.getInstance().updateNextText(text);
         }
     }
 
@@ -1725,10 +1731,19 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     @Override
-    public void onReRouteError() {
+    public void onReRouteError(int routeType, String errorMsg) {
         if (!ConvertUtils.isEmpty(mViewModel)) {
             Logger.i(TAG, "静默算路失败");
             mViewModel.hideProgressUI(false);
+        }
+        if (routeType == RoutePriorityType.ROUTE_TYPE_YAW) {
+            ThreadManager.getInstance().postUi(() ->
+                    ToastUtils.Companion.getInstance().showCustomToastView(errorMsg));
+            final SoundInfoEntity soundInfo = new SoundInfoEntity();
+            soundInfo.setText(ResourceUtils.Companion.getInstance().
+                    getString(com.sgm.navi.service.R.string.route_type_yaw_error));
+            soundInfo.setRangeType(NumberUtils.NUM_1010);
+            NaviPackage.getInstance().onPlayTTS(soundInfo);
         }
     }
 

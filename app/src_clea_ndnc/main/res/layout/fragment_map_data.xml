@@ -28,6 +28,7 @@
             android:layout_marginStart="@dimen/dp_34"
             android:layout_marginEnd="@dimen/dp_34"
             android:layout_marginTop="@dimen/dp_34"
+            android:layout_marginBottom="@dimen/dp_34"
             android:gravity="center_vertical"
             android:background="@drawable/shape_bg_map_data">
 
@@ -71,7 +72,6 @@
                     android:layout_width="match_parent"
                     android:visibility="@{ViewModel.mManagerDownloadVisibility ? View.VISIBLE : View.GONE}"
                     android:layout_height="@dimen/dp_119"
-                    android:layout_marginTop="@dimen/dp_34"
                     android:layout_marginStart="@dimen/dp_34"
                     android:layout_marginEnd="@dimen/dp_34"
                     app:layout_constraintTop_toTopOf="parent"
@@ -122,6 +122,7 @@
                     android:layout_height="@dimen/dp_123"
                     android:layout_marginTop="@dimen/dp_34"
                     android:layout_marginStart="@dimen/dp_34"
+                    app:layout_goneMarginTop="@dimen/dp_0"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintStart_toStartOf="parent"
                     android:background="@drawable/shape_bg_map_data">
@@ -183,6 +184,7 @@
                     android:layout_marginTop="@dimen/dp_34"
                     android:layout_marginStart="@dimen/dp_34"
                     android:layout_marginEnd="@dimen/dp_34"
+                    app:layout_goneMarginTop="@dimen/dp_0"
                     app:layout_constraintTop_toBottomOf="@+id/manager_data_view"
                     app:layout_constraintLeft_toRightOf="@+id/view_current_data"
                     android:background="@drawable/shape_bg_map_data">

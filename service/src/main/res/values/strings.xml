@@ -16,4 +16,6 @@
     <string name="charge_equipment_reversion">已约</string>
     <string name="charge_equipment_error">故障</string>
     <string name="route_type_yaw">您已偏航，已为您重新规划路线</string>
+    <string name="route_type_yaw_error">路线刷新失败</string>
+    <string name="route_type_yaw_offline_error">无网络连接，请检查网络后重试</string>
 </resources>

@@ -131,6 +131,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
         @Override
         public void onHudSnowModeChanged(boolean snowMode) {
             Logger.i(TAG, "雪地模式 onHudSnowModeChanged" , snowMode);
+            hudSnowMode = snowMode;
             updateMapThemeType(snowMode);
         }
     };
@@ -211,7 +212,7 @@ public class HudPackage implements StartService.ISdkInitCallback, IMapAdapterCal
             LayerPackage.getInstance().setCarMode(MapType.HUD_MAP, CarModeType.CAR_MODE_DEFAULT);
             MapPackage.getInstance().switchHudMapMode(MapType.HUD_MAP, MapMode.UP_2D);
             LayerPackage.getInstance().setFollowMode(MapType.HUD_MAP, true);
-            MapPackage.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
+//            MapPackage.getInstance().updateUiStyle(MapType.HUD_MAP, ThemeType.NIGHT);
             LayerPackage.getInstance().closeDynamicLevel(MapType.HUD_MAP);
             long l = mMapSurfaceView.getMapViewHeight() - HUD_MAP_CAR_BOTTOM;
             MapAdapter.getInstance().setHudMapCenterInScreen(MapType.HUD_MAP,(int)mMapSurfaceView.getMapViewWidth() / 2 , (int)l);

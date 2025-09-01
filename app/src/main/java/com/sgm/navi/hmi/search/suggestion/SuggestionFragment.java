@@ -114,7 +114,9 @@ public class SuggestionFragment extends BaseFragment<SugSearchFragmentLayoutBind
 //        String sourceFragmentTag = parsedArgs.getString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SOURCE_FRAGMENT);
     }
 
-    public void onBackPressed(){
-        mBinding.sceneSugPoiList.clearEditText();
+    public void onBackPressed() {
+        if (mBinding != null) {
+            mBinding.sceneSugPoiList.clearEditText();
+        }
     }
 }

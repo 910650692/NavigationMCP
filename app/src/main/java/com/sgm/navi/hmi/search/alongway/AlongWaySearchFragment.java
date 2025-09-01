@@ -115,6 +115,8 @@ public class AlongWaySearchFragment extends BaseFragment<FragmentAlongWayBinding
 
     @Override
     protected void onBackPressed() {
-        mBinding.sceneQuickSearchView.closeSearchFragment();
+        if (mBinding != null) {
+            mBinding.sceneQuickSearchView.closeSearchFragment();
+        }
     }
 }

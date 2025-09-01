@@ -19,10 +19,11 @@
                 <com.sgm.navi.ui.view.SkinTextView
                     style="@style/style_mfc_config"
                     android:id="@+id/tv_frequent_address_text"
-                    android:layout_width="@dimen/dp_462"
+                    android:layout_width="@dimen/dp_400"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:text="@string/favorite_frequent_address_title"
                     android:visibility="visible"
                     android:background="@null"

@@ -50,10 +50,12 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
     }
 
     public void addRestrictedObserver(String key, IAosRestrictedObserver observer) {
+        Logger.e(TAG, "addRestrictedObserver: ");
         restrictedObserverList.put(key, observer);
     }
 
     public void removeRestrictedObserver(String key) {
+        Logger.e(TAG, "removeRestrictedObserver: ");
         restrictedObserverList.remove(key);
     }
 
@@ -164,7 +166,9 @@ public class AosRestrictedPackage implements QueryRestrictedObserver {
                 }
             }
         }
-
+        if (restrictedObserverList != null && restrictedObserverList.size() > 0) {
+            Logger.e(TAG , "restrictedObserverList: " , restrictedObserverList.size());
+        }
         synchronized (restrictedObserverList) {
             for (IAosRestrictedObserver observer : restrictedObserverList.values()) {
                 observer.isHoliday(isHoliday);

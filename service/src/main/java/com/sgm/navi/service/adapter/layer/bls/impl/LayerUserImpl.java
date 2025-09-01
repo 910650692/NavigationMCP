@@ -204,7 +204,6 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         final GpsTrackPoint pointBean = new GpsTrackPoint();
         pointBean.f64Latitude = point.getF64Latitude();
         pointBean.f64Longitude = point.getF64Longitude();
-        pointBean.f64Altitude = point.getF64Altitude();
         pointBean.f32Accuracy = point.getF32Accuracy();
         pointBean.f32Speed = point.getF32Speed();
         pointBean.f32Course = point.getF32Course();

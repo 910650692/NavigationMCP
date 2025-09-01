@@ -1,15 +1,11 @@
 package com.android.utils;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.os.RemoteException;
 
 import com.android.utils.log.Logger;
-import com.patac.sgmsystemextendservice.ISystemExtendServiceProxy;
 import com.patac.sgmsystemextendservicelib.PatacSESConstants;
+import com.patac.sgmsystemextendservicelib.SystemExtendManager;
+import com.patac.sgmsystemextendservicelib.splitscreen.SystemExtendSplitScreenManager;
 
 /**
  * @author: QiuYaWei
@@ -18,15 +14,12 @@ import com.patac.sgmsystemextendservicelib.PatacSESConstants;
  * Description: [分屏管理类]
  */
 public class SplitScreenManager {
-    private static final String PACKAGE_NAME = "com.patac.sgmsystemextendservice";
-    private static final String CLS_NAME = "com.patac.sgmsystemextendservice.service.SystemExtendService";
-    private boolean isServiceConnect = false;
-    private ISystemExtendServiceProxy mBinder;
     private Context mContext;
     // 记录分屏位置，0在左，1在右
     private int mPos;
 
-    public static final String TAG = "SplitScreenManager";
+    private static final String TAG = "screen_change_used";
+    private SystemExtendSplitScreenManager mBinder = null;
 
     /***
      * 这里不要做耗时操作
@@ -49,6 +42,9 @@ public class SplitScreenManager {
                 ""
         );
     }
+    public void setBlockEnterSplit() {
+        blockEnterSplit(PatacSESConstants.SPLIT_SCREEN_NAVI);
+    }
 
     /**
      * 交换位置和大小，即导航切到2/3右侧，SR切到1/3左侧
@@ -64,7 +60,7 @@ public class SplitScreenManager {
                 }
             }
         }
-        Logger.d("screen_change_used", "isSROnSplit: " , isSROnSplit);
+        Logger.d(TAG, "isSROnSplit: " , isSROnSplit);
         if (isSROnSplit) {
             switchSplitScreen(PatacSESConstants.SWITCH_TYPE_POSITION_SIZE, "");
         } else {
@@ -94,55 +90,22 @@ public class SplitScreenManager {
         return InstanceHolder.instance;
     }
 
-    private IBinder.DeathRecipient mDeathRecipient = () -> {
-        isServiceConnect = false;
-        bindService();
-    };
 
-    private final ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Logger.i("screen_change_used", "onServiceConnected", name.getPackageName());
-            mBinder = ISystemExtendServiceProxy.Stub.asInterface(service);
-            isServiceConnect = !ConvertUtils.isNull(mBinder);
-            try {
-                service.linkToDeath(mDeathRecipient, 0);
-            } catch (RemoteException exception) {
-                Logger.e("screen_change_used", exception.getMessage());
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Logger.i("screen_change_used", "onServiceDisconnected", name.getPackageName());
-            isServiceConnect = false;
-        }
-    };
 
     private void bindService() {
-        Logger.i("screen_change_used", "bindService", isServiceConnect);
+        Logger.e(TAG, "bindService");
         try {
-            if (!isServiceConnect) {
-                final Intent intent = new Intent();
-                intent.setClassName(PACKAGE_NAME, CLS_NAME);
-                if (mContext != null) {
-                    isServiceConnect = mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-                } else {
-                    Logger.e("screen_change_used", "bindService failed: mContext is null!");
-                    isServiceConnect = false;
+            SystemExtendManager manager = SystemExtendManager.createSystemExtendManager(mContext, (systemExtendManager, b) -> {
+                if (b) {
+                    mBinder = (SystemExtendSplitScreenManager) systemExtendManager.getExtendManager(SystemExtendManager.SPLIT_SCREEN_SERVICE);
                 }
-            }
-        } catch (SecurityException exception) {
-            Logger.i("screen_change_used", "bind service failed:" + exception.getMessage());
+            });
+            manager.connect();
+        } catch (Exception e) {
+            Logger.e(TAG, "bind service failed:" + e.getMessage());
         }
     }
 
-    private void unBindService() {
-        if (isServiceConnect && !ConvertUtils.isNull(connection) && mContext != null) {
-            mContext.unbindService(connection);
-            mContext = null;
-        }
-    }
 
     /***
      * 进入分屏
@@ -153,20 +116,29 @@ public class SplitScreenManager {
      * @param secondPkg 最终右侧应用的包名
      * @param extra 预留字段，传空字符串即可
      */
-    public void enterSplitScreen(int taskId, int position, int size, String secondPkg, String extra) {
-        try {
-            Logger.i("screen_change_used", "enterSplitScreen-start", taskId, position, size, secondPkg, secondPkg);
-            if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
-                try {
-                    mBinder.enterISplitScreenById(taskId, position, size, secondPkg, extra);
-                } catch (RemoteException e) {
-                    Logger.e("screen_change_used", e.getMessage());
-                }
-            } else {
-                Logger.e("screen_change_used", "service disconnect or mBinder is null!");
+    private void enterSplitScreen(int taskId, int position, int size, String secondPkg, String extra) {
+        Logger.i(TAG, "enterSplitScreen-start", taskId, position, size, secondPkg, secondPkg);
+        if (!ConvertUtils.isNull(mBinder)) {
+            try {
+                mBinder.enterISplitScreenById(taskId, position, size, secondPkg, extra);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
             }
-        } catch (Exception e) {
-            Logger.e("screen_change_used", "enterSplitScreen-failed", taskId, position, size, secondPkg, secondPkg);
+        } else {
+            Logger.e(TAG, "mBinder is null!");
+        }
+    }
+
+    private void blockEnterSplit(String str) {
+        Logger.i(TAG, "blockEnterSplit", str);
+        if (!ConvertUtils.isNull(mBinder)) {
+            try {
+                mBinder.blockEnterSplit(str);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        } else {
+            Logger.e(TAG, "mBinder is null!");
         }
     }
 
@@ -176,20 +148,16 @@ public class SplitScreenManager {
      * @param type 退出分屏的类型 0:保留调用方的应用全屏显示 1：不保留调用方的应用，显示另一个分屏应用
      * @param extra
      */
-    public void exitSplitScreen(int type, String extra) {
-        try {
-            Logger.i("screen_change_used", "exitSplitScreen-start", type, extra);
-            if (isServiceConnect && !ConvertUtils.isNull(mBinder)) {
-                try {
-                    mBinder.exitISplitScreen(type, extra);
-                } catch (RemoteException e) {
-                    Logger.e("screen_change_used", "exitSplitScreen failed", e.getMessage());
-                }
-            } else {
-                Logger.e("screen_change_used", "exitSplitScreen failed: service not connect or mBinder is null!");
+    private void exitSplitScreen(int type, String extra) {
+        Logger.i(TAG, "exitSplitScreen-start", type, extra);
+        if (!ConvertUtils.isNull(mBinder)) {
+            try {
+                mBinder.exitISplitScreen(type, extra);
+            } catch (Exception e) {
+                Logger.e(TAG, "exitSplitScreen failed", e.getMessage());
             }
-        } catch (Exception e) {
-            Logger.e("screen_change_used", "exitSplitScreen-failed", e.getMessage(), type, extra);
+        } else {
+            Logger.e(TAG, "mBinder is null!");
         }
     }
 
@@ -203,16 +171,16 @@ public class SplitScreenManager {
      * @param type
      * @param extra
      */
-    public void switchSplitScreen(int type, String extra) {
-        Logger.i("screen_change_used", "switchISplitScreen", type, "extra", extra);
+    private void switchSplitScreen(int type, String extra) {
+        Logger.i(TAG, "switchISplitScreen", type, "extra", extra);
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.switchISplitScreen(type, extra);
-            } catch (RemoteException e) {
-                Logger.e("screen_change_used", "switchISplitScreen");
+            } catch (Exception e) {
+                Logger.e(TAG, "switchISplitScreen");
             }
         } else {
-            Logger.e("screen_change_used", "switchSplitScreen failed: service not connect or mBinder is null!");
+            Logger.e(TAG, "switchSplitScreen failed: service not connect or mBinder is null!");
         }
     }
 
@@ -226,16 +194,16 @@ public class SplitScreenManager {
      * PatacSESConstants.EXIT_TYPE_OUT = 2;
      * @param extra
      */
-    public void replaceISplitScreen(String caller , String replacePackage, int type, String extra) {
-        Logger.i("screen_change_used", "replaceISplitScreen");
+    private void replaceISplitScreen(String caller , String replacePackage, int type, String extra) {
+        Logger.i(TAG, "replaceISplitScreen");
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 mBinder.replaceISplitScreen(caller , replacePackage, type, extra);
-            } catch (RemoteException e) {
-                Logger.e("screen_change_used", "switchISplitScreen");
+            } catch (Exception e) {
+                Logger.e(TAG, "switchISplitScreen");
             }
         } else {
-            Logger.e("screen_change_used", "switchSplitScreen failed: service not connect or mBinder is null!");
+            Logger.e(TAG, "switchSplitScreen failed: service not connect or mBinder is null!");
         }
     }
 
@@ -245,13 +213,13 @@ public class SplitScreenManager {
      * 示例：左导航，右SR ， (navi, sr)
      * @return
      */
-    public String[] getSplitScreenStatus() {
+    private String[] getSplitScreenStatus() {
         if (!ConvertUtils.isNull(mBinder)) {
             try {
                 final String[] status = mBinder.getISplitScreenStatus();
                 return status;
-            } catch (RemoteException e) {
-                Logger.e("screen_change_used", "getSplitScreenStatus failed", e.getMessage());
+            } catch (Exception e) {
+                Logger.e(TAG, "getSplitScreenStatus failed", e.getMessage());
                 return null;
             }
         }

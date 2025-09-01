@@ -796,6 +796,15 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.layoutFragment.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        boolean windowFlag = intent.getBooleanExtra("windowFlag", false);
+        if (windowFlag) {
+            mViewModel.mainBTNVisibility.set(false);
+        }
+    }
+
     /**
      * 初始化导航广播接收器
      */

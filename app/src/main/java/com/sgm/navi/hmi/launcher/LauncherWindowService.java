@@ -12,22 +12,18 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.transition.ChangeBounds;
-import android.transition.TransitionManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
@@ -38,7 +34,9 @@ import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.constant.BuryConstant;
-import com.sgm.navi.hmi.navi.NaviGuidanceModel;
+import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
+import com.sgm.navi.service.define.navi.CrossImageEntity;
+import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.BuildConfig;
 import com.sgm.navi.hmi.databinding.FloatingWindowLayoutBinding;
@@ -73,7 +71,7 @@ import com.sgm.navi.vrbridge.MapStateManager;
  * Description: [在这里描述文件功能]
  */
 public class LauncherWindowService implements IGuidanceObserver, IMapPackageCallback, IEglScreenshotCallBack, CaptureScreenUtils.CaptureScreenCallBack, ComponentCallbacks,
-        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver {
+        NaviStatusCallback, ILayerPackageCallBack, FloatWindowReceiver.FloatWindowCallback, NetWorkUtils.NetworkObserver, ISceneCallback {
     private static final String TAG = "LauncherWindowService";
     private WindowManager mWindowManager;
     private View mView;
@@ -102,6 +100,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private boolean isConnected;
     private static boolean isInitialized = false;
     private int moveDistance;
+    private int mMoveStartDistance;
     private ValueAnimator widthAnimator;
 
     private LauncherWindowService() {
@@ -218,7 +217,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
     private NaviTmcInfo mLastTmcInfo;
     @Override
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo) {
-        Logger.d(TAG,"onUpdateTMCLightBar");
+        Logger.d(TAG, "onUpdateTMCLightBar");
         mLastTmcInfo = naviTmcInfo;
         if (!ConvertUtils.isNull(mBinding)) {
             mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
@@ -270,6 +269,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
         );
+
+        if (mBinding != null) {
+            mBinding.sceneNaviCrossImage.addSceneCallback(this);
+            Logger.d(TAG, "SceneCallback registered successfully");
+        }
+        mNextManeuverEntity = new NextManeuverEntity();
 
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         int top = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.launcher_position_top);
@@ -325,6 +330,20 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 mBinding.sceneNaviTbt.onNaviInfo(mNaviEtaInfo);
                 mBinding.sceneNaviEta.onNaviInfo(mNaviEtaInfo);
                 mBinding.sceneNaviTmc.onNaviInfo(mNaviEtaInfo);
+
+                if (mCrossImgIsOnShowing) {
+                    // 路口大图信息更新
+                    mBinding.sceneNaviTbt.onCrossImageInfo(mCrossImgIsOnShowing, crossImageEntity);
+                    // 防止获取路程首次计算错误
+                    if (mMoveStartDistance == 0) {
+                        mMoveStartDistance = etaInfo.getRemainDist();
+                    }
+                    int moveDistanceRoad = mMoveStartDistance - etaInfo.getRemainDist();
+                    Logger.d(TAG, "moveDistanceRoad = " + moveDistanceRoad + " mMoveStartDistance = " + mMoveStartDistance);
+                    mBinding.sceneNaviTbt.updateCrossProgress(moveDistanceRoad);
+                } else {
+                    mMoveStartDistance = etaInfo.getRemainDist();
+                }
             }
         });
     }
@@ -430,12 +449,13 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
                 if (!isVisible) {
                     mBinding.ivCross.setVisibility(View.GONE);
                 }
+                mBinding.sceneNaviCrossImage.setVisibility(isVisible ? View.VISIBLE : View.GONE);
 
                 // 大图显示后隐藏车道线和光柱图
-                if (isVisible && mBinding.sceneNaviLanes != null && mBinding.sceneNaviTmc != null) {
-                    mBinding.sceneNaviLanes.setVisibility(isVisible ? View.GONE : View.VISIBLE);
-                    mBinding.sceneNaviTmc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+                if (isVisible) {
+                    mBinding.sceneNaviLanes.setVisibility(View.GONE);
                 }
+                mBinding.sceneNaviTmc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
             });
         }
     }
@@ -483,8 +503,19 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         ThreadManager.getInstance().postUi(() -> {
             if (!ConvertUtils.isNull(mBinding) && !visible) {
                 mBinding.ivCross.setVisibility(View.GONE);
+                mBinding.sceneNaviTbt.onCrossImageInfo(false);
             }
         });
+    }
+
+    public CrossImageEntity crossImageEntity;
+    @Override
+    public void onCrossImageInfo(final boolean isShowImage, final CrossImageEntity naviImageInfo) {
+        Logger.d(TAG, "onCrossImageInfo .");
+        crossImageEntity = naviImageInfo;
+        if (mBinding != null) {
+            mBinding.sceneNaviCrossImage.onCrossImageInfo(isShowImage, naviImageInfo);
+        }
     }
 
     private void changeUiTypeOnNaviStatusChanged() {
@@ -499,10 +530,12 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (isNavigating && mLastTmcInfo != null) {
                 mBinding.sceneNaviTmc.setIsShowAutoAdd(false);
                 mBinding.sceneNaviTmc.onUpdateTMCLightBar(mLastTmcInfo);
-                Logger.d(TAG,"重新绘制光柱图最新数据");
+                Logger.d(TAG, "重新绘制光柱图最新数据");
             }
             // 3. 新增逻辑：如果路口大图正在显示，强制隐藏车道线（首次进入时也生效）
-            mBinding.sceneNaviLanes.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
+            if (mCrossImgIsOnShowing){
+                mBinding.sceneNaviLanes.setVisibility(View.GONE);
+            }
             mBinding.sceneNaviTmc.setVisibility(mCrossImgIsOnShowing ? View.GONE : View.VISIBLE);
         });
     }
@@ -514,7 +547,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
             if (!ConvertUtils.isNull(mBinding) && !ConvertUtils.isNull(mView)) {
                 if (mCrossImgIsOnShowing) {
                     mBinding.sceneNaviLanes.setVisibility(View.GONE);
-                }else {
+                } else {
                     mBinding.sceneNaviLanes.setVisibility(isShowLane ? View.VISIBLE : View.GONE);
                 }
                 mBinding.sceneNaviLanes.onLaneInfo(isShowLane, laneInfo);
@@ -534,7 +567,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
 
     @Override
     public void onWindowSideChanged(boolean isOpenFloat) {
-        if (mBinding == null){
+        if (mBinding == null) {
             return;
         }
 
@@ -599,6 +632,32 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         isConnected = false;
         Logger.d(TAG, "onNetDisConnect: isConnected=" + isConnected);
         onNetStatusChange(isConnected);
+    }
+
+    private NextManeuverEntity mNextManeuverEntity;
+    @Override
+    public NextManeuverEntity getNextManeuverEntity() {
+        return mNextManeuverEntity;
+    }
+
+    public void updateNextStatus(boolean isVisible, boolean isOffLine) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextManeuverVisible(isVisible);
+            mNextManeuverEntity.setNextManeuverOffLine(isOffLine);
+        }
+    }
+
+    public void updateNextIcon(int resource, BitmapDrawable drawable) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextIconResource(resource);
+            mNextManeuverEntity.setNextIconDrawable(drawable);
+        }
+    }
+
+    public void updateNextText(String text) {
+        if (null != mNextManeuverEntity) {
+            mNextManeuverEntity.setNextText(text);
+        }
     }
 
     @Override

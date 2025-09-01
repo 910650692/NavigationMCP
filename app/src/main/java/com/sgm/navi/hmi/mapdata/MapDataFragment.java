@@ -62,6 +62,12 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mViewModel = null;
+    }
+
     /**
      * 初始化离线view
      */

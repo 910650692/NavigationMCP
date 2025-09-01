@@ -604,6 +604,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (mPoiInfoEntity == null || ConvertUtils.isEmpty(mPoiInfoEntity.getChildInfoList())) {
             return;
         }
+        mScreenViewModel.setChildIndex(index);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onMarkChildClickCallBack is: " , index);
         final List<ChildInfo> mChildList = mPoiInfoEntity.getChildInfoList();
         if (index < mChildList.size() && index >= 0) {
@@ -646,6 +647,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 });
             }
             mGrandChildSelectInfo = null;
+            if (mScreenViewModel != null) {
+                mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+            }
             for (int i = 0; i < mChildList.size(); i++) {
                 if (i == index) {
                     mChildList.get(i).setChecked(1);
@@ -1525,6 +1529,9 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                 }
                 mGrandChildSelectInfo = null;
+                if (mScreenViewModel != null) {
+                    mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+                }
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
@@ -1768,14 +1775,18 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                     mViewBinding.lySecondaryPoi.setVisibility(View.GONE);
                 }
                 mGrandChildSelectInfo = null;
+                if (mScreenViewModel != null) {
+                    mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+                }
                 refreshPoiView(mPoiType,mPoiInfoEntity,false);
             });
         } else {
+            mViewBinding.scenePoiDetailsNormalView.poiChildList.setVisibility(GONE);
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
         }
         if (mPoiType == AutoMapConstant.PoiType.POI_DELETE_AROUND) {
             //删除途径点POI详情页面，不需要展示子点列表
-            mViewBinding.scenePoiDetailsScenicSpotView.poiScenicSpotChildList.setVisibility(View.GONE);
+            mViewBinding.scenePoiDetailsNormalView.poiChildList.setVisibility(View.GONE);
             mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setVisibility(GONE);
         }
         mViewBinding.scenePoiDetailsNormalView.poiChildExpandCollapse.setOnClickListener(v -> {

@@ -116,6 +116,17 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
+                        <!--路口大图区域 -->
+                        <com.sgm.navi.scene.ui.navi.SceneNaviCrossImageView
+                            android:id="@+id/scene_navi_cross_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:elevation="@dimen/dp_10"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
+                            app:layout_constraintTop_toBottomOf="@id/scene_navi_tbt"
+                            tools:visibility="gone" />
+
                         <com.sgm.navi.ui.view.SkinImageView
                             android:id="@+id/iv_cross"
                             android:layout_width="match_parent"
@@ -140,6 +151,7 @@
                             android:layout_height="wrap_content"
                             android:focusable="false"
                             android:paddingHorizontal="@dimen/dp_30"
+                            android:paddingBottom="@dimen/dp_30"
                             app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                             app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
 
@@ -150,6 +162,7 @@
                             android:layout_gravity="center"
                             android:focusable="false"
                             android:visibility="gone"
+                            android:paddingBottom="@dimen/dp_34"
                             app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                             app:layout_constraintTop_toBottomOf="@id/scene_navi_tmc" />
 

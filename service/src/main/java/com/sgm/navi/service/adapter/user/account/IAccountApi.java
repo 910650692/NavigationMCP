@@ -13,6 +13,11 @@ public interface IAccountApi {
     void initAccountService();
 
     /**
+     * 从SDK获取用户信息到本地
+     */
+    void refreshUserInfo();
+
+    /**
      * 注册回调
      * @param key 回调key
      * @param callBack 回调

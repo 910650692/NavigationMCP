@@ -614,8 +614,8 @@ public final class SearchResultMapper {
                 .setMChildType(childType)
                 .setStationList(gasStationInfos)
                 .setSort_distance(ConvertUtils.str2Int(searchPoiInfo.basicInfo.distance))
-                .setSort_rate(ConvertUtils.str2Int(searchPoiInfo.rankInfo.rankNo))
-                .setSort_price(ConvertUtils.str2Int(searchPoiInfo.hotelInfo.priceLowest))
+                .setSort_rate(ConvertUtils.str2Int(searchPoiInfo.basicInfo.rating))
+                .setSort_price(searchPoiInfo.basicInfo.averageCost)
                 .setMPoiAoiBounds(poiAoiBounds)
                 .setMRoadPolygonBounds(roadBounds)
                 .setChargeInfoList(chargeInfos)
@@ -726,7 +726,7 @@ public final class SearchResultMapper {
         GeoPoint geoPoint = new GeoPoint(poiItem.point.lon, poiItem.point.lat);
         poiInfoEntity.setPointTypeCode(poiItem.typecode)
                 .setDistance(formatDistanceArrayInternal(poiItem.distance))
-                .setSort_price(poiItem.distance)
+                .setSort_distance(poiItem.distance)
                 .setPoint(geoPoint)
                 .setAdCode(poiItem.nAdCode)
                 .setPhone(poiItem.tel)
@@ -752,7 +752,7 @@ public final class SearchResultMapper {
         final PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
         poiInfoEntity.setPointTypeCode(poiItem.typecode)
                 .setDistance(formatDistanceArrayInternal(poiItem.distance))
-                .setSort_price(poiItem.distance)
+                .setSort_distance(poiItem.distance)
                 .setPoint(poiPoint)
                 .setAdCode(poiItem.nAdCode)
                 .setPhone(poiItem.tel)

@@ -104,10 +104,13 @@ public class AroundSearchFragment extends BaseFragment<FragmentAroundBinding, Ar
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mViewModel = null;
     }
 
     @Override
     protected void onBackPressed() {
-        mBinding.sceneQuickSearchView.closeSearchFragment();
+        if (mBinding != null) {
+            mBinding.sceneQuickSearchView.closeSearchFragment();
+        }
     }
 }

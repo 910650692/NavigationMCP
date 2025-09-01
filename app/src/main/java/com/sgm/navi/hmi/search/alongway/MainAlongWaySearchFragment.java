@@ -69,6 +69,8 @@ public class MainAlongWaySearchFragment extends BaseFragment<MainFragmentAlongWa
 
     @Override
     protected void onBackPressed() {
-       mBinding.searchView.closeSearchFragment();
+        if (mBinding != null) {
+            mBinding.searchView.closeSearchFragment();
+        }
     }
 }

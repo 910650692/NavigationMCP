@@ -105,13 +105,13 @@ public class SpeedMonitor implements ISpeedCallback {
         if (passedTime >= TIME_THRESHOLD) {
             Logger.i(TAG, "onTicketEnd tickNum: ", passedTime);
             cancelTicket();
-            if (callBack != null) {
-                ThreadManager.getInstance().postUi(() -> {
+            ThreadManager.getInstance().postUi(() -> {
+                if (callBack != null) {
                     callBack.startCruise();
-                });
-            } else {
-                Logger.w(TAG, "回调为空，无法开始巡航！");
-            }
+                } else {
+                    Logger.w(TAG, "回调为空，无法开始巡航！");
+                }
+            });
         }
     }
 

@@ -55,6 +55,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
      * @return 用户信息
      */
     public AccountProfileInfo getUserInfo() {
+        mAccountAdapter.refreshUserInfo();
         AccountProfileInfo info = new AccountProfileInfo();
         final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i("getUserInfo valueJson = " + valueJson);

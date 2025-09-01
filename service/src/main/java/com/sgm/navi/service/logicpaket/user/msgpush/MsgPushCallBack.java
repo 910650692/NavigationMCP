@@ -20,6 +20,9 @@ public interface MsgPushCallBack {
     default void notifyPlanPrefPushMessage(ArrayList<Integer> planPrefs) {
     }
 
+    default void notifyDestinationPushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+    }
+
     default void notifyQuitNaviPushMessage() {
     }
 

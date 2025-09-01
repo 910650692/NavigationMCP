@@ -6044,7 +6044,7 @@
     "point_search_child_in": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_in_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_in",
           "bg_marker_id": "search_child_all.xml"
@@ -6250,7 +6250,7 @@
     "point_search_child_charge_station": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_charge_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child",
           "bg_marker_id": "search_child_charge_station.xml"
@@ -6351,7 +6351,7 @@
     "point_search_child_ticket": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_ticket_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_ticket",
           "bg_marker_id": "search_child_all.xml"
@@ -7059,7 +7059,7 @@
     "point_search_child_arrive": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_arrive_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_arrive",
           "bg_marker_id": "search_child_all.xml"
@@ -9156,7 +9156,7 @@
     "point_search_child_fly": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_fly_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_fly",
           "bg_marker_id": "search_child_all.xml"
@@ -10328,7 +10328,7 @@
     "point_search_child_airport": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_airport_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_airport",
           "bg_marker_id": "search_child_all.xml"
@@ -10640,7 +10640,7 @@
     "point_search_child_park": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_park_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_park",
           "bg_marker_id": "search_child_all.xml"
@@ -11317,7 +11317,7 @@
     "point_search_child_more": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_more_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_more",
           "bg_marker_id": "search_child_all.xml"
@@ -12092,7 +12092,7 @@
     "point_search_child_door": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_door_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_door",
           "bg_marker_id": "search_child_all.xml"
@@ -12836,7 +12836,7 @@
     "point_search_child_exist": {
       "point_layer_item_style": {
         "focus_style": {
-          "poi_marker_id": "global_image_b_poi_red_hl_day_night",
+          "poi_marker_id": "global_image_child_exist_himax_day_night",
           "poi_marker_info": "marker_info_point_center_up",
           "bg_marker_info": "marker_info_search_child_exist",
           "bg_marker_id": "search_child_all.xml"

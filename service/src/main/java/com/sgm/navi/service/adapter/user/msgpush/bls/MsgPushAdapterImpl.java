@@ -31,6 +31,7 @@ import com.autonavi.gbl.user.msgpush.model.MobileLinkPushMsg;
 import com.autonavi.gbl.user.msgpush.model.MobileLinkRequest;
 import com.autonavi.gbl.user.msgpush.model.MobileRouteParam;
 import com.autonavi.gbl.user.msgpush.model.MobileRouteViaPoint;
+import com.autonavi.gbl.user.msgpush.model.MsgPoiInfo;
 import com.autonavi.gbl.user.msgpush.model.MsgPushInitParam;
 import com.autonavi.gbl.user.msgpush.model.MsgPushItem;
 import com.autonavi.gbl.user.msgpush.model.PlanPrefPushMsg;
@@ -159,6 +160,38 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
         return msgPushInfo;
     }
 
+    /**
+     * 获取推送消息继承的基类的所有数据
+     * @param msgPushItem
+     * @return MsgPushInfo
+     */
+    public MsgPushInfo getMsgPushInfoFromDestinationPushMsg(final DestinationPushMsg msgPushItem) {
+
+        final MsgPushInfo msgPushInfo = new MsgPushInfo();
+        msgPushInfo.setMessageId(msgPushItem.messageId);
+        msgPushInfo.setMessageType(msgPushItem.messageType);
+        msgPushInfo.setStatus(msgPushItem.status);
+        msgPushInfo.setId(msgPushItem.id);
+        msgPushInfo.setBizType(msgPushItem.bizType);
+        msgPushInfo.setClientId(msgPushItem.clientId);
+        msgPushInfo.setSourceId(msgPushItem.sourceId);
+        msgPushInfo.setUserId(msgPushItem.userId);
+        msgPushInfo.setCreateTime(msgPushItem.createTime);
+        msgPushInfo.setExpiration(msgPushItem.expiration);
+        msgPushInfo.setSendTime(msgPushItem.sendTime);
+        msgPushInfo.setText(msgPushItem.text);
+        msgPushInfo.setTitle(msgPushItem.title);
+        msgPushInfo.setVersion(msgPushItem.version);
+        msgPushInfo.setAccessKey(msgPushItem.accessKey);
+        msgPushInfo.setDeviceId(msgPushItem.deviceId);
+        msgPushInfo.setSessionId(msgPushItem.sessionId);
+        msgPushInfo.setReaded(msgPushItem.isReaded);
+        msgPushInfo.setSendType(msgPushItem.sendType);
+        msgPushInfo.setTraceId(msgPushItem.traceId);
+        msgPushInfo.setLinkMode(msgPushItem.linkMode);
+
+        return msgPushInfo;
+    }
 
     /**
      * 获取本地历史运营推送消息
@@ -632,7 +665,12 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             return;
         }
         if (Logger.openLog) {
-            Logger.d(TAG, "notifyMessage: PlanPrefPushMsg ", msg.content.planPrefs.size());
+            if (msg != null && msg.content != null && msg.content.planPrefs != null) {
+                Logger.d(TAG, "notifyMessage: PlanPrefPushMsg ", msg.content.planPrefs.size());
+                if (msg.content.planPrefs.size() > 0) {
+                    Logger.d(TAG, "notifyMessage: PlanPrefPushMsg planPref = ", msg.content.planPrefs.get(0));
+                }
+            }
         }
         ArrayList<Integer> planPrefs = msg.content.planPrefs;
         if (planPrefs != null && planPrefs.size() > 0) {
@@ -652,8 +690,63 @@ public class MsgPushAdapterImpl implements IMsgPushApi, IMsgPushServiceObserver,
             Logger.e(TAG, "notifyMessage: DestinationPushMsg is null");
             return;
         }
+
+        final RouteMsgPushInfo routeMsgPushInfo = new RouteMsgPushInfo();
+        routeMsgPushInfo.setMSendType(1);
+        final PoiInfoEntity endPoiInfoEntity = new PoiInfoEntity();
+        endPoiInfoEntity.setName(msg.content.endPoi.name);
+        endPoiInfoEntity.setPid(msg.content.endPoi.poiId);
+        endPoiInfoEntity.setAddress(msg.content.endPoi.address);
+        endPoiInfoEntity.setMPoint(new GeoPoint(msg.content.endPoi.poiLoc.lon, msg.content.endPoi.poiLoc.lat));
+
+        routeMsgPushInfo.setMPoiInfoEntity(endPoiInfoEntity);
+
+        final RoutePoint endPoint = new RoutePoint();
+        endPoint.setMIsDraw(true);
+        endPoint.setMType(1);
+        endPoint.setMPathId(0);
+        final GeoPoint endGeoPoint = new GeoPoint();
+        endGeoPoint.setLon(msg.content.endPoi.poiLoc.lon);
+        endGeoPoint.setLat(msg.content.endPoi.poiLoc.lat);
+        endGeoPoint.setZ(0);
+        endPoint.setMPos(endGeoPoint);
+        routeMsgPushInfo.setMEndPoint(endPoint);
+
+        final ArrayList<RoutePoint> viaPoints = new ArrayList<>();
+        final ArrayList<PoiInfoEntity> viaPoiInfoEntitys = new ArrayList<>();
+        if (msg.content.midPois != null && msg.content.midPois.size() > 0) {
+            for (MsgPoiInfo msgPoiInfo : msg.content.midPois) {
+                final RoutePoint viaPoint = new RoutePoint();
+                viaPoint.setMIsDraw(true);
+                viaPoint.setMType(2);
+                viaPoint.setMPathId(0);
+                final GeoPoint viaGeoPoint = new GeoPoint();
+                viaGeoPoint.setLon(msgPoiInfo.poiLoc.lon);
+                viaGeoPoint.setLat(msgPoiInfo.poiLoc.lat);
+                viaGeoPoint.setZ(0);
+                viaPoint.setMPos(viaGeoPoint);
+                viaPoints.add(viaPoint);
+
+                final PoiInfoEntity viaPoiInfoEntity = new PoiInfoEntity();
+                viaPoiInfoEntity.setName(msgPoiInfo.name);
+                viaPoiInfoEntity.setPid(msgPoiInfo.poiId);
+                viaPoiInfoEntity.setPoint(viaGeoPoint);
+                viaPoiInfoEntitys.add(viaPoiInfoEntity);
+            }
+        }
+        routeMsgPushInfo.setMViaPoints(viaPoints);
+        routeMsgPushInfo.setMViaPoiInfoEntity(viaPoiInfoEntitys);
+
+//        for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+//            callBack.notifyAimRoutePushMessage(routeMsgPushInfo);
+//        }
+
         if (Logger.openLog) {
             Logger.d(TAG, "notifyMessage: DestinationPushMsg ", msg.content.endPoi.name);
+            MsgPushInfo aimPoiPushMsgInfo = getMsgPushInfoFromDestinationPushMsg(msg);
+            for (MsgPushAdapterCallback callBack : mCallBacks.values()) {
+                callBack.notifyDestinationPushMessage(routeMsgPushInfo);
+            }
         }
     }
 

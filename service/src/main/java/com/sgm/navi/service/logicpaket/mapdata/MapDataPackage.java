@@ -41,6 +41,12 @@ public final class MapDataPackage implements MapDataAdapterCallBack {
         }
     }
 
+    public void unRegisterCallBack(final String key, final MapDataCallBack callback) {
+        if (callback != null && mCallBacks.contains(callback)) {
+            mCallBacks.remove(key);
+        }
+    }
+
     /**
      * 获取全部省份+城市数据
      * @return 返回离全部线数据列表

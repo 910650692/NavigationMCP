@@ -760,7 +760,7 @@ public class FavoriteFragment extends BaseFragment<FragmentFavoriteBinding, Favo
             }
 
             if (scrollY < mThreeScreenHeight && visibility == View.VISIBLE) {
-                mBinding.layoutTop.setVisibility(View.INVISIBLE);
+                mBinding.layoutTop.setVisibility(View.GONE);
             }
         }
     };

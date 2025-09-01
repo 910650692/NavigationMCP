@@ -166,6 +166,8 @@ public class HomeCompanyFragment extends BaseFragment<FragmentHomeCompanyBinding
 
     @Override
     protected void onBackPressed() {
-        mBinding.homeCompanyView.onBackPressed();
+        if (mBinding != null) {
+            mBinding.homeCompanyView.onBackPressed();
+        }
     }
 }

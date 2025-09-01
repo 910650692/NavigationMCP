@@ -57,7 +57,7 @@ public class SceneCollectViewImpl extends BaseSceneModel<SceneCollectView> imple
             return new ArrayList<>();
         }
         // 过滤掉无详细地址的收藏info
-        list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
+//        list.removeIf(poiInfo -> ConvertUtils.isEmpty(poiInfo.getAddress()));
         return list;
     }
 

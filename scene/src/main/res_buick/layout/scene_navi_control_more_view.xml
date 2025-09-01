@@ -13,6 +13,9 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
+        android:id="@+id/scl_root"
+        android:clickable="true"
+        clickCommand="@{naviControl.backControl}"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_29"
@@ -21,8 +24,7 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true">
+            android:layout_height="wrap_content">
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/sv_tools"

@@ -199,7 +199,7 @@ public interface IRouteResultObserver {
     /**
      * 静默算路失败
      */
-    default void onReRouteError() {
+    default void onReRouteError(int routeType, String errorMsg) {
 
     }
 

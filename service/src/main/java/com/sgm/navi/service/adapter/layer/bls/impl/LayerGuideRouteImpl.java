@@ -244,6 +244,11 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
             right = instance.getDimensionPixelSize(R.dimen.margin_screen_right_one_to_three);
             top = instance.getDimensionPixelSize(R.dimen.margin_screen_top_one_to_three);
             bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom_one_to_three);
+        } else if (getMapType() == MapType.REAR_SCREEN_MAP) {
+            left = instance.getDimensionPixelSize(R.dimen.margin_screen_left_rear_screen);
+            right = instance.getDimensionPixelSize(R.dimen.margin_screen_right_rear_screen);
+            top = instance.getDimensionPixelSize(R.dimen.margin_screen_top_rear_screen);
+            bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom_rear_screen);
         } else {
             if (isNaving) {
                 left = instance.getDimensionPixelSize(R.dimen.margin_screen_left);

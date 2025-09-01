@@ -528,6 +528,11 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     }
 
     @Override
+    public void notifyDestinationPushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+
+    }
+
+    @Override
     public void notifyQuitNaviPushMessage() {
         Logger.i(TAG, "notifyQuitNaviPushMessage");
         // 因为退出后台页面可能会被kill，所以如果页面在通过页面关闭导航，如果页面不存在了直接关闭导航
@@ -1142,8 +1147,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void setRoadCrossRect(final MapType surfaceViewId, final Rect rect) {
         Logger.d(TAG, "setRoadCrossRect", rect.toShortString());
-        mLayerAdapter.updateRoadCrossRect(surfaceViewId, rect);
-        mapPackage.updateScreenshotRect(surfaceViewId, rect);
+        LayerAdapter.getInstance().updateRoadCrossRect(surfaceViewId, rect);
+        MapPackage.getInstance().updateScreenshotRect(surfaceViewId, rect);
         hasSetCrossRect = true;
     }
 

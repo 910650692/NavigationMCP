@@ -206,12 +206,12 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/common_title_color"
                 android:textSize="@dimen/sp_24"
-                android:text="@{viewModel.isPreview ? @string/navi_overview_out : @string/navi_overview_switch}"
+                android:text="@{viewModel.isPreview ? @string/navi_overview_out_rear_screen : @string/navi_overview_switch_rear_screen}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/siv_navi_overview_switch"
-                tools:text="看全览"/>
+                tools:text="查看全览"/>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

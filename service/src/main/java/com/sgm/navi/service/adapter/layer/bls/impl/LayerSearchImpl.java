@@ -114,6 +114,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiChildPoint, String.valueOf(index), true);
                     Logger.d(TAG, "setSelect-BizSearchTypePoiChildPoint:" + result);
+                    getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiChildPoint);
                 }
                 case SEARCH_PARENT_PARK -> {
                     int result = getLayerSearchControl().setFocus(

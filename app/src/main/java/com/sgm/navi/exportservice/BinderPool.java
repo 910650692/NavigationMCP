@@ -5,7 +5,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
@@ -18,8 +17,8 @@ import com.sgm.navi.mapservice.base.BinderType;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
-import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.greendao.CommonManager;
+import com.sgm.navi.service.logicpaket.agreement.AgreementPackage;
 
 import java.util.HashMap;
 
@@ -56,9 +55,9 @@ public final class BinderPool extends IBinderPool.Stub {
         Logger.d(TAG, pkgName + "startInitEngine");
         CommonManager commonManager = CommonManager.getInstance();
         commonManager.init();
-        final boolean isFirstLauncher = TextUtils.isEmpty(
-                commonManager.getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH));
-        if (isFirstLauncher) {
+        final boolean isAllowAutoAgreement = AgreementPackage.getInstance().isAllowAutoAgreement();
+        if (!isAllowAutoAgreement) {
+            Logger.e(TAG, "首次启动，高德协议未同意，不可初始化");
             return;
         }
         if (null != AppCache.getInstance().getMContext()) {

@@ -23,6 +23,7 @@ import com.sgm.navi.service.define.signal.RoadConditionGroup;
 import com.sgm.navi.service.define.signal.SdNavigationStatusGroup;
 import com.sgm.navi.service.define.signal.SignalConst;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,6 +51,7 @@ public class SignalAdapterImpl implements SignalApi {
     private int mPredictedFuelSavingPer100km = -1;
     private int mTotalFuelSaving = -1;
     private float mMeterSpeed = 0;
+    private int mBatteryIndicatorStatus = -1;
 
     public SignalAdapterImpl() {
     }
@@ -349,6 +351,13 @@ public class SignalAdapterImpl implements SignalApi {
             initHighVoltageBatteryPropulsionRange();
             initRangeRemaining();
             try {
+                registerIND(238, 66, value -> { // 低电量指示
+                    Logger.d(TAG, "onBatteryIndicatorStatusChange", value);
+                    mBatteryIndicatorStatus = value;
+                    for (SignalAdapterCallback callback : mCallbacks) {
+                        callback.onBatteryIndicatorStatusChange(value == 1);
+                    }
+                });
                 registerDYN(190, 1, value -> { // 仪表车速
                     float speed = (float) value / 1024;
                     mMeterSpeed = speed;
@@ -509,25 +518,6 @@ public class SignalAdapterImpl implements SignalApi {
                 public void onErrorEvent(int i, int i1) {
                 }
             }, PatacProperty.TOTAL_FUEL_SAVING, 0);
-
-            mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
-                @Override
-                public void onChangeEvent(CarPropertyValue carPropertyValue) {
-                    if (carPropertyValue == null) {
-                        Logger.i(TAG, "HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST", "carPropertyValue == null");
-                        return;
-                    }
-                    Integer value = (Integer) carPropertyValue.getValue();
-                    Logger.d(TAG, "HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST", value);
-                    for (SignalAdapterCallback callback : mCallbacks) {
-                        callback.onBatteryIndicatorStatusChange(value == 2 || value == 3 || value == 4);
-                    }
-                }
-
-                @Override
-                public void onErrorEvent(int i, int i1) {
-                }
-            }, VendorProperty.HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST, 0);
         } else {
             Logger.i(TAG, "mPropertyManager initialized");
         }
@@ -582,6 +572,33 @@ public class SignalAdapterImpl implements SignalApi {
             }
         }, VendorProperty.ODI_DYNDATA, 0);
         mPropertyManager.setProperty(Integer[].class, VendorProperty.ODI_SUBSCRIBE, VehicleArea.GLOBAL, new Integer[]{var1, var2});
+    }
+
+    private void registerIND(int var1, int var2, DynCallback callback) {
+        Logger.i(TAG, "registerIND: ", var1, var2);
+        mPropertyManager.registerCallback(new CarPropertyManager.CarPropertyEventCallback() {
+            @Override
+            public void onChangeEvent(CarPropertyValue carPropertyValue) {
+                if (carPropertyValue == null) {
+                    Logger.i(TAG, "carPropertyValue == null");
+                    return;
+                }
+                if (!(carPropertyValue.getValue() instanceof Integer[])) {
+                    Logger.i(TAG, "value not Integer[]");
+                    return;
+                }
+                Integer[] value = (Integer[]) carPropertyValue.getValue();
+                if (value.length >= var2 + 1 && value[0] == var1) {
+                    callback.onDynChanged(value[var2]);
+                }
+            }
+
+            @Override
+            public void onErrorEvent(int i, int i1) {
+                Logger.i(TAG, "onErrorEvent: " + i + ", " + i1);
+            }
+        }, VendorProperty.ODI_INDICATIONS, 0);
+        mPropertyManager.setProperty(Integer.class, VendorProperty.ODI_INDICATION_QUERY, VehicleArea.GLOBAL, var1);
     }
 
     interface DynCallback {
@@ -1016,17 +1033,8 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public boolean getBatteryIndicatorStatus() {
-        final Integer result;
-        try {
-            CarPropertyValue<Integer> property = mPropertyManager.getProperty(Integer.class, VendorProperty.HIGH_VOLTAGE_BATTERY_OUT_OF_ENERGY_INDICATION_REQUEST
-                    , VehicleArea.GLOBAL);
-            result = property.getValue();
-        } catch (Exception e) {
-            Logger.e(TAG, "getBatteryIndicatorStatus: ", e.getMessage());
-            return false;
-        }
-        Logger.d(TAG, "getBatteryIndicatorStatus: " + result);
-        return result == 2 || result == 3 || result == 4;
+        Logger.d(TAG, mBatteryIndicatorStatus);
+        return mBatteryIndicatorStatus == 1;
     }
 
     /**

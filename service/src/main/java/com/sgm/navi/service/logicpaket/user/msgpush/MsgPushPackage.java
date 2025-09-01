@@ -127,6 +127,13 @@ public class MsgPushPackage implements MsgPushAdapterCallback{
     }
 
     @Override
+    public void notifyDestinationPushMessage(RouteMsgPushInfo routeMsgPushInfo) {
+        for (MsgPushCallBack callBack : callBacks.values()) {
+            callBack.notifyDestinationPushMessage(routeMsgPushInfo);
+        }
+    }
+
+    @Override
     public void notifyQuitNaviPushMessage() {
         for (MsgPushCallBack callBack : callBacks.values()) {
             callBack.notifyQuitNaviPushMessage();

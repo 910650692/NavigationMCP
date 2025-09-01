@@ -44,7 +44,7 @@ public class ConnectorInfoItem implements Parcelable {
     @SerializedName("idpUserId")
     private String mIdpUserId;
     @SerializedName("preFlag")
-    private Integer mPreFlag;
+    private int mPreFlag;
 
     protected ConnectorInfoItem(Parcel in) {
         mConnectorId = in.readString();
@@ -78,7 +78,7 @@ public class ConnectorInfoItem implements Parcelable {
         dest.writeInt(getmLockStatus());
         dest.writeString(mParkNo);
         dest.writeString(mIdpUserId);
-        dest.writeInt(mPreFlag);
+        dest.writeInt(getmPreFlag());
     }
 
 
@@ -240,7 +240,10 @@ public class ConnectorInfoItem implements Parcelable {
         this.mIdpUserId = mIdpUserId;
     }
 
-    public Integer getmPreFlag() {
+    public int getmPreFlag() {
+        if(ConvertUtils.isNull(mPreFlag)){
+            return 0;
+        }
         return mPreFlag;
     }
 

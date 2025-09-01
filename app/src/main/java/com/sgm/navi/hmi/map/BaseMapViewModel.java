@@ -26,7 +26,6 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
-import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
@@ -55,14 +54,12 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.AutoMapConstant.PoiType;
-import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.aos.RestrictedArea;
 import com.sgm.navi.service.define.aos.RestrictedAreaDetail;
 import com.sgm.navi.service.define.aos.TrafficRestrictResponseParam;
 import com.sgm.navi.service.define.bean.GeoPoint;
-import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
 import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.IBaseScreenMapView;
@@ -82,13 +79,11 @@ import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.logicpaket.map.MapPackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
-import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.logicpaket.user.behavior.BehaviorPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.action.Action;
@@ -103,7 +98,6 @@ import com.sgm.navi.vrbridge.IVrBridgeConstant;
 
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Description TODO
@@ -113,7 +107,6 @@ import java.util.concurrent.TimeUnit;
 public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private static final String TAG = "BaseMapViewModel";
-    private boolean mFirstLaunch = false;
     private boolean mInitSdkSuccess = false;
 
     public ObservableBoolean startIconVisibility;
@@ -225,7 +218,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             return;
         }
         checkAgreementRights();
-        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && !mModel.isFirstLauncher()) {
+        if (mInitSdkSuccess && mModel.isAllowSGMAgreement() && mModel.isAllowAutoAgreement()) {
             mModel.checkAuthorizationExpired();
         }
     }
@@ -254,17 +247,12 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void checkPrivacyRights() {
-        mFirstLaunch = mModel.isFirstLauncher();
-        Logger.e(TAG, "checkPrivacyRights: ", mFirstLaunch);
-        if (mFirstLaunch) {
+        if (!mModel.isAllowAutoAgreement()) {
+            Logger.e(TAG, "checkAutoAgreement");
             popAgreementDialog();
         } else {
             mModel.checkPermission();
         }
-    }
-
-    public boolean judgeAutoProtocol() {
-        return mModel.judgeAutoProtocol();
     }
 
     public void startTime() {
@@ -291,10 +279,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         reminderDialog = new ReminderDialog(mView, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
-                Logger.d(TAG, "ReminderDialog", "popAgreementDialog user commit");
+                Logger.d(TAG, "ReminderDialog", " popAgreementDialog user commit");
                 FloatViewManager.getInstance().mRemindDialogShow = false;
                 setCurrentProtectState(AutoMapConstant.ProtectState.NONE);
-                mModel.updateFirstLauncherFlag();
+                mModel.allowAutoAgreement(true);
                 mModel.checkPermission();
             }
 
@@ -427,8 +415,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 mIsContinueNaviNotified.set(true);
                 mModel.checkContinueNavi();
             }
-            mFirstLaunch = mModel.isFirstLauncher();
-            if (mModel.isAllowSGMAgreement() && !mFirstLaunch) {
+            if (mModel.isAllowSGMAgreement() && mModel.isAllowAutoAgreement()) {
                 mModel.checkAuthorizationExpired();
             }
             bottomNaviVisibility.set(judgedBottomNaviVisibility());
@@ -1666,31 +1653,13 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         }
     }
 
-    public void exitSelf() {
-        final String restartFlag = CommonManager.getInstance().getValueByKey(UserDataCode.SETTING_FIRST_LAUNCH);
-        final boolean closeDelay = NaviStatusPackage.getInstance().isGuidanceActive();
-        final boolean naviDesk = FloatViewManager.getInstance().isNaviDeskBg();
-        Logger.e(MapDefaultFinalTag.NAVI_EXIT, "onUpdateSetting: restartFlag = ", restartFlag, " closeDelay = ", closeDelay, "naviDesk", naviDesk);
-        if (closeDelay && !ConvertUtils.isEmpty(restartFlag)) {
-            return;
+    public void handlePrivacyCancel() {
+        if (!mModel.isAllowAutoAgreement()) {
+            //点击重启的情况
+            closeAllFragment();
         }
-        if (ConvertUtils.isEmpty(restartFlag) || naviDesk) {
-            if (mModel.isAllowSGMAgreement()) {
-                //如果未同意外部大协议，restartFlag也是空的，此时不能走重启逻辑
-                ThreadManager.getInstance().asyncDelay(() -> {
-                    Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 open navi");
-                    ProcessManager.restartProcess(mApplication);
-                }, 800, TimeUnit.MILLISECONDS);
-            }
-        }
-        //closeAllFragment();
-        moveToBack();
-        ThreadManager.getInstance().asyncDelay(() -> {
-            Logger.e(MapDefaultFinalTag.NAVI_EXIT, "地图进程重启 finish mapActivity");
-            if (mView != null) {
-                mView.finish();
-            }
-        }, 400, TimeUnit.MILLISECONDS);
+        //todo暂时定为直接检查权限，后续补齐ue交互漏洞
+        checkAgreementRights();
     }
 
     public void chargePreTipDialog(String status) {

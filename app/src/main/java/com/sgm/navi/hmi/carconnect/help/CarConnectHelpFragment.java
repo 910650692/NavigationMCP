@@ -55,7 +55,7 @@ public class CarConnectHelpFragment extends BaseFragment<FragmentCarConnectHelpB
             if (tabView instanceof SkinLinearLayout) {
                 tabView.setSelected(true);
                 ((TextView) tabView.findViewById(R.id.tabText)).setTextColor(
-                        ResourceUtils.Companion.getInstance().getColor(R.color.setting_bg_tab_text_select));
+                        ResourceUtils.Companion.getInstance().getColor(R.color.black));
             }
             mViewModel.setSelectPosition(tab.getPosition());
         }

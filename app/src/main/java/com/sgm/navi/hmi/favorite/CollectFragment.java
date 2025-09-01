@@ -131,6 +131,8 @@ public class CollectFragment extends BaseFragment<FragmentCollectBinding, Collec
 
     @Override
     protected void onBackPressed() {
-        mBinding.collectView.onBackPressed();
+        if (mBinding != null) {
+            mBinding.collectView.onBackPressed();
+        }
     }
 }

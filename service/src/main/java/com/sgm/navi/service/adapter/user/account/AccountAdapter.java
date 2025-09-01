@@ -25,6 +25,13 @@ public final class AccountAdapter {
     }
 
     /**
+     * 从SDK获取用户信息到本地
+     */
+    public void refreshUserInfo() {
+        mAccountApi.refreshUserInfo();
+    }
+
+    /**
      * 获取手机验证码
      * @param mobileNum 手机号
      * @return 错误码 0：成功 其他：失败

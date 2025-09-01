@@ -344,15 +344,29 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     /**
-     * 获取收藏点信息
+     * 从家/公司/收藏点列表中获取收藏点信息
      *
-     * @param history
+     * @param history 历史记录数据
      */
     private PoiInfoEntity getFavoriteInfo(History history) {
         List<PoiInfoEntity> list = mBehaviorPackage.getFavoritePoiData();
-        return list.stream()
+        PoiInfoEntity poiInfo;
+        poiInfo = list.stream()
                 .filter(item -> item.getPid().equals(history.getMPoiId()))
                 .findFirst().orElse(null);
+        if (poiInfo == null) {
+            PoiInfoEntity homeFavoriteInfo = mBehaviorPackage.getHomeFavoriteInfo();
+            if (homeFavoriteInfo != null && ConvertUtils.equals(homeFavoriteInfo.getPid(), history.getMPoiId())) {
+                poiInfo = homeFavoriteInfo;
+            }
+        }
+        if (poiInfo == null) {
+            PoiInfoEntity companyFavoriteInfo = mBehaviorPackage.getCompanyFavoriteInfo();
+            if (companyFavoriteInfo != null && ConvertUtils.equals(companyFavoriteInfo.getPid(), history.getMPoiId())) {
+                poiInfo = companyFavoriteInfo;
+            }
+        }
+        return poiInfo;
     }
 
     /**

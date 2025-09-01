@@ -457,4 +457,7 @@
     <string name="yong_ji">拥挤</string>
     <string name="price_sdf">￥%s</string>
     <string name="navi_via_charge_empty">无法到达</string>
+
+    <string name="navi_overview_switch_rear_screen">查看全览</string>
+    <string name="navi_overview_out_rear_screen">路线跟随</string>
 </resources>

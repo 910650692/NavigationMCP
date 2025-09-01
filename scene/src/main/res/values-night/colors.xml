@@ -58,6 +58,7 @@
     <color name="main_map_limit_icon_stroke_color">#D2D3D7</color>
     <color name="main_map_limit_title_color">#FFFFFFFF</color>
     <color name="main_map_reduce">#D2D3D7</color>
+    <color name="main_map_scale_icon_color">#000000</color>
 
     <!--搜索相关-->
     <color name="search_tab_bg">#1E2027</color>

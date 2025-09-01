@@ -2,10 +2,10 @@
 <resources>
 
     <!--引导全览的时候距离屏幕两边的距离-->
-    <dimen name="margin_screen_left">@dimen/dp_1232</dimen>
-    <dimen name="margin_screen_right">@dimen/dp_532</dimen>
-    <dimen name="margin_screen_top">@dimen/dp_309</dimen>
-    <dimen name="margin_screen_bottom">@dimen/dp_309</dimen>
+    <dimen name="margin_screen_left">704dp</dimen>
+    <dimen name="margin_screen_right">303dp</dimen>
+    <dimen name="margin_screen_top">176dp</dimen>
+    <dimen name="margin_screen_bottom">176dp</dimen>
 
     <!--占位使用，分屏只有ND-->
     <dimen name="margin_screen_left_one_to_three">@dimen/dp_0</dimen>
@@ -13,11 +13,16 @@
     <dimen name="margin_screen_top_one_to_three">@dimen/dp_0</dimen>
     <dimen name="margin_screen_bottom_one_to_three">@dimen/dp_0</dimen>
 
+    <!--后排屏全览的时候距离屏幕两边的距离-->
+    <dimen name="margin_screen_left_rear_screen">@dimen/dp_898</dimen>
+    <dimen name="margin_screen_right_rear_screen">@dimen/dp_282</dimen>
+    <dimen name="margin_screen_top_rear_screen">@dimen/dp_164</dimen>
+    <dimen name="margin_screen_bottom_rear_screen">@dimen/dp_227</dimen>
 
     <!--算路全览的时候距离屏幕两边的距离-->
-    <dimen name="route_margin_screen_left">@dimen/dp_1232</dimen>
-    <dimen name="route_margin_screen_right">@dimen/dp_532</dimen>
-    <dimen name="route_margin_screen_top">@dimen/dp_309</dimen>
-    <dimen name="route_margin_screen_bottom">@dimen/dp_309</dimen>
+    <dimen name="route_margin_screen_left">704dp</dimen>
+    <dimen name="route_margin_screen_right">303dp</dimen>
+    <dimen name="route_margin_screen_top">176dp</dimen>
+    <dimen name="route_margin_screen_bottom">176dp</dimen>
 
 </resources>

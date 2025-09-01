@@ -156,6 +156,21 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         return false;
     }
 
+    /**
+     * 获取报错信息是否需要离线
+     *
+     * @param errorCode 错误码
+     * @return 返回是否
+     */
+    public boolean isOfflineError(final int errorCode) {
+        for (int i : mOfflineRouteErrorCode) {
+            if (errorCode == i) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Getter
     private Map<MapType, Integer> mSelectRouteIndex;
     private Map<MapType, Long> mRequestId;
@@ -532,7 +547,18 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
                 if (ConvertUtils.isEmpty(routeResultObserver)) {
                     continue;
                 }
-                routeResultObserver.onReRouteError();
+                String reRouteErrorMsg;
+                if (isOfflineError(errorCode)) {
+                    reRouteErrorMsg = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw_error);
+                } else {
+                    reRouteErrorMsg = ResourceUtils.Companion.getInstance().getString(R.string.route_type_yaw_offline_error);
+                }
+                if (requestRouteResult == null) {
+                    routeResultObserver.onReRouteError(RoutePriorityType.ROUTE_TYPE_COMMON, reRouteErrorMsg);
+                } else {
+                    routeResultObserver.onReRouteError(requestRouteResult.getMRouteType(), reRouteErrorMsg);
+                }
+
             }
         }
 
@@ -574,10 +600,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         if (ConvertUtils.isEmpty(mRequestRouteResults)) {
             return;
         }
-        if (ConvertUtils.isEmpty(mRequestRouteResults.get(mapTypeId))) {
+        RequestRouteResult requestRouteResult = mRequestRouteResults.get(mapTypeId);
+        if (requestRouteResult == null) {
             return;
         }
-        mRequestRouteResults.get(mapTypeId).setMRouteParams(routeParams);
+        requestRouteResult.setMRouteParams(routeParams);
         if (routeParams.size() >= NumberUtils.NUM_2) {
             routeParams.remove(routeParams.size() - NumberUtils.NUM_1);
             routeParams.remove(NumberUtils.NUM_0);
@@ -592,7 +619,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             if (ConvertUtils.isEmpty(routeResultObserver)) {
                 continue;
             }
-            routeResultObserver.onRouteAllRoutePoiInfo(mRequestRouteResults.get(mapTypeId));
+            routeResultObserver.onRouteAllRoutePoiInfo(requestRouteResult);
         }
     }
 
@@ -1438,6 +1465,11 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
         RequestRouteResult requestRouteResult = mRequestRouteResults.get(MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(requestRouteResult)) return;
         mLayerAdapter.drawRouteLine(mapTypeId, requestRouteResult);
+        //只有主屏需要绘制终点名称扎标
+        if (mapTypeId != MapType.MAIN_SCREEN_MAIN_MAP) {
+            Logger.d(TAG, "show RouteLine not main screen");
+            return;
+        }
         RouteParam endParam = getEndPoint(MapType.MAIN_SCREEN_MAIN_MAP);
         if (endParam == null) {
             Logger.e(TAG, "end param is null");

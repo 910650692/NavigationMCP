@@ -120,7 +120,6 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         if (mapTypeId == MapType.REAR_SCREEN_MAP) {
             LayerAdapter.getInstance().initLayer(MapType.REAR_SCREEN_MAP);
             Logger.d(TAG, "后排屏底图加载完成", mapTypeId.name());
-            gotoCarPosition();
             mLayerPackage.setCarPosition(mapTypeId, new GeoPoint(PositionPackage.getInstance().getLastCarLocation().getLongitude(),
                     PositionPackage.getInstance().getLastCarLocation().getLatitude(), 0,
                     PositionPackage.getInstance().getLastCarLocation().getCourse()));
@@ -129,7 +128,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
             mLayerPackage.initCarLogoByFlavor(mapTypeId,  BuildConfig.FLAVOR);
             mLayerPackage.setFollowMode(mapTypeId, true);
             switchMapMode();
-            mMapPackage.setZoomLevel(mapTypeId, MAP_ZOOM_LEVEL_DEFAULT);
+            gotoCarPosition();
             MapAdapter.getInstance().updateUiStyle(MapType.REAR_SCREEN_MAP, ThemeUtils.INSTANCE
                     .isNightModeEnabled(AppCache.getInstance().getMContext()) ? ThemeType.NIGHT : ThemeType.DAY);
             LayerAdapter.getInstance().setStartPointVisible(MapType.REAR_SCREEN_MAP,false);
@@ -359,6 +358,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
 //        mNaviPackage.setPreviewStatus(false);
         switchMapMode();
         mMapPackage.exitPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+        mMapPackage.goToCarPosition(getMapId());
         mLayerPackage.setFollowMode(getMapId(), true);
     }
 

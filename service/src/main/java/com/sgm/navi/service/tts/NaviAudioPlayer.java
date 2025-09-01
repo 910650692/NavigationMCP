@@ -291,7 +291,11 @@ public class NaviAudioPlayer {
         float vol = (float) 50;
         audioTrack.setVolume(vol / 100.0f);
         audioTrack.write(data, 0, data.length);
-        audioTrack.play();
+        int state = audioTrack.getPlayState();
+        Logger.d(TAG, state);
+        if (state != AudioTrack.PLAYSTATE_PLAYING) {
+            audioTrack.play();
+        }
     }
 
     public void releaseAudioTrack(int reqId) {

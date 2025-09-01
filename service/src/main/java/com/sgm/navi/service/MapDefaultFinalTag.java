@@ -142,5 +142,6 @@ public interface MapDefaultFinalTag {
     /*** NaviApp_Navi_Bury_Point **/
     String NAVI_BURY_POINT = DEFAULT_TAG + "_Navi" + "Bury_Point";
     String MAP_TOUCH = "MAP_TOUCH";
+    /*** NaviApp_Exit **/
     String NAVI_EXIT = DEFAULT_TAG + "_Exit";
 }

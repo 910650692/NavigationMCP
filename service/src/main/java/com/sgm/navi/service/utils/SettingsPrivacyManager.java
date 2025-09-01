@@ -1,6 +1,7 @@
 package com.sgm.navi.service.utils;
 
 
+import com.android.utils.DeviceUtils;
 import com.android.utils.log.Logger;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
@@ -62,6 +63,9 @@ public class SettingsPrivacyManager implements IPrivacyPermission {
         if (null != AppCache.getInstance().getMContext()) {
             mPackageName = AppCache.getInstance().getMContext().getPackageName();
             Logger.d(TAG, "PrivacyManager init", mPackageName);
+            if (!DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
+                return;
+            }
             //注册LOCATION权限变化通知
             try {
                 PrivacyDataSourceRepository.getInstance().registerPrivacyPermissionChangeListener(
