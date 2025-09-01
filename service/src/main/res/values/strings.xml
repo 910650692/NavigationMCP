@@ -7,6 +7,8 @@
     <string name="traffic_collision">事故</string>
     <string name="traffic_repair">施工</string>
     <string name="traffic_crowd">拥堵</string>
+    <string name="traffic_gonggao">公告</string>
+    <string name="traffic_jishui">积水</string>
     <string name="avoid_limit_open_success">限行开启成功</string>
     <string name="avoid_limit_open_failed">限行开启失败</string>
     <string name="navi_parking_list">停车场</string>

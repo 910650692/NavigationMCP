@@ -45,6 +45,7 @@ public class TrafficType {
     public static final int TRAFFIC_PUBLIC = 11070;
     // 拥堵
     public static final int TRAFFIC_CROWD = 11021;
+    public static final int TRAFFIC_HYDROPS = 11100;
 
     /***
      * 根据交通事件类型获取图标
@@ -61,13 +62,16 @@ public class TrafficType {
                 icon = R.drawable.img_fenglu_96;
             }
             case TRAFFIC_PUBLIC, TRAFFIC_CONTROL -> {
-                icon = R.drawable.img_guanzhi_96;
+                icon = R.drawable.img_announcement_96;
             }
             case TRAFFIC_ROAD_REPAIR -> {
                 icon = R.drawable.img_shigong_96;
             }
             case TRAFFIC_CROWD -> {
                 icon = R.drawable.img_yongdu_96;
+            }
+            case TRAFFIC_HYDROPS -> {
+                icon = R.drawable.img_jishui_96;
             }
             default -> {
                 icon = R.drawable.img_yongdu_96;
@@ -98,6 +102,12 @@ public class TrafficType {
             }
             case TRAFFIC_CROWD -> {
                 title = R.string.traffic_crowd;
+            }
+            case TRAFFIC_PUBLIC -> {
+                title = R.string.traffic_gonggao;
+            }
+            case TRAFFIC_HYDROPS -> {
+                title = R.string.traffic_jishui;
             }
         }
         return title;
