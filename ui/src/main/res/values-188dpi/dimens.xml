@@ -4088,4 +4088,5 @@
     <dimen name="route_search_service_page_max_height">704dp</dimen>
     <dimen name="item_favorite_empty_no_favorite_margin_top">194dp</dimen>
     <dimen name="item_favorite_empty_no_data_margin_top">180dp</dimen>
+    <dimen name="scene_sug_recycler_search_result_max_height">855dp</dimen>
 </resources>

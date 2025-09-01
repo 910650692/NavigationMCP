@@ -103,20 +103,20 @@
 
         <com.sgm.navi.ui.view.SkinLinearLayout
             android:id="@+id/root_view"
-            android:layout_width="@dimen/dp_545"
+            android:layout_width="@dimen/dp_613"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dp_17"
+            android:layout_marginBottom="@dimen/dp_m_43"
             android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/route_right_tab_list_charge_scene"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginBottom="@dimen/dp_130"
+            app:layout_goneMarginBottom="@dimen/dp_96"
             tools:background="#FF0000">
 
             <include
                 android:id="@+id/search_text_bar_view"
                 layout="@layout/search_text_bar_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_95" />
+                android:layout_height="@dimen/dp_163" />
 
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:id="@+id/search_container"
@@ -124,8 +124,9 @@
                 android:layout_height="wrap_content"
                 android:enabled="true"
                 android:clickable="true"
-                android:layout_marginTop="@dimen/dp_17"
-                android:background="@drawable/bg_route_result"
+                android:layout_marginTop="@dimen/dp_m_43"
+                android:background="@drawable/bg_shadow_navi_ndlc_8155"
+                android:padding="@dimen/dp_34"
                 app:layout_constraintVertical_chainStyle="spread_inside"
                 tools:background="#00FF00">
 
@@ -262,10 +263,9 @@
 
         <com.sgm.navi.scene.ui.route.SceneRouteGasStationChargeServiceView
             android:id="@+id/route_right_tab_list_charge_scene"
-            android:layout_width="@dimen/dp_545"
-            android:layout_height="@dimen/dp_124"
-            android:layout_marginBottom="@dimen/dp_130"
-            android:background="@drawable/bg_route_result"
+            android:layout_width="@dimen/dp_613"
+            android:layout_height="@dimen/dp_192"
+            android:layout_marginBottom="@dimen/dp_96"
             android:clickable="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

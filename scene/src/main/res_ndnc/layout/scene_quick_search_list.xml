@@ -10,7 +10,7 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinLinearLayout
-        android:layout_width="@dimen/dp_545"
+        android:layout_width="@dimen/dp_613"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +20,14 @@
             android:id="@+id/search_text_bar_view"
             layout="@layout/search_edit_bar_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_95" />
+            android:layout_height="@dimen/dp_163" />
+
+        <com.sgm.navi.ui.view.SkinConstraintLayout
+            android:layout_width="@dimen/dp_613"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_m_43"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:padding="@dimen/dp_34">
 
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_quick"
@@ -29,7 +36,6 @@
             android:layout_marginTop="@dimen/dp_17"
             android:paddingHorizontal="@dimen/dp_6"
             android:paddingVertical="@dimen/dp_17"
-            android:background="@drawable/bg_search_main_tab"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -37,25 +43,28 @@
         <com.sgm.navi.ui.view.SkinRecyclerView
             android:id="@+id/sk_rcv_suggestion"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_610"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             android:visibility="gone"
-            android:background="@drawable/bg_search_main_tab"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintHeight_max="@dimen/scene_sug_recycler_search_result_max_height"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.sgm.navi.ui.view.SkinTextView
             android:id="@+id/recycler_no_hint"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_412"
+            android:gravity="center"
             android:text="@string/shv_record_null"
             android:textColor="@color/search_color_ffffff_70"
-            android:textSize="@dimen/sp_30"
+            android:textSize="@dimen/sp_26"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
     </com.sgm.navi.ui.view.SkinLinearLayout>
 </layout>

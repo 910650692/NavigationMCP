@@ -6,8 +6,9 @@
     <com.sgm.navi.ui.view.SkinConstraintLayout
         android:id="@+id/scl_search_top_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_95"
-        android:background="@drawable/bg_search_main_tab">
+        android:layout_height="@dimen/dp_163"
+        android:padding="@dimen/dp_34"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155">
 
         <com.sgm.navi.ui.view.SkinImageView
             android:id="@+id/iv_close"

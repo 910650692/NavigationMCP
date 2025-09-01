@@ -9,8 +9,6 @@
         android:layout_height="@dimen/dp_225"
         android:background="@drawable/bg_shadow_navi_ndlc_8155"
         android:clickable="true"
-        android:minWidth="@dimen/dp_480"
-        android:maxWidth="@dimen/dp_532"
         android:paddingHorizontal="@dimen/dp_60"
         android:paddingVertical="@dimen/dp_34">
 
@@ -19,6 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_26"
+            android:minWidth="@dimen/dp_244"
+            android:maxWidth="@dimen/dp_296"
             android:textSize="@dimen/sp_32"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
