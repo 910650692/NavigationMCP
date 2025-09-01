@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
  * @version $Revision.*$
  */
 public class TBTLaneInfo {
+
+    private int mExtenLaneType = 0;
     private boolean mIsRecommend = false;
     private int mLaneAction = 0;
     private boolean mIsTimeLane = false;
@@ -44,6 +46,14 @@ public class TBTLaneInfo {
 
     public void setTimeLaneAction(final int timeLaneAction) {
         this.mTimeLaneAction = timeLaneAction;
+    }
+
+    public int getExtenLaneType() {
+        return mExtenLaneType;
+    }
+
+    public void setExtenLaneType(final int mExtenLaneType) {
+        this.mExtenLaneType = mExtenLaneType;
     }
 
     @NonNull

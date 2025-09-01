@@ -936,4 +936,19 @@ public final class SceneEnumRes {
                 return new AutoUIDrawable(0, 0, 0, 0);
         }
     }
+
+    public static AutoUIDrawable getExtenBackground(final int type) {
+        switch (type) {
+            case 1:// 左拓展
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_left);
+            case 2:// 右拓展
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_right);
+            case 26:// 左车道变窄
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_leftup);
+            case 27:// 右车道变窄
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_rightup);
+            default:
+                return new AutoUIDrawable(R.drawable.img_disable_lane_empty);
+        }
+    }
 }

@@ -137,6 +137,39 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
         }
     }
 
+    public void setLaneExtenBackground(final int index, final int extenType) {
+        Logger.d(TAG, "setLaneExtenBackground index：", index,
+                ",extenType：", extenType);
+        switch (index) {
+            case 0:
+                mViewBinding.tlrResources161.setExtenBackground(extenType);
+                break;
+            case 1:
+                mViewBinding.tlrResources16.setExtenBackground(extenType);
+                break;
+            case 2:
+                mViewBinding.tlrResources17.setExtenBackground(extenType);
+                break;
+            case 3:
+                mViewBinding.tlrResources18.setExtenBackground(extenType);
+                break;
+            case 4:
+                mViewBinding.tlrResources19.setExtenBackground(extenType);
+                break;
+            case 5:
+                mViewBinding.tlrResources110.setExtenBackground(extenType);
+                break;
+            case 6:
+                mViewBinding.tlrResources111.setExtenBackground(extenType);
+                break;
+            case 7:
+                mViewBinding.tlrResources1.setExtenBackground(extenType);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * 设置分时推荐车道线箭头
      *

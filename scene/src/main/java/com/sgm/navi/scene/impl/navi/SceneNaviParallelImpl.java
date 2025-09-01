@@ -245,9 +245,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
             if (ConvertUtils.isNull(entity) || NaviPackage.getInstance().getCurrentNaviType() == NumberUtils.NUM_1) {
                 return;
             }
-            if (Logger.openLog) {
-                Logger.i(TAG, "平行路切换 算路结果 ", entity.toString());
-            }
+            Logger.e(TAG, "平行路切换 算路结果 ", entity.toString());
             // 如果在非平行路切换期间，可以切换主辅路
             if (entity.getStatus() == NumberUtils.NUM_0) {
                 mIsSwitchParallelEnabled = true;
