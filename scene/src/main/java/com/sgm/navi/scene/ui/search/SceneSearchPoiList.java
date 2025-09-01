@@ -1715,8 +1715,8 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             childListByHigh.add(chargeItem);
         }
         // 凯迪需要过滤掉二筛中的快筛标签
-        if(brand == 2 && !ConvertUtils.isEmpty(childList)){
-            childList.removeIf(value -> ResourceUtils.Companion.getInstance().getString(R.string.filter_select_fast).equals(value.getMValue()));
+        if (brand == 2 && !ConvertUtils.isEmpty(childList)) {
+            childList.removeIf(value -> ResourceUtils.Companion.getInstance().getString(R.string.filter_select_fast).equals(value.getMName()));
         }
         // 别克：性价比车型1，凯迪：高品质车型2
         childListByHigh.addAll(ConvertUtils.isEmpty(list) ? new ArrayList<>() : childList);
