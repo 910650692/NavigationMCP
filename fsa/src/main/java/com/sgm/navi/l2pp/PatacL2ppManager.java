@@ -192,6 +192,7 @@ public class PatacL2ppManager {
             locationCoordinates.setLongitudeX(l2NaviBean.getVehiclePosition().getLocationLongitude());
             locationCoordinates.setLatitudeY(l2NaviBean.getVehiclePosition().getLocationLatitude());
             mpilotEgoVehicleInfo.setLocationCoordinates(locationCoordinates);
+            mpilotEgoVehicleInfo.setLocationSegmentIndex(-1);
             mpilotEgoVehicleInfo.setLocationLinkIndex((int) l2NaviBean.getVehiclePosition().getLocationLinkIndex());
             mpilotEgoVehicleInfo.setLocationLinkOffset(l2NaviBean.getVehiclePosition().getLocationLinkOffset());
             mpilotEgoVehicleInfo.setMainSideRots(l2NaviBean.getVehiclePosition().getMainSideRots());
