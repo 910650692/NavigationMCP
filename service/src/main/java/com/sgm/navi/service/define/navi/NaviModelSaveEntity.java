@@ -1,9 +1,12 @@
 package com.sgm.navi.service.define.navi;
 
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
 import java.util.List;
-import java.util.Objects;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class NaviModelSaveEntity {
     private SpeedOverallEntity mSpeedOverallEntity;
@@ -22,6 +25,9 @@ public class NaviModelSaveEntity {
     private HandCardType mHandCardType;
     private List<FyElecVehicleETAInfo> mFyElecVehicleETAInfos;
     private Object mChargeTipEntity;
+    @Getter
+    @Setter
+    private LocParallelInfoEntity mLocalParallelInfoEntity;
 
     public SpeedOverallEntity getSpeedOverallEntity() {
         return mSpeedOverallEntity;

@@ -38,6 +38,7 @@ import com.sgm.navi.service.define.navi.NaviTmcInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
@@ -862,6 +863,16 @@ public class BaseNaviGuidanceViewModel extends
                 notifyBatteryWarning((ChargeTipEntity) chargeTipEntity);
             }
         }
+        LocParallelInfoEntity entity = mModelSaveEntity.getMLocalParallelInfoEntity();
+        if (entity != null) {
+            onParallelRoadUpdate(entity);
+        }
+    }
+
+    private void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        if (null != mView) {
+            mView.onParallelRoadUpdate(entity);
+        }
     }
 
     public void onCurrentRoadSpeed(int speed) {
@@ -1018,6 +1029,12 @@ public class BaseNaviGuidanceViewModel extends
     public void setChargeTipEntity(Object chargeTipEntity) {
         if (mModelSaveEntity != null) {
             mModelSaveEntity.setChargeTipEntity(chargeTipEntity);
+        }
+    }
+
+    public void setLocParallelInfoEntity(LocParallelInfoEntity entity) {
+        if (mModelSaveEntity != null) {
+            mModelSaveEntity.setMLocalParallelInfoEntity(entity);
         }
     }
 }

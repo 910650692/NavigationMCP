@@ -17,6 +17,7 @@ import com.sgm.navi.scene.impl.navi.SceneNaviParallelImpl;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 
 /**
  * 主辅路、桥上桥下
@@ -127,5 +128,11 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
      */
     public void naviParallelSwitch(final int type) {
         mScreenViewModel.naviParallelSwitch(type);
+    }
+
+    public void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onParallelRoadUpdate(entity);
+        }
     }
 }

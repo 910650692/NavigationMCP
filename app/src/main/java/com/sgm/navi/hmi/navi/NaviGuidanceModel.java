@@ -69,6 +69,7 @@ import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.FyRouteOption;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
@@ -471,6 +472,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void setEndPoint(PoiInfoEntity endPoint) {
         Logger.i(TAG, "setEndPoint");
         drawEndPoint(endPoint);
+    }
+
+    @Override
+    public void setLocParallelInfoEntity(LocParallelInfoEntity entity) {
+        if (mViewModel != null) {
+            mViewModel.setLocParallelInfoEntity(entity);
+        }
     }
 
     /**

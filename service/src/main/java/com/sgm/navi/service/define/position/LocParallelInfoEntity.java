@@ -62,7 +62,6 @@ public class LocParallelInfoEntity {
                 "status=" + status +
                 ", flag=" + flag +
                 ", hwFlag=" + hwFlag +
-                ", localParallelRoadArrayList=" + localParallelRoadEntityArrayList.toString() +
                 '}';
     }
 }

@@ -64,6 +64,7 @@ import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.android.utils.ScreenTypeUtils;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
@@ -1108,6 +1109,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onWindowSideChanged(boolean isOpenFloat) {
         if (mBinding != null && mBinding.sceneNaviCrossImage != null) {
             mBinding.sceneNaviCrossImage.onWindowSideChanged(isOpenFloat);
+        }
+    }
+
+    public void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        if (mBinding != null && mBinding.sceneNaviParallel != null) {
+            mBinding.sceneNaviParallel.onParallelRoadUpdate(entity);
         }
     }
 }
