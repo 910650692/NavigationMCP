@@ -953,6 +953,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mViewModel = null;
         if (mIsPhoneListenerAdded) {
             TelephonyManager telephonyManager = (TelephonyManager) requireContext().
                     getSystemService(Context.TELEPHONY_SERVICE);

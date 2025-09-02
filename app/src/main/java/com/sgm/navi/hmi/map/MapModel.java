@@ -404,11 +404,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onDestroy() {
         super.onDestroy();
         StartService.getInstance().unregisterSdkCallback(TAG, this);
-        if (null == mapPackage) {
-            return;
+        if (null != mapPackage) {
+            mapPackage.removeTimeHelper(timeHelper);
+            mapPackage.unBindMapView(mViewModel.getMapView());
         }
-        mapPackage.removeTimeHelper(timeHelper);
-        mapPackage.unBindMapView(mViewModel.getMapView());
         speedMonitor.removeCallBack();
         speedMonitor.unInit();
         mapModelHelp.unInit();

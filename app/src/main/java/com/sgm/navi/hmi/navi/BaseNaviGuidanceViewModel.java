@@ -168,6 +168,8 @@ public class BaseNaviGuidanceViewModel extends
         mModel.removeOnNetStatusChangeListener(this);
         NaviMediaPlayer.getInstance().releaseMediaPlayer();
         FloatWindowReceiver.unregisterCallback(TAG);
+        mView = null;
+        mModel = null;
     }
 
     //显示/隐藏 添加途径点页面

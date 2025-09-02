@@ -760,6 +760,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         mEndPoiSearchRunnable = null;
         mCloseClusterOverView = null;
         mOnClusterMapOpenOrClose = null;
+        mViewModel = null;
     }
 
     @Override
