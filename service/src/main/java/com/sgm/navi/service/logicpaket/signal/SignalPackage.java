@@ -265,16 +265,16 @@ public final class SignalPackage implements SignalAdapterCallback {
      *
      * @return 充电状态
      * DEFAULT = 0;
-     * IDLE = 1;
+     * IDLE = 1 普通充电中;
      * INITIALIZING = 2;
-     * ACTIVE = 3;
+     * ACTIVE = 3 快速充电中;
      * COMPLETE = 4;
      * ABORTED = 5;
      * UTILITY_OVERRIDE_ACTIVE = 6;
      * UTILITY_OVERRIDE_REDUCED_POWER = 7;
      * PAUSE_DUE_TO_UPDATE = 8;
      * CONNECTION_UNPOWERED = 9;
-     * UNCONNECTED = 10;
+     * UNCONNECTED = 10 无充电中;
      * OFFBOARD_ENERGY_TRANSFER_ACTIVE = 11;
      */
     public int getChargeSystemStatus() {
