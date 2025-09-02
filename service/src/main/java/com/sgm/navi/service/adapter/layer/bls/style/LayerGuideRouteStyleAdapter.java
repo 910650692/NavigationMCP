@@ -1001,6 +1001,15 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                     customUpdatePairs.add(createUpdateStylePair("speed_text3", "color:#000000;"));
                 }
             }
+            case BizRouteType.BizRouteTypeRouteJamBubbles -> {
+                //行前拥堵气泡文字颜色适配
+                if (isNightMode) {
+                    customUpdatePairs.add(createUpdateStylePair("sub_title_smooth", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("sub_title_slow", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("sub_title_congested", "color:#ffffff;"));
+                    customUpdatePairs.add(createUpdateStylePair("sub_title_default", "color:#ffffff;"));
+                }
+            }
         }
         return customUpdatePairs;
     }
