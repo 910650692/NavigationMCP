@@ -185,11 +185,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     private final Runnable reloadRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mBinding != null) {
-                if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mBinding)) {
+            if (!ConvertUtils.isNull(mBinding)) {
+                if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
                     mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
-                    mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
                 }
+                mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
             }
         }
     };
