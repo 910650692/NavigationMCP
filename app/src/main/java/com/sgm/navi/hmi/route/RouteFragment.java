@@ -1784,4 +1784,12 @@ public class RouteFragment extends BaseFragment<FragmentRouteBinding, RouteViewM
             }
         }
     }
+
+    public void setRefreshDebounce(boolean clickable) {
+        if (mRouteListPageView != null) {
+            ThreadManager.getInstance().postUi(() -> {
+                mRouteListPageView.routeLineInfoBgRouteRefresh.setClickable(clickable);
+            });
+        }
+    }
 }

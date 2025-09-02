@@ -806,6 +806,14 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
                         ResourceUtils.Companion.getInstance().getString(R.string.route_refresh_fast));
                 return;
             }
+            if (mView != null) {
+                mView.setRefreshDebounce(false);
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mView != null) {
+                        mView.setRefreshDebounce(true);
+                    }
+                }, REFRESH_TIME);
+            }
             cancelTimer();
             final RouteRequestParam param = new RouteRequestParam();
             param.setMRouteWay(RouteWayID.ROUTE_WAY_REFRESH);
@@ -1255,6 +1263,9 @@ public class BaseRouteViewModel extends BaseViewModel<RouteFragment, RouteModel>
     public void hideProgressUI(final boolean success) {
         if (success) {
             mRefreshable = false;
+            if (mView != null) {
+                mView.setRefreshDebounce(true);
+            }
             ThreadManager.getInstance().postDelay(mRefreshTimer, REFRESH_TIME);
         }
         ThreadManager.getInstance().postUi(() -> {
