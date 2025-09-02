@@ -7,11 +7,12 @@ import com.sgm.navi.service.define.user.forecast.OftenArrivedItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class ForecastPackage implements ForecastAdapterCallback {
     private final ForecastAdapter mForecastAdapter;
-    private final List<ForecastCallBack> mCallBacks = new ArrayList<>();
+    private final List<ForecastCallBack> mCallBacks = new CopyOnWriteArrayList<>();
 
     public ForecastPackage() {
         mForecastAdapter = ForecastAdapter.getInstance();
