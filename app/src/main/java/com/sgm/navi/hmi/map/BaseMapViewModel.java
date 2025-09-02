@@ -47,6 +47,7 @@ import com.sgm.navi.hmi.route.RouteFragment;
 import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
+import com.sgm.navi.hmi.traffic.BigPicDetailFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -605,6 +606,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             bundle.putParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
             addPoiDetailsFragment(new LimitDriveFragment(), bundle);
             closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
+            closeAllFragmentsUntilTargetFragment(BigPicDetailFragment.class.getName());
         }
     };
 
