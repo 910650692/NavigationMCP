@@ -32,10 +32,10 @@
     <TextView
         android:id="@+id/route_end_business"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dp_4"
-        android:background="@drawable/layer_image_route_end_business_hours_bg"
+        android:background="@drawable/shape_route_end_business_bg"
         android:paddingHorizontal="@dimen/dp_12"
         android:gravity="center"
         android:visibility="gone"
