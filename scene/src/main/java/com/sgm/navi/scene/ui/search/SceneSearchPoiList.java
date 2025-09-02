@@ -299,8 +299,9 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                         AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
                 bundle.putBoolean("IS_END", mIsEnd);
-                if(!ConvertUtils.isEmpty(mChildQuickList) && mCurrentSelectedQuick > 0){
-                    bundle.putString("LABEL",mChildQuickList.get(mCurrentSelectedQuick).getName());
+                if (!ConvertUtils.isEmpty(mChildQuickList) && mCurrentSelectedQuick > 0
+                        && mCurrentSelectedQuick < mChildQuickList.size()) {
+                    bundle.putString("LABEL", mChildQuickList.get(mCurrentSelectedQuick).getName());
                 }
                 addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
