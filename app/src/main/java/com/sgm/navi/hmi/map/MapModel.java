@@ -2515,7 +2515,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
             Logger.i(TAG, musicTabShow);
             mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
-            NaviPackage.getInstance().setMIsFloatWindowShow(musicTabShow);
         }
     }
 

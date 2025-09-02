@@ -1167,7 +1167,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             Logger.e(TAG, "mViewModel is null");
             return;
         }
-        mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
+        boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+        boolean isShowMusicTab = FloatWindowReceiver.isShowMusicTab;
+        Logger.e(TAG, "onSplitScreenChanged isFullScreen:", isFullScreen,
+                " isShowMusicTab:", isShowMusicTab);
+        mViewModel.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        mViewModel.musicTabVisibility.set(isShowMusicTab && isFullScreen);
     }
 
     @Override

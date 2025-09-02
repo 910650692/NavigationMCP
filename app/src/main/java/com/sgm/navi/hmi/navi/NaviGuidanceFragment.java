@@ -1117,4 +1117,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mBinding.sceneNaviParallel.onParallelRoadUpdate(entity);
         }
     }
+
+    public void onSplitScreenChanged(boolean isShowMusicTab, boolean isFullScreen) {
+        if (mBinding != null && mBinding.sceneNaviCrossImage != null) {
+            mBinding.sceneNaviCrossImage.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        }
+    }
 }

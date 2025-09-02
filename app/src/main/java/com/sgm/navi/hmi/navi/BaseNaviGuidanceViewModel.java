@@ -1037,4 +1037,10 @@ public class BaseNaviGuidanceViewModel extends
             mModelSaveEntity.setMLocalParallelInfoEntity(entity);
         }
     }
+
+    public void onSplitScreenChanged(boolean isShowMusicTab, boolean isFullScreen) {
+        if (mView != null) {
+            mView.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        }
+    }
 }
