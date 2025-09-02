@@ -241,4 +241,10 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
             mScreenViewModel.closeNavi();
         }
     }
+
+    public void showMain() {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.showMain();
+        }
+    }
 }

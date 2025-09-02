@@ -4002,8 +4002,8 @@
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">16dp</dimen>
-    <dimen name="launcher_position_left">64dp</dimen>
+    <dimen name="launcher_position_top">-18dp</dimen>
+    <dimen name="launcher_position_left">30dp</dimen>
     <!-- 后排屏CarLogo距离顶部高度 -->
     <dimen name="rear_screen_car_logo_top">838dp</dimen>
 

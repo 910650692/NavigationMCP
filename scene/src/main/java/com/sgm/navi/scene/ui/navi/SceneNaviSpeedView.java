@@ -125,13 +125,14 @@ public class SceneNaviSpeedView extends NaviSceneBase<SceneNaviSpeedViewBinding,
         Logger.i(TAG, "updateGreenWaveInfo mCurrentRoadLimitSpeed:",
                 mCurrentRoadLimitSpeed, " currentSpeed:", currentSpeed);
         mViewBinding.sivLight.setVisibility(VISIBLE);
-        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(currentSpeed > mCurrentRoadLimitSpeed ?
+        boolean isOverSpeed = (currentSpeed > mCurrentRoadLimitSpeed) && mCurrentRoadLimitSpeed > 0;
+        mViewBinding.stvCurrentSpeed.setTextColor(getContext().getColor(isOverSpeed ?
                 R.color.navi_color_C73333_100 : R.color.navi_color_40CBA_100));
         mViewBinding.stvCurrentSpeedKey.setTextColor(
-                getContext().getColor(currentSpeed > mCurrentRoadLimitSpeed ? R.color.navi_color_C73333_100 :
+                getContext().getColor(isOverSpeed ? R.color.navi_color_C73333_100 :
                         R.color.navi_color_40CBA_100));
         mViewBinding.svCurrentSpeed.setBackground(
-                getContext().getDrawable(currentSpeed > mCurrentRoadLimitSpeed ?
+                getContext().getDrawable(isOverSpeed ?
                         R.drawable.guide_car_speed_stroke : R.drawable.guide_car_speed_stroke_green));
         mViewBinding.svOverallSpeed.setBackground(getContext().getDrawable(R.drawable.bg_speed_green));
         mViewBinding.stvSpeedLimit.setText(entity.getMinSpeed() + "-" + entity.getMaxSpeed());

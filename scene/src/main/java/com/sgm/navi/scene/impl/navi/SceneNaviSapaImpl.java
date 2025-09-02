@@ -624,14 +624,11 @@ public class SceneNaviSapaImpl extends BaseSceneModel<SceneNaviSapaView> impleme
                 tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_pass));
                 return;
             }
-            boolean isCanJudgeGps = null != routeParam.getRealPos() && null != sapItem.getPos();
-            if (isCanJudgeGps) {
-                if (routeParam.getRealPos().getLat() == sapItem.getPos().getLat() && routeParam.getRealPos().getLon() == sapItem.getPos().getLon()) {
-                    tag.set(VIA);
-                    tagTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_FFFFFF_100));
-                    tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_pass));
-                    return;
-                }
+            if (TextUtils.equals(routeParam.getName(), sapItem.getName())) {
+                tag.set(VIA);
+                tagTextColor.set(ResourceUtils.Companion.getInstance().getColor(R.color.navi_color_FFFFFF_100));
+                tagBgColor.set(ResourceUtils.Companion.getInstance().getDrawable(R.drawable.img_navi_via_item_btn_pass));
+                return;
             }
         }
         //服务区状态:0 正常（默认值），1 建设中，2 未调查 3 装修中 4 暂停营业

@@ -903,8 +903,12 @@ public final class SceneEnumRes {
             case LaneActionTidal:
                 return new AutoUIDrawable(
                         R.drawable.img_optimal_lane_25_day);
-            case LaneActionEmptyNoAction, LaneActionEmpty:
-                return new AutoUIDrawable(R.drawable.img_disable_lane_empty);
+            case LaneActionEmptyNoAction:
+                return new AutoUIDrawable(
+                        R.drawable.img_disable_lane_22_day);
+            case LaneActionEmpty:
+                return new AutoUIDrawable(
+                        R.drawable.img_disable_lane_22_day);
             case LaneLabor:
                 return new AutoUIDrawable(
                         R.drawable.img_lane_labor_day);
@@ -934,6 +938,21 @@ public final class SceneEnumRes {
                         R.drawable.img_trip_lineviastarbucks_day);
             default:
                 return new AutoUIDrawable(0, 0, 0, 0);
+        }
+    }
+
+    public static AutoUIDrawable getExtenBackground(final int type) {
+        switch (type) {
+            case 1:// 左拓展
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_left);
+            case 2:// 右拓展
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_right);
+            case 26:// 左车道变窄
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_leftup);
+            case 27:// 右车道变窄
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_rightup);
+            default:
+                return new AutoUIDrawable(R.drawable.img_disable_lane_empty);
         }
     }
 }

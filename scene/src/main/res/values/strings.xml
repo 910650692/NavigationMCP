@@ -146,6 +146,7 @@
     <string name="navi_gas_95">#95</string>
     <string name="navi_gas_98">#98</string>
     <string name="toll">收费站</string>
+    <string name="service">服务区</string>
     <string name="current_newest_path">当前已是最新路线</string>
     <string name="switch_car_angle">已切换至%s视角</string>
     <string name="navi_car_head_switch_while_overview">路线概览时保持正北朝上</string>

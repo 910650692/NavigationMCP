@@ -14,6 +14,7 @@ import com.sgm.navi.service.define.utils.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 获取所有的道路名称和对应道路Tmc的辅助类
@@ -33,30 +34,44 @@ public class RoadNameAndTmcHelper {
         PathInfo pathInfo = OpenApiHelper.getPathInfo(mapType, pathId);
         if (pathInfo != null) {
             RoadName roadName = new RoadName();
-            HashMap<String, Integer> roadNameMap = new HashMap<>();
+            HashMap<String, RoadName.RoadLink> roadNameMap = new HashMap<>();
             long segmentCount = pathInfo.getSegmentCount();
             // 遍历所有的导航段
             for (long i = 0; i < segmentCount; i++) {
                 SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
                 int segmentIndex = segmentInfo.getSegmentIndex();
                 long linkCount = segmentInfo.getLinkCount();
-                LinkInfo linkInfoLongest = segmentInfo.getLinkInfo(0);
                 // 根据SDK的建议，取最长的link作为导航段的道路名称
-                for (long j = 1; j < linkCount; j++) {
+                for (long j = 0; j < linkCount; j++) {
                     LinkInfo linkInfo = segmentInfo.getLinkInfo(j);
-                    if (linkInfo.getLength() > linkInfoLongest.getLength()) {
-                        linkInfoLongest = linkInfo;
+                    if (linkInfo != null) {
+                        String name = linkInfo.getRoadName();
+                        int length = linkInfo.getLength();
+                        Logger.i(TAG, "roadName:", name, "length:",
+                                length, " segmentIndex:", segmentIndex);
+                        putMaxValue(roadNameMap, name, length, segmentIndex);
                     }
                 }
-                Logger.i(TAG, "roadName:" + linkInfoLongest.getRoadName() +
-                        " segmentIndex:" + segmentIndex);
-                roadNameMap.put(linkInfoLongest.getRoadName(), segmentIndex);
             }
             roadName.setRoadNameMap(roadNameMap);
             roadName.setPathId(pathId);
             return roadName;
         }
         return null;
+    }
+
+    public void putMaxValue(HashMap<String, RoadName.RoadLink> map, String key, int length,
+                            int segmentIndex) {
+        if (map.containsKey(key)) {
+            RoadName.RoadLink current = map.get(key);
+            if (current != null && length > current.getLength()) {
+                RoadName.RoadLink roadLink = new RoadName.RoadLink(length, segmentIndex);
+                map.put(key, roadLink);
+            }
+        } else {
+            RoadName.RoadLink roadLink = new RoadName.RoadLink(length, segmentIndex);
+            map.put(key, roadLink);
+        }
     }
 
     public int getTmcByRoadLinkIndex(NaviTmcInfo.NaviLightBarInfo currentLightBarInfo,

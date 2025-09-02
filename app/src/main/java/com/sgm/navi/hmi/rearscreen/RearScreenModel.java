@@ -310,6 +310,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
         if (NaviStatus.NaviStatusType.NAVING.equals(currentNaviStatus)
                 || NaviStatus.NaviStatusType.LIGHT_NAVING.equals(currentNaviStatus)) {
             mRoutePackage.showOnlyOneRouteLine(getMapId());
+            updatePreviewStatusInfo();
         }
     }
 
@@ -321,6 +322,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
                 && NaviStatusPackage.getInstance().getCurrentNaviStatus()
                 .equals(NaviStatus.NaviStatusType.NAVING)) {
             RearScreenRouteHelper.onlyShowCurrentPath(MapType.REAR_SCREEN_MAP);
+            updatePreviewStatusInfo();
         }
     }
 
@@ -332,6 +334,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
                 mRoutePackage.removeRouteLineInfo(MapType.REAR_SCREEN_MAP, pathId);
             }
             RearScreenRouteHelper.refreshPathList();
+            updatePreviewStatusInfo();
         }
     }
 
@@ -339,6 +342,7 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
     public void onChangeNaviPath(long oldPathId, long pathID) {
         Logger.i(TAG, "onChangeNaviPath oldPathId = ", oldPathId, " pathID = ", pathID);
         RearScreenRouteHelper.showSelectPatch(pathID);
+        updatePreviewStatusInfo();
     }
 
     public void showPreview() {
@@ -377,6 +381,19 @@ public class RearScreenModel extends BaseModel<BaseRearScreenViewModel> implemen
             mMapPackage.switchMapMode(MapType.REAR_SCREEN_MAP, MapMode.UP_2D,false);
         } else {
             mMapPackage.switchMapMode(MapType.REAR_SCREEN_MAP, MapMode.NORTH_2D,false);
+        }
+    }
+
+    private void updatePreviewStatusInfo() {
+        if (isNavigating()) {
+            if (isPreview) {
+                mRoutePackage.showPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+                mLayerPackage.setFollowMode(getMapId(), false);
+            } else {
+                mMapPackage.exitPreview(getMapId(), DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
+                mMapPackage.goToCarPosition(getMapId());
+                mLayerPackage.setFollowMode(getMapId(), true);
+            }
         }
     }
 

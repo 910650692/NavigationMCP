@@ -10,6 +10,7 @@ import com.sgm.navi.scene.ui.navi.SceneNaviLanesView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
@@ -70,7 +71,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
             // 车道线可见
 //                mScreenView.setVisibleLaneInfo(true);
             final List<TBTLaneInfo> listData = new ArrayList<TBTLaneInfo>();
-            Logger.i(TAG, "SceneNaviLanesImpl onShowNaviLaneInfo LaneNum=", LaneNum,
+            Logger.e(TAG, "SceneNaviLanesImpl onShowNaviLaneInfo LaneNum=", LaneNum,
                     ",optimalLane=", laneInfo.getOptimalLane(), ",backLane=",
                     laneInfo.getBackLane(), ",frontLane=", laneInfo.getFrontLane(),
                     ",backLaneType=", laneInfo.getBackLaneType(), ",frontLaneType=",
@@ -79,6 +80,20 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
                     laneInfo.getBackExtenLane());
             for (int i = 0; i < LaneNum; i++) {
                 final TBTLaneInfo info = new TBTLaneInfo();
+                ArrayList<Integer> extensionLane = laneInfo.getExtensionLane();
+                ArrayList<Integer> backExtenLane = laneInfo.getBackExtenLane();
+                // 设置拓展车道信息
+                if (!ConvertUtils.isEmpty(extensionLane)) {
+                    if (extensionLane.size() > i) {
+                        int type = extensionLane.get(i);
+                        info.setExtenLaneType(type);
+                    }
+                } else {
+                    if (backExtenLane.size() > i) {
+                        int type = backExtenLane.get(i);
+                        info.setExtenLaneType(type);
+                    }
+                }
                 // 设置推荐车道
                 info.setRecommend(laneInfo.getOptimalLane().get(i) !=
                         NaviConstant.LaneAction.LANE_ACTION_NULL);
@@ -204,6 +219,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
         mScreenView.sceneLaneInfoDefault();
         for (int index = 0; index < defaultListData.size(); index++) {
             final TBTLaneInfo itemData = defaultListData.get(index);
+            mScreenView.setLaneExtenBackground(index, itemData.getExtenLaneType());
             mScreenView.setVisibleLaneDefault(index, true);
             // 车道图标的设置：1.推荐分时 2.推荐 3.分时 4.默认
             if (itemData.isRecommend() && itemData.isTimeLane()) {

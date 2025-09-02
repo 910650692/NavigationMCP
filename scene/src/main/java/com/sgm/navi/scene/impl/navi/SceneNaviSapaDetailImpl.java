@@ -263,17 +263,13 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             } else {
                 Logger.i(TAG, "sapaItem.getPos() is empty! Name:", sapaItem.getName());
             }
-            Logger.i(TAG, poiId);
-            if (!TextUtils.isEmpty(poiId) && !poiId.contains(".") && poiId.startsWith("B")) {
-                // 进行PoiId搜索 为了途经点添加功能
-                mSapaSearchId = SearchPackage.getInstance().poiIdSearch(poiId, true);
-                Logger.d(TAG, " mSapaSearchId = ", mSapaSearchId, " Name:", sapaItem.getName());
-            } else if (!ConvertUtils.isNull(sapaItem.getPos())){
-                mSapaSearchId = SearchPackage.getInstance().geoSearch(sapaItem.getPos(), true);
-                Logger.d(TAG, " mSapaSearchId = ", mSapaSearchId, " Name:", sapaItem.getName());
-            } else {
-                Logger.e(TAG, "poiId无效，地址为空，无法进行搜索");
-            }
+            PoiInfoEntity poiInfoEntity = new PoiInfoEntity();
+            poiInfoEntity.setPid(sapaItem.getServicePOIID());
+            poiInfoEntity.setMName(sapaItem.getName());
+            poiInfoEntity.setMPoint(sapaItem.getPos());
+            poiInfoEntity.setPoiType(15);
+            poiInfoEntity.setPoiTag(ResourceUtils.Companion.getInstance().getString(R.string.service));
+            mCurrentPoiInfoEntity = poiInfoEntity;
         } else {
             Logger.e(TAG, "sapaItem is null");
         }
@@ -518,16 +514,12 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                             route_service_details_remove_via));
                     return;
                 }
-                boolean isCanJudgeGps = null != routeParam.getRealPos() && null != sapItem.getPos();
-                if (isCanJudgeGps) {
-                    if (routeParam.getRealPos().getLat() == sapItem.getPos().getLat() &&
-                            routeParam.getRealPos().getLon() == sapItem.getPos().getLon()) {
-                        tag.set(mScreenView.getContext().getString(R.string.navi_via));
-                        mIsVia = true;
-                        mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
-                                route_service_details_remove_via));
-                        return;
-                    }
+                if (TextUtils.equals(routeParam.getName(), sapItem.getName())) {
+                    tag.set(mScreenView.getContext().getString(R.string.navi_via));
+                    mIsVia = true;
+                    mButtonText.set(ResourceUtils.Companion.getInstance().getString(R.string.
+                            route_service_details_remove_via));
+                    return;
                 }
             }
         }
@@ -680,12 +672,13 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
     @Override
     public void onSilentSearchResult(int taskId, int errorCode, String message,
                                      SearchResultEntity searchResultEntity) {
-        // 如果当前的搜索id与回调的taskId相同，表示是当前的搜索结果
-        if (mSapaSearchId == taskId) {
+        if (mSapaGeoSearchId == taskId) {
+            // 如果是地理位置搜索结果
             mRefreshInfoRunnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
+                        refreshGeoStationInfo(searchResultEntity);
                         refreshGasStationInfo(searchResultEntity);
                     } catch (Exception e) {
                         Logger.e(TAG, "refreshGasStationInfo error:", e.getMessage());
@@ -693,21 +686,6 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
                 }
             };
             ThreadManager.getInstance().postUi(mRefreshInfoRunnable);
-            refreshViaData(searchResultEntity);
-        } else if (mSapaGeoSearchId == taskId) {
-            // 如果是地理位置搜索结果
-            mRefreshInfoRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        refreshGeoStationInfo(searchResultEntity);
-                    } catch (Exception e) {
-                        Logger.e(TAG, "refreshGasStationInfo error:", e.getMessage());
-                    }
-                }
-            };
-            ThreadManager.getInstance().postUi(mRefreshInfoRunnable);
-            refreshViaData(searchResultEntity);
         } else if (mTollGeoSearchId == taskId) {
             // 如果是地理位置搜索结果
             mRefreshGeoRunnable = new Runnable() {
@@ -722,18 +700,6 @@ public class SceneNaviSapaDetailImpl extends BaseSceneModel<SceneNaviSapaDetailV
             };
             ThreadManager.getInstance().postUi(mRefreshGeoRunnable);
         }
-    }
-
-    /**
-     * @param searchResultEntity 搜索结果 {@link SearchResultEntity}，包含具体的搜索结果数据
-     */
-    private void refreshViaData(final SearchResultEntity searchResultEntity) {
-        if (ConvertUtils.isEmpty(searchResultEntity.getPoiList())) {
-            Logger.i(TAG, "registerViaData searchResultEntity.getPoiList() is null");
-            return;
-        }
-        mCurrentPoiInfoEntity = searchResultEntity.getPoiList().get(0);
-        mCurrentPoiType = searchResultEntity.getPoiType();
     }
 
     /**

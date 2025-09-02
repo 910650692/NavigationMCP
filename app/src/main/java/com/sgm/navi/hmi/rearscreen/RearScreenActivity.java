@@ -165,7 +165,7 @@ public class RearScreenActivity extends BaseActivity<ActivityRearScreenBinding, 
 
     public void updatePreviewStatus(boolean isPreviewStatus) {
         if (isPreviewStatus) {
-            mBinding.sivNaviOverviewSwitch.setBackgroundResource(com.sgm.navi.scene.R.drawable.img_look_through_black);
+            mBinding.sivNaviOverviewSwitch.setBackgroundResource(com.sgm.navi.scene.R.drawable.img_look_through_black_rear_screen);
         } else {
             mBinding.sivNaviOverviewSwitch.setBackgroundResource(com.sgm.navi.scene.R.drawable.img_look_through_black_58);
         }

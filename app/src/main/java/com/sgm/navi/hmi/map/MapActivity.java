@@ -191,10 +191,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @Override
     public void onInitView() {
         if (StartService.getInstance().checkSdkIsAvailable()) {
-            if (mViewModel.judgeAutoProtocol()) {
-                Logger.e(TAG, "onInitView");
-                mViewModel.loadMapView(mBinding.mainMapview);
-            }
+            Logger.e(TAG, "onInitView");
+            mViewModel.loadMapView(mBinding.mainMapview);
             //todo 隐藏加载界面逻辑已经做了对sdk初始化状态的判断，无需在此多加判断
         }
     }
@@ -270,7 +268,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     @HookMethod(eventName = BuryConstant.EventName.AMAP_HIDE)
     protected void onStop() {
         Logger.i(TAG, "onStop");
-        isInForeground = false;
         mViewModel.dismissAuthorizationDialog();
         mViewModel.dismissReminderDialog();
         super.onStop();
@@ -435,10 +432,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * @param msg 错误信息
      */
     public void showActivateFailedDialog(final int errCode, final String msg) {
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            Logger.e(TAG, "dialog showing");
-            return;
-        }
+        dismissActivateFailedDialog();
         mFailedDialog = new ActivateFailedDialog(this, new IBaseDialogClickListener() {
             @Override
             public void onCommitClick() {
@@ -454,8 +448,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
      * 关闭弹窗
      */
     public void dismissActivateFailedDialog() {
-        if (mFailedDialog != null && mFailedDialog.isShowing()) {
-            mFailedDialog.dismiss();
+        if (mFailedDialog != null) {
+            if (mFailedDialog.isShowing()) {
+                mFailedDialog.dismiss();
+            }
             mFailedDialog.unInitContext();
             mFailedDialog = null;
         }

@@ -662,6 +662,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
      * 导航继续
      */
     public void naviContinue() {
+        if (ImersiveStatus.IMERSIVE.equals(ImmersiveStatusScene.getInstance().
+                getCurrentImersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP)) &&
+                NaviPackage.getInstance().getPreviewStatus()) {
+            mBinding.sceneNaviControl.showMain();
+        }
         mBinding.sceneNaviContinue.naviContinueByVoice();
     }
 

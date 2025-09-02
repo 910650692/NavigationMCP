@@ -2774,9 +2774,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                 Logger.d(IVrBridgeConstant.TAG, "roadInfo error...");
                 return;
             }
-            final HashMap<String, Integer> roadMap = roadInfo.getRoadNameMap();
+            final HashMap<String, RoadName.RoadLink> roadMap = roadInfo.getRoadNameMap();
             Logger.d(IVrBridgeConstant.TAG, "PathId = " + roadInfo.getPathId());
-            for (Map.Entry<String, Integer> entry : roadMap.entrySet()) {
+            for (Map.Entry<String, RoadName.RoadLink> entry : roadMap.entrySet()) {
                 if (!ConvertUtils.isEmpty(entry.getKey()) && entry.getKey().contains(strPoi)) {
                     Logger.d(IVrBridgeConstant.TAG, "某道路的路况");
                     if (hasEqual) {
@@ -2786,7 +2786,9 @@ public class NaviControlCommandImpl implements NaviControlCommandListener {
                         hasEqual = true;
                     }
                     mTrafficConditionResult
-                            = NaviPackage.getInstance().getTmcByRoadLinkIndex(MapType.MAIN_SCREEN_MAIN_MAP, roadInfo.getPathId(), entry.getValue());
+                            = NaviPackage.getInstance().getTmcByRoadLinkIndex(
+                                    MapType.MAIN_SCREEN_MAIN_MAP, roadInfo.getPathId(),
+                            entry.getValue().getLinkIndex());
                     mIsInRoute = true;
                     mTtsContentForCondition = strPoi + "路况 ";
                 }

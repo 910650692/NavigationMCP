@@ -130,5 +130,12 @@ public class SubcomponentLanes extends SkinConstraintLayout {
             mBinding.sivDriveWayArrow.setVisibility(View.VISIBLE);
         }
     }
+
+    public void setExtenBackground(int extenType) {
+        if (mBinding != null) {
+            mBinding.flTripLanesResources.setBackgroundResource(SceneEnumRes.
+                    getExtenBackground(extenType).getDayDrawableId());
+        }
+    }
 }
 
