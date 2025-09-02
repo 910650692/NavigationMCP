@@ -25,6 +25,7 @@
         android:id="@+id/crl_poi_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_search_item"
         android:minHeight="@dimen/dp_158">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
