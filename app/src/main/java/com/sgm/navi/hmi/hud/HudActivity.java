@@ -60,6 +60,8 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
         Logger.d(TAG, "isShowHud:", MyFsaService.getInstance().isShowHud);
         if (MyFsaService.getInstance().isShowHud) {
             mBinding.hudMapview.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.hudMapview.setVisibility(View.GONE);
         }
     }
 
