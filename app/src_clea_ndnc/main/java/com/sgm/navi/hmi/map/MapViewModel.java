@@ -51,10 +51,6 @@ public class MapViewModel extends BaseMapViewModel {
         mModel.loadVisibleAreaJson(json);
     }
 
-    public boolean showNdGoHomeView() {
-        return true;
-    }
-
     public Action switchSr = () -> {
         if (ScreenTypeUtils.getInstance().isFullScreen()) {
             Logger.d("screen_change_used", "切换到2/3屏幕");

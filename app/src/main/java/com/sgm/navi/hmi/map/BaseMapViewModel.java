@@ -133,7 +133,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private RouteRestrictionParam routeRestrictionParam;
     public ObservableField<Boolean> limitDriverVisibility;
     public ObservableField<Boolean> limitEndNumVisibility;
-    public ObservableField<Boolean> tmcModeVisibility;
     public ObservableField<String> limitDriverTitle;
     public ObservableField<String> limitEndNumOne;
     public ObservableField<String> limitEndNumTwo;
@@ -165,7 +164,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
-        tmcModeVisibility = new ObservableField<>(false);
         limitDriverTitle = new ObservableField<>("");
         limitEndNumOne = new ObservableField<>("");
         limitEndNumTwo = new ObservableField<>("");
@@ -836,45 +834,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     private void checkHomeOfficeShow() {
-        tmcModeVisibility.set(mModel.getHomeCompanyDisplay());
         if (!mModel.getHomeCompanyDisplay()) {
             cancelTimer();
             return;
         }
-
-        //Nd 557车型需要先判断是否是节假日
-        if (mModel.showNdGoHomeView()) {
-            tmcModeVisibility.set(false);
-            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
-            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (!ConvertUtils.isEmpty(homePoi) || !ConvertUtils.isEmpty(companyPoi)) {
-                mModel.sendReqHolidayList();
-            }
-        } else {
-            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
-            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(0, null);
-                    mView.setTMCView(1, null);
-                }
-            } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
-                mModel.refreshHomeOfficeTMC(true);
-            } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-                mModel.refreshHomeOfficeTMC(true);
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(1, null);
-                }
-            } else {
-                mModel.refreshHomeOfficeTMC(false);
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(0, null);
-                }
-            }
+        PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
+        PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
+        if (!ConvertUtils.isEmpty(homePoi) || !ConvertUtils.isEmpty(companyPoi)) {
+            mModel.sendReqHolidayList();
         }
     }
 
@@ -921,12 +888,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private void startGoHomeTimer() {
         cancelTimerGoHomeTimer();
-        goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
-            @Override
-            public void run() {
-                cancelTimerGoHomeTimer();
-                mGoHomeVisible.set(false);
-            }
+        goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            cancelTimerGoHomeTimer();
+            mGoHomeVisible.set(false);
         }, NumberUtils.NUM_30, NumberUtils.NUM_30);
 
     }
@@ -1546,46 +1510,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void setTMCView(RouteTMCParam param) {
-
-        //0代表家  1代表公司
-        if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
-            homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
+        mGoHomeVisible.set(mainBTNVisibility.get());
+        if (mView != null) {
+            mView.setNdGoHomeView(param);
         }
-        if (Boolean.TRUE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
-            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-        }
-
-        if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
-            homeTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-            }
-            if (mView != null) {
-                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
-            }
-        }
-        if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
-            companyTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-            }
-            if (mView != null) {
-                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
-            }
-        }
-
-        if (mModel.showNdGoHomeView()) {
-            mGoHomeVisible.set(true);
-            if (mView != null) {
-                mView.setNdGoHomeView(param);
-            }
-            startGoHomeTimer();
-            return;
-        }
-
-        if (0 == param.getMKey() && !ConvertUtils.isEmpty(getFavoritePoiInfo(PoiType.POI_COMPANY))) {
-            mModel.refreshHomeOfficeTMC(false);
-        }
+        startGoHomeTimer();
     }
 
     public void checkPopGuideLogin() {

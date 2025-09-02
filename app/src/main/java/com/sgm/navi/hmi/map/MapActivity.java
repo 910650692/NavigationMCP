@@ -50,11 +50,9 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
-import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.define.utils.NumberUtils;
-import com.sgm.navi.ui.BuildConfig;
 import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.FragmentIntent;
@@ -64,7 +62,6 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -538,16 +535,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     public void cruiseMuteOrUnMute(boolean isOpen) {
         mBinding.cruiseLayout.ivVoice.setSelected(isOpen);
         mBinding.cruiseLayout.tvTitle.setText(isOpen ? R.string.cruise_unmute : R.string.cruise_mute);
-    }
-
-    public void setTMCView(int key, List<RouteLightBarItem> routeLightBarItems) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (key == 0) {
-                mBinding.skIvBasicHomeProgress.refreshTMC(routeLightBarItems);
-            } else {
-                mBinding.skIvBasicBusProgress.refreshTMC(routeLightBarItems);
-            }
-        });
     }
 
     @Override
