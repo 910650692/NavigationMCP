@@ -20,9 +20,24 @@ import com.autonavi.gbl.user.account.model.AccountLogoutResult;
 import com.autonavi.gbl.user.account.model.AccountProfile;
 import com.autonavi.gbl.user.account.model.AccountProfileResult;
 import com.autonavi.gbl.user.account.model.AccountRegisterResult;
+import com.autonavi.gbl.user.account.model.AccountRequestType;
 import com.autonavi.gbl.user.account.model.AccountServiceParam;
 import com.autonavi.gbl.user.account.model.AccountUnRegisterResult;
 import com.autonavi.gbl.user.account.model.AvatarResult;
+import com.autonavi.gbl.user.account.model.CarltdAuthInfoRequest;
+import com.autonavi.gbl.user.account.model.CarltdAuthInfoResult;
+import com.autonavi.gbl.user.account.model.CarltdBindRequest;
+import com.autonavi.gbl.user.account.model.CarltdBindResult;
+import com.autonavi.gbl.user.account.model.CarltdCheckBindRequest;
+import com.autonavi.gbl.user.account.model.CarltdCheckBindResult;
+import com.autonavi.gbl.user.account.model.CarltdCheckTokenRequest;
+import com.autonavi.gbl.user.account.model.CarltdCheckTokenResult;
+import com.autonavi.gbl.user.account.model.CarltdLoginRequest;
+import com.autonavi.gbl.user.account.model.CarltdLoginResult;
+import com.autonavi.gbl.user.account.model.CarltdQLoginRequest;
+import com.autonavi.gbl.user.account.model.CarltdQLoginResult;
+import com.autonavi.gbl.user.account.model.CarltdUnBindRequest;
+import com.autonavi.gbl.user.account.model.CarltdUnBindResult;
 import com.autonavi.gbl.user.account.model.MobileLoginResult;
 import com.autonavi.gbl.user.account.model.QRCodeLoginConfirmRequest;
 import com.autonavi.gbl.user.account.model.QRCodeLoginConfirmResult;
@@ -40,6 +55,8 @@ import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
+import com.sgm.navi.service.define.user.account.CarCheckBindInfo;
+import com.sgm.navi.service.define.user.account.CarCheckBindResult;
 import com.sgm.navi.service.greendao.CommonManager;
 
 import java.io.IOException;
@@ -84,6 +101,137 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         refreshUserInfo();
     }
 
+    /**
+     * 获取绑定状态请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carCheckBindRequest(String sourceInput,String authInput){
+        CarltdCheckBindRequest carltdCheckBindRequest = new CarltdCheckBindRequest();
+        carltdCheckBindRequest.reqType = AccountRequestType.AccountTypeCarltdCheckBind;
+        carltdCheckBindRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdCheckBindRequest.authId = authInput; // 车企账号ID，必传
+        int res = mAccountService.executeRequest(carltdCheckBindRequest);
+        Logger.d(TAG, "carltdCheckBindRequest: result = " + res,sourceInput,authInput);
+        return res;
+    }
+
+    /**
+     * 车企账号绑定
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceInput   唯一设备ID
+     * @return 接口调用结果
+     */
+    public int carBindRequest(String sourceInput,String authInput,String deviceInput){
+        CarltdBindRequest carltdBindRequest = new CarltdBindRequest();
+        carltdBindRequest.reqType = AccountRequestType.AccountTypeCarltdBind;
+        carltdBindRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdBindRequest.authId = authInput; // 车企账号ID，必传
+        carltdBindRequest.deviceCode = deviceInput; // 唯一设备ID
+        int res = mAccountService.executeRequest(carltdBindRequest);
+        Logger.d(TAG, "carBindRequest: result = " + res,sourceInput,authInput,deviceInput);
+        return res;
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param userId        高德账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carLoginRequest(String sourceInput,String authInput,String userId){
+        CarltdLoginRequest carltdLoginRequest = new CarltdLoginRequest();
+        carltdLoginRequest.reqType = AccountRequestType.AccountTypeCarltdLogin;
+        carltdLoginRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdLoginRequest.authId = authInput; // 车企账号ID，必传
+        carltdLoginRequest.userId = userId; // 高德账号ID，必传
+        int res = mAccountService.executeRequest(carltdLoginRequest);
+        Logger.d(TAG, "carLoginRequest: result = " + res,sourceInput,authInput,userId);
+        return res;
+    }
+
+    /**
+     * 车企账号token检查
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param token         访问车企服务token
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carCheckTokenRequest(String sourceInput, String token, String authInput, String deviceCode){
+        CarltdCheckTokenRequest carltdCheckTokenRequest = new CarltdCheckTokenRequest();
+        carltdCheckTokenRequest.reqType = AccountRequestType.AccountTypeCarltdCheckToken;
+        carltdCheckTokenRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdCheckTokenRequest.token = token; // 访问车企服务token
+        carltdCheckTokenRequest.authId = authInput; // 车企账号ID，必传
+        carltdCheckTokenRequest.deviceCode = deviceCode; // 车机设备唯一标识
+        int res = mAccountService.executeRequest(carltdCheckTokenRequest);
+        Logger.d(TAG, "carCheckTokenRequest: result = " + res,sourceInput,token,authInput,deviceCode);
+        return res;
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carQLoginRequest(String sourceInput, String authInput){
+        CarltdQLoginRequest carltdCheckTokenRequest = new CarltdQLoginRequest();
+        carltdCheckTokenRequest.reqType = AccountRequestType.AccountTypeCarltdQLogin;
+        carltdCheckTokenRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdCheckTokenRequest.authId = authInput; // 车企账号ID，必传
+        int res = mAccountService.executeRequest(carltdCheckTokenRequest);
+        Logger.d(TAG, "carQLoginRequest: result = " + res,sourceInput,authInput);
+        return res;
+    }
+
+    /**
+     * 车企帐号解绑请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carUnBindRequest(String sourceInput, String authInput, String deviceCode){
+        CarltdUnBindRequest carltdUnBindRequest = new CarltdUnBindRequest();
+        carltdUnBindRequest.reqType = AccountRequestType.AccountTypeCarltdUnBind;
+        carltdUnBindRequest.sourceId = sourceInput; // 高德分配网络请求源ID
+        carltdUnBindRequest.authId = authInput; // 车企账号ID，必传
+        carltdUnBindRequest.deviceCode = deviceCode; // 车机设备唯一标识
+        int res = mAccountService.executeRequest(carltdUnBindRequest);
+        Logger.d(TAG, "carUnBindRequest: result = " + res,sourceInput,authInput);
+        return res;
+    }
+
+    /**
+     * 车企账号信息请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param uid
+     * @return 接口调用结果
+     */
+    public int carAuthInfoRequest(String sourceInput, String uid){
+        CarltdAuthInfoRequest carltdAuthInfoRequest = new CarltdAuthInfoRequest();
+        carltdAuthInfoRequest.sourceId = sourceInput;// 高德分配网络请求源ID，必传
+        carltdAuthInfoRequest.uid = uid;
+        int res = mAccountService.executeRequest(carltdAuthInfoRequest);
+        Logger.d(TAG, "carAuthInfoRequest: result = " + res,sourceInput,uid);
+        return res;
+    }
+
+    /**
+     * 通过SDK刷新用户信息
+     */
     public void refreshUserInfo() {
         if (mAccountService == null ||
                 ServiceInitStatus.ServiceInitDone != mAccountService.isInit()) {
@@ -249,7 +397,7 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     }
 
     /**
-     * 是否扫码登陆
+     * 是否手机二维码扫码登陆
      * @param errCode 错误码
      * @param taskId 任务ID
      * @param result 检查结果
@@ -259,6 +407,121 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         if (result != null) {
             if (Logger.openLog) {
                 Logger.i(TAG, "QRCodeLoginConfirmResult notify: res=", result);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 检查车企账号绑定状态回调通知
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 绑定状态回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdCheckBindResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdCheckBindResult notify: res=", result.result,result.data.hasBind);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号绑定返回结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号绑定回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdBindResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdBindResult notify: res=", result.result);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号登录返回结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号登录回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdLoginResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdLoginResult notify: res=", result.result,result.data.uid,
+                        result.data.nickname);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号Token检查返回结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号Token检查回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdCheckTokenResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdCheckTokenResult notify: res=", result.result,result.authId,
+                        result.mobile,result.profile.uid,result.profile.nickname);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号快速登录返回结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号快速登录回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdQLoginResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdQLoginResult notify: res=", result.result,result.userId,
+                        result.token);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号解绑回调结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号解绑回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdUnBindResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdQLoginResult notify: res=", result.result);
+            }
+        }
+        notifyAccountRequestSuccess(errCode,taskId,result);
+    }
+
+    /**
+     * 车企账号信息回调结果处理
+     * @param errCode 错误码
+     * @param taskId task id
+     * @param result 车企账号信息回调结果数据
+     */
+    @Override
+    public void notify(int errCode, int taskId, CarltdAuthInfoResult result) {
+        if (result != null) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "CarltdAuthInfoResult notify: res=", result.result);
             }
         }
         notifyAccountRequestSuccess(errCode,taskId,result);
@@ -282,9 +545,9 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
             if (result instanceof VerificationCodeResult) {
                 callBack.notifyVerificationCode(errCode, taskId, convertVerificationCodeInfo((VerificationCodeResult)result));
             } else if (result instanceof AccountCheckResult) {
-                callBack.notifyAccountCheck(errCode, taskId, getAccountBaseInfo(((AccountCheckResult) result).code,
-                        ((AccountCheckResult) result).result, ((AccountCheckResult) result).message,
-                        ((AccountCheckResult) result).timestamp,((AccountCheckResult) result).version));
+                AccountCheckResult resultTemp = (AccountCheckResult) result;
+                callBack.notifyAccountCheck(errCode, taskId, getAccountBaseInfo(resultTemp.code, resultTemp.result,
+                        resultTemp.message, resultTemp.timestamp,resultTemp.version));
             } else if (result instanceof AccountRegisterResult) {
                 callBack.notifyAccountRegister(errCode, taskId, convertAccountUserInfo((AccountRegisterResult)result));
             } else if (result instanceof MobileLoginResult) {
@@ -301,6 +564,24 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
                 callBack.notifyAccountLogout(errCode, taskId, convertAccountLogoutInfo((AccountLogoutResult)result));
             } else if (result instanceof AccountUnRegisterResult) {
                 callBack.notifyAccountUnRegister(errCode, taskId, convertAccountUnRegisterInfo((AccountUnRegisterResult)result));
+            } else if (result instanceof CarltdCheckBindResult) {
+                callBack.notifyCarltdCheckBindResult(errCode, taskId, convertCarltdCheckBindInfo((CarltdCheckBindResult)result));
+            } else if (result instanceof CarltdBindResult) {
+                CarltdCheckBindResult resultTemp = (CarltdCheckBindResult)result;
+                callBack.notifyCarltdBindResult(errCode, taskId, getCarltdCheckBindInfo(resultTemp.code,resultTemp.result,
+                        resultTemp.message,resultTemp.timestamp,resultTemp.version));
+            } else if (result instanceof CarltdLoginResult) {
+                callBack.notifyCarltdLoginResult(errCode, taskId, convertCarltdLoginInfo((CarltdLoginResult)result));
+            } else if (result instanceof CarltdCheckTokenResult) {
+                callBack.notifyCarltdCheckTokenResult(errCode, taskId, convertCarltdCheckTokenInfo((CarltdCheckTokenResult)result));
+            } else if (result instanceof CarltdQLoginResult) {
+                callBack.notifyCarltdQLoginResult(errCode, taskId, convertCarltdQLoginInfo((CarltdQLoginResult)result));
+            } else if (result instanceof CarltdUnBindResult) {
+                CarltdUnBindResult resultTemp = (CarltdUnBindResult)result;
+                callBack.notifyCarltdUnBindResult(errCode, taskId, getCarltdCheckBindInfo(resultTemp.code,resultTemp.result,
+                        resultTemp.message,resultTemp.timestamp,resultTemp.version));
+            } else if (result instanceof CarltdAuthInfoResult) {
+                callBack.notifyCarltdAuthInfoResult(errCode, taskId, convertCarltdAuthInfo((CarltdAuthInfoResult)result));
             }
         }
     }
@@ -513,6 +794,118 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
             info.setMobile(result.data.mobile);
             info.setReason(result.data.reason);
         }
+        return info;
+    }
+
+    /**
+     * 获取绑定结果基本信息
+     * @param code 错误码
+     * @param result 结果
+     * @param message 消息
+     * @param timestamp 时间戳
+     * @param version 版本
+     * @return 基本信息
+     */
+    private CarCheckBindInfo getCarltdCheckBindInfo(final int code, final String result,
+                                                    final String message, final String timestamp, final String version) {
+        if (result == null) {
+            return null;
+        }
+        CarCheckBindInfo info = new CarCheckBindInfo();
+        info.setCode(code);
+        info.setResult(result);
+        info.setMessage(message);
+        info.setTimestamp(timestamp);
+        info.setVersion(version);
+        return info;
+    }
+
+    /**
+     * 转换车企账号绑定返回结果
+     * @param result 绑定结果
+     * @return 帐号绑定信息
+     */
+    private CarCheckBindInfo convertCarltdCheckBindInfo(final CarltdCheckBindResult result) {
+        if (result == null) {
+            return null;
+        }
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
+                result.message,result.timestamp,result.version);
+        CarCheckBindResult carCheckBindResult = new CarCheckBindResult();
+        carCheckBindResult.setHasBind(result.data.hasBind);
+        info.setCarCheckBindResult(carCheckBindResult);
+        return info;
+    }
+
+    /**
+     * 转换车企账号登录返回结果
+     * @param result 登录结果
+     * @return 帐号登录信息
+     */
+    private CarCheckBindInfo convertCarltdLoginInfo(final CarltdLoginResult result) {
+        if (result == null) {
+            return null;
+        }
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
+                result.message,result.timestamp,result.version);
+        if (result.data != null) {
+            mEmail = result.data.email;
+            info.setAccountProfileInfo(convertAccountProfileInfo(result.data.uid, result.data.username,result.data.nickname,
+                    result.data.avatar,result.data.mobile));
+        }
+        return info;
+    }
+
+    /**
+     * 转换Token检查返回结果
+     * @param result Token检查结果
+     * @return Token检查信息
+     */
+    private CarCheckBindInfo convertCarltdCheckTokenInfo(final CarltdCheckTokenResult result) {
+        if (result == null) {
+            return null;
+        }
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
+                result.message,result.timestamp,result.version);
+        if (result.profile != null) {
+            mEmail = result.profile.email;
+            info.setAccountProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
+                    result.profile.avatar,result.profile.mobile));
+        }
+        return info;
+    }
+
+    /**
+     * 转换车企账号快速登录返回结果
+     * @param result 车企账号快速登录检查结果
+     * @return 快速登录信息
+     */
+    private CarCheckBindInfo convertCarltdQLoginInfo(final CarltdQLoginResult result) {
+        if (result == null) {
+            return null;
+        }
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
+                result.message,result.timestamp,result.version);
+        info.setUserId(result.userId);
+        info.setToken(result.token);
+        return info;
+    }
+
+    /**
+     * 转换车企账号信息返回结果
+     * @param result 车企账号信息检查结果
+     * @return 车企账号信息
+     */
+    private CarCheckBindInfo convertCarltdAuthInfo(final CarltdAuthInfoResult result) {
+        if (result == null) {
+            return null;
+        }
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
+                result.message,result.timestamp,result.version);
+        info.setAuthId(result.authId);
+        info.setToken(result.token);
+        info.setMobileCode(result.mobileCode);
+        info.setDeviceCode(result.deviceCode);
         return info;
     }
 

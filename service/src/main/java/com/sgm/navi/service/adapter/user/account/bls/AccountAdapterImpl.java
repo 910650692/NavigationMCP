@@ -44,6 +44,41 @@ public class AccountAdapterImpl implements IAccountApi {
     }
 
     @Override
+    public int carCheckBindRequest(String sourceInput,String authInput) {
+        return mAdapterImplHelper.carCheckBindRequest(sourceInput,authInput);
+    }
+
+    @Override
+    public int carBindRequest(String sourceInput, String authInput, String deviceInput) {
+        return mAdapterImplHelper.carBindRequest(sourceInput,authInput,deviceInput);
+    }
+
+    @Override
+    public int carLoginRequest(String sourceInput, String authInput, String userId) {
+        return mAdapterImplHelper.carLoginRequest(sourceInput,authInput,userId);
+    }
+
+    @Override
+    public int carCheckTokenRequest(String sourceInput, String token, String authInput, String deviceCode) {
+        return mAdapterImplHelper.carCheckTokenRequest(sourceInput,token,authInput,deviceCode);
+    }
+
+    @Override
+    public int carQLoginRequest(String sourceInput, String authInput) {
+        return mAdapterImplHelper.carQLoginRequest(sourceInput,authInput);
+    }
+
+    @Override
+    public int carUnBindRequest(String sourceInput, String authInput, String deviceCode) {
+        return mAdapterImplHelper.carUnBindRequest(sourceInput,authInput,deviceCode);
+    }
+
+    @Override
+    public int carAuthInfoRequest(String sourceInput, String uid) {
+        return mAdapterImplHelper.carAuthInfoRequest(sourceInput,uid);
+    }
+
+    @Override
     public void refreshUserInfo() {
         mAdapterImplHelper.refreshUserInfo();
     }

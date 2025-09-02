@@ -2,12 +2,12 @@ package com.sgm.navi.service.define.user.account;
 
 
 public class AccountProfileInfo {
-    private String mUid;
-    private String mUsername;
-    private String mNickname;
-    private String mAvatar;
-    private String mMobile;
-    private String mEmail;
+    private String mUid = "";
+    private String mUsername = "";
+    private String mNickname = "";
+    private String mAvatar = "";
+    private String mMobile = "";
+    private String mEmail = "";
 
     public String getUid() {
         return mUid;

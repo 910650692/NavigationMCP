@@ -1177,7 +1177,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsWashCarView.poiWashCarHours.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");;
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsWashCarView.poiBusinessIcon,

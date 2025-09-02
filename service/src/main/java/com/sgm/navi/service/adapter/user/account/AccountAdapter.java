@@ -25,6 +25,88 @@ public final class AccountAdapter {
     }
 
     /**
+     * 获取绑定状态请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carCheckBindRequest(String sourceInput,String authInput) {
+        return mAccountApi.carCheckBindRequest(sourceInput,authInput);
+    }
+
+    /**
+     * 车企账号绑定
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceInput   唯一设备ID
+     * @return 接口调用结果
+     */
+    public int carBindRequest(String sourceInput,String authInput,String deviceInput) {
+        return mAccountApi.carBindRequest(sourceInput,authInput,deviceInput);
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param userId        高德账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carLoginRequest(String sourceInput,String authInput,String userId) {
+        return mAccountApi.carLoginRequest(sourceInput,authInput,userId);
+    }
+
+    /**
+     * 车企账号token检查
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param token         访问车企服务token
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carCheckTokenRequest(String sourceInput, String token, String authInput, String deviceCode) {
+        return mAccountApi.carCheckTokenRequest(sourceInput,token,authInput,deviceCode);
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carQLoginRequest(String sourceInput, String authInput) {
+        return mAccountApi.carQLoginRequest(sourceInput,authInput);
+    }
+
+    /**
+     * 车企帐号解绑请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carUnBindRequest(String sourceInput,String authInput,String deviceCode) {
+        return mAccountApi.carUnBindRequest(sourceInput,authInput,deviceCode);
+    }
+
+    /**
+     * 车企账号信息请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param uid
+     * @return 接口调用结果
+     */
+    public int carAuthInfoRequest(String sourceInput,String uid) {
+        return mAccountApi.carAuthInfoRequest(sourceInput,uid);
+    }
+
+    /**
      * 从SDK获取用户信息到本地
      */
     public void refreshUserInfo() {

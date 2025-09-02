@@ -15,6 +15,7 @@ import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
+import com.sgm.navi.service.define.user.account.CarCheckBindInfo;
 import com.sgm.navi.service.define.user.msgpush.MsgCarInfo;
 import com.sgm.navi.service.greendao.CommonManager;
 import com.sgm.navi.service.greendao.history.HistoryManager;
@@ -76,13 +77,95 @@ public final class AccountPackage implements AccountAdapterCallBack {
         return info;
     }
 
+    /**
+     * 获取绑定状态请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carCheckBindRequest(String sourceInput,String authInput) {
+        return mAccountAdapter.carCheckBindRequest(sourceInput,authInput);
+    }
+
+    /**
+     * 车企账号绑定
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceInput   唯一设备ID
+     * @return 接口调用结果
+     */
+    public int carBindRequest(String sourceInput,String authInput,String deviceInput) {
+        return mAccountAdapter.carBindRequest(sourceInput,authInput,deviceInput);
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param userId        高德账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carLoginRequest(String sourceInput,String authInput,String userId) {
+        return mAccountAdapter.carLoginRequest(sourceInput,authInput,userId);
+    }
+
+    /**
+     * 车企账号token检查
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param token         访问车企服务token
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carCheckTokenRequest(String sourceInput,String token,String authInput,String deviceCode) {
+        return mAccountAdapter.carCheckTokenRequest(sourceInput,token,authInput,deviceCode);
+    }
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    public int carQLoginRequest(String sourceInput,String authInput) {
+        return mAccountAdapter.carQLoginRequest(sourceInput,authInput);
+    }
+
+    /**
+     * 车企帐号解绑请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    public int carUnBindRequest(String sourceInput,String authInput,String deviceCode) {
+        return mAccountAdapter.carUnBindRequest(sourceInput,authInput,deviceCode);
+    }
+
+    /**
+     * 车企账号信息请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param uid
+     * @return 接口调用结果
+     */
+    public int carAuthInfoRequest(String sourceInput,String uid) {
+        return mAccountAdapter.carAuthInfoRequest(sourceInput,uid);
+    }
 
     /**
      * 是否真正登录  用此方法
      * @return 用户信息
      */
     public boolean reallyLogin() {
-        AccountProfileInfo info = new AccountProfileInfo();
+        mAccountAdapter.refreshUserInfo();
+        AccountProfileInfo info;
         final String valueJson = mCommonManager.getValueByKey(UserDataCode.SETTING_GET_USERINFO);
         Logger.i("getUserInfo valueJson = " + valueJson);
         if (!TextUtils.isEmpty(valueJson)) {
@@ -163,7 +246,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
             mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
             PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().startListen(result.getProfileInfo().getUid());
+            MsgPushPackage.getInstance().startListen(info.getUid());
             BehaviorPackage.getInstance().setLoginInfo();
         }
         for (AccountCallBack observer : mCallBacks.values()) {
@@ -189,7 +272,7 @@ public final class AccountPackage implements AccountAdapterCallBack {
     public void notifyAccountLogout(final int errCode, final int taskId, final AccountUserInfo result) {
 
         if (result != null && result.getCode() == 1) {
-            Logger.i("AccountModel", "退出登录成功");
+            Logger.i("notifyAccountLogout", "退出登录成功");
             // 退出登录后，清除数据库中的用户信息
             mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
             mIsLogin = false;
@@ -209,6 +292,103 @@ public final class AccountPackage implements AccountAdapterCallBack {
     public void notifyAccountUnRegister(final int errCode, final int taskId, final AccountUserInfo result) {
         for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountUnRegister(errCode, taskId, result);
+        }
+    }
+
+    @Override
+    public void notifyCarltdCheckBindResult(int errCode, int taskId, CarCheckBindInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdCheckBindResult(errCode, taskId, result);
+        }
+    }
+
+    @Override
+    public void notifyCarltdBindResult(int errCode, int taskId, CarCheckBindInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdBindResult(errCode, taskId, result);
+        }
+    }
+
+    @Override
+    public void notifyCarltdLoginResult(int errCode, int taskId, CarCheckBindInfo result) {
+        if (result != null && result.getCode() == 1) {
+            mIsLogin = true;
+            Logger.i("notifyCarltdLoginResult mIsLogin = true",
+                    "result.getAccountProfileInfo().getUid() = " + result.getAccountProfileInfo().getUid());
+            final AccountProfileInfo info = GsonUtils.convertToT(result.getAccountProfileInfo(), AccountProfileInfo.class);
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+            MsgPushPackage.getInstance().startListen(info.getUid());
+            BehaviorPackage.getInstance().setLoginInfo();
+        }
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdLoginResult(errCode, taskId, result);
+            AccountUserInfo accountUserInfo = new AccountUserInfo();
+            accountUserInfo.setCode(result.getCode());
+            accountUserInfo.setResult(result.getResult());
+            accountUserInfo.setMessage(result.getMessage());
+            accountUserInfo.setTimestamp(result.getTimestamp());
+            accountUserInfo.setVersion(result.getVersion());
+            accountUserInfo.setProfileInfo(result.getAccountProfileInfo());
+            observer.notifyQRCodeLoginConfirm(errCode, taskId, accountUserInfo);
+        }
+    }
+
+    @Override
+    public void notifyCarltdCheckTokenResult(int errCode, int taskId, CarCheckBindInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdCheckTokenResult(errCode, taskId, result);
+        }
+    }
+
+    @Override
+    public void notifyCarltdQLoginResult(int errCode, int taskId, CarCheckBindInfo result) {
+        if (result != null && result.getCode() == 1) {
+            mIsLogin = true;
+            Logger.i("notifyCarltdQLoginResult mIsLogin = true",
+                    "result.getAccountProfileInfo().getUid() = " + result.getAccountProfileInfo().getUid());
+            final AccountProfileInfo info = GsonUtils.convertToT(result.getAccountProfileInfo(), AccountProfileInfo.class);
+            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+            MsgPushPackage.getInstance().startListen(info.getUid());
+            BehaviorPackage.getInstance().setLoginInfo();
+        }
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdQLoginResult(errCode, taskId, result);
+            AccountUserInfo accountUserInfo = new AccountUserInfo();
+            accountUserInfo.setCode(result.getCode());
+            accountUserInfo.setResult(result.getResult());
+            accountUserInfo.setMessage(result.getMessage());
+            accountUserInfo.setTimestamp(result.getTimestamp());
+            accountUserInfo.setVersion(result.getVersion());
+            accountUserInfo.setProfileInfo(result.getAccountProfileInfo());
+            observer.notifyQRCodeLoginConfirm(errCode, taskId, accountUserInfo);
+        }
+    }
+
+    @Override
+    public void notifyCarltdUnBindResult(int errCode, int taskId, CarCheckBindInfo result) {
+        if (result != null && result.getCode() == 1) {
+            Logger.i("notifyCarltdUnBindResult", "退出登录成功");
+            // 退出登录后，清除数据库中的用户信息
+            mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
+            mIsLogin = false;
+            Logger.i("notifyCarltdUnBindResult mIsLogin = false");
+            PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
+            MsgPushPackage.getInstance().stopListen();
+            BehaviorPackage.getInstance().setLoginInfo();
+            mHistoryManager.deleteValueByKey(2);
+        }
+
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdUnBindResult(errCode, taskId, result);
+        }
+    }
+
+    @Override
+    public void notifyCarltdAuthInfoResult(int errCode, int taskId, CarCheckBindInfo result) {
+        for (AccountCallBack observer : mCallBacks.values()) {
+            observer.notifyCarltdAuthInfoResult(errCode, taskId, result);
         }
     }
 
