@@ -113,7 +113,7 @@
         <activity
             android:name=".rearscreen.RearScreenActivity"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="uiMode|locale|layoutDirection|navigation|keyboardHidden"
+            android:configChanges="uiMode|mcc|mnc|keyboardHidden|keyboard|fontScale|screenLayout|screenSize|smallestScreenSize|locale|colorMode|layoutDirection|orientation"
             android:excludeFromRecents="true"
             android:exported="true"
             android:taskAffinity="com.sgm.navi.hmi.rearscreen"

@@ -54,6 +54,10 @@
         <item name="android:windowExitAnimation">@null</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowShowWallpaper">true</item>
+        <!-- 导航栏透明 -->
+        <item name="android:navigationBarColor">@color/transparent</item>
+        <!-- 状态栏透明 -->
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
 </resources>
