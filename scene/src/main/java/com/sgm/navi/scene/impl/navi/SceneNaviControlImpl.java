@@ -468,13 +468,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
 
     private void updateSystemNaviVolume(boolean isMute) {
         int currentSystemVolume = getNaviVolume();
-        int lastSystemVolume = mNaviPackage.getCurrentNaviVolume();
+        int lastSystemVolume = mNaviPackage.getLastNaviVolume();
         Logger.i(TAG, "updateSystemNaviVolume isMute:", isMute, " currentSystemVolume:",
                 currentSystemVolume, " lastSystemNaviVolume:", lastSystemVolume);
         // 当前静音并且系统不是静音状态，进行静音操作
         if (isMute && currentSystemVolume > NumberUtils.NUM_0) {
             setNaviVolume(NumberUtils.NUM_0);
-            mNaviPackage.setCurrentNaviVolume(currentSystemVolume);
+            mNaviPackage.setLastNaviVolume(currentSystemVolume);
             // 不是静音，但是目前系统音量是静音状态，主动给音量设值
         } else if (!isMute && currentSystemVolume <= NumberUtils.NUM_0) {
             // 如果最后一次音量设置是有效值，就设置给系统。不然默认设置为最小激活值，这是系统的行为，导航不需要处理
@@ -488,11 +488,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void onNaviVolumeChanged(int volume) {
         mIsMute = mNaviPackage.isMute();
         Logger.i(TAG, "onNaviVolumeChanged volume:", volume, " mIsMute:", mIsMute,
-                " mLastSystemNaviVolume:", mNaviPackage.getCurrentNaviVolume());
+                " mLastSystemNaviVolume:", mNaviPackage.getLastNaviVolume());
         // 导航音量为0时，导航音量静音
         if (volume == NumberUtils.NUM_0) {
             if (!mIsMute) {
-                mNaviPackage.setCurrentNaviVolume(NumberUtils.NUM_0);
+                mNaviPackage.setLastNaviVolume(NumberUtils.NUM_0);
                 changeMuteStatus();
                 return;
             }

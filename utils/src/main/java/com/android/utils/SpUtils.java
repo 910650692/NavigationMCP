@@ -11,6 +11,7 @@ public class SpUtils {
     public static final String SP_KEY_LOG_SWITCH = "log_switch";
     public static final String SP_KEY_GAO_DE_LOG_SWITCH = "gao_de_log_switch";
     public static final String SP_KEY_POSITION_LOG_SWITCH = "position_log_switch";
+    public static final String SP_KEY_LAST_VOLUME = "last_volume";
     private static SharedPreferences sp;
 
     public SharedPreferences getSp() {

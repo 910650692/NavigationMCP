@@ -1,11 +1,14 @@
 package com.sgm.navi.service.logicpaket.navi;
 
+import static com.android.utils.SpUtils.SP_KEY_LAST_VOLUME;
+
 import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.DeviceUtils;
 import com.android.utils.NetWorkUtils;
+import com.android.utils.SpUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -128,8 +131,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * 当前导航类型 -1:未知 0:GPS导航 1:模拟导航
      */
     private int mCurrentNaviType = NumberUtils.NUM_ERROR;
-    // 缓存初次进入导航的系统导航音量值，用来做恢复操作
-    private int mLastSystemNaviVolume = NumberUtils.NUM_ERROR;
     private List<OnPreViewStatusChangeListener> mOnPreViewStatusChangeListeners =
             new CopyOnWriteArrayList<>();
 
@@ -162,9 +163,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Override
     public void onSdkInitSuccess() {
         int muteStatus = SettingAdapter.getInstance().getConfigKeyMute();
-        if (muteStatus == NumberUtils.NUM_1) {
-            SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
-        }
+        Logger.d(TAG, "muteStatus:", muteStatus);
+        mIsMute = muteStatus == NumberUtils.NUM_1;
         StartService.getInstance().unregisterSdkCallback(TAG, this);
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
             Logger.d("AppFocusHelper", "汽车环境，开启导航互斥");
@@ -603,11 +603,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         SettingAdapter.getInstance().setConfigKeyMute(isMute ? 1 : 0);
         mIsMute = isMute;
         if (isMute) {
-            setCurrentNaviVolume(mSignalAdapter.getNaviVolume());
+            setLastNaviVolume(mSignalAdapter.getNaviVolume());
             mSignalAdapter.setNaviVolume(NumberUtils.NUM_0);
         } else {
-            if (mLastSystemNaviVolume > NumberUtils.NUM_0) {
-                mSignalAdapter.setNaviVolume(mLastSystemNaviVolume);
+            int lastNaviVolume = getLastNaviVolume();
+            if (lastNaviVolume > NumberUtils.NUM_0) {
+                mSignalAdapter.setNaviVolume(lastNaviVolume);
             }
         }
     }
@@ -617,12 +618,12 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         mIsMute = isMute;
     }
 
-    public void setCurrentNaviVolume(int volume) {
-        mLastSystemNaviVolume = volume;
+    public void setLastNaviVolume(int volume) {
+        SpUtils.getInstance().putInt(SP_KEY_LAST_VOLUME, volume);
     }
 
-    public int getCurrentNaviVolume() {
-        return mLastSystemNaviVolume;
+    public int getLastNaviVolume() {
+        return SpUtils.getInstance().getInt(SP_KEY_LAST_VOLUME, NumberUtils.NUM_ERROR);
     }
 
     /*是否静音*/
@@ -1616,10 +1617,6 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     public void closeNavi() {
         Logger.i(TAG, "closeNavi");
         String currentNaviStatus = mNavistatusAdapter.getCurrentNaviStatus();
-        int muteStatus = SettingAdapter.getInstance().getConfigKeyMute();
-        if (muteStatus == NumberUtils.NUM_1) {
-            SettingAdapter.getInstance().setConfigKeyMute(NumberUtils.NUM_0);
-        }
         if (currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING)) {
             mNavistatusAdapter.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
         }
