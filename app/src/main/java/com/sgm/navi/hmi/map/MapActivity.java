@@ -120,6 +120,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
+        Logger.d(TAG, "onCreate isShowMusicTab = " + FloatWindowReceiver.isShowMusicTab);
         mViewModel.onWindowSideChanged(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
         mViewModel.reSetSwitchIcon();
     }
