@@ -1407,11 +1407,17 @@ public final class VoiceSearchManager {
             responseSearchEmpty();
             return;
         }
-
-        if (!TextUtils.isEmpty(mSortValue)) {
+        final int count = mSearchResultList.size();
+        if (count == 1) {
+            mWaitPoiSearch = true;
+        } else if (!TextUtils.isEmpty(mSortValue)) {
             //继续执行条件筛选
             ThreadManager.getInstance().asyncDelay(() -> {
-                SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                if (null != mCenterPoint) {
+                    SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue, mCenterPoint);
+                } else {
+                    SearchPackage.getInstance().voiceSortPoi(MapType.MAIN_SCREEN_MAIN_MAP, mSortValue);
+                }
                 mSortValue = "";
             }, 500, TimeUnit.MILLISECONDS);
         } else {
