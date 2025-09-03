@@ -333,7 +333,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
 
         final int startWidth = 1;
-        final int endWidth = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.navi_main_float_window_width); // 目标宽度
+        final int endWidth = (int) getResources().getDimension(com.sgm.navi.service.R.dimen.navi_main_float_window_width); // 目标宽度
 
         if (widthAnimator != null && widthAnimator.isRunning()) {
             widthAnimator.cancel();
