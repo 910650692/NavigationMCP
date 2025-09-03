@@ -2,7 +2,7 @@
       
     <path android:fillColor="@color/route_weather_bg" android:fillType="evenOdd" android:pathData="M0,0h48v48h-48z" android:strokeColor="#00000000" android:strokeWidth="1"/>
       
-    <path android:fillColor="@color/white" android:fillType="nonZero" android:pathData="M12.246,16.285C12.774,11.015 17.195,7 22.472,7C26.597,7 30.327,9.48 31.936,13.292C32.375,13.224 32.819,13.19 33.264,13.19C38.089,13.19 42,17.116 42,21.959C42,26.803 38.089,30.729 33.264,30.729C33.092,30.729 32.921,30.724 32.75,30.714L32.75,30.729L28.517,30.729C24.877,27.596 22.819,26.029 22.343,26.029C21.867,26.029 19.43,27.596 15.034,30.729L12.194,30.729C8.221,30.729 5,27.495 5,23.507C5,19.518 8.221,16.285 12.194,16.285C12.212,16.285 12.229,16.285 12.246,16.285Z" android:strokeColor="#00000000" android:strokeWidth="1"/>
+    <path android:fillColor="@color/always_white" android:fillType="nonZero" android:pathData="M12.246,16.285C12.774,11.015 17.195,7 22.472,7C26.597,7 30.327,9.48 31.936,13.292C32.375,13.224 32.819,13.19 33.264,13.19C38.089,13.19 42,17.116 42,21.959C42,26.803 38.089,30.729 33.264,30.729C33.092,30.729 32.921,30.724 32.75,30.714L32.75,30.729L28.517,30.729C24.877,27.596 22.819,26.029 22.343,26.029C21.867,26.029 19.43,27.596 15.034,30.729L12.194,30.729C8.221,30.729 5,27.495 5,23.507C5,19.518 8.221,16.285 12.194,16.285C12.212,16.285 12.229,16.285 12.246,16.285Z" android:strokeColor="#00000000" android:strokeWidth="1"/>
       
     <path android:fillAlpha="0.6" android:fillColor="#FFFFFF" android:fillType="nonZero" android:pathData="M14.708,42L28.461,35.153L23.202,32.352L26.438,31.418L22.84,28.65C22.571,28.443 22.202,28.425 21.915,28.605L15.921,32.352L21.18,35.153L14.708,42Z" android:strokeAlpha="0.6" android:strokeColor="#00000000" android:strokeWidth="1"/>
     
