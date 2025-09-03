@@ -13,6 +13,7 @@ public class CarCheckBindInfo {
     private String mVersion = "";
     private CarCheckBindResult mCarCheckBindResult;
     private AccountProfileInfo mAccountProfileInfo;
+    private AccountProfileCarBind mAccountProfileCarBind;
 
     public String getUserId() {
         return mUserId;
@@ -108,5 +109,13 @@ public class CarCheckBindInfo {
 
     public void setAccountProfileInfo(AccountProfileInfo accountProfileInfo) {
         this.mAccountProfileInfo = accountProfileInfo;
+    }
+
+    public AccountProfileCarBind getAccountProfileCarBind() {
+        return mAccountProfileCarBind;
+    }
+
+    public void setAccountProfileCarBind(AccountProfileCarBind accountProfileCarBind) {
+        this.mAccountProfileCarBind = accountProfileCarBind;
     }
 }

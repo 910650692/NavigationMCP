@@ -64,7 +64,7 @@ public class HistoryManager {
             Logger.i(TAG, "insertOrReplace: mId:", history.getMId(), " mType:", history.getMType(),
                     " mRideRunType:", history.getMRideRunType(), " mStartTime:", history.getMStartTime(),
                     " mTimeInterval:", history.getMTimeInterval(), " mEndPoiName:", history.getMEndPoiName(),
-                    " mPoiId:", history.getMPoiId(), " mKeyWord:", history.getMKeyWord(),
+                    " mPoiId:", history.getMPoiId(), " mKeyWord:", history.getMKeyWord(),history.getMKeyWord()==null,
                     " mRunDistance:", history.getMRunDistance(), " mIsCompleted:", history.getMIsCompleted());
         }
         history.setMUpdateTime(new Date());

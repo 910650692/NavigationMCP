@@ -429,7 +429,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return;
         }
         if (Logger.openLog) {
-            Logger.i(TAG, "behaviorDataIds -> " + behaviorDataIds);
+            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds.length);
         }
 
         // 通过id获取行为数据
@@ -530,7 +530,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return null;
         }
         if (Logger.openLog) {
-            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds);
+            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds.length);
         }
         final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans = new ArrayList<>();
         // 通过id获取行为数据
@@ -562,8 +562,8 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             for (History history : list) {
                 if (Logger.openLog) {
                     Logger.i(TAG, "getDrivingRecordDataList: history info -> ",
-                            history.getMId(),history.getMKeyWord(),history.getMType(),
-                            history.getMRideRunType(), history.getMAddress());
+                            history.getMId(),history.getMKeyWord(),history.getMKeyWord()==null
+                            ,history.getMType(), history.getMRideRunType(), history.getMAddress());
                 }
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
                 dataBean.setId(history.getMPoiId());// 数据ID
@@ -607,8 +607,8 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             for (History history : list) {
                 if (Logger.openLog) {
                     Logger.i(TAG, "getDrivingRecordCruiseDataList: history info -> ",
-                            history.getMId(),history.getMKeyWord(),history.getMType(),
-                            history.getMRideRunType(), history.getMAddress());
+                            history.getMId(),history.getMKeyWord(),history.getMKeyWord()==null,
+                            history.getMType(), history.getMRideRunType(), history.getMAddress());
                 }
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
                 dataBean.setId(history.getMPoiId());// 数据ID

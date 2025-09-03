@@ -19,6 +19,7 @@ import com.autonavi.gbl.user.account.model.AccountCheckResult;
 import com.autonavi.gbl.user.account.model.AccountLogoutResult;
 import com.autonavi.gbl.user.account.model.AccountProfile;
 import com.autonavi.gbl.user.account.model.AccountProfileResult;
+import com.autonavi.gbl.user.account.model.AccountProvider;
 import com.autonavi.gbl.user.account.model.AccountRegisterResult;
 import com.autonavi.gbl.user.account.model.AccountRequestType;
 import com.autonavi.gbl.user.account.model.AccountServiceParam;
@@ -42,6 +43,7 @@ import com.autonavi.gbl.user.account.model.MobileLoginResult;
 import com.autonavi.gbl.user.account.model.QRCodeLoginConfirmRequest;
 import com.autonavi.gbl.user.account.model.QRCodeLoginConfirmResult;
 import com.autonavi.gbl.user.account.model.QRCodeLoginResult;
+import com.autonavi.gbl.user.account.model.UserCar;
 import com.autonavi.gbl.user.account.model.VerificationCodeResult;
 import com.autonavi.gbl.user.account.observer.IAccountServiceObserver;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
@@ -53,13 +55,17 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.user.account.AccountAdapterCallBack;
 import com.sgm.navi.service.define.code.UserDataCode;
 import com.sgm.navi.service.define.user.account.AccessTokenParam;
+import com.sgm.navi.service.define.user.account.AccountProfileCarBind;
 import com.sgm.navi.service.define.user.account.AccountProfileInfo;
+import com.sgm.navi.service.define.user.account.AccountProviderCarBind;
 import com.sgm.navi.service.define.user.account.AccountUserInfo;
 import com.sgm.navi.service.define.user.account.CarCheckBindInfo;
 import com.sgm.navi.service.define.user.account.CarCheckBindResult;
+import com.sgm.navi.service.define.user.account.UserCarBindInfo;
 import com.sgm.navi.service.greendao.CommonManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 
@@ -375,11 +381,10 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
     @Override
     public void notify(final int errCode, final int taskId, final AccountLogoutResult result) {
         if (result != null && result.code == 1) {
-            Logger.i(TAG, "AccountLogoutResult notify: res=" + result.code + "; taskId=" + taskId);
-            Logger.i(TAG, "状态: 已登出 ");
+            Logger.i(TAG, "AccountLogoutResult: 已登出 res=" + result.code + "; taskId=" + taskId);
             mBlAosServiceManager.setUid("");
         } else {
-            Logger.i(TAG, "登出失败 ");
+            Logger.i(TAG, "AccountLogoutResult: 登出失败 ", result.code);
         }
         notifyAccountRequestSuccess(errCode,taskId,result);
     }
@@ -865,12 +870,31 @@ public class AccountAdapterImplHelper implements IAccountServiceObserver {
         if (result == null) {
             return null;
         }
-        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code,result.result,
-                result.message,result.timestamp,result.version);
-        if (result.profile != null) {
-            mEmail = result.profile.email;
-            info.setAccountProfileInfo(convertAccountProfileInfo(result.profile.uid, result.profile.username,result.profile.nickname,
-                    result.profile.avatar,result.profile.mobile));
+        final CarCheckBindInfo info = getCarltdCheckBindInfo(result.code, result.result,
+                result.message, result.timestamp, result.version);
+        AccountProfile accountProfile = result.profile;
+        if (accountProfile != null) {
+            mEmail = accountProfile.email;
+            info.setAccountProfileInfo(convertAccountProfileInfo(accountProfile.uid,
+                    accountProfile.username, accountProfile.nickname,
+                    accountProfile.avatar, accountProfile.mobile));
+            ArrayList<AccountProviderCarBind> accountProviderCarBinds = new ArrayList<>();
+            ArrayList<AccountProvider> accountProviders = accountProfile.providers;
+            if (!ConvertUtils.isEmpty(accountProviders)) {
+                for (AccountProvider provider : accountProviders) {
+                    accountProviderCarBinds.add(new AccountProviderCarBind(provider.provider,
+                            provider.auth_id, provider.auth_username));
+                }
+            }
+            UserCar userCar = accountProfile.car;
+            UserCarBindInfo userCarBindInfo = new UserCarBindInfo(userCar.model, userCar.device,
+                    userCar.manufacture);
+
+            AccountProfileCarBind accountProfileCarBind = new AccountProfileCarBind(accountProfile.level,
+                    accountProfile.gender, accountProfile.checkin_count, accountProfile.birthday,
+                    accountProfile.description, accountProviderCarBinds, accountProfile.carLoginFlag,
+                    userCarBindInfo);
+            info.setAccountProfileCarBind(accountProfileCarBind);
         }
         return info;
     }
