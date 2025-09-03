@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -887,7 +888,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSurfaceChanged(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
-            setMapCenterInScreen();
+            Logger.d(TAG, "onSurfaceChanged: ");
+            if (ScreenTypeUtils.getInstance().isFullScreen() &&
+                    !NaviPackage.getInstance().getClusterFixOverViewStatus() &&
+                    !NaviPackage.getInstance().getPreviewStatus() &&
+                    !NaviPackage.getInstance().getFixedOverViewStatus()) {
+                setMapCenterInScreen();
+                goToCarPosition();
+            }
             updateCarPosition();
         }
     }
@@ -1005,6 +1013,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
         if (!isEnterPreview && mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            Log.e(TAG, "isEnterPreview: ");
             setMapCenterInScreen();
             goToCarPosition();
         }
