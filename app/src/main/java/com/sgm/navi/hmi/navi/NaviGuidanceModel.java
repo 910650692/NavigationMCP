@@ -190,6 +190,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private RouteWayID mRouteWayID;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
     private int mGeoSearchId;
+    private boolean mNeedDeleteVia;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -582,6 +583,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     private void updateViaList(int viaCount) {
+        if (!mNeedDeleteVia) {
+            return;
+        }
         List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
                 MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(allPoiParamList)) {
@@ -599,6 +603,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     PoiInfoEntity poiInfo = currentAllPoiParamList.get(1).getMPoiInfoEntity();
                     boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             poiInfo, false);
+                    mNeedDeleteVia = false;
                     if (mViaListManager != null) {
                         mViaListManager.updateViaList(getViaList());
                     }
@@ -713,7 +718,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onUpdateViaPass(viaIndex);
         }
         mCurrentViaIndex = viaIndex + 1;
-//        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
+        mNeedDeleteVia = true;
     }
 
     @Override
@@ -1833,6 +1838,8 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.setChargeTipEntity(chargeTipEntity);
         }
     }
+
+
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);

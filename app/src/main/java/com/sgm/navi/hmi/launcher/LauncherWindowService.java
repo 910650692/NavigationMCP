@@ -514,6 +514,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         Logger.d(TAG, "onCrossImageInfo .");
         crossImageEntity = naviImageInfo;
         if (mBinding != null) {
+            Logger.i(TAG, "Launcher show crossImage");
             mBinding.sceneNaviCrossImage.onCrossImageInfo(isShowImage, naviImageInfo);
         }
     }

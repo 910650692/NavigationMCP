@@ -68,6 +68,7 @@ import com.sgm.navi.service.define.route.RouteMsgPushInfo;
 import com.sgm.navi.service.define.route.RouteParam;
 import com.sgm.navi.service.define.route.RoutePoiType;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
+import com.sgm.navi.service.define.route.RouteWeatherInfo;
 import com.sgm.navi.service.define.search.ETAInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.user.msgpush.MsgPushInfo;
@@ -1641,6 +1642,18 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         });
     }
 
+    @Override
+    public void onShowNaviWeather(RouteWeatherInfo info) {
+        ThreadManager.getInstance().postUi(() -> {
+            if (!ConvertUtils.isEmpty(mGuidanceObservers)) {
+                for (IGuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
+                    if (guidanceObserver != null) {
+                        guidanceObserver.onShowNaviWeather(info);
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * 隐藏分歧备选路线
