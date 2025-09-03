@@ -838,6 +838,7 @@ public final class SuperCruiseManager {
                 RouteInfo.Point.Builder pointBuilder = RouteInfo.Point.newBuilder();
                 pointBuilder.setLat(scPoint.getLat());
                 pointBuilder.setLon(scPoint.getLon());
+                pointBuilder.setDist(scPoint.getDist());
                 pointList.add(pointBuilder.build());
             });
             builder.addAllPoints(pointList);
