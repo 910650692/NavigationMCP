@@ -37,6 +37,7 @@ import com.sgm.navi.service.adapter.user.msgpush.MsgPushAdapterCallback;
 import com.sgm.navi.service.adapter.user.usertrack.UserTrackAdapter;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.layer.refix.LayerItemRouteEndPoint;
+import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.CameraInfoEntity;
 import com.sgm.navi.service.define.navi.CrossImageEntity;
@@ -246,6 +247,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
             Logger.e(TAG, "###Fatal### startNavi fail");
             mCurrentNaviType = NumberUtils.NUM_ERROR;
         }
+        // 清楚终点汽车场扎标
+        mLayerAdapter.clearSearchPOILayerItems(MapType.MAIN_SCREEN_MAIN_MAP,
+                LayerPointItemType.SEARCH_PARENT_PARK);
         mRouteAdapter.sendL2Data(MapType.MAIN_SCREEN_MAIN_MAP);
         return result;
     }
