@@ -154,6 +154,7 @@ import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
+import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
@@ -2158,8 +2159,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!isShowDialog) {
             return;
         }
-        authorizationRequestDialog = new AuthorizationRequestDialog(
-                stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
+        BaseActivity activity = stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if(null == activity){
+            Logger.d(TAG, "Current Progress No Activity");
+            return;
+        }
+        authorizationRequestDialog = new AuthorizationRequestDialog(activity);
         authorizationRequestDialog.setEndDate(endDate);
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
