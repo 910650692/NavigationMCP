@@ -2434,7 +2434,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             Logger.d("screen_change_used", "关闭1/3屏幕布局");
             mViewModel.closeSplitFragment();
         }
-        mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
+        mViewModel.onWindowSideChanged(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     public void checkStatusCloseAllFragmentAndClearAllLabel() {
@@ -2508,7 +2508,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (mViewModel != null) {
             boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
             Logger.i(TAG, musicTabShow);
-            mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
+            mViewModel.onWindowSideChanged(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
         }
     }
 

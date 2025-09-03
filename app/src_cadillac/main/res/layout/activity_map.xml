@@ -62,15 +62,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.sgm.navi.ui.view.SkinConstraintLayout
+                <com.sgm.navi.ui.view.SkinView
                     android:id="@+id/float_window"
                     android:layout_width="@dimen/dp_0"
                     android:layout_height="@dimen/dp_1"
                     android:focusable="false"
-                    android:visibility="@{ViewModel.musicTabVisibility ? View.VISIBLE : View.GONE}"
+                    android:visibility="invisible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-                </com.sgm.navi.ui.view.SkinConstraintLayout>
+                </com.sgm.navi.ui.view.SkinView>
 
                 <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:id="@+id/search_main_tab"

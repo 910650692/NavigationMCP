@@ -141,8 +141,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
     public ObservableField<Boolean> mGoHomeVisible;
-
-    public ObservableField<Boolean> musicTabVisibility;
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Drawable> mIsFullScreen;
     public ObservableField<Boolean> mIsChangingConfigurations;
@@ -189,7 +187,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(getSwitchId()));
-        musicTabVisibility = new ObservableField<>(false);
         mIsChangingConfigurations = new ObservableField<>(false);
         mIsContinueNaviNotified = new ObservableField<>(false);
         Logger.d(TAG, "BaseMapViewModel = " + bottomNaviVisibility.get());
@@ -1845,6 +1842,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         sRVisible.set(judgedSRVisibility());
         mScaleViewVisibility.set(judgedScaleViewVisibility());
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
+    }
+
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        mView.onWindowSideChanged(isOpenFloat);
     }
 
     public void notifyStepOneThirdScreen() {

@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.map;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -84,6 +86,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private int mCurrentUiMode;
     private ActivateFailedDialog mFailedDialog;
     private int mSavePageCode = -1;
+    private ValueAnimator widthAnimator;
 
     @Override
     public void onCreateBefore() {
@@ -117,7 +120,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
-        mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
+        mViewModel.onWindowSideChanged(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
         mViewModel.reSetSwitchIcon();
     }
 
@@ -322,6 +325,38 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         } else {
             Logger.d(TAG, "mViewModel or mBinding is null");
         }
+    }
+
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        if (mBinding == null) {
+            return;
+        }
+
+        final int startWidth = 1;
+        final int endWidth = (int) getResources().getDimension(com.sgm.navi.ui.R.dimen.navi_main_float_window_width); // 目标宽度
+
+        if (widthAnimator != null && widthAnimator.isRunning()) {
+            widthAnimator.cancel();
+        }
+        widthAnimator = isOpenFloat
+                ? ValueAnimator.ofInt(startWidth, endWidth)
+                : ValueAnimator.ofInt(endWidth, startWidth);
+
+        mBinding.floatWindow.setLayerType(View.LAYER_TYPE_HARDWARE, null); // 启用硬件加速
+
+        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
+                if (layoutParams.width != value) {
+                    layoutParams.width = value;
+                    mBinding.floatWindow.requestLayout();
+                }
+            }
+        });
+        widthAnimator.setDuration(200);
+        widthAnimator.start();
     }
 
     @Override
