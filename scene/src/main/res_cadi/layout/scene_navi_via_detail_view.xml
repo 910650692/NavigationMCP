@@ -16,6 +16,7 @@
         android:layout_height="@dimen/dp_254"
         android:paddingVertical="@dimen/dp_51"
         android:paddingHorizontal="@dimen/dp_51"
+        clickCommand="@{viaDetail.skipToPoiFragment}"
         android:background="@drawable/bg_shadow_navi_cadillac">
         
         <com.sgm.navi.ui.view.SkinImageView

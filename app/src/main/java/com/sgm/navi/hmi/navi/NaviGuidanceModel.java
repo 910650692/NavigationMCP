@@ -386,7 +386,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
             mIsShowAutoAdd = true;
             final MapType mapTypeId = MapTypeManager.getInstance().
-                    getMapTypeIdByName(mViewModel.mScreenId);
+                    getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name());
             mNaviPackage.addNaviRecord(false);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
             mMapPackage.setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -887,7 +887,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             poiInfo.setPid(entity.getPid());
             poiInfo.setName(entity.getName());
             poiInfo.setAddress(entity.getAddress());
-            final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo, true);
+            final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()), poiInfo, true);
             mViewModel.notifyDeleteViaPointResult(result, entity);
         }
     }
@@ -959,7 +959,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         final List<NaviViaEntity> tmpList = new ArrayList<>();
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
-                MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+                MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         final int allPoiParamSize = allPoiParamList.size();
         Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamSize);
         final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
@@ -1014,7 +1014,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onRoutePreferenceChange() {
         ThreadManager.getInstance().execute(() -> {
             final RouteRequestParam param = new RouteRequestParam();
-            param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+            param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
             param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
             mRoutePackage.requestRoute(param);

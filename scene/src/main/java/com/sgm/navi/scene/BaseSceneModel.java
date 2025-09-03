@@ -44,6 +44,10 @@ public class BaseSceneModel<V extends BaseSceneView> implements LifecycleObserve
         mScreenView.addFragment(fragment, bundle);
     }
 
+    protected void addFragment(BaseFragment fragment, Bundle bundle, boolean isHideCurFragment){
+        mScreenView.addFragment(fragment, bundle, isHideCurFragment);
+    }
+
     public void setMapTypeId(final MapType mapType) {
         this.mMapTypeId = mapType;
     }

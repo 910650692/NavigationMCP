@@ -786,6 +786,9 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                             Boolean.FALSE.equals(mViewModel.mNaviViaListVisibility.get()) &&
                             NaviPackage.getInstance().getPreviewStatus()) {
                         OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                    } else if (mViewModel != null &&
+                            Boolean.TRUE.equals(mViewModel.mNaviViaListVisibility.get())) {
+                        OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
                     }
                 }
             });
