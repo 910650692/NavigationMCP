@@ -139,6 +139,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mUpdateViaList;
     private Runnable mShowPreView;
     private Runnable mReRouteByNetChange;
+    private Runnable mShowCrossDealy;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -349,6 +350,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
         ThreadManager.getInstance().removeHandleTask(mUpdateViaList);
         ThreadManager.getInstance().removeHandleTask(mShowPreView);
+        ThreadManager.getInstance().removeHandleTask(mShowCrossDealy);
     }
 
     @Override
@@ -672,15 +674,19 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!isShowImage) {
             mViewModel.onCrossProgress(NumberUtils.NUM_ERROR);
             // 为了显示进度条铺满的过程，延迟200ms隐藏路口大图
-            ThreadManager.getInstance().postDelay(new Runnable() {
-                @Override
-                public void run() {
-                    mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+            mShowCrossDealy = () -> {
+                try {
+                    if (mViewModel != null) {
+                        mViewModel.onCrossImageInfo(false, naviImageInfo);
+                    }
+                } catch (Exception e) {
+                    Logger.e(TAG, e.getMessage());
                 }
-            }, NumberUtils.NUM_200);
+            };
+            ThreadManager.getInstance().postDelay(mShowCrossDealy, NumberUtils.NUM_200);
             return;
         }
-        mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+        mViewModel.onCrossImageInfo(true, naviImageInfo);
     }
 
     @Override
