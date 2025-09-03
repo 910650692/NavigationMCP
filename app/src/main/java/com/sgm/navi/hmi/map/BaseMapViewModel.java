@@ -774,7 +774,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
-                || NaviStatus.NaviStatusType.NAVING.equals(state))
+                || NaviStatus.NaviStatusType.NAVING.equals(state)
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitDriveFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitCitySelectionFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())
@@ -783,7 +783,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || AutoMapConstant.SourceFragment.FRAGMENT_AROUND.equals(fragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND.equals(aroundFragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_ROUTE.equals(routeFragment)
-                || AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY.equals(homeCompanyFragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY.equals(homeCompanyFragment))
                 && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
