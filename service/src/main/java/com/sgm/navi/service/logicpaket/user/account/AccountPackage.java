@@ -49,6 +49,8 @@ public final class AccountPackage implements AccountAdapterCallBack {
     public void initAccountService(){
         mAccountAdapter.initAccountService();
         mAccountAdapter.registerCallBack("AccountPackage", this);
+        int accountProfileResult = mAccountAdapter.accountProfileRequest();
+        Logger.i("initAccountService: accountProfileResult = " + accountProfileResult);
     }
 
     /**
@@ -237,17 +239,30 @@ public final class AccountPackage implements AccountAdapterCallBack {
         }
     };
 
+    private void notifyLoginStateIn(AccountProfileInfo info){
+        mIsLogin = true;
+        mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
+        PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
+        MsgPushPackage.getInstance().startListen(info.getUid());
+        BehaviorPackage.getInstance().setLoginInfo();
+    }
+
+    private void notifyLoginStateOut(){
+        mIsLogin = false;
+        mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
+        PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
+        MsgPushPackage.getInstance().stopListen();
+        BehaviorPackage.getInstance().setLoginInfo();
+        mHistoryManager.deleteValueByKey(2);
+    }
+
     @Override
     public void notifyQRCodeLoginConfirm(final int errCode, final int taskId, final AccountUserInfo result) {
         if (result != null && result.getCode() == 1) {
-            mIsLogin = true;
             Logger.i("notifyQRCodeLoginConfirm mIsLogin = true",
                     "result.getProfileInfo().getUid() = " + result.getProfileInfo().getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
-            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
-            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().startListen(info.getUid());
-            BehaviorPackage.getInstance().setLoginInfo();
+            notifyLoginStateIn(info);
         }
         for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyQRCodeLoginConfirm(errCode, taskId, result);
@@ -256,6 +271,15 @@ public final class AccountPackage implements AccountAdapterCallBack {
 
     @Override
     public void notifyAccountProfile(final int errCode, final int taskId, final AccountUserInfo result) {
+        if (result != null && result.getCode() == 1) {
+            Logger.i("notifyAccountProfile", "获取用户信息成功", result.getProfileInfo().getUsername());
+            final AccountProfileInfo info = GsonUtils.convertToT(result.getProfileInfo(), AccountProfileInfo.class);
+            notifyLoginStateIn(info);
+        } else {
+            Logger.i("notifyAccountProfile", "获取用户信息失败");
+            // 退出登录后，清除数据库中的用户信息
+            notifyLoginStateOut();
+        }
         for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyAccountProfile(errCode, taskId, result);
         }
@@ -274,13 +298,8 @@ public final class AccountPackage implements AccountAdapterCallBack {
         if (result != null && result.getCode() == 1) {
             Logger.i("notifyAccountLogout", "退出登录成功");
             // 退出登录后，清除数据库中的用户信息
-            mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
-            mIsLogin = false;
             Logger.i("notifyAccountLogout mIsLogin = false");
-            PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().stopListen();
-            BehaviorPackage.getInstance().setLoginInfo();
-            mHistoryManager.deleteValueByKey(2);
+            notifyLoginStateOut();
         }
 
         for (AccountCallBack observer : mCallBacks.values()) {
@@ -312,14 +331,10 @@ public final class AccountPackage implements AccountAdapterCallBack {
     @Override
     public void notifyCarltdLoginResult(int errCode, int taskId, CarCheckBindInfo result) {
         if (result != null && result.getCode() == 1) {
-            mIsLogin = true;
             Logger.i("notifyCarltdLoginResult mIsLogin = true",
                     "result.getAccountProfileInfo().getUid() = " + result.getAccountProfileInfo().getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getAccountProfileInfo(), AccountProfileInfo.class);
-            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
-            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().startListen(info.getUid());
-            BehaviorPackage.getInstance().setLoginInfo();
+            notifyLoginStateIn(info);
         }
         for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyCarltdLoginResult(errCode, taskId, result);
@@ -344,14 +359,10 @@ public final class AccountPackage implements AccountAdapterCallBack {
     @Override
     public void notifyCarltdQLoginResult(int errCode, int taskId, CarCheckBindInfo result) {
         if (result != null && result.getCode() == 1) {
-            mIsLogin = true;
             Logger.i("notifyCarltdQLoginResult mIsLogin = true",
                     "result.getAccountProfileInfo().getUid() = " + result.getAccountProfileInfo().getUid());
             final AccountProfileInfo info = GsonUtils.convertToT(result.getAccountProfileInfo(), AccountProfileInfo.class);
-            mCommonManager.insertUserInfo(UserDataCode.SETTING_GET_USERINFO, GsonUtils.toJson(info));
-            PositionPackage.getInstance().registerCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().startListen(info.getUid());
-            BehaviorPackage.getInstance().setLoginInfo();
+            notifyLoginStateIn(info);
         }
         for (AccountCallBack observer : mCallBacks.values()) {
             observer.notifyCarltdQLoginResult(errCode, taskId, result);
@@ -371,13 +382,8 @@ public final class AccountPackage implements AccountAdapterCallBack {
         if (result != null && result.getCode() == 1) {
             Logger.i("notifyCarltdUnBindResult", "退出登录成功");
             // 退出登录后，清除数据库中的用户信息
-            mCommonManager.deleteValue(UserDataCode.SETTING_GET_USERINFO);
-            mIsLogin = false;
             Logger.i("notifyCarltdUnBindResult mIsLogin = false");
-            PositionPackage.getInstance().unregisterCallBack(mIPositionPackageCallback);
-            MsgPushPackage.getInstance().stopListen();
-            BehaviorPackage.getInstance().setLoginInfo();
-            mHistoryManager.deleteValueByKey(2);
+            notifyLoginStateOut();
         }
 
         for (AccountCallBack observer : mCallBacks.values()) {

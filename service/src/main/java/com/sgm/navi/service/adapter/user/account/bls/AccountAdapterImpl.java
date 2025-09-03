@@ -212,8 +212,11 @@ public class AccountAdapterImpl implements IAccountApi {
         if (mAccountService != null) {
             final AccountProfileRequest profileReq = new AccountProfileRequest();
             profileReq.mode = 0; //获取用户基本信息
-            return mAccountService.executeRequest(profileReq);
+            int res = mAccountService.executeRequest(profileReq);
+            Logger.i("accountProfileRequest: res = " + res);
+            return res;
         } else {
+            Logger.i("accountProfileRequest: mAccountService == null");
             return -1;
         }
     }
