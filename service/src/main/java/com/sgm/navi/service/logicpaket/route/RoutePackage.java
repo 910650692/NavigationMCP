@@ -135,6 +135,7 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
             822083592, 822083593, 822083594, 822083595, 822083596, 822083599, 822083600, 822083602};
     private long mPathID = -1;
     private boolean mRouteTips = false;
+    private boolean mIsFloatWindowShow = false;
 
     /**
      * 获取报错信息是否需要离线
@@ -1320,6 +1321,14 @@ final public class RoutePackage implements RouteResultObserver, QueryRestrictedO
 
     public void setRouteTips(boolean mRouteTips) {
         this.mRouteTips = mRouteTips;
+    }
+
+    public void setFloatWindowShow(boolean isFloatWindowShow) {
+        mIsFloatWindowShow = isFloatWindowShow;
+    }
+
+    public boolean isFloatWindowShow() {
+        return mIsFloatWindowShow;
     }
 
     /**

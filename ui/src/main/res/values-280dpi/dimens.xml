@@ -4369,7 +4369,6 @@
     <dimen name="navi_setting_fragment_height">616dp</dimen>
     <dimen name="navi_we_chat_fragment_height">577.14dp</dimen>
 
-    <dimen name="navi_main_float_window_width">325.47dp</dimen>
     <dimen name="navi_guide_road_name_height">52.44dp</dimen>
     <dimen name="navi_guide_road_name_text_size">19.38sp</dimen>
     <dimen name="navi_guide_road_name_padding_horizontal">16.53dp</dimen>

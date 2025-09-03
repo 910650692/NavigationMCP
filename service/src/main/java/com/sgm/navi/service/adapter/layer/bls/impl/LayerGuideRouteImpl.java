@@ -68,6 +68,7 @@ import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -256,7 +257,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
                 bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
             } else {
-                left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                if (RoutePackage.getInstance().isFloatWindowShow()) {
+                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left) + instance.getDimensionPixelSize(R.dimen.navi_main_float_window_width);
+                } else {
+                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                }
+
                 right = instance.getDimensionPixelSize(R.dimen.route_margin_screen_right);
                 top = instance.getDimensionPixelSize(R.dimen.route_margin_screen_top);
                 bottom = instance.getDimensionPixelSize(R.dimen.route_margin_screen_bottom);

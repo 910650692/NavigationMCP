@@ -249,7 +249,7 @@ public class LauncherWindowService implements IGuidanceObserver, IMapPackageCall
         mBinding = FloatingWindowLayoutBinding.inflate(LayoutInflater.from(context), null);
         mView = mBinding.getRoot();
 
-        moveDistance = (int) context.getResources().getDimension(com.sgm.navi.ui.R.dimen.navi_main_float_window_width);
+        moveDistance = (int) context.getResources().getDimension(com.sgm.navi.service.R.dimen.navi_main_float_window_width);
         if (FloatWindowReceiver.isShowMusicTab){
             ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
             layoutParams.width = moveDistance;
