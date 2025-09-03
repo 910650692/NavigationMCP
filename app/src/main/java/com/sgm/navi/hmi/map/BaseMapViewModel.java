@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -718,7 +719,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitDriveFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitCitySelectionFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())
-                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), PoiDetailsFragment.class.getSimpleName());
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), PoiDetailsFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), MapPointSearchFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), HomeCompanyFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
@@ -1382,6 +1385,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
                 bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_ROUTE_FRAGMENT_TYPE,AutoMapConstant.SourceFragment.FRAGMENT_ROUTE);
                 addFragment(new RouteFragment(), bundle);
                 break;
             default:
