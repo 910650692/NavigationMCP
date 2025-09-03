@@ -47,6 +47,8 @@ public interface IMapPackageCallback {
 
     default void onMapModeChange(MapType mapTypeId, MapMode mapMode) {}
 
+    default void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {}
+
     /*UiMode改变的时候触发，暂时就是“黑夜”和“白天”模式的切换*/
     default void onUiModeChanged(ThemeType uiMode) {}
 

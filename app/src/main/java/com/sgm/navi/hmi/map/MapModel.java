@@ -927,9 +927,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         // 退出巡航
         stopCruise();
-
         //三指飞屏 并将MapActivity推至后台 1118742 分屏时禁止三指手势
         if (ScreenTypeUtils.getInstance().isFullScreen()) {
             openThreeFingerFlyingScreen(touchEvent);
@@ -941,10 +941,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onScaleRotateBegin(MapType mapTypeId) {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             layerPackage.setDynamicLevelLock(MapType.MAIN_SCREEN_MAIN_MAP,DynamicLevelMode.DYNAMIC_LEVEL_GUIDE,true);
         }
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
     }
 
     @Override
@@ -999,6 +999,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             case NORTH_2D -> mViewModel.carModeImgId.set(R.drawable.img_car_mode_2d_north);
             case UP_3D -> mViewModel.carModeImgId.set(R.drawable.img_car_mode_3d_north);
             default -> mViewModel.carModeImgId.set(R.drawable.img_car_mode_2d_head);
+        }
+    }
+
+    @Override
+    public void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
+        if (!isEnterPreview && mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            setMapCenterInScreen();
+            goToCarPosition();
         }
     }
 

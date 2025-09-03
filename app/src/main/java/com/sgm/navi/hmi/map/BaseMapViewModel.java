@@ -373,8 +373,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void hideStartIcon() {
-        if (StartService.getInstance().checkSdkIsAvailable()) {
-            Logger.d(TAG, "startIcon", "hide startIcon");
+        if (StartService.getInstance().getSdkActivation() == 0) {
+            Logger.e(TAG, "startIcon", "hide startIcon");
             startIconVisibility.set(false);
         }
     }
@@ -383,7 +383,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.set557LogoPic();
         }
-        Logger.d(TAG, "startIcon", "show startIcon");
+        Logger.e(TAG, "startIcon", "show startIcon");
         startIconVisibility.set(true);
     }
 

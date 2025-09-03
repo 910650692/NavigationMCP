@@ -517,6 +517,18 @@ public class MapPackage implements IMapAdapterCallback, ILayerAdapterCallBack {
     }
 
     @Override
+    public void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
+        if (callbacks.containsKey(mapTypeId)) {
+            callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
+                @Override
+                public void accept(IMapPackageCallback callback) {
+                    callback.isEnterPreview(mapTypeId, isEnterPreview);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onEGLScreenshot(MapType mapTypeId, byte[] bytes, MapScreenShotDataInfo info) {
         if (callbacks.containsKey(mapTypeId)) {
             callbacks.get(mapTypeId).forEach(new Consumer<IMapPackageCallback>() {
