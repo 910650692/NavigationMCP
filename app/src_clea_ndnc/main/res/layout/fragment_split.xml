@@ -317,7 +317,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_navi_ndlc_8155_transparent"
             android:orientation="vertical"
-            android:padding="@dimen/dp_34"
+            android:padding="@dimen/dp_30"
             android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
