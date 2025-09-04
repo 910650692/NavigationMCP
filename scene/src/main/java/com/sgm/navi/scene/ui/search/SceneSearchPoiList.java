@@ -1346,6 +1346,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
                     AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0));
             bundle.putBoolean("IS_END", mIsEnd);
+            bundle.putBoolean("IS_FROM_LIST_ONLY",true);
             addFragment((BaseFragment) fragment, bundle,false);
             return;
         }
