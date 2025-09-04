@@ -21,6 +21,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.TimerHelper;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.scene.ui.navi.ChargeTipEntity;
+import com.sgm.navi.scene.ui.navi.SceneNaviParallelView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
@@ -67,7 +68,7 @@ import java.util.Objects;
 public class BaseNaviGuidanceViewModel extends
         BaseViewModel<NaviGuidanceFragment, NaviGuidanceModel> implements
         ISceneRoutePreferenceCallBack, NaviGuidanceModel.OnNetStatusChangeListener,
-        IBaseDialogClickListener, FloatWindowReceiver.FloatWindowCallback {
+        IBaseDialogClickListener, FloatWindowReceiver.FloatWindowCallback, SceneNaviParallelView.ButtonShowDetailsListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_VIEW_MODEL;
     public ObservableField<Boolean> mNaviLanesVisibility;//车道线
     public ObservableField<Boolean> mNaviViaListVisibility;//途径点列表
@@ -99,6 +100,10 @@ public class BaseNaviGuidanceViewModel extends
     public ObservableField<Boolean> mHandingCardDetailVisibility;// 悬挂卡-详情
     public ObservableField<Boolean> mNaviViaDetailVisibility;// 途经点-详情
     public ObservableField<Boolean> mNaviLeftContentVisibility;// 引导左侧部分布局内容
+    public ObservableField<Boolean> mNaviTwoThreeButtonVisibility;// 2/3屏幕UI3屏幕UI
+    public ObservableField<Boolean> showFirstButton;// 2/3屏幕UI3屏幕UI
+    public ObservableField<Boolean> showSecondButton;// 2/3屏幕UI3屏幕UI
+    public ObservableField<String> mRoadName;// 2/3屏幕UI
     public ObservableField<Boolean> musicTabVisibility;
     //车牌信息
     private String mCurrentPlateNumber;
@@ -145,7 +150,11 @@ public class BaseNaviGuidanceViewModel extends
         mHandingCardDetailVisibility = new ObservableField<>(false);
         mNaviViaDetailVisibility = new ObservableField<>(false);
         mNaviLeftContentVisibility = new ObservableField<>(true);
+        mNaviTwoThreeButtonVisibility = new ObservableField<>(false);
+        showFirstButton = new ObservableField<>(false);
+        showSecondButton = new ObservableField<>(false);
         musicTabVisibility = new ObservableField<>(false);
+        mRoadName = new ObservableField<>("");
         mModelSaveEntity = new NaviModelSaveEntity();
         mSceneStatus = new HashMap<>();
     }
@@ -248,6 +257,7 @@ public class BaseNaviGuidanceViewModel extends
                 break;
             case NAVI_SCENE_PARALLEL:
                 mNaviParallelVisibility.set(isVisible);
+                updateTwoThreeButtonVisibility();
                 break;
             case NAVI_SCENE_CONTROL_MORE:
                 mNaviControlVisibilityMore.set(isVisible);
@@ -384,6 +394,7 @@ public class BaseNaviGuidanceViewModel extends
                 showRoadName();
             }
             mView.updateRouteName(naviEtaInfo.getCurRouteName());
+            mRoadName.set(naviEtaInfo.getCurRouteName());
         }
     }
 
@@ -1040,5 +1051,23 @@ public class BaseNaviGuidanceViewModel extends
         if (mView != null) {
             mView.onSplitScreenChanged(isShowMusicTab, isFullScreen);
         }
+        updateTwoThreeButtonVisibility();
+    }
+
+    public void updateTwoThreeButtonVisibility() {
+        boolean isShowTwoThreeButton = Boolean.TRUE.equals(showFirstButton.get())
+                && Boolean.TRUE.equals(showSecondButton.get())
+                && ScreenTypeUtils.getInstance().isTwoThirdScreen()
+                && Boolean.TRUE.equals(mNaviLeftContentVisibility.get())
+                && Boolean.TRUE.equals(mNaviParallelVisibility.get());
+        Logger.e(TAG, isShowTwoThreeButton);
+        mNaviTwoThreeButtonVisibility.set(isShowTwoThreeButton);
+    }
+
+    @Override
+    public void onButtonShowDetails(Boolean mainRoad, Boolean bridge) {
+        showFirstButton.set(mainRoad);
+        showSecondButton.set(bridge);
+        updateTwoThreeButtonVisibility();
     }
 }

@@ -26,6 +26,8 @@ import com.sgm.navi.service.define.position.LocParallelInfoEntity;
  */
 public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBinding, SceneNaviParallelImpl> {
 
+    private ButtonShowDetailsListener mListener;
+
     public SceneNaviParallelView(@NonNull final Context context) {
         super(context);
     }
@@ -134,5 +136,25 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
         if (mScreenViewModel != null) {
             mScreenViewModel.onParallelRoadUpdate(entity);
         }
+    }
+
+    public void addButtonShowDetailsListener(ButtonShowDetailsListener listener) {
+        //只为2/3屏幕添加！！！！！！！！！  后续有人要用，请变成list
+        mListener = listener;
+    }
+
+    public void removeButtonShowDetailsListener(ButtonShowDetailsListener listener) {
+        //只为2/3屏幕添加！！！！！！！！！  后续有人要用，请变成list
+        mListener = null;
+    }
+
+    public void updateButtonVisible(Boolean mainRoad, Boolean bridge) {
+        if (mListener != null) {
+            mListener.onButtonShowDetails(mainRoad, bridge);
+        }
+    }
+
+    public interface ButtonShowDetailsListener {
+        void onButtonShowDetails(Boolean mainRoad, Boolean bridge);
     }
 }

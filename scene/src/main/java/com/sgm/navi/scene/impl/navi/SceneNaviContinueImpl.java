@@ -49,7 +49,6 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
     public void notifySceneStateChange(final boolean isVisible) {
         Logger.i(TAG, "notifySceneStateChange", isVisible, " mScreenView.isVisible()：",
                 mScreenView.isVisible());
-        if (mScreenView.isVisible() == isVisible) return;
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
                         INaviSceneEvent.SceneStateChangeType.SceneShowState :
                         INaviSceneEvent.SceneStateChangeType.SceneCloseState), NaviSceneId.NAVI_CONTINUE);

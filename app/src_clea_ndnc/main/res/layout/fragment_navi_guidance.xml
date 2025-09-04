@@ -20,9 +20,9 @@
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/navi_scene_container"
-            android:visibility="@{ViewModel.mNaviLeftContentVisibility?View.VISIBLE:View.INVISIBLE}"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="@{ViewModel.mNaviLeftContentVisibility?View.VISIBLE:View.INVISIBLE}">
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/skinView4"
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--上部分的父布局-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
@@ -171,10 +171,10 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="@dimen/dp_m_43"
                 android:visibility="@{ViewModel.mHandingCardDetailVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/scl_top_container"
                 app:layout_constraintStart_toStartOf="@id/scl_top_container"
-                app:layout_constraintTop_toBottomOf="@id/scl_top_container"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/scl_top_container" />
 
             <!--控制tools-->
             <com.sgm.navi.scene.ui.navi.SceneNaviControlView
@@ -232,42 +232,47 @@
                 android:id="@+id/line_view_roads"
                 android:layout_width="@dimen/navi_guide_line_views"
                 android:layout_height="@dimen/dp_1"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/line_widget_views_roads"
                 android:layout_width="@dimen/navi_guide_widget_margin_start"
                 android:layout_height="@dimen/dp_1"
                 android:visibility="@{ViewModel.musicTabVisibility?View.GONE:View.VISIBLE}"
-                app:layout_constraintStart_toEndOf="@id/line_view_roads"/>
-
+                app:layout_constraintStart_toEndOf="@id/line_view_roads" />
             <!--当前路名-->
             <com.sgm.navi.ui.view.SkinConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_shadow_navi_buick"
                 android:layout_marginEnd="@dimen/navi_guide_area_margin_end"
-                android:paddingHorizontal="@dimen/navi_guide_road_name_padding_horizontal"
-                android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
-                android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}"
-                app:layout_goneMarginStart="@dimen/navi_guide_area_margin_start"
+                android:visibility="@{ViewModel.mNaviTwoThreeButtonVisibility ? View.GONE:View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/line_widget_views_roads"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_goneMarginStart="@dimen/navi_guide_area_margin_start"
+                tools:visibility="gone">
 
-                <com.sgm.navi.scene.ui.navi.view.ButtonText
-                    android:id="@+id/stv_navi_route_name"
+                <com.sgm.navi.ui.view.SkinConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/navi_guide_road_name_height"
-                    android:background="@drawable/bg_navi_control"
-                    android:clickable="false"
-                    android:gravity="center"
-                    android:paddingHorizontal="@dimen/navi_guide_road_name_button_padding_horizontal"
-                    android:textColor="@color/common_title_purple_color"
-                    android:textSize="@dimen/navi_guide_road_name_text_size"
-                    tools:text="申港大道" />
-            </com.sgm.navi.ui.view.SkinConstraintLayout>
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_shadow_navi_buick"
+                    android:paddingHorizontal="@dimen/navi_guide_road_name_padding_horizontal"
+                    android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
+                    android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}">
 
+                    <com.sgm.navi.scene.ui.navi.view.ButtonText
+                        android:id="@+id/stv_navi_route_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/navi_guide_road_name_height"
+                        android:background="@drawable/bg_navi_control"
+                        android:clickable="false"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/navi_guide_road_name_button_padding_horizontal"
+                        android:textColor="@color/common_title_purple_color"
+                        android:textSize="@dimen/navi_guide_road_name_text_size"
+                        tools:text="申港大道" />
+                </com.sgm.navi.ui.view.SkinConstraintLayout>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
             <!--最后一公里-->
             <com.sgm.navi.scene.ui.navi.SceneNaviLastMileView
                 android:id="@+id/scene_navi_last_mile"
@@ -326,28 +331,37 @@
             android:id="@+id/line_views"
             android:layout_width="@dimen/navi_guide_line_views"
             android:layout_height="@dimen/dp_1"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.sgm.navi.ui.view.SkinView
             android:id="@+id/line_widget_views"
             android:layout_width="@dimen/navi_guide_widget_margin_start"
             android:layout_height="@dimen/dp_1"
             android:visibility="@{ViewModel.musicTabVisibility?View.GONE:View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/line_views"/>
+            app:layout_constraintStart_toEndOf="@id/line_views" />
 
         <!--继续导航按钮-->
-        <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
-            android:id="@+id/scene_navi_continue"
+        <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/navi_guide_continue_button_width"
             android:layout_height="@dimen/navi_guide_continue_button_height"
             android:layout_marginBottom="@dimen/navi_guide_area_margin_bottom"
             android:layout_marginEnd="@dimen/navi_guide_area_continue_margin_end"
-            android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+            android:visibility="@{ViewModel.mNaviTwoThreeButtonVisibility?View.GONE:View.VISIBLE}"
             app:layout_goneMarginStart="@dimen/navi_guide_area_continue_margin_start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/line_widget_views"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
+                android:id="@+id/scene_navi_continue"
+                android:layout_width="@dimen/navi_guide_continue_button_width"
+                android:layout_height="@dimen/navi_guide_continue_button_height"
+                android:visibility="@{ViewModel.mNaviContinueVisibility?View.VISIBLE:View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+        </com.sgm.navi.ui.view.SkinConstraintLayout>
 
         <com.sgm.navi.scene.ui.navi.GuidanceSimulationView
             android:id="@+id/navi_sim_view"
@@ -358,5 +372,65 @@
             android:visibility="@{ViewModel.mNaviSim?View.VISIBLE:View.GONE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <!--2/3屏幕按钮和路名-->
+        <com.sgm.navi.ui.view.SkinLinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/navi_guide_line_views"
+            android:visibility="@{ViewModel.mNaviTwoThreeButtonVisibility ? View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="horizontal"
+            tools:visibility="visible">
+
+            <com.sgm.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_253"
+                android:layout_height="@dimen/dp_1"
+                android:background="#11ff0000"
+                tools:visibility="visible"/>
+
+            <com.sgm.navi.scene.ui.navi.SceneNaviContinueView
+                android:id="@+id/scene_navi_continues"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/dp_59"
+                android:layout_marginEnd="@dimen/dp_59"
+                android:layout_height="@dimen/navi_guide_continue_button_height"
+                android:layout_marginBottom="@dimen/navi_guide_area_margin_bottom"
+                android:visibility="@{ViewModel.mNaviContinueVisibility ? View.VISIBLE:View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:visibility="gone"/>
+
+            <com.sgm.navi.ui.view.SkinConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="@{ViewModel.mNaviRouteNameVisibility?View.VISIBLE:View.GONE}">
+
+                <com.sgm.navi.scene.ui.navi.view.ButtonText
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_147"
+                    android:background="@drawable/bg_shadow_navi_buick"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:maxWidth="@dimen/dp_330"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:text="@{ViewModel.mRoadName}"
+                    android:paddingHorizontal="@dimen/dp_55"
+                    android:paddingVertical="@dimen/navi_guide_road_name_padding_vertical"
+                    android:textColor="@color/common_title_purple_color"
+                    android:textSize="@dimen/navi_guide_road_name_text_size"
+                    tools:text="北京南路"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </com.sgm.navi.ui.view.SkinConstraintLayout>
+
+            <com.sgm.navi.ui.view.SkinView
+                android:layout_width="@dimen/dp_200"
+                android:layout_height="@dimen/dp_1"/>
+
+        </com.sgm.navi.ui.view.SkinLinearLayout>
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>

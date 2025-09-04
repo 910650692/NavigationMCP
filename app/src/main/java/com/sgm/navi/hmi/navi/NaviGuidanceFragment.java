@@ -34,6 +34,7 @@ import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentNaviGuidanceBinding;
 import com.sgm.navi.scene.RoutePath;
 import com.sgm.navi.scene.dialog.RouteLoadingDialog;
+import com.sgm.navi.scene.generated.callback.OnClickListener;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
 import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
@@ -248,6 +249,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         setScreenIdAndCategory(mBinding.naviSceneContainer);
         setScreenIdAndCategory(mBinding.sclTopContainer);
         mBinding.sceneNaviPreference.registerRoutePreferenceObserver("navi fragment", mViewModel);
+        mBinding.sceneNaviParallel.addButtonShowDetailsListener(mViewModel);
     }
 
     private void setScreenIdAndCategory(ViewGroup root) {
@@ -563,6 +565,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mSceneNaviControlMoreView.onImmersiveStatusChange(currentImersiveStatus);
         }
         mBinding.sceneNaviContinue.onImmersiveStatusChange(currentImersiveStatus);
+        mBinding.sceneNaviContinues.onImmersiveStatusChange(currentImersiveStatus);
         mBinding.sceneNaviCrossImage.onImmersiveStatusChange(currentImersiveStatus);
     }
 
@@ -587,6 +590,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         mBinding.sceneNaviViaArrive.addSceneCallback(sceneCallback);
         mBinding.sceneNaviChargeTip.addSceneCallback(sceneCallback);
         mBinding.sceneNaviContinue.addSceneCallback(sceneCallback);
+        mBinding.sceneNaviContinues.addSceneCallback(sceneCallback);
         mBinding.sceneHandingCard.addSceneCallback(sceneCallback);
         mBinding.sceneNaviCardDetail.addSceneCallback(sceneCallback);
     }
@@ -670,6 +674,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mBinding.sceneNaviControl.showMain();
         }
         mBinding.sceneNaviContinue.naviContinueByVoice();
+        mBinding.sceneNaviContinues.naviContinueByVoice();
     }
 
     /**
@@ -745,6 +750,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         Logger.i(TAG, "showNaviContent");
         if (!ConvertUtils.isNull(mViewModel)) {
             mViewModel.mNaviLeftContentVisibility.set(true);
+            mViewModel.updateTwoThreeButtonVisibility();
         }
         mBinding.naviSceneContainer.setVisibility(VISIBLE);
         // 如果路口大图还是显示状态就继续显示
@@ -761,6 +767,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         }
         if (!ConvertUtils.isNull(mViewModel)) {
             mViewModel.mNaviLeftContentVisibility.set(false);
+            mViewModel.updateTwoThreeButtonVisibility();
         }
     }
 
@@ -971,6 +978,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             requireContext().unregisterReceiver(mTimeFormatReceiver);
             mIsBroadcastRegistered = false;
         }
+        mBinding.sceneNaviParallel.removeButtonShowDetailsListener(mViewModel);
     }
 
     public void setViaListVisibility(boolean isVisible) {

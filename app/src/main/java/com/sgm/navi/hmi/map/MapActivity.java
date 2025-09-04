@@ -531,9 +531,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ThreadManager.getInstance().postDelay(() -> {
                 if (mViewModel != null) {
                     Logger.i(TAG, "startIcon", "splitScreen hide startIcon");
-                    mViewModel.hideStartIcon();
+                    if (mViewModel != null) {
+                        mViewModel.hideStartIcon();
+                    }
                 }
-            }, 200);
+            }, 600);
         }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);

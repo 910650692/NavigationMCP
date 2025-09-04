@@ -318,6 +318,10 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      * @param isVisible isVisible
      */
     private void updateSceneVisible(final boolean isVisible) {
+        if (mScreenView == null) {
+            return;
+        }
+        mScreenView.updateButtonVisible(mRoadMainAuxiliaryVisible.get(), mBridgeUpDownVisible.get());
         if(mScreenView.isVisible() == isVisible) return;
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviParallelImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?
