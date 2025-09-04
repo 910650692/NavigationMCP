@@ -1262,15 +1262,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     //选择路线
                     final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
                     Logger.d(IVrBridgeConstant.TAG, "current status:" + curStatus);
-                    ThreadManager.getInstance().execute(() -> {
-                        if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus) || NaviStatus.NaviStatusType.NAVING.equals(curStatus)) {
-                            final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
-                            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
-                            if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
-                                mRoutePackage.voiceStartNavi();
-                            }
+                    if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus) || NaviStatus.NaviStatusType.NAVING.equals(curStatus)) {
+                        final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
+                        mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
+                        if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+                            mRoutePackage.voiceStartNavi();
                         }
-                    });
+                    }
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH:
                     final String passBy = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD);
