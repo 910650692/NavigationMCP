@@ -1,26 +1,28 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/dp_68"
-    android:height="@dimen/dp_68"
-    android:viewportWidth="68"
-    android:viewportHeight="68">
+    android:width="@dimen/dp_58"
+    android:height="@dimen/dp_58"
+    android:viewportWidth="58"
+    android:viewportHeight="58">
     <path
-        android:fillColor="@color/navi_color_000000_0"
-        android:fillType="evenOdd"
-        android:pathData="M14,26.55l6.159,-10.55l28.886,0l4.223,10.55"
-        android:strokeWidth="4"
+        android:pathData="M11.941,22.645l5.253,-8.998l24.638,0l3.602,8.998"
+        android:strokeAlpha="0.4"
+        android:strokeLineJoin="round"
+        android:strokeWidth="3.41176471"
+        android:fillColor="#00000000"
         android:strokeColor="@color/navi_color_4B535D_100"
-        android:strokeLineCap="round" />
-    <path
-        android:fillColor="@color/navi_color_000000_0"
         android:fillType="evenOdd"
-        android:pathData="M14,50.605L53.268,50.605"
-        android:strokeWidth="4"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M11.941,43.163L45.435,43.163"
+        android:strokeWidth="3.41176471"
+        android:fillColor="#00000000"
         android:strokeColor="@color/navi_color_4B535D_100"
-        android:strokeLineCap="round" />
-    <path
-        android:fillColor="@color/navi_color_4B535D_100"
         android:fillType="evenOdd"
-        android:pathData="M30.977,25.151L30.977,31.467L30.977,31.467L26.323,31.467C25.77,31.467 25.323,31.915 25.323,32.467C25.323,32.678 25.389,32.883 25.513,33.054L32.909,43.253C33.233,43.7 33.858,43.8 34.305,43.476C34.387,43.416 34.46,43.345 34.52,43.264L42.126,33.065C42.456,32.622 42.365,31.996 41.922,31.665C41.749,31.537 41.54,31.467 41.324,31.467L36.8,31.467L36.8,31.467L36.8,25.151C36.8,23.543 35.496,22.24 33.888,22.24C32.28,22.24 30.977,23.543 30.977,25.151Z"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M26.421,21.453L26.421,26.84L26.421,26.84L22.452,26.84C21.981,26.84 21.599,27.221 21.599,27.692C21.599,27.872 21.656,28.048 21.761,28.193L28.069,36.892C28.346,37.274 28.879,37.359 29.261,37.082C29.33,37.032 29.392,36.971 29.444,36.902L35.931,28.202C36.212,27.825 36.135,27.29 35.757,27.009C35.61,26.899 35.431,26.84 35.247,26.84L31.388,26.84L31.388,26.84L31.388,21.453C31.388,20.081 30.276,18.969 28.905,18.969C27.533,18.969 26.421,20.081 26.421,21.453Z"
         android:strokeWidth="1"
-        android:strokeColor="@color/navi_color_4B535D_100" />
+        android:fillColor="@color/navi_color_2461EA_100"
+        android:fillType="evenOdd"
+        android:strokeColor="#00000000"/>
 </vector>
