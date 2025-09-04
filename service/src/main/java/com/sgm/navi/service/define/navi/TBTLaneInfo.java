@@ -2,6 +2,9 @@ package com.sgm.navi.service.define.navi;
 
 import androidx.annotation.NonNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @Description: 导航车道线
  * @Date: 2024/1/12
@@ -15,6 +18,9 @@ public class TBTLaneInfo {
     private int mLaneAction = 0;
     private boolean mIsTimeLane = false;
     private int mTimeLaneAction = 0;
+    @Setter
+    @Getter
+    private int mFrontLane;
 
     public boolean isRecommend() {
         return mIsRecommend;

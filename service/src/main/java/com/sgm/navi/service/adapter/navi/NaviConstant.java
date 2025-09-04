@@ -349,10 +349,10 @@ public interface NaviConstant {
                         NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
                         LaneActionConstants.LANE_ACTION_RU_TURN_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,// 750无效
                         NaviConstant.LaneAction.LANE_ACTION_NULL,
                         LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL_NO_ACTION},// 左侧扩展车道 直行
-                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,// 750无效
                         NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
                         LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL},
 

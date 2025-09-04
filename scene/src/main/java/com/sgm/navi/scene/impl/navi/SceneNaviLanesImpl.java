@@ -82,6 +82,12 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
                 final TBTLaneInfo info = new TBTLaneInfo();
                 ArrayList<Integer> extensionLane = laneInfo.getExtensionLane();
                 ArrayList<Integer> backExtenLane = laneInfo.getBackExtenLane();
+                ArrayList<Integer> frontLane = laneInfo.getFrontLane();
+                if (!ConvertUtils.isEmpty(frontLane)) {
+                    if (frontLane.size() > i) {
+                        info.setMFrontLane(frontLane.get(i));
+                    }
+                }
                 // 设置拓展车道信息
                 if (!ConvertUtils.isEmpty(extensionLane)) {
                     if (extensionLane.size() > i) {
@@ -219,7 +225,7 @@ public class SceneNaviLanesImpl extends BaseSceneModel<SceneNaviLanesView> {
         mScreenView.sceneLaneInfoDefault();
         for (int index = 0; index < defaultListData.size(); index++) {
             final TBTLaneInfo itemData = defaultListData.get(index);
-            mScreenView.setLaneExtenBackground(index, itemData.getExtenLaneType());
+            mScreenView.setLaneExtenBackground(index, itemData);
             mScreenView.setVisibleLaneDefault(index, true);
             // 车道图标的设置：1.推荐分时 2.推荐 3.分时 4.默认
             if (itemData.isRecommend() && itemData.isTimeLane()) {
