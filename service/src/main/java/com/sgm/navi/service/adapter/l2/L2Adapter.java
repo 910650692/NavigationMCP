@@ -71,7 +71,6 @@ public class L2Adapter {
     private NaviEtaInfo mNaviEtaInfo;
     private int mTaskId;
     private L2NaviBean.EndParkingInfo mEndParkingInfo = new L2NaviBean.EndParkingInfo();
-    private GeoPoint mFacilityGeoPoint = new GeoPoint();
 
     //region INSTANCE
     public static L2Adapter getInstance() {
@@ -424,7 +423,6 @@ public class L2Adapter {
             NaviRoadFacilityEntity naviRoadFacilityEntity = naviRoadFacilityEntitys.get(0);
             warningFacility.setBoardSignType(naviRoadFacilityEntity.getType());
             warningFacility.setBoardSignDist(naviRoadFacilityEntity.getDistance());
-            mFacilityGeoPoint = naviRoadFacilityEntity.getGeoPoint();
             Logger.i(TAG, PREFIX + "道路设施", naviRoadFacilityEntity);
         }
     };
@@ -706,18 +704,6 @@ public class L2Adapter {
                 l2NaviBean.getCrossInfoData().setHasTrafficLight(trafficLightDis == 0xFFFF ? 0 : 1);
                 l2NaviBean.getCrossInfoData().setTrafficLightPosition(trafficLightDis);
                 Logger.i(TAG, PREFIX + "红绿灯距离: " + trafficLightDis); // 0xFFFF表示无红绿灯, 0表示红绿灯就在附近
-            }
-
-            L2NaviBean.WarningFacilityBean warningFacility = l2NaviBean.getWarningFacility();
-            if (warningFacility.getBoardSignType() == 0) {
-                warningFacility.setBoardSignDist(0xFFFF);
-            } else {
-                LocInfoBean lastCarLocation = PositionAdapter.getInstance().getLastCarLocation();
-                if (mFacilityGeoPoint != null && lastCarLocation != null) {
-                    GeoPoint geo = new GeoPoint(lastCarLocation.getLongitude(), lastCarLocation.getLatitude());
-                    double dist = MapAdapter.getInstance().calcStraightDistance(geo, mFacilityGeoPoint);
-                    warningFacility.setBoardSignDist((int) dist);
-                }
             }
             // 为防止并发问题，发送消息时暂停接口回调，防止修改l2NaviBean对象
             // unRegisterAdapterCallback();
