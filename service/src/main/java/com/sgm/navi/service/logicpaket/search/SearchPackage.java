@@ -1226,6 +1226,7 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
             //离线时数据直接从数据库获取
             final List<History> historyList = mManager.loadHistoryByPage(1, 100);
             if (!ConvertUtils.isEmpty(historyList)) {
+                historyList.stream().filter(history -> !ConvertUtils.isEmpty(history.getMKeyWord()));
                 Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "size :" + historyList.size());
             }
             return historyList;

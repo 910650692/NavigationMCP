@@ -227,7 +227,7 @@ public class SceneMainSearchBottomPartView extends BaseSceneView<SearchHistoryVi
                     final Fragment fragment = (Fragment) ARouter.getInstance()
                             .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
                             .navigation();
-                    addFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
+                    addPoiDetailsFragment((BaseFragment) fragment, SearchFragmentFactory.createPoiDetailsFragment(
                             AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT, AutoMapConstant.PoiType.POI_HISTORY_LIST_CLICK, poiInfoEntity));
                 }
             }
