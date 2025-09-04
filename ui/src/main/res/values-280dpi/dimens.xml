@@ -4358,9 +4358,6 @@
     <dimen name="navi_guide_widget_margin_start">0.57dp</dimen>
     <dimen name="navi_guide_line_views">346.56dp</dimen>
 
-    <dimen name="navi_phone_address_dialog_width">530dp</dimen>
-    <dimen name="navi_phone_address_dialog_width_main_btn">660dp</dimen>
-
     <dimen name="navi_fragment_margin_botton">54.72dp</dimen>
 
     <dimen name="navi_main_fragment_margin_start">2.85dp</dimen>
@@ -4394,7 +4391,7 @@
     <dimen name="bg_route_detail_corner">4.26dp</dimen>
     <dimen name="phone_address_dialog_main_show_margin_start">530dp</dimen>
     <dimen name="phone_address_dialog_main_not_show_margin_start">655dp</dimen>
-    <dimen name="phone_address_dialog_setting_show_margin_start">1100dp</dimen>
+    <dimen name="phone_address_dialog_setting_show_margin_start">1090dp</dimen>
     <dimen name="scene_rcv_collect_list_switch_visible_max_height">424.65dp</dimen>
     <dimen name="scene_rcv_collect_list_switch_gone_max_height">478.23dp</dimen>
     <dimen name="scene_rcv_collect_sll_no_favorite_switch_visible_height">349.41dp</dimen>

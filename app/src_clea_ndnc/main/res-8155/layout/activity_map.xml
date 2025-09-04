@@ -39,7 +39,7 @@
             android:layout_width="@dimen/dp_434"
             android:layout_height="@dimen/dp_163"
             android:layout_marginStart="@dimen/navi_main_tap_margin_start"
-            android:layout_marginTop="@dimen/navi_main_tab_margin_top"
+            android:layout_marginTop="@dimen/navi_main_tap_margin_top"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:visibility="@{ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
             android:padding="@dimen/dp_34"
@@ -308,7 +308,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/navi_main_message_margin_start"
-            android:layout_marginTop="@dimen/navi_main_tap_margin_top"
+            android:layout_marginTop="@dimen/navi_main_message_center_top"
             app:layout_constraintStart_toEndOf="@id/search_main_tab"
             app:layout_constraintTop_toTopOf="parent" />
 

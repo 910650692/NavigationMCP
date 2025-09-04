@@ -374,12 +374,23 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 boolean value = ((ObservableBoolean) sender).get();
+
                 if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
-                    phoneAddressDialog.resetDialogParams(
-                            value ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_show_margin_start)
-                                    : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_not_show_margin_start),
-                            ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top)
-                    );
+                    ResourceUtils res = ResourceUtils.Companion.getInstance();
+                    int marginStart;
+                    int marginTop = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
+
+                    if (value) {
+                        marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_show_margin_start);
+                    } else {
+                        if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())) {
+                            marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_setting_show_margin_start);
+                        } else {
+                            marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_not_show_margin_start);
+                        }
+                    }
+
+                    phoneAddressDialog.resetDialogParams(marginStart, marginTop);
                 }
             }
         });
