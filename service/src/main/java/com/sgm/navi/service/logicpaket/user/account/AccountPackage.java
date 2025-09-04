@@ -207,7 +207,6 @@ public final class AccountPackage implements AccountAdapterCallBack {
 
     @Override
     public void notifyMobileLogin(final int errCode, final int taskId, final AccountUserInfo result) {
-
         if (result != null && result.getCode() == 1) {
             // 手机号登录成功后，用户登录信息保存到数据库
             mIsLogin = true;

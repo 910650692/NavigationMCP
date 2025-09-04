@@ -52,6 +52,7 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
     public MutableLiveData<Boolean> mIsCarLogoDefault = new MutableLiveData<>(true);
     public MutableLiveData<Boolean> mIsCarLogoBrand = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsCarLogoSpeed = new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> mIsGasCar = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsEVCar = new MutableLiveData<>(false);
     public MutableLiveData<Boolean> mIsPHEVCar = new MutableLiveData<>(false);
 
@@ -165,6 +166,9 @@ public class BaseSettingGuideViewModel extends BaseViewModel<SettingNaviFragment
      */
     public void dualChoiceControl(final String key, final boolean isTrue) {
         switch (key) {
+            case SettingController.KEY_SETTING_IS_GAS_CAR:
+                mIsGasCar.setValue(isTrue);
+                break;
             case SettingController.KEY_SETTING_IS_EV_CAR:
                 mIsEVCar.setValue(isTrue);
                 break;
