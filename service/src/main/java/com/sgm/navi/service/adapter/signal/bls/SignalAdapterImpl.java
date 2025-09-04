@@ -736,12 +736,23 @@ public class SignalAdapterImpl implements SignalApi {
             Logger.w(TAG, "setNextChargingDestination: mPropertyManager is null");
             return;
         }
-        Logger.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
-        final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
-        try {
-            mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, VehicleArea.GLOBAL, nextChargingDestination);
-        } catch (Exception e) {
-            Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+        if (VehicleController.isGBArch()) {
+            Logger.d(TAG, "gb setNextChargingDestination: ", powerLevel, status, timeToArrival, distToArrival);
+            final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
+            try {
+                mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, VehicleArea.GLOBAL, nextChargingDestination);
+            } catch (Exception e) {
+                Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+            }
+        } else if (VehicleController.isCleaArch()) {
+            Logger.d(TAG, "clea setNextChargingDestination: ", powerLevel, status, timeToArrival);
+            try {
+                mPropertyManager.setProperty(Float.class, 559964513, VehicleArea.GLOBAL, (float) powerLevel);
+                mPropertyManager.setProperty(Integer.class, 557867362, VehicleArea.GLOBAL, status);
+                mPropertyManager.setProperty(Integer.class, 557867363, VehicleArea.GLOBAL, timeToArrival);
+            } catch (Exception e) {
+                Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+            }
         }
     }
 
