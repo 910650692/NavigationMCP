@@ -88,7 +88,7 @@ public class ThreadManager {
 
     public void runOnUiThread(Runnable runnable) {
         if (isMainThread()) runnable.run();
-        else postUi(runnable);
+        else mThreadHandler.postUi(runnable);
     }
 
     public void postUi(Runnable runnable) {

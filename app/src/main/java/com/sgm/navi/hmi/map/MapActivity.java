@@ -602,11 +602,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.INVISIBLE);
             return;
         }
-        ThreadManager.getInstance().postUi(() -> {
-                    mBinding.cruiseLayout.tvCurrentRoadName.setText(cruiseInfoEntity.roadName);
-                    mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.VISIBLE);
-                }
-        );
+        mBinding.cruiseLayout.tvCurrentRoadName.setText(cruiseInfoEntity.roadName);
+        mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.VISIBLE);
     }
 
     public void setNdGoHomeView(RouteTMCParam routeTMCParam) {

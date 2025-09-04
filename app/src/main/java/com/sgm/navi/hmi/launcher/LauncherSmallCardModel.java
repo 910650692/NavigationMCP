@@ -174,7 +174,13 @@ public class LauncherSmallCardModel extends BaseModel<BaseLauncherSmallCardViewM
     public void onUpdateCruiseInfo(final boolean isShowLane, final LaneInfoEntity laneInfoEntity) {
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         // 巡航-车道信息
-        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     @Override

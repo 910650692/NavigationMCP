@@ -203,7 +203,8 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         Logger.d(TAG,"updateCruiseLanInfo");
         mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
-        mCruiseLanesVisibility.set(!ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
+        mCruiseLanesVisibility.set(!ConvertUtils.isNull(laneInfoEntity) &&
+                !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
     /***

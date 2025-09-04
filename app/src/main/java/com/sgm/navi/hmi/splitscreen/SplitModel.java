@@ -363,7 +363,13 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         Logger.w(TAG, "onUpdateCruiseInfo:" + isShowLane);
         // 巡航-车道信息
-        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     public String getCurrentNaviStatus() {

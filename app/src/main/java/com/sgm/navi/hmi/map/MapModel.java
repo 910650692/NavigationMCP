@@ -1527,7 +1527,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
         ICruiseObserver.super.onUpdateCruiseInfo(cruiseInfoEntity);
         // 巡航-电子眼信息
-        mViewModel.updateCruiseRoadName(cruiseInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseRoadName(cruiseInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     @Override
@@ -1535,7 +1541,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         Logger.w(TAG, "onUpdateCruiseInfo:" + isShowLane);
         // 巡航-车道信息
-        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     /***

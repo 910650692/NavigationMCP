@@ -581,9 +581,13 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @param pathID 换为主路线的id @thread main
      */
     public void selectMainPathID(final long pathID) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (mNaviAdapter != null) {
-                mNaviAdapter.selectMainPathID(pathID);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                if (mNaviAdapter != null) {
+                    mNaviAdapter.selectMainPathID(pathID);
+                }
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
             }
         });
     }
@@ -595,7 +599,7 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      * @param pathId    路线id
      */
     public void selectPath(final MapType mapTypeId, final long pathId) {
-        Logger.i(TAG, "selectPath: ", pathId, "mapId = ", mapTypeId);
+        Logger.e(TAG, "selectPath: ", pathId, "mapId = ", mapTypeId);
         selectMainPathID(pathId);
     }
 

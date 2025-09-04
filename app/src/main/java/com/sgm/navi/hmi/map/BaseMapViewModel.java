@@ -1417,7 +1417,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
         }
-        cruiseLanesVisibility.set(cruiseVisibility.get() && !ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
+        cruiseLanesVisibility.set(Boolean.TRUE.equals(cruiseVisibility.get()) &&
+                !ConvertUtils.isNull(laneInfoEntity) &&
+                !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
     public void showOrHiddenCruise(boolean isShow) {

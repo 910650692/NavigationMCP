@@ -1482,11 +1482,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private void onRouteClick(long pathId) {
         int currentNaviType = mNaviPackage.getCurrentNaviType();
         if (currentNaviType != 0) {
-            Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
+            Logger.e(TAG, "非GPS 导航，不支持手动切换路线");
             return;
         }
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-            Logger.i(TAG, "离线状态，不支持手动切换路线");
+            Logger.e(TAG, "离线状态，不支持手动切换路线");
             if (pathId != OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP)) {
                 ThreadManager.getInstance().postUi(() ->
                         ToastUtils.Companion.getInstance().showCustomToastView(
