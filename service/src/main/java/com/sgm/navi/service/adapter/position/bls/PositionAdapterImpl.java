@@ -53,7 +53,8 @@ public class PositionAdapterImpl implements IPositionApi, ISpeedCallback {
     public boolean init() {
         mLocMode = PositionConstant.isDrBack ? LocMode.DrBack : LocMode.GNSS;
         if (mLocMode == LocMode.DrBack) {
-            mVehicleSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
+            mVehicleSpeedController = VehicleSpeedController.getInstance(AppCache.getInstance().getMContext());
+            mVehicleSpeedController.registerCallBack("PositionAdapterImpl", this);
             mVehicleSpeedController.registerCallback();
         }
         boolean initResult = positionStrategy.initLocEngine(mLocMode);

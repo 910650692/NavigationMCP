@@ -65,6 +65,12 @@ public class DebugWindow implements IPositionPackageCallback {
         startTimeUpdate();
         isShow = true;
         PositionPackage.getInstance().setDrEnable(true);
+        mBinding.closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hide();
+            }
+        });
     }
 
     public void hide() {
