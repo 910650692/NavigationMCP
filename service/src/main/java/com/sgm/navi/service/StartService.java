@@ -490,7 +490,7 @@ public class StartService {
 
         @Override
         public void onInitEngineFail(int code, String msg) {
-            Logger.e(TAG, "Engine init fail", "errorCode：", code, "errorMsg：", msg, " ###Fatal###");
+            Logger.f(TAG, "Engine init fail", "errorCode：", code, "errorMsg：", msg, " ###Fatal###");
             getInstance().conformFailCallback(code, msg);
         }
     };

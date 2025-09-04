@@ -247,7 +247,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
                     "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
         }
         if (usedTextureCount >= capacityTextureCount) {
-            Logger.e(TAG, "###Fatal###", "MapView:" + getMapType() + "纹理数超过最大限制500");
+            Logger.f(TAG, "###Fatal###", "MapView:" + getMapType() + "纹理数超过最大限制500");
         }
         if (getStyleAdapter() != null && ConvertUtils.isNull(texture)) {
             String markerRes = styleInfo.markerId;

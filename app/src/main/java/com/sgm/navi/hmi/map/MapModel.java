@@ -557,7 +557,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         boolean isShowException = !isNetConnect && !isOfflineData;
         Logger.e(TAG, "mStartExceptionDialog", "检测网络和离线数据", isShowException);
         if (isShowException) {
-            Logger.e(TAG, "###Fatal###");
+            Logger.f(TAG, "Net exception dialog pop", "###Fatal###");
         }
         return isShowException;
     }

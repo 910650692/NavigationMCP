@@ -49,6 +49,10 @@ public class Logger {
         LogUtils.error(tag, args);
     }
 
+    public static void f(String tag, Object... args) {
+        LogUtils.fatal(tag, args);
+    }
+
     public static void switchLog(boolean logSwitch) {
         LogUtils.switchLog(logSwitch);
     }
