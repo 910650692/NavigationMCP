@@ -5,6 +5,7 @@ import com.android.utils.ConvertUtils;
 import com.android.utils.NetWorkUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.log.Logger;
+import com.android.utils.process.ProcessManager;
 import com.android.utils.thread.ThreadManager;
 import com.autonavi.gbl.aosclient.BLAosService;
 import com.autonavi.gbl.aosclient.model.GReStrictedAreaResponseParam;
@@ -48,6 +49,7 @@ import com.autonavi.gbl.route.observer.IRouteWeatherObserver;
 import com.autonavi.gbl.servicemanager.ServiceMgr;
 import com.autonavi.gbl.util.model.ServiceInitStatus;
 import com.autonavi.gbl.util.model.SingleServiceID;
+import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
@@ -1727,8 +1729,9 @@ public class RouteAdapterImplHelper {
      */
     private RouteL2Data getRouteL2Data(final PathInfo pathInfo) {
         final RouteL2Data data = new RouteL2Data();
-        data.setMEngineVersion(BevPowerCarUtils.getInstance().engineVersion);
-        data.setMSdkVersion(BevPowerCarUtils.getInstance().sdkVersion);
+        data.setMEngineVersion(BevPowerCarUtils.getInstance().engineVersion + ";750");
+        String versionName = ProcessManager.getVersionName(AppCache.getInstance().getMApplication());
+        data.setMSdkVersion(BevPowerCarUtils.getInstance().sdkVersion + ";" + versionName);
         data.setMPathID(pathInfo.getPathID());
         final long segmentCount = pathInfo.getSegmentCount();
         int linkCnt = 0;

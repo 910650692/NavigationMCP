@@ -670,10 +670,6 @@ public class GuidanceCallback implements INaviObserver, ISoundPlayObserver {
         Logger.i(TAG, "onShowNaviFacility: ", "引导道路设施回调");
         ArrayList<NaviRoadFacilityEntity> naviRoadFacilityEntities = NaviDataFormatHelper.
                 formatRoadFacilityList(list);
-        if (ConvertUtils.isEmpty(naviRoadFacilityEntities)) {
-            Logger.i(TAG, "onShowNaviFacility: ", "道路设施列表为空");
-            return;
-        }
         for (GuidanceObserver guidanceObserver : mGuidanceObservers.values()) {
             if (guidanceObserver != null) {
                 guidanceObserver.onShowNaviFacility(naviRoadFacilityEntities);
