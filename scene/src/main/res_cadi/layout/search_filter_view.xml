@@ -178,7 +178,7 @@
             android:textColor="@color/white_always"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/skinScrollView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_filter_scrollview" />
 
         <com.sgm.navi.ui.view.SkinTextView
             style="@style/style_mfc_config_no_bg"
@@ -194,7 +194,7 @@
             android:textSize="@dimen/sp_46"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/skinScrollView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_filter_scrollview" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
 </layout>
