@@ -91,6 +91,9 @@ public class SignalAdapterImpl implements SignalApi {
                     public void onHighVoltageBatteryPropulsionRangeChanged(final float value) {
                         Logger.d(TAG, "onHighVoltageBatteryPropulsionRangeChanged: " + value);
                         mHighVoltageBatteryPropulsionRange = value;
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onHighVoltageBatteryPropulsionRangeChanged(value);
+                        }
                     }
                 });
         PowerModeManager.getInstance().registerSystemStateListener((newMode, oldMode) -> {
@@ -706,13 +709,13 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public float getRangeRemaining() {
-        Logger.d(TAG, "getRangeRemaining: " + mRangeRemaining);
+        Logger.e(TAG, "getRangeRemaining: " + mRangeRemaining);
         return mRangeRemaining;
     }
 
     @Override
     public float getHighVoltageBatteryPropulsionRange() {
-        Logger.d(TAG, "getHighVoltageBatteryPropulsionRange: " + mHighVoltageBatteryPropulsionRange);
+        Logger.e(TAG, "getHighVoltageBatteryPropulsionRange: " + mHighVoltageBatteryPropulsionRange);
         return mHighVoltageBatteryPropulsionRange;
     }
 
