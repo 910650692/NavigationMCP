@@ -22,7 +22,7 @@
         android:paddingVertical="@dimen/dp_34">
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_545"
+            android:layout_width="@dimen/dp_538"
             android:layout_height="@dimen/dp_272"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
