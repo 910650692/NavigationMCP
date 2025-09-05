@@ -209,7 +209,7 @@ public class MapAdapterImpl implements IMapApi {
     public GeoPoint getMapCenter(MapType mapTypeId) {
         MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
         if (mapViewImpl != null) {
-            mapViewImpl.getMapCenter();
+            return mapViewImpl.getMapCenter();
         }
         return new GeoPoint();
     }
