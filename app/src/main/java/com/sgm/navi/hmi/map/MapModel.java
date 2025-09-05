@@ -900,11 +900,11 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onSurfaceChanged(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
             Logger.d(TAG, "onSurfaceChanged: ");
+            setMapCenterInScreen();
             if (ScreenTypeUtils.getInstance().isFullScreen() &&
                     !NaviPackage.getInstance().getClusterFixOverViewStatus() &&
                     !NaviPackage.getInstance().getPreviewStatus() &&
                     !NaviPackage.getInstance().getFixedOverViewStatus()) {
-                setMapCenterInScreen();
                 goToCarPosition();
             }
             updateCarPosition();
@@ -922,13 +922,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         }
         mSaveScreenSize = checkScreenSizeChanged();
         if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())) {
-            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            ThreadManager.getInstance().postDelay(() -> {
+                OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            },500);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，全揽");
         } else {
             // 延迟500ms再执行，防止分屏后地图中心点设置位置不生效
-            ThreadManager.getInstance().postDelay(() -> {
-                goToCarPosition();
-            },500);
+            ThreadManager.getInstance().postDelay(this::goToCarPosition,500);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，重新设置自车位置");
         }
 
@@ -1023,8 +1023,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
+        Log.e(TAG, "isEnterPreview: " + isEnterPreview);
         if (!isEnterPreview && mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
-            Log.e(TAG, "isEnterPreview: ");
             setMapCenterInScreen();
             goToCarPosition();
         }
@@ -1044,7 +1044,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
         }
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
+        if ((ScreenTypeUtils.getInstance().isOneThirdScreen() && getNaviStatus() != NaviStatus.NaviStatusType.NAVING) || parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);

@@ -1,6 +1,8 @@
 package com.sgm.navi.scene.impl.navi;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.PREVIEW;
 
 import android.annotation.SuppressLint;
 
@@ -260,6 +262,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mMapPackage.setLockMapRollAngle(mMapTypeId, true);
         mNaviPackage.setFixedOverViewStatus(true);
         mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
+        NaviPackage.getInstance().updatePreViewStatus();
     }
 
     /**
@@ -281,6 +284,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
         updateVariationVoice();
         OpenApiHelper.exitPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
         if (mCallBack != null) {
             mCallBack.cancelClusterOverViewTimer();
         }
@@ -295,6 +299,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
         mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
         OpenApiHelper.enterPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
     }
 
     @Override
@@ -387,6 +392,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             boolean isCurrentNavi = mCallBack == null || mCallBack.getCurrentFragmentIsNavi();
             if (!isFixedOverview && isPreview && isCurrentNavi) {
                 OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                NaviPackage.getInstance().updatePreViewStatus();
             }
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
                     NaviConstant.OverviewType.OVERVIEW_FIXED :
@@ -504,5 +510,21 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             }
         }
         updateVariationVoice();
+    }
+
+    public void updatePreViewHmi(int status) {
+        if (status == NO_PREVIEW) {
+            isShowMoreSetup(true);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
+            updateVariationVoice();
+        } else if (status == PREVIEW) {
+            isShowMoreSetup(false);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
+            mScreenView.updateVariation(NaviConstant.VariationType.VARIATION_SELECT);
+        } else {
+            isShowMoreSetup(true);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
+            updateVariationVoice();
+        }
     }
 }

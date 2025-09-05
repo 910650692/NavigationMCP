@@ -1,6 +1,10 @@
 package com.sgm.navi.service.logicpaket.navi;
 
 import static com.android.utils.SpUtils.SP_KEY_LAST_VOLUME;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.FIXED_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.FIXED_PREVIEW_CLUSTER;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.PREVIEW;
 
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -120,6 +124,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     private SignalAdapter mSignalAdapter;
     private boolean mIsMute = false;
     private int mCurrentImmersiveStatus = -1;
+    @Getter
+    @Setter
     private boolean mIsPreview = false;
     @Getter
     private NaviEtaInfo mCurrentNaviEtaInfo;
@@ -153,6 +159,8 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
     @Getter
     @Setter
     private boolean mIsFloatWindowShow;
+    @Getter
+    private int mPreViewStatus; // 0:非全览1:全览非固定2:固定全览3:固定全览（特殊情况，仪表地图视图打开）
     private NaviPackage() {
         StartService.getInstance().registerSdkCallback(TAG, this);
         mGuidanceObservers = new ConcurrentHashMap<>();
@@ -458,6 +466,33 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
      */
     public void setClusterFixOverViewStatus(final boolean b) {
         mIsClusterFixOverView = b;
+    }
+
+
+    // 主图导航使用
+    public void updatePreViewStatus() {
+        mPreViewStatus = getPreViewStatus();
+        Logger.e(TAG, mPreViewStatus);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            if (!ConvertUtils.isEmpty(mOnPreViewStatusChangeListeners)) {
+                for (OnPreViewStatusChangeListener listener : mOnPreViewStatusChangeListeners) {
+                    listener.onPreViewStatusChange(mPreViewStatus);
+                }
+            }
+        });
+    }
+
+    // 1/3屏导航使用
+    public void updatePreViewStatusOneThree(final int status) {
+        mPreViewStatus = status;
+        Logger.e(TAG, mPreViewStatus);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            if (!ConvertUtils.isEmpty(mOnPreViewStatusChangeListeners)) {
+                for (OnPreViewStatusChangeListener listener : mOnPreViewStatusChangeListeners) {
+                    listener.onPreViewStatusChange(mPreViewStatus);
+                }
+            }
+        });
     }
 
     public boolean getClusterFixOverViewStatus() {
@@ -1281,7 +1316,9 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
         /**
          * @param isPreView true:全览 false:非全览
          */
-        void onPreViewStatusChange(boolean isPreView);
+        default void onPreViewStatusChange(boolean isPreView) {}
+
+        default void onPreViewStatusChange(int status) {}
     }
 
     /**
@@ -1315,6 +1352,16 @@ public final class NaviPackage implements GuidanceObserver, SignalAdapterCallbac
                 listener.onPreViewStatusChange(status);
             }
         }
+    }
+
+    private int getPreViewStatus() {
+        if (!mIsPreview) {
+            return NO_PREVIEW;
+        } else if (!mIsFixedOverView && !mIsClusterFixOverView) {
+            return PREVIEW;
+        } else if (mIsFixedOverView) {
+            return FIXED_PREVIEW;
+        } else return FIXED_PREVIEW_CLUSTER;
     }
 
     /**

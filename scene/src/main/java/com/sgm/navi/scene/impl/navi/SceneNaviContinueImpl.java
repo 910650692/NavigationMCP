@@ -139,6 +139,7 @@ public class SceneNaviContinueImpl extends BaseSceneModel<SceneNaviContinueView>
                     !mNaviPackage.getClusterFixOverViewStatus() &&
                     mNaviPackage.getPreviewStatus()) {
                 OpenApiHelper.exitPreview(mMapTypeId);
+                NaviPackage.getInstance().updatePreViewStatus();
                 // 这边逻辑不能随便改，八秒后需要回到自车位置
             } else if (!mNaviPackage.getFixedOverViewStatus() &&
                     !mNaviPackage.getClusterFixOverViewStatus()) {

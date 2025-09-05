@@ -5,6 +5,10 @@ import androidx.annotation.IntDef;
 import com.android.utils.ScreenUtils;
 
 public interface NaviConstant {
+    int NO_PREVIEW = 0;
+    int PREVIEW = 1;
+    int FIXED_PREVIEW = 2;
+    int FIXED_PREVIEW_CLUSTER = 3;
     boolean IS_SYSTEM_AUDIO = true;
     long NAVI_ID = 0;//真实导航ID
     long NAVI_SIM_ID = 1;//模拟导航ID

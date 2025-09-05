@@ -1,6 +1,10 @@
 package com.sgm.navi.hmi.navi;
 
 
+import static com.sgm.navi.service.adapter.navi.NaviConstant.FIXED_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.PREVIEW;
+
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -119,7 +123,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
         SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback,
-        IMapPackageCallback, ScreenTypeUtils.SplitScreenChangeListener {
+        IMapPackageCallback, ScreenTypeUtils.SplitScreenChangeListener, NaviPackage.OnPreViewStatusChangeListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
@@ -242,6 +246,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         NaviSceneManager.getInstance().onCreateSceneView();
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
+        mNaviPackage.addOnPreviewStatusChangeListener(this);
         mNaviPackage.setMIsNaviViewActive(true);
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mNetWorkUtils.registerNetworkObserver(this);
@@ -286,6 +291,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     if (!overViewFix) {
                         if (mViewModel != null) {
                             mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
+                            NaviPackage.getInstance().updatePreViewStatus();
                         }
                     }
                 } catch (Exception e) {
@@ -399,6 +405,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
                 mNaviPackage.setClusterFixOverViewStatus(false);
+                NaviPackage.getInstance().updatePreViewStatus();
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);
                 mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -428,11 +435,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         boolean isClusterMapOpen = mClusterMapOpenCloseManager.isClusterOpen();
         Logger.i(TAG, "openClusterOverView isClusterMapOpen = ", isClusterMapOpen);
         if (isClusterMapOpen) {
+            mNaviPackage.setClusterFixOverViewStatus(true);
             cancelClusterOverViewTimer();
             if (mViewModel != null) {
                 mViewModel.naviPreviewSwitch(NumberUtils.NUM_1);
             }
-            mNaviPackage.setClusterFixOverViewStatus(true);
         }
     }
 
@@ -770,6 +777,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
+            mNaviPackage.removeOnPreviewStatusChangeListener(this);
             mNaviPackage.setMIsNaviViewActive(false);
         }
         if (mTipManager != null) {
@@ -1162,7 +1170,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onClusterMapOpenOrClose(boolean isOpen) {
-        Logger.i(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
+        Logger.e(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
         mIsClusterOpen = isOpen;
         ThreadManager.getInstance().postUi(mOnClusterMapOpenOrClose);
     }
@@ -1432,6 +1440,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         // 如果是预览状态，还是进入预览
         if (mNaviPackage.getPreviewStatus()) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            NaviPackage.getInstance().updatePreViewStatus();
         }
     }
 
@@ -1725,6 +1734,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            NaviPackage.getInstance().updatePreViewStatus();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(
                     MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         }
@@ -1880,5 +1890,48 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return;
         }
         mMapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
+    }
+
+    @Override
+    public void onPreViewStatusChange(int status) {
+        boolean preViewStatus = NaviPackage.getInstance().getPreviewStatus();
+        boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        boolean isClusterFixOverView = NaviPackage.getInstance().getClusterFixOverViewStatus();
+        Logger.e(TAG, "status: ", status, "preViewStatus: ", preViewStatus,
+                "isFixedOverView: ", isFixedOverView, "isClusterFixOverView: ", isClusterFixOverView);
+        switch (status) {
+            case NO_PREVIEW:
+                if(preViewStatus) {
+                    NaviPackage.getInstance().setMIsPreview(false);
+                    NaviPackage.getInstance().setFixedOverViewStatus(false);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            case PREVIEW:
+                if (!preViewStatus) {
+                    NaviPackage.getInstance().setMIsPreview(true);
+                    NaviPackage.getInstance().setFixedOverViewStatus(false);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            case FIXED_PREVIEW:
+                if (!preViewStatus || !isFixedOverView) {
+                    NaviPackage.getInstance().setMIsPreview(true);
+                    NaviPackage.getInstance().setFixedOverViewStatus(true);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void updatePreViewHmi(final int status) {
+        if (mViewModel != null) {
+            mViewModel.updatePreViewHmi(status);
+        }
     }
 }

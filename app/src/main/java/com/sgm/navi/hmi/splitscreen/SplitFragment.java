@@ -3,9 +3,9 @@ package com.sgm.navi.hmi.splitscreen;
 import android.app.Activity;
 import android.graphics.Rect;
 
-import androidx.databinding.library.baseAdapters.BR;
 
 import com.android.utils.log.Logger;
+import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
 import com.sgm.navi.hmi.map.MapActivity;

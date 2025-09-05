@@ -1070,4 +1070,10 @@ public class BaseNaviGuidanceViewModel extends
         showSecondButton.set(bridge);
         updateTwoThreeButtonVisibility();
     }
+
+    public void updatePreViewHmi(final int status) {
+        if (mView != null) {
+            mView.updatePreViewHmi(status);
+        }
+    }
 }

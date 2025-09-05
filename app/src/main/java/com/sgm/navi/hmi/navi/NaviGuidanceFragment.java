@@ -794,9 +794,11 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
                             Boolean.FALSE.equals(mViewModel.mNaviViaListVisibility.get()) &&
                             NaviPackage.getInstance().getPreviewStatus()) {
                         OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                        NaviPackage.getInstance().updatePreViewStatus();
                     } else if (mViewModel != null &&
                             Boolean.TRUE.equals(mViewModel.mNaviViaListVisibility.get())) {
                         OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                        NaviPackage.getInstance().updatePreViewStatus();
                     }
                 }
             });
@@ -1132,6 +1134,12 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     public void onSplitScreenChanged(boolean isShowMusicTab, boolean isFullScreen) {
         if (mBinding != null && mBinding.sceneNaviCrossImage != null) {
             mBinding.sceneNaviCrossImage.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        }
+    }
+
+    public void updatePreViewHmi(final int status) {
+        if (mBinding != null && mBinding.sceneNaviControl != null) {
+            mBinding.sceneNaviControl.updatePreViewHmi(status);
         }
     }
 }
