@@ -77,7 +77,8 @@
             android:id="@+id/tv_current_road_name"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_146"
-            android:layout_marginStart="@dimen/dp_817"
+            android:layout_marginStart="@dimen/dp_438"
+            android:layout_marginEnd="@dimen/dp_102"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:gravity="center"
             android:minHeight="@dimen/dp_90"
@@ -86,8 +87,10 @@
             android:textColor="@color/common_title_purple_color"
             android:textSize="@dimen/sp_29"
             android:visibility="invisible"
+            android:text="当前道路"
             app:layout_constraintBottom_toBottomOf="@id/view_bg"
-            app:layout_constraintStart_toEndOf="@id/view_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="当前道路" />
 
     </com.sgm.navi.ui.view.SkinConstraintLayout>
