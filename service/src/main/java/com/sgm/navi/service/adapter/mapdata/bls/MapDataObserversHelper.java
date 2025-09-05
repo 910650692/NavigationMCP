@@ -616,7 +616,8 @@ public class MapDataObserversHelper implements IDataInitObserver, IDownloadObser
                         final ProvDataInfo provDataInfo = convertProvData(provArea);
 
                         // 一级列表非省份数据（直辖市+省辖市）
-                        if(provDataInfo.getAreaType() == 2 || provDataInfo.getAreaType() == 3) {
+                        if (provDataInfo.getAreaType() == 2 || provDataInfo.getAreaType() == 3
+                                || provDataInfo.getAreaType() == 4) {
                             // 获取一级城市数据包的下载状态信息(模糊搜索)
                             provDataInfo.setDownLoadInfo(getCityDownLoadInfo(provDataInfo.getAdcode()));
                         }
