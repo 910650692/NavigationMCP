@@ -94,6 +94,8 @@ public final class VoiceSearchManager {
 
     private GeoPoint mCenterPoint; //中心点坐标
 
+    private int mNaviPlanType = PoiBean.NaviPlanType.DEFAULT;//多目的地，通知语音POI类型
+
 
     public static VoiceSearchManager getInstance() {
         return VoiceSearchManagerHolder.INSTANCE;
@@ -378,7 +380,7 @@ public final class VoiceSearchManager {
             Logger.e(IVrBridgeConstant.TAG, "voiceSearchParams is null");
             return CallResponse.createFailResponse(IVrBridgeConstant.ResponseString.EMPTY_DEST);
         }
-
+        mNaviPlanType = PoiBean.NaviPlanType.DEFAULT;
         mPoiCallback = poiCallback;
         resetSearchAbout();
         mSessionId = sessionId;
@@ -645,7 +647,7 @@ public final class VoiceSearchManager {
     private void responseSearchWithResult() {
         if (null != mPoiCallback) {
             try {
-                final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
+                final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList, mNaviPlanType);
                 final int size = poiBeanList.size();
                 if(Logger.openLog) {
                     Logger.d(IVrBridgeConstant.TAG, "responseToVoice, totalSearchSize: ", size);
@@ -797,6 +799,7 @@ public final class VoiceSearchManager {
             final String name = poiBean.getName();
             final String type = poiBean.getType();
             final SingleDestInfo singleDestInfo = new SingleDestInfo();
+            singleDestInfo.setInNaviPlanType(PoiBean.NaviPlanType.MULTI_NAVI_PASSING_POINT);
             singleDestInfo.setDestName(name);
             singleDestInfo.setDestType(type);
 
@@ -820,6 +823,7 @@ public final class VoiceSearchManager {
         final SingleDestInfo singleDestInfo = new SingleDestInfo();
         final String destName = mDestInfo.getDest();
         final String destType = mDestInfo.getDestType();
+        singleDestInfo.setInNaviPlanType(PoiBean.NaviPlanType.MULTI_NAVI_END_POINT);
         singleDestInfo.setDestName(destName);
         singleDestInfo.setDestType(destType);
         if (IVrBridgeConstant.DestType.HOME.equals(destName)) {
@@ -908,6 +912,7 @@ public final class VoiceSearchManager {
                 Logger.d(IVrBridgeConstant.TAG, "genericsDestIndex: ", mProcessDestIndex);
             }
             final SingleDestInfo genericsDest = mGenericsDestList.get(mProcessDestIndex);
+            mNaviPlanType = genericsDest.getInNaviPlanType();
             mKeyword = genericsDest.getDestName();
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "genericsDestName: ", mKeyword);
@@ -924,6 +929,7 @@ public final class VoiceSearchManager {
                 Logger.d(IVrBridgeConstant.TAG, "normalDestIndex: ", mProcessDestIndex);
             }
             final SingleDestInfo normalDest = mNormalDestList.get(mProcessDestIndex);
+            mNaviPlanType = normalDest.getInNaviPlanType();
             if(Logger.openLog) {
                 Logger.d(IVrBridgeConstant.TAG, "normalDestTYPE: ", normalDest.getDestType());
             }
@@ -940,6 +946,7 @@ public final class VoiceSearchManager {
                 mSearchTaskId = SearchPackage.getInstance().silentKeywordSearch(1, mKeyword);
             }
         } else if (null != mMultiplePoiArray && mMultiplePoiArray.size() > 0) {
+            mNaviPlanType = PoiBean.NaviPlanType.DEFAULT;
             //全部获取完毕，开始路线规划
             int size = mMultiplePoiArray.size();
             if(Logger.openLog) {
@@ -2248,7 +2255,7 @@ public final class VoiceSearchManager {
     private void dealTurnPageResult(final boolean success) {
         mInTurnRound = false;
         if (success) {
-            final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList);
+            final List<PoiBean> poiBeanList = VoiceConvertUtil.convertSearchResult(mSearchResultList, mNaviPlanType);
             final int size = poiBeanList.size();
             if (Logger.openLog) {
                 Logger.i(IVrBridgeConstant.TAG, "turnPage resultSize:", size);
