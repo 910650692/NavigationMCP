@@ -211,10 +211,9 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                                 Logger.e(TAG, "更新终点扎标信息 getEndPointInfo is null");
                                 return;
                             }
-                            Logger.d(TAG, "更新终点扎标信息 data " + data);
+                            Logger.d(TAG, "更新终点扎标信息 data ", data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
                             final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
-                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
                             if (null != parkView) {
                                 parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
                             }
@@ -240,7 +239,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             } else {
                                 safetySetText(text, "");
                             }
-                            Logger.d(TAG, "终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
                             if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
                                 textView.setVisibility(VISIBLE);
@@ -261,7 +259,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             Logger.d(TAG, "onFocusProcess 更新终点扎标信息 data " + data);
                             final TextView text = rootView.findViewById(R.id.route_end_detail);
                             final ImageView parkView = rootView.findViewById(R.id.route_end_parking);
-                            Logger.d(TAG, "isShowParkView ", data.isShowParkView());
                             if (null != parkView) {
                                 parkView.setVisibility(data.isShowParkView() ? VISIBLE : GONE);
                             }
@@ -287,7 +284,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             } else {
                                 safetySetText(text, "");
                             }
-                            Logger.d(TAG, "onFocusProcess 终点扎标-营业时间 data " + data.toString());
                             final TextView textView = rootView.findViewById(R.id.route_end_business);
                             if (!ConvertUtils.isEmpty(data.getBusinessHours())) {
                                 textView.setVisibility(VISIBLE);
@@ -307,9 +303,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getMRouteChargeStationInfo())) {
                                 Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
                                 return;
-                            }
-                            if (Logger.openLog) {
-                                Logger.d(TAG, "更新补能规划扎标信息 ", data.getMRouteChargeStationInfo());
                             }
                             safetySetText(position, String.valueOf(data.getIndex() + 1));
                             RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
@@ -338,9 +331,6 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             if (ConvertUtils.isEmpty(data) || ConvertUtils.isEmpty(data.getMRouteChargeStationInfo())) {
                                 Logger.e(TAG, "更新补能规划扎标信息 getMRouteChargeStationInfos is null");
                                 return;
-                            }
-                            if (Logger.openLog) {
-                                Logger.d(TAG, "更新补能规划扎标信息 ", data.getMRouteChargeStationInfo());
                             }
                             safetySetText(position, String.valueOf(data.getIndex() + 1));
                             RouteChargeStationDetailInfo chargeStationInfo = data.getMRouteChargeStationInfo();
@@ -393,7 +383,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                             TextView slowTextView = rootView.findViewById(R.id.search_replace_charge_slow);
                             TextView priceTextView = rootView.findViewById(R.id.search_replace_charge_price);
                             int index = data.getIndex();
-                            Logger.d(TAG, "替换补能充电站扎标 index " + index);
+                            Logger.d(TAG, "替换补能充电站扎标 index ", index);
                             safetySetText(positionView, String.valueOf(index + 1));
                             RouteAlterChargeStationInfo info = data.getInfo();
                             if (ConvertUtils.isEmpty(info)) {
@@ -503,9 +493,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             String fastString = getValidChargeNumber(fastTotalNumber);
             final String result = context.getString(R.string.layer_route_replace_charge_fast, fastString);
             safetySetText(fastText, result);
-            if (Logger.openLog) {
-                Logger.d(TAG, "fastTotalNumber ", fastTotalNumber, " result ", result);
-            }
+            Logger.d(TAG, "fastTotalNumber ", fastTotalNumber, " result ", result);
         }
         final String slowTotalNumber = info.getMSlowPlugInfo().getMTotalNumber();
         if (TextUtils.isEmpty(slowTotalNumber)) {
@@ -514,9 +502,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             String slowString = getValidChargeNumber(slowTotalNumber);
             final String result = context.getString(R.string.layer_route_replace_charge_slow, slowString);
             safetySetText(slowText, result);
-            if (Logger.openLog) {
-                Logger.d(TAG, "slowTotalNumber ", slowTotalNumber, " result ", result);
-            }
+            Logger.d(TAG, "slowTotalNumber ", slowTotalNumber, " result ", result);
         }
         if (ConvertUtils.isEmpty(fastTotalNumber) && ConvertUtils.isEmpty(slowTotalNumber) && null != linearLayout) {
             linearLayout.setVisibility(GONE);
@@ -643,7 +629,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
             Logger.e(TAG, "updateRoutePoints result == null");
             return;
         }
-        Logger.d(TAG, "updateRoutePoints result " + result.toString());
+        Logger.d(TAG, "updateRoutePoints result ", result);
         if (mRouteControl != null) {
             Logger.d(TAG, "updateRoutePoints");
             mRouteEndPoint.setRestNum(result.getRestNum());
@@ -712,10 +698,10 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         }
         chargePoint.setIndex(replaceChargeIndex);
         chargePoint.setType(0);
-        Logger.d(TAG, "getRouteReplaceChargePoint index " + index +
-                " mReplaceChargeInfos.size " + mReplaceChargeInfos.size() +
-                " replaceChargeIndex " + replaceChargeIndex +
-                " mViaCount " + mViaCount);
+        Logger.d(TAG, "getRouteReplaceChargePoint index ", index,
+                " mReplaceChargeInfos.size ", mReplaceChargeInfos.size(),
+                " replaceChargeIndex ", replaceChargeIndex,
+                " mViaCount ", mViaCount);
         return chargePoint;
     }
 
@@ -724,9 +710,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
         mRouteEndPoint.setRestNum(-1);
         mRouteEndPoint.setEndPointType(LayerPointItemType.ROUTE_POINT_END);
         int selectPathIndex = mRouteControl.getSelectedPathIndex();
-        if (Logger.openLog) {
-            Logger.d(TAG, "selectPathIndex ", selectPathIndex);
-        }
+        Logger.d(TAG, "selectPathIndex ", selectPathIndex);
         if (selectPathIndex < 0) {
             Logger.e(TAG, "selectPathIndex is invalid: ", selectPathIndex);
             return;
@@ -764,8 +748,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 mRouteEndPoint.setRestNum(-1);
             }
         }
-        Logger.d(TAG, "getRouteEndPoint type " + mRouteEndPoint.getEndPointType() + " num " +
-                mRouteEndPoint.getRestNum() + " BusinessHours is " + mRouteEndPoint.getBusinessHours());
+        Logger.d(TAG, "setRouteEndPoint data: ", mRouteEndPoint);
     }
 
     //转换补能规划数据
@@ -788,7 +771,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
 
     //转换补能规划数据
     private LayerItemRouteViaChargeInfo getRouteChargeInfo(LayerItem item) {
-        Logger.d(TAG, "getRouteChargeInfo start");
+        Logger.d(TAG, "getRouteChargeInfo");
         LayerItemRouteViaChargeInfo chargeInfo = new LayerItemRouteViaChargeInfo();
         if (item instanceof ViaChargeStationLayerItem chargeStationLayerItem) {
             String id = chargeStationLayerItem.getID();
@@ -839,7 +822,7 @@ public class LayerGuideRouteStyleAdapter extends BaseStyleAdapter {
                 return chargeInfo;
             }
         }
-        Logger.d(TAG, "getRouteChargeInfo chargeInfo " + chargeInfo.toString());
+        Logger.d(TAG, "getRouteChargeInfo chargeInfo ", chargeInfo.toString());
         return chargeInfo;
     }
 

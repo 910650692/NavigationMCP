@@ -68,7 +68,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 if (index <= 11 && (mPoiInfoList.get().size() > (index -1))) {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
                     if ((!ConvertUtils.isEmpty(poiInfoEntity) && poiInfoEntity.isMIsVisible()) || focus) {
-                        Logger.d(TAG, "搜索列表可见数字扎标-index =" + index);
+                        Logger.d(TAG, "搜索列表可见数字扎标-index = ", index);
                         return KEY_SEARCH_LIST_INDEX + "_" + index;
                     }
                 }
@@ -76,7 +76,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             case BizSearchType.BizSearchTypePoiAlongRoute -> {
                 if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
                     int typeCode = alongWayLayerItem.getMTypeCode();
-                    Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
+                    Logger.d(TAG, "沿途搜类型 typeCode ", typeCode);
                     switch (typeCode) {
                         case LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE -> {
                             if (isHangingCardChargeStationType) {
@@ -135,18 +135,14 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index - 1);
                     if (!ConvertUtils.isEmpty(poiInfoEntity)) {
                         if (poiInfoEntity.isMIsVisible() || focus) {
-                            if (Logger.openLog) {
-                                Logger.d(TAG, "搜索充电桩 列表可见数字大扎标-index =" + index);
-                            }
+                            Logger.d(TAG, "搜索充电桩 列表可见数字大扎标-index = ", index);
                             return KEY_SEARCH_LIST_CHARGE_VISIBLE_INDEX + "_" + index;
                         }
                     }
                 }
             }
         }
-        if (Logger.openLog) {
-            Logger.i(TAG, "搜索默认扎标");
-        }
+        Logger.i(TAG, "搜索默认扎标");
         return super.provideLayerItemStyleJson(layer, item);
     }
 
@@ -174,7 +170,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     TextView fastTextView = rootView.findViewById(R.id.search_along_way_charge_fast);
                     TextView slowTextView = rootView.findViewById(R.id.search_along_way_charge_slow);
                     safetySetText(position, String.valueOf(index + 1));
-                    Logger.d(TAG, "自定义沿途搜充电站扎标-选中态 index " + (index + 1));
+                    Logger.d(TAG, "自定义沿途搜充电站扎标-选中态 index ", (index + 1));
                     int fastFree = info.fastFree;
                     int fastTotal = info.fastTotal;
                     int slowFree = info.slowFree;
@@ -202,7 +198,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                     TextView fastTextView = rootView.findViewById(R.id.search_along_way_charge_fast);
                     TextView slowTextView = rootView.findViewById(R.id.search_along_way_charge_slow);
                     safetySetText(position, String.valueOf(index + 1));
-                    Logger.d(TAG, "自定义沿途搜充电站扎标-普通态 index " + (index + 1));
+                    Logger.d(TAG, "自定义沿途搜充电站扎标-普通态 index ", (index + 1));
                     int fastFree = info.fastFree;
                     int fastTotal = info.fastTotal;
                     int slowFree = info.slowFree;
@@ -256,7 +252,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
                         Context context = rootView.getContext();
                         //暂无动态数据  仅显示总车位数
-                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal ", spaceTotal);
                         String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
                         safetySetText(detailTotalTextView, detailTotalString);
                     }
@@ -294,7 +290,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                         TextView detailTotalTextView = rootView.findViewById(R.id.search_park_route_detail_total_text);
                         Context context = rootView.getContext();
                         //暂无动态数据  仅显示总车位数
-                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal " + spaceTotal);
+                        Logger.d(TAG, "自定义终点停车场扎标 spaceTotal ", spaceTotal);
                         String detailTotalString = context.getString(R.string.layer_search_park_route_detail_total, spaceTotal);
                         safetySetText(detailTotalTextView, detailTotalString);
                     }
@@ -323,9 +319,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
     }
 
     public void setHangingCardType(boolean b) {
-        if (Logger.openLog) {
-            Logger.d(TAG, "setHangingCardType ", b);
-        }
+        Logger.d(TAG, "setHangingCardType ", b);
         isHangingCardChargeStationType = b;
     }
 
@@ -346,7 +340,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             Logger.e(TAG, "updateSearchResult poiInfoEntityList is Empty");
             return;
         }
-        Logger.d(TAG, "updateSearchResult type " + type);
+        Logger.d(TAG, "updateSearchResult type ", type);
         mPoiInfoList.get().clear();
         mPoiInfoList.get().addAll(poiInfoEntityList);
         switch (type) {
@@ -366,7 +360,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
             PoiInfoEntity poiInfoEntity = mPoiInfoList.get().get(index);
             searchPark.setPoiInfo(poiInfoEntity);
         }
-        Logger.d(TAG, "getSearchParkRoutePoint index " + index + " searchPark " + searchPark.toString());
+        Logger.d(TAG, "getSearchParkRoutePoint index ", index);
         return searchPark;
     }
 
@@ -379,7 +373,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         try {
             return Integer.parseInt(id);
         } catch (Exception e) {
-            Logger.e(TAG, "getLayerItemIndex ID format: " + id);
+            Logger.e(TAG, "getLayerItemIndex ID format: ", id);
             return 0;
         }
     }
@@ -475,9 +469,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
                 SearchChargeStationLayerItem searchChargeItem = (SearchChargeStationLayerItem) item;
                 BizChargeStationInfo chargeStationInfo = searchChargeItem.getMChargeStationInfo();
                 if (ConvertUtils.isEmpty(chargeStationInfo)) {
-                    if (Logger.openLog) {
-                        Logger.e(TAG, "chargeStationInfo == null");
-                    }
+                    Logger.e(TAG, "chargeStationInfo == null");
                     return customUpdatePairs;
                 }
                 boolean focus = item.getFocus();
@@ -566,7 +558,7 @@ public class LayerSearchStyleAdapter extends BaseStyleAdapter {
         if (item.getBusinessType() == BizSearchType.BizSearchTypePoiAlongRoute) {
             if (item instanceof SearchAlongWayLayerItem alongWayLayerItem) {
                final int typeCode = alongWayLayerItem.getMTypeCode();
-                Logger.d(TAG, "沿途搜类型 typeCode " + typeCode);
+                Logger.d(TAG, "沿途搜类型 typeCode ", typeCode);
                 return typeCode == LayerSearchAlongRouteType.SEARCH_ALONG_ROUTE_CHARGE && !isHangingCardChargeStationType;
             }
         }

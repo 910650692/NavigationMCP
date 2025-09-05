@@ -242,10 +242,8 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
         LayerTexture texture = layer.getMapView().getLayerTexture(markerId);
         long usedTextureCount = layer.getMapView().getUsedTextureCount();
         long capacityTextureCount = 500;
-        if (Logger.openLog) {
-            Logger.i(TAG, "CurrentMapView:" + getMapType(),
-                    "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
-        }
+        Logger.i(TAG, "CurrentMapView:" + getMapType(),
+                "已使用纹理/支持最大纹理数:" + usedTextureCount + "/" + capacityTextureCount);
         if (usedTextureCount >= capacityTextureCount) {
             Logger.f(TAG, "###Fatal###", "MapView:" + getMapType() + "纹理数超过最大限制500");
         }
@@ -339,7 +337,7 @@ public class BaseLayerImpl<S extends BaseStyleAdapter> extends PrepareLayerStyle
     public void clearLayerItems(BaseLayer layer) {
         super.clearLayerItems(layer);
         List<Integer> removeValues = TexturePoolManager.get().removeKeys(layer.getName());
-        if (Logger.openLog && !removeValues.isEmpty()) {
+        if (!removeValues.isEmpty()) {
             Logger.i(TAG, className, " ", mapType, " 图层 :", layer.getName(), " 删除纹理数量: ", removeValues.size());
         }
         for (Integer value : removeValues) {

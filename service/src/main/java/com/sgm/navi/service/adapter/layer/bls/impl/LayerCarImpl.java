@@ -146,7 +146,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         if(bPreview != isPreview){
             getLayerCarControl().setPreviewMode(bPreview);
         }
-        if(Logger.openLog) Logger.d(TAG, "setPreviewMode bPreview " + bPreview + " isPreview " + isPreview);
+        Logger.d(TAG, "setPreviewMode bPreview " + bPreview + " isPreview " + isPreview);
     }
 
     /**
@@ -158,7 +158,7 @@ public class LayerCarImpl extends BaseLayerImpl<LayerCarStyleAdapter> {
         if(isLock != isLockMapRollAngle){
             getLayerCarControl().setLockMapRollAngle(isLock);
         }
-        if (Logger.openLog) Logger.d(TAG, "setLockMapRollAngle isLock " + isLock + " isLockMapRollAngle " + isLockMapRollAngle);
+        Logger.d(TAG, "setLockMapRollAngle isLock " + isLock + " isLockMapRollAngle " + isLockMapRollAngle);
     }
 
     /* 设置车标缩放系数和比例尺对应关系 */
