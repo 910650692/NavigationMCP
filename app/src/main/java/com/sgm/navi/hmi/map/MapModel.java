@@ -1437,7 +1437,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!stackManager.isFragmentStackNull(mViewModel.mScreenId)) {
             Logger.i(TAG, "当前有正在显示的Fragment,开启巡航失败！");
             // 如果此刻已处于巡航态，结束巡航，静默结束
-            if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
+            if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE) && !ScreenTypeUtils.getInstance().isOneThirdScreen()) {
                 mNaviStatusPackage.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
             }
             return;

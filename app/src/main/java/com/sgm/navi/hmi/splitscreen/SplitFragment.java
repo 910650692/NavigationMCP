@@ -96,6 +96,7 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, boolean isShowAutoAdd) {
         mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+        mViewModel.mSceneNaviTmc.set(true);
     }
 
     public void calculatePreviewRect() {
