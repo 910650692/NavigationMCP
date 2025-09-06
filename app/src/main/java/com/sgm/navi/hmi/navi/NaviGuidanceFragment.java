@@ -180,6 +180,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mSceneNaviControlMoreView.switchBroadcastMode(mode);
         }
     }
+
     private ISceneCallback mSceneCallback;
 
     @Override
@@ -216,7 +217,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     private void saveNaviSceneStatus(ViewGroup root, HashMap<NaviSceneId, Integer> map) {
-        for (int i = 0; i < root.getChildCount(); i ++ ) {
+        for (int i = 0; i < root.getChildCount(); i++) {
             View childView = root.getChildAt(i);
             if (childView == null) {
                 continue;
@@ -253,7 +254,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     private void setScreenIdAndCategory(ViewGroup root) {
-        for (int i = 0; i < root.getChildCount(); i ++ ) {
+        for (int i = 0; i < root.getChildCount(); i++) {
             View childView = root.getChildAt(i);
             if (childView == null) {
                 continue;
@@ -370,7 +371,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     private void restoreNaviSceneStatus(ViewGroup root, HashMap<NaviSceneId, Integer> map) {
-        for (int i = 0; i < root.getChildCount(); i ++ ) {
+        for (int i = 0; i < root.getChildCount(); i++) {
             View childView = root.getChildAt(i);
             if (childView == null) {
                 continue;
@@ -743,11 +744,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     }
 
     public void showNaviContent() {
-        if (mBinding == null) {
-            Logger.i(TAG, "showNaviContent mBinding is null");
-            return;
-        }
-        Logger.i(TAG, "showNaviContent");
+        Logger.e(TAG, "showNaviContent");
         if (!ConvertUtils.isNull(mViewModel)) {
             mViewModel.mNaviLeftContentVisibility.set(true);
             mViewModel.updateTwoThreeButtonVisibility();
@@ -757,6 +754,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
             mBinding.sceneNaviCrossImage.showLayerCross();
         }
+        checkPreViewStatus();
     }
 
     public void hideNaviContent() {
@@ -786,20 +784,10 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
         final int isNaviControl = bundle.getInt(NaviConstant.NAVI_CONTROL, 0);
         Logger.i(TAG, "onNewIntent isNaviControl:", isNaviControl, " clearAutoAddVia:", clearAutoAddVia);
         if (isNaviControl == 1) {
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
+            ThreadManager.getInstance().postUi(() -> {
+                if (mBinding != null && mBinding.naviSceneContainer != null &&
+                        mBinding.naviSceneContainer.getVisibility() != VISIBLE) {
                     showNaviContent();
-                    if (mViewModel != null &&
-                            Boolean.FALSE.equals(mViewModel.mNaviViaListVisibility.get()) &&
-                            NaviPackage.getInstance().getPreviewStatus()) {
-                        OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
-                        NaviPackage.getInstance().updatePreViewStatus();
-                    } else if (mViewModel != null &&
-                            Boolean.TRUE.equals(mViewModel.mNaviViaListVisibility.get())) {
-                        OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
-                        NaviPackage.getInstance().updatePreViewStatus();
-                    }
                 }
             });
         }
@@ -811,7 +799,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        Logger.i(TAG, "onHiddenChanged = " + hidden);
+        Logger.e(TAG, "onHiddenChanged = " + hidden);
         if (!hidden) {
             if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
                 mBinding.sceneNaviCrossImage.showLayerCross();
@@ -825,6 +813,7 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             } else {
                 Logger.i(TAG, "onHiddenChanged mViewModel is null");
             }
+            checkPreViewStatus();
         } else {
             if (mBinding.sceneNaviCrossImage.getVisibility() == VISIBLE) {
                 mBinding.sceneNaviCrossImage.hideLayerCross();
@@ -1142,4 +1131,16 @@ public class NaviGuidanceFragment extends BaseFragment<FragmentNaviGuidanceBindi
             mBinding.sceneNaviControl.updatePreViewHmi(status);
         }
     }
+
+    // 每次进入引导页面，全览状态恢复到保存的状态
+    private void checkPreViewStatus() {
+        boolean isPreview = NaviPackage.getInstance().getPreviewStatus();
+        Logger.e(TAG, "checkPreViewStatus isPreview:", isPreview);
+        if (isPreview) {
+            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        } else {
+            OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        }
+    }
 }
+

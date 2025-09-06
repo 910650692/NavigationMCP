@@ -880,12 +880,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             processExportCommand();
             //如果处于导航状态，并且是全览或者是固定全览，从后台切到前台，进入全览
-            if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())){
+            if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() ||
+                    naviPackage.getPreviewStatus() || naviPackage.getClusterFixOverViewStatus())){
                 OpenApiHelper.enterPreview(mapTypeId);
             }
             mViewModel.showOrHideSelfParkingView(false);
             getCurrentCityLimit();
-
             BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mapTypeId.name());
             if (currentFragment instanceof LimitDriveFragment) {
                 LimitDriveFragment limitDriveFragment = (LimitDriveFragment) currentFragment;
@@ -921,7 +921,8 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         mSaveScreenSize = checkScreenSizeChanged();
-        if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())) {
+        if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() ||
+                naviPackage.getPreviewStatus() || naviPackage.getClusterFixOverViewStatus())) {
             ThreadManager.getInstance().postDelay(() -> {
                 OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
             },500);
