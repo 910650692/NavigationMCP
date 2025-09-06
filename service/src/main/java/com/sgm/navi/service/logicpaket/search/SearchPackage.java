@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.android.utils.ConvertUtils;
+import com.android.utils.ResourceUtils;
 import com.android.utils.TimeUtils;
 import com.android.utils.gson.GsonUtils;
 import com.android.utils.log.Logger;
@@ -18,6 +19,7 @@ import com.sgm.navi.burypoint.controller.BuryPointController;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.R;
 import com.sgm.navi.service.adapter.layer.ILayerAdapterCallBack;
 import com.sgm.navi.service.adapter.layer.LayerAdapter;
 import com.sgm.navi.service.adapter.mapdata.MapDataAdapter;
@@ -1613,7 +1615,13 @@ final public class SearchPackage implements ISearchResultCallback, ILayerAdapter
                 .collect(Collectors.toList());
         if (!ConvertUtils.isEmpty(poiList) && poiList.size() > 1) {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointSPreview");
-            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, 1350, 210, 600, 140, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
+            ResourceUtils instance = ResourceUtils.Companion.getInstance();
+            int left = instance.getDimensionPixelSize(R.dimen.margin_screen_left);
+            int right = instance.getDimensionPixelSize(R.dimen.margin_screen_right);
+            int top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
+            int bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
+            Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPreviewView", left, right, top, bottom);
+            mMapPackage.showPreview(MapType.MAIN_SCREEN_MAIN_MAP, false, left, top, right, bottom, points, DynamicLevelMode.DYNAMIC_LEVEL_GUIDE);
         } else {
             Logger.d(MapDefaultFinalTag.SEARCH_SERVICE_TAG, "showPointPreview");
             if (!ConvertUtils.isEmpty(poiList.get(0).getPoint())) {
