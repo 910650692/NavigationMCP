@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:paddingHorizontal="@dimen/dp_51"
-            android:paddingVertical="@dimen/dp_52"
+            android:paddingVertical="@dimen/dp_32"
             android:background="@drawable/bg_shadow_navi_ndlc_8155"
             android:clickable="true"
             android:focusable="false"
