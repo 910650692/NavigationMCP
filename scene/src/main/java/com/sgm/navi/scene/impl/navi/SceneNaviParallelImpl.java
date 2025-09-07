@@ -293,24 +293,24 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
             Logger.i(TAG, "当前在桥上，显示切换到桥下的按钮");
             mScreenView.sceneBridgeDown();
             mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE;
-            updateSceneVisible(true);
             // 如果网络正常，才显示桥上下按钮
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
                 mBridgeUpDownVisible.set(true);
             } else {
                 Logger.i(TAG, "网络异常，不显示桥上下按钮");
             }
+            updateSceneVisible(true);
             // 显示切换到桥上的按钮
         } else if (mCurrentParallelRoadInfo.getHwFlag() == HW_FLAG_DOWN) {
             Logger.i(TAG, "当前在桥下，显示切换到桥上的按钮");
             mScreenView.sceneBridgeUp();
             mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE;
-            updateSceneVisible(true);
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
                 mBridgeUpDownVisible.set(true);
             } else {
                 Logger.i(TAG, "网络异常，不显示桥上下按钮");
             }
+            updateSceneVisible(true);
         }
     }
 

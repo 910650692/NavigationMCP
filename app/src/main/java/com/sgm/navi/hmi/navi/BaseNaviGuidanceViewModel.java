@@ -1060,7 +1060,11 @@ public class BaseNaviGuidanceViewModel extends
                 && ScreenTypeUtils.getInstance().isTwoThirdScreen()
                 && Boolean.TRUE.equals(mNaviLeftContentVisibility.get())
                 && Boolean.TRUE.equals(mNaviParallelVisibility.get());
-        Logger.e(TAG, isShowTwoThreeButton);
+        Logger.e(TAG, "showFirstButton", showFirstButton.get());
+        Logger.e(TAG, "showSecondButton", showSecondButton.get());
+        Logger.e(TAG, "isTwoThirdScreen", ScreenTypeUtils.getInstance().isTwoThirdScreen());
+        Logger.e(TAG, "mNaviLeftContentVisibility", mNaviLeftContentVisibility.get());
+        Logger.e(TAG, "mNaviParallelVisibility", mNaviParallelVisibility.get());
         mNaviTwoThreeButtonVisibility.set(isShowTwoThreeButton);
     }
 
