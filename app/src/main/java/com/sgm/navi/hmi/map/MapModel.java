@@ -1481,9 +1481,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 mFilename = curTime + "_" + 0 + "_" + androidId;
                 UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
             }
-            final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_into_cruise));
-            naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_into_cruise);
             mViewModel.setCruiseMuteOrUnMute(
                     Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
@@ -1509,9 +1506,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.d(TAG,"stopCruise = " + isSuccess);
         if (isSuccess) {
             UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
-            final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_exit_cruise));
-            naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_exit_cruise);
             mViewModel.showOrHiddenCruise(false);
 
