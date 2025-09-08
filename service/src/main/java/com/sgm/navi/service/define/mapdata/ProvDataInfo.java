@@ -148,7 +148,7 @@ public class ProvDataInfo implements Parcelable {
      * @return
      */
     public boolean isParentCity() {
-        return mAreaType == 2 || mAreaType == 3;
+        return mAreaType == 2 || mAreaType == 3 || mAreaType == 4;
     }
 
 
