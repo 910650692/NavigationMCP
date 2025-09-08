@@ -287,8 +287,10 @@ public class SettingGuideModel extends BaseModel<SettingGuideViewModel> implemen
      */
     public void getCarType() {
         final int carMode = mCalibrationPackage.powerType();
+        final boolean isGasCar = carMode == 0;
         final boolean isEVCar = carMode == 1;
         final boolean isPHEVCar = carMode == 2;
+        mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_GAS_CAR, isGasCar);
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_EV_CAR, isEVCar);
         mViewModel.dualChoiceControl(SettingController.KEY_SETTING_IS_PHEV_CAR, isPHEVCar);
     }

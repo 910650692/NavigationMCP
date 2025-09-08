@@ -23,6 +23,7 @@ import com.sgm.navi.service.define.mapdata.ProvDataInfo;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,9 +164,12 @@ public class MapDataFragment extends BaseFragment<FragmentMapDataBinding, MapDat
     @SuppressLint("SetTextI18n")
     public void updateCurrentCityView(final CityDataInfo info) {
         if (info != null && info.getDownLoadInfo() != null) {
-            final String sizeString = StringUtils.formatSize(info.getDownLoadInfo().getFullZipSize().longValue());
-            mBinding.currentCityData.setText(info.getName() + "   " + sizeString);
-            mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+            BigInteger fullZipSize = info.getDownLoadInfo().getFullZipSize();
+            if (fullZipSize != null) {
+                final String sizeString = StringUtils.formatSize(fullZipSize.longValue());
+                mBinding.currentCityData.setText(info.getName() + "   " + sizeString);
+                mBinding.downloadView.parseDownloadStatusInfo(info.getDownLoadInfo());
+            }
         }
     }
 

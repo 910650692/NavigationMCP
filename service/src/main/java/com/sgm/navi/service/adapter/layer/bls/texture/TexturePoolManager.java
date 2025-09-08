@@ -120,7 +120,7 @@ public final class TexturePoolManager {
             }
             textureMap.remove(key);
         }
-        if (Logger.openLog && !textureMap.isEmpty() && !ids.isEmpty()) {
+        if (!textureMap.isEmpty() && !ids.isEmpty()) {
             Logger.d(TAG, "removeKeys 要删除的图层name ", name, " textureMap.keySet ", textureMap.size(), " markerIdList ", ids.size());
         }
         return ids;

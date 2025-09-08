@@ -5,6 +5,10 @@ import androidx.annotation.IntDef;
 import com.android.utils.ScreenUtils;
 
 public interface NaviConstant {
+    int NO_PREVIEW = 0;
+    int PREVIEW = 1;
+    int FIXED_PREVIEW = 2;
+    int FIXED_PREVIEW_CLUSTER = 3;
     boolean IS_SYSTEM_AUDIO = true;
     long NAVI_ID = 0;//真实导航ID
     long NAVI_SIM_ID = 1;//模拟导航ID
@@ -349,10 +353,10 @@ public interface NaviConstant {
                         NaviConstant.LaneAction.LANE_ACTION_RU_TURN,
                         LaneActionConstants.LANE_ACTION_RU_TURN_AND_N_ULL},
 
-                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,// 750无效
                         NaviConstant.LaneAction.LANE_ACTION_NULL,
                         LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL_NO_ACTION},// 左侧扩展车道 直行
-                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
+                {NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,// 750无效
                         NaviConstant.LaneAction.LANE_ACTION_LEFT_IN_AHEAD,
                         LaneActionConstants.LANE_ACTION_LEFT_IN_AHEAD_AND_N_ULL},
 

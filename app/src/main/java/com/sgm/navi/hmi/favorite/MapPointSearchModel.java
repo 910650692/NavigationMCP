@@ -20,10 +20,16 @@ public class MapPointSearchModel extends BaseModel<MapPointSearchViewModel> impl
     public MapPointSearchModel() {
         this.mCallbackId = UUID.randomUUID().toString();
         mSearchPackage = SearchPackage.getInstance();
-        mSearchPackage.registerCallBack(mCallbackId,this);
     }
     public String getCallbackId() {
         return mCallbackId;
+    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mSearchPackage.registerCallBack(mCallbackId,this);
     }
 
     /**

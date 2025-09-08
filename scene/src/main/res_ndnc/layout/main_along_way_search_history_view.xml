@@ -11,10 +11,10 @@
     </data>
 
     <com.sgm.navi.ui.view.SkinConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_613"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_search_main_tab"
-        android:layout_marginBottom="@dimen/dp_130"
+        android:background="@drawable/bg_shadow_navi_ndlc_8155"
+        android:padding="@dimen/dp_34"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
             app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
-            android:paddingBottom="@dimen/dp_20"
+            android:paddingVertical="@dimen/dp_20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="wrap"
             app:layout_constraintHeight_max="@dimen/dp_770"
@@ -49,6 +49,7 @@
             android:id="@+id/suggest_result_list_along"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_0"
+            android:paddingVertical="@dimen/dp_20"
             app:layout_constraintBottom_toTopOf="@id/scl_delete_record_along"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="wrap"

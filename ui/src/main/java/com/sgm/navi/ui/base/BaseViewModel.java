@@ -45,7 +45,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     @Override
     public void onCreate() {
         Logger.i(getClass().getSimpleName(), "onCreate");
-        mModel.onCreate();
+        if(null != mModel) mModel.onCreate();
     }
 
     @Override
@@ -56,13 +56,13 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     @Override
     public void onStart() {
         Logger.i(getClass().getSimpleName(), "onStart");
-        mModel.onStart();
+        if(null != mModel) mModel.onStart();
     }
 
     @Override
     public void onStop() {
         Logger.i(getClass().getSimpleName(), "onStop");
-        mModel.onStop();
+        if(null != mModel) mModel.onStop();
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class BaseViewModel<V extends IBaseView, M extends IBaseModel> e
     @Override
     public void onDestroy() {
         Logger.i(getClass().getSimpleName(), "onDestroy");
-        mModel.onDestroy();
+        if(null != mModel) mModel.onDestroy();
     }
 
     @Override

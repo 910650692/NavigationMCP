@@ -57,6 +57,7 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
             getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolyline);
             return;
         }
+        Logger.d(TAG, getMapType(), " showLimitRestrictionView");
         for (int t = NumberUtils.NUM_0; t < cities.get(position).rules.size(); t++) {
             GRestrictRule pRestrictRule = cities.get(position).rules.get(t);
             BizRouteRestrictInfo bizPolygonDataLine = new BizRouteRestrictInfo();
@@ -114,6 +115,7 @@ public class LayerAreaImpl extends BaseLayerImpl<LayerAreaStyleAdapter> {
             getLayerAreaControl().clearAllItems(BizAreaType.BizAreaTypeRestrictPolyline);
             return;
         }
+        Logger.d(TAG, getMapType(), " showRestrictionView");
         GReStrictedAreaResponseParam param = (GReStrictedAreaResponseParam) object;
         GReStrictedAreaDataRuleRes ruleRes = param.data.mDataRule;
         if (ruleRes.citynums <= NumberUtils.NUM_0 || ConvertUtils.isEmpty(ruleRes.cities)) {

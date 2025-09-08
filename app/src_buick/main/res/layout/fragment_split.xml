@@ -372,6 +372,7 @@
                 android:background="@drawable/bg_navi_tbt_middle"
                 android:paddingStart="@dimen/dp_31"
                 android:paddingEnd="@dimen/dp_30"
+                android:visibility="@{ViewModel.mSceneNaviTmc ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
 

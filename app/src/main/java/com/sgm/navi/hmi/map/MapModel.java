@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.core.app.ActivityCompat;
@@ -160,6 +161,7 @@ import com.sgm.navi.service.logicpaket.user.msgpush.MsgPushPackage;
 import com.sgm.navi.service.logicpaket.user.usertrack.UserTrackPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.ui.BuildConfig;
+import com.sgm.navi.ui.base.BaseActivity;
 import com.sgm.navi.ui.base.BaseFragment;
 import com.sgm.navi.ui.base.BaseModel;
 import com.sgm.navi.ui.base.StackManager;
@@ -231,8 +233,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     private AccountPackage mAccountPackage;
     private NaviStatusPackage mNaviStatusPackage;
     private StackManager stackManager;
-    private boolean mLoadMapSuccess = true;  //只加载一次
-    // 24小时对应的毫秒数：24 * 60 * 60 * 1000 = 86,400,000
     private final long MILLIS_IN_24_HOURS = 86400000;
     private History mUncompletedNavi;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
@@ -383,12 +383,23 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 boolean value = ((ObservableBoolean) sender).get();
+
                 if (phoneAddressDialog != null && phoneAddressDialog.isShowing()) {
-                    phoneAddressDialog.resetDialogParams(
-                            value ? ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_show_margin_start)
-                                    : ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_not_show_margin_start),
-                            ResourceUtils.Companion.getInstance().getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top)
-                    );
+                    ResourceUtils res = ResourceUtils.Companion.getInstance();
+                    int marginStart;
+                    int marginTop = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.navi_main_tap_margin_top);
+
+                    if (value) {
+                        marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_show_margin_start);
+                    } else {
+                        if (StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())) {
+                            marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_setting_show_margin_start);
+                        } else {
+                            marginStart = res.getDimensionPixelSize(com.sgm.navi.ui.R.dimen.phone_address_dialog_main_not_show_margin_start);
+                        }
+                    }
+
+                    phoneAddressDialog.resetDialogParams(marginStart, marginTop);
                 }
             }
         });
@@ -413,11 +424,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onDestroy() {
         super.onDestroy();
         StartService.getInstance().unregisterSdkCallback(TAG, this);
-        if (null == mapPackage) {
-            return;
+        if (null != mapPackage) {
+            mapPackage.removeTimeHelper(timeHelper);
+            mapPackage.unBindMapView(mViewModel.getMapView());
         }
-        mapPackage.removeTimeHelper(timeHelper);
-        mapPackage.unBindMapView(mViewModel.getMapView());
         speedMonitor.removeCallBack();
         speedMonitor.unInit();
         mapModelHelp.unInit();
@@ -567,7 +577,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         boolean isShowException = !isNetConnect && !isOfflineData;
         Logger.e(TAG, "mStartExceptionDialog", "检测网络和离线数据", isShowException);
         if (isShowException) {
-            Logger.e(TAG, "###Fatal###");
+            Logger.f(TAG, "Net exception dialog pop", "###Fatal###");
         }
         return isShowException;
     }
@@ -879,12 +889,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             }
             processExportCommand();
             //如果处于导航状态，并且是全览或者是固定全览，从后台切到前台，进入全览
-            if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())){
+            if(mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() ||
+                    naviPackage.getPreviewStatus() || naviPackage.getClusterFixOverViewStatus())){
                 OpenApiHelper.enterPreview(mapTypeId);
             }
             mViewModel.showOrHideSelfParkingView(false);
             getCurrentCityLimit();
-
             BaseFragment currentFragment = StackManager.getInstance().getCurrentFragment(mapTypeId.name());
             if (currentFragment instanceof LimitDriveFragment) {
                 LimitDriveFragment limitDriveFragment = (LimitDriveFragment) currentFragment;
@@ -898,7 +908,14 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     @Override
     public void onSurfaceChanged(MapType mapTypeId) {
         if (mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            Logger.d(TAG, "onSurfaceChanged: ");
             setMapCenterInScreen();
+            if (ScreenTypeUtils.getInstance().isFullScreen() &&
+                    !NaviPackage.getInstance().getClusterFixOverViewStatus() &&
+                    !NaviPackage.getInstance().getPreviewStatus() &&
+                    !NaviPackage.getInstance().getFixedOverViewStatus()) {
+                goToCarPosition();
+            }
             updateCarPosition();
         }
     }
@@ -913,14 +930,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
             return;
         }
         mSaveScreenSize = checkScreenSizeChanged();
-        if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() || naviPackage.getPreviewStatus())) {
-            OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+        if (mNaviStatusPackage.isGuidanceActive() && (naviPackage.getFixedOverViewStatus() ||
+                naviPackage.getPreviewStatus() || naviPackage.getClusterFixOverViewStatus())) {
+            ThreadManager.getInstance().postDelay(() -> {
+                OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            },500);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，全揽");
         } else {
             // 延迟500ms再执行，防止分屏后地图中心点设置位置不生效
-            ThreadManager.getInstance().postDelay(() -> {
-                goToCarPosition();
-            },500);
+            ThreadManager.getInstance().postDelay(this::goToCarPosition,500);
             Logger.d(TAG, "updateCarPosition: ", "屏幕尺寸发生变化，重新设置自车位置");
         }
 
@@ -938,9 +956,9 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         // 退出巡航
         stopCruise();
-
         //三指飞屏 并将MapActivity推至后台 1118742 分屏时禁止三指手势
         if (ScreenTypeUtils.getInstance().isFullScreen()) {
             openThreeFingerFlyingScreen(touchEvent);
@@ -952,10 +970,10 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
 
     @Override
     public void onScaleRotateBegin(MapType mapTypeId) {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         if (getNaviStatus() == NaviStatus.NaviStatusType.NAVING && mSettingPackage.getAutoScale()) {
             layerPackage.setDynamicLevelLock(MapType.MAIN_SCREEN_MAIN_MAP,DynamicLevelMode.DYNAMIC_LEVEL_GUIDE,true);
         }
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
     }
 
     @Override
@@ -1014,6 +1032,15 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     @Override
+    public void isEnterPreview(MapType mapTypeId, boolean isEnterPreview) {
+        Log.e(TAG, "isEnterPreview: " + isEnterPreview);
+        if (!isEnterPreview && mapTypeId == MapType.MAIN_SCREEN_MAIN_MAP) {
+            setMapCenterInScreen();
+            goToCarPosition();
+        }
+    }
+
+    @Override
     public void onNotifyMap(MapType mapTypeId, MapNotifyType eventType) {
         Logger.i(TAG, "onNotifyMap: ", eventType);
         if (Objects.requireNonNull(eventType) == MapNotifyType.REFRESH_SELF_PARKING_TIMER) {
@@ -1027,7 +1054,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (Logger.openLog) {
             Logger.d(TAG, "onImmersiveStatusChange: ", parkingViewExist(), ", currentImersiveStatus: ", currentImersiveStatus);
         }
-        if (ScreenTypeUtils.getInstance().isOneThirdScreen() || parkingViewExist()) {
+        if ((ScreenTypeUtils.getInstance().isOneThirdScreen() && getNaviStatus() != NaviStatus.NaviStatusType.NAVING) || parkingViewExist()) {
             if (currentImersiveStatus == ImersiveStatus.TOUCH) {
                 mViewModel.showOrHideSelfParkingView(true);
                 layerPackage.setFollowMode(MapType.MAIN_SCREEN_MAIN_MAP, false);
@@ -1256,15 +1283,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                     //选择路线
                     final String curStatus = NaviStatusPackage.getInstance().getCurrentNaviStatus();
                     Logger.d(IVrBridgeConstant.TAG, "current status:" + curStatus);
-                    ThreadManager.getInstance().execute(() -> {
-                        if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus) || NaviStatus.NaviStatusType.NAVING.equals(curStatus)) {
-                            final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
-                            mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
-                            if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
-                                mRoutePackage.voiceStartNavi();
-                            }
+                    if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus) || NaviStatus.NaviStatusType.NAVING.equals(curStatus)) {
+                        final int routeIndex = bundle.getInt(IVrBridgeConstant.VoiceIntentParams.ROUTE_INDEX, 0);
+                        mRoutePackage.selectRoute(MapType.MAIN_SCREEN_MAIN_MAP, routeIndex);
+                        if (NaviStatus.NaviStatusType.SELECT_ROUTE.equals(curStatus)) {
+                            mRoutePackage.voiceStartNavi();
                         }
-                    });
+                    }
                     break;
                 case IVrBridgeConstant.VoiceIntentPage.ALONG_SEARCH:
                     final String passBy = bundle.getString(IVrBridgeConstant.VoiceIntentParams.KEYWORD);
@@ -1433,7 +1458,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!stackManager.isFragmentStackNull(mViewModel.mScreenId)) {
             Logger.i(TAG, "当前有正在显示的Fragment,开启巡航失败！");
             // 如果此刻已处于巡航态，结束巡航，静默结束
-            if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE)) {
+            if (TextUtils.equals(getNaviStatus(), NaviStatus.NaviStatusType.CRUISE) && !ScreenTypeUtils.getInstance().isOneThirdScreen()) {
                 mNaviStatusPackage.setNaviStatus(NaviStatus.NaviStatusType.NO_STATUS);
             }
             return;
@@ -1465,9 +1490,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
                 mFilename = curTime + "_" + 0 + "_" + androidId;
                 UserTrackPackage.getInstance().startGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename, 2000);
             }
-            final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_into_cruise));
-            naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_into_cruise);
             mViewModel.setCruiseMuteOrUnMute(
                     Boolean.parseBoolean(mSettingPackage.getValueFromDB(SettingController.KEY_SETTING_CRUISE_BROADCAST))
@@ -1493,9 +1515,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         Logger.d(TAG,"stopCruise = " + isSuccess);
         if (isSuccess) {
             UserTrackPackage.getInstance().closeGpsTrack(GBLCacheFilePath.SYNC_PATH + "/403", mFilename);
-            final SoundInfoEntity soundInfo = new SoundInfoEntity();
-            soundInfo.setText(AppCache.getInstance().getMApplication().getString(R.string.step_exit_cruise));
-            naviPackage.onPlayTTS(soundInfo);
             mViewModel.showToast(R.string.step_exit_cruise);
             mViewModel.showOrHiddenCruise(false);
 
@@ -1523,7 +1542,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
         ICruiseObserver.super.onUpdateCruiseInfo(cruiseInfoEntity);
         // 巡航-电子眼信息
-        mViewModel.updateCruiseRoadName(cruiseInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseRoadName(cruiseInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     @Override
@@ -1531,7 +1556,13 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         Logger.w(TAG, "onUpdateCruiseInfo:" + isShowLane);
         // 巡航-车道信息
-        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     /***
@@ -1896,10 +1927,6 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         return false;
     }
 
-    public boolean showNdGoHomeView() {
-        return mViewModel.showNdGoHomeView();
-    }
-
     public void sendReqHolidayList() {
         restrictedPackage.sendReqHolidayList();
     }
@@ -1914,42 +1941,37 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
     }
 
     private void loadNdGoHomeView() {
-        if (mViewModel.showNdGoHomeView()) {
-            String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
-            String currentTime = TimeUtils.getInstance().getCurrentTimeToHour();
-            Logger.d(TAG, "key:" + key + ",,, currentTime:" + currentTime);
+        String key = mCommonManager.getValueByKey(UserDataCode.MAP_ND_GO_HOME_KEY);
+        String currentTime = TimeUtils.getInstance().getCurrentTimeToHour();
+        Logger.d(TAG, "key:" + key + ",,, currentTime:" + currentTime);
 //            if (ConvertUtils.isEmpty(key) || !ConvertUtils.equals(key, currentTime)) {
-                mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
-                //是否在上班时间段内  在家附近
-                LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
-                boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
-                Logger.i(TAG, "workHours:", workHours);
-                GeoPoint nearByHome = mViewModel.nearByHome(true);
-                GeoPoint nearByCompany = mViewModel.nearByHome(false);
-                if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
-                    //判断距离是否大于等于1km 小于等于50km 去公司
-                    boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
-                    Logger.i(TAG, "distanceCompany:", distanceCompany);
-                    if (distanceCompany) {
-                        mViewModel.loadNdOfficeTmc(false);
-                    }
-                    return;
-                }
+        mCommonManager.insertOrReplace(UserDataCode.MAP_ND_GO_HOME_KEY, currentTime);
+        //是否在上班时间段内  在家附近
+        LocInfoBean locInfoBean = positionPackage.getLastCarLocation();
+        boolean workHours = TimeUtils.isCurrentTimeInSpecialRange(true);
+        Logger.i(TAG, "workHours:", workHours);
+        GeoPoint nearByHome = mViewModel.nearByHome(true);
+        GeoPoint nearByCompany = mViewModel.nearByHome(false);
+        if (workHours && !ConvertUtils.isEmpty(nearByCompany) && !ConvertUtils.isEmpty(locInfoBean)) {
+            //判断距离是否大于等于1km 小于等于50km 去公司
+            boolean distanceCompany = calcStraightDistance(nearByCompany, locInfoBean);
+            Logger.i(TAG, "distanceCompany:", distanceCompany);
+            if (distanceCompany) {
+                mViewModel.loadNdOfficeTmc(false);
+            }
+            return;
+        }
 
-                //是否在下班时间段内  在公司附近
-                boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
-                Logger.i(TAG, "endofWorkHours:", endofWorkHours);
-                if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
-                    //判断距离是否大于等于1km 小于等于50km 回家
-                    boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
-                    Logger.i(TAG, "distanceHome:", distanceHome);
-                    if (distanceHome) {
-                        mViewModel.loadNdOfficeTmc(true);
-                    }
-                }
-//            }else {
-//                Logger.d(TAG, "The conditions are not met");
-//            }
+        //是否在下班时间段内  在公司附近
+        boolean endofWorkHours = TimeUtils.isCurrentTimeInSpecialRange(false);
+        Logger.i(TAG, "endofWorkHours:", endofWorkHours);
+        if (endofWorkHours && !ConvertUtils.isEmpty(nearByHome) && !ConvertUtils.isEmpty(locInfoBean)) {
+            //判断距离是否大于等于1km 小于等于50km 回家
+            boolean distanceHome = calcStraightDistance(nearByHome, locInfoBean);
+            Logger.i(TAG, "distanceHome:", distanceHome);
+            if (distanceHome) {
+                mViewModel.loadNdOfficeTmc(true);
+            }
         }
     }
 
@@ -2185,8 +2207,12 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (!isShowDialog) {
             return;
         }
-        authorizationRequestDialog = new AuthorizationRequestDialog(
-                stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name()));
+        BaseActivity activity = stackManager.getCurrentActivity(MapType.MAIN_SCREEN_MAIN_MAP.name());
+        if(null == activity){
+            Logger.d(TAG, "Current Progress No Activity");
+            return;
+        }
+        authorizationRequestDialog = new AuthorizationRequestDialog(activity);
         authorizationRequestDialog.setEndDate(endDate);
         authorizationRequestDialog.setDialogClickListener(new IBaseDialogClickListener() {
             @Override
@@ -2448,15 +2474,24 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (ScreenTypeUtils.getInstance().isOneThirdScreen()) {
             Logger.d("screen_change_used", "打开1/3屏幕布局");
             checkStatusCloseAllFragmentAndClearAllLabel();
-            ThreadManager.getInstance().postDelay(() -> {
-                mViewModel.syncFragment();
+            if (NaviStatusPackage.getInstance().isGuidanceActive()) {
+                if (mViewModel != null) {
+                    mViewModel.syncFragment();
+                }
                 addFragment(new SplitFragment(), null);
-            }, 500);
+            } else {
+                ThreadManager.getInstance().postDelay(() -> {
+                    if (mViewModel != null) {
+                        mViewModel.syncFragment();
+                    }
+                    addFragment(new SplitFragment(), null);
+                }, 500);
+            }
         } else {
             Logger.d("screen_change_used", "关闭1/3屏幕布局");
             mViewModel.closeSplitFragment();
         }
-        mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
+        mViewModel.onWindowSideChanged(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
     }
 
     public void checkStatusCloseAllFragmentAndClearAllLabel() {
@@ -2530,8 +2565,7 @@ public class MapModel extends BaseModel<MapViewModel> implements IMapPackageCall
         if (mViewModel != null) {
             boolean musicTabShow = isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen();
             Logger.i(TAG, musicTabShow);
-            mViewModel.musicTabVisibility.set(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
-            NaviPackage.getInstance().setMIsFloatWindowShow(musicTabShow);
+            mViewModel.onWindowSideChanged(isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen());
         }
     }
 

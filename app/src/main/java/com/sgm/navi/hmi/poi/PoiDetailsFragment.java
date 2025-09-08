@@ -113,6 +113,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             mPoiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
             final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
             final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
+            final boolean iSFromListOnly = parsedArgs.getBoolean("IS_FROM_LIST_ONLY", false);
             mViaIndex = parsedArgs.getInt(NaviConstant.VIA_POSITION, -1);
             mViaUserAdd = parsedArgs.getBoolean(NaviConstant.VIA_IS_USER_ADD, true);
             mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
@@ -124,6 +125,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
             mBinding.scenePoiDetailContentView.setViaIndexSelect(true,mViaIndex);
             mBinding.scenePoiDetailContentView.setViaUserAdd(mViaUserAdd);
             mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
+            mBinding.scenePoiDetailContentView.setIsFromListOnly(iSFromListOnly);
             if (isOpenFromNavi == 1) {
                 mBinding.scenePoiDetailContentView.setNaviControl(true);
             }
@@ -148,6 +150,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         final int childIndex = parsedArgs.getInt(AutoMapConstant.ChildIndex.BUNDLE_CHILD_INDEX, -1);
         final String labelName = parsedArgs.getString("LABEL","");
         final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
+        final boolean iSFromListOnly = parsedArgs.getBoolean("IS_FROM_LIST_ONLY", false);
         mBinding.scenePoiDetailContentView.refreshPoiView(mPoiType, mPoiInfoEntity,true);
         mSearchResultEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA);
         mBinding.scenePoiDetailContentView.doSearch(mPoiInfoEntity);
@@ -155,6 +158,7 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
         mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
         mBinding.scenePoiDetailContentView.setLabelName(labelName);
         mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
+        mBinding.scenePoiDetailContentView.setIsFromListOnly(iSFromListOnly);
     }
 
     @Override
@@ -169,9 +173,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
                     mPoiInfoEntity = parsedArgs.getParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_DETAIL);
                     mPoiType = parsedArgs.getInt(AutoMapConstant.PoiBundleKey.BUNDLE_KEY_START_POI_TYPE, AutoMapConstant.PoiType.POI_KEYWORD);
                     final boolean isEnd = parsedArgs.getBoolean("IS_END", false);
+                    final boolean iSFromListOnly = parsedArgs.getBoolean("IS_FROM_LIST_ONLY", false);
                     mBinding.scenePoiDetailContentView.setIsEnd(isEnd);
                     mBinding.scenePoiDetailContentView.refreshPoiView(mPoiType, mPoiInfoEntity, true);
                     mBinding.scenePoiDetailContentView.setJumpPoiInfo(mPoiInfoEntity);
+                    mBinding.scenePoiDetailContentView.setIsFromListOnly(iSFromListOnly);
                 }
                 if (mViewModel.calcDistanceBetweenPoints()) {
                     mBinding.scenePoiDetailContentView.showSelfParkingView();
@@ -185,11 +191,11 @@ public class PoiDetailsFragment extends BaseFragment<FragmentPoiDetailsBinding, 
     private final Runnable reloadRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mBinding != null) {
-                if (!ConvertUtils.isEmpty(mSearchResultEntity) && !ConvertUtils.isEmpty(mBinding)) {
+            if (!ConvertUtils.isNull(mBinding)) {
+                if (!ConvertUtils.isEmpty(mSearchResultEntity)) {
                     mBinding.scenePoiDetailContentView.reloadLastPoiMarker(mSearchResultEntity.getPoiList());
-                    mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
                 }
+                mBinding.scenePoiDetailContentView.reloadPoiLabelMarker();
             }
         }
     };

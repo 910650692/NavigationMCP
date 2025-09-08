@@ -17,6 +17,7 @@ import com.sgm.navi.scene.impl.navi.SceneNaviParallelImpl;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.AppCache;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 
 /**
  * 主辅路、桥上桥下
@@ -24,6 +25,8 @@ import com.sgm.navi.service.AppCache;
  * @version $Revision.*$
  */
 public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBinding, SceneNaviParallelImpl> {
+
+    private ButtonShowDetailsListener mListener;
 
     public SceneNaviParallelView(@NonNull final Context context) {
         super(context);
@@ -127,5 +130,31 @@ public class SceneNaviParallelView extends NaviSceneBase<SceneNaviParallelViewBi
      */
     public void naviParallelSwitch(final int type) {
         mScreenViewModel.naviParallelSwitch(type);
+    }
+
+    public void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onParallelRoadUpdate(entity);
+        }
+    }
+
+    public void addButtonShowDetailsListener(ButtonShowDetailsListener listener) {
+        //只为2/3屏幕添加！！！！！！！！！  后续有人要用，请变成list
+        mListener = listener;
+    }
+
+    public void removeButtonShowDetailsListener(ButtonShowDetailsListener listener) {
+        //只为2/3屏幕添加！！！！！！！！！  后续有人要用，请变成list
+        mListener = null;
+    }
+
+    public void updateButtonVisible(Boolean mainRoad, Boolean bridge) {
+        if (mListener != null) {
+            mListener.onButtonShowDetails(mainRoad, bridge);
+        }
+    }
+
+    public interface ButtonShowDetailsListener {
+        void onButtonShowDetails(Boolean mainRoad, Boolean bridge);
     }
 }

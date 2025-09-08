@@ -54,7 +54,7 @@ public class ActivateUiStateManager implements StartService.ISdkInitCallback {
 
             @Override
             public void onActivatedError(int errCode, String msg) {
-                Logger.e(TAG, "激活出现错误 : ", errCode , "msg: ", msg, " ###Fatal###");
+                Logger.f(TAG, "Activate error occurred : ", errCode , "msg: ", msg, " ###Fatal###");
                 setActivateState(AutoMapConstant.ActivateState.ACTIVATE_FAILED);
                 errorCodeSave = errCode;
                 errorMsgSave = msg;

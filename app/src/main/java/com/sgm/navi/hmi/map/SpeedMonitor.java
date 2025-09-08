@@ -42,7 +42,8 @@ public class SpeedMonitor implements ISpeedCallback {
 
     public void registerSpeedCallBack() {
         if (DeviceUtils.isCar(AppCache.getInstance().getMContext())) {
-            mSpeedController = new VehicleSpeedController(AppCache.getInstance().getMContext(), this);
+            mSpeedController = VehicleSpeedController.getInstance(AppCache.getInstance().getMContext());
+            mSpeedController.registerCallBack(TAG, this);
             mSpeedController.registerCallback();
         } else {
             Logger.e(TAG, "PAD无法使用此功能！");
@@ -98,6 +99,7 @@ public class SpeedMonitor implements ISpeedCallback {
         removeCallBack();
         if (!ConvertUtils.isNull(mSpeedController)) {
             mSpeedController.unregisterCallback();
+            mSpeedController.unRegisterCallBack(TAG);
         }
     }
 

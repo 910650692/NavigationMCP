@@ -101,6 +101,8 @@
             android:id="@+id/card_tbt_view"
             android:layout_width="@dimen/dp_545"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/launcher_tbt_position_top"
+            android:layout_marginStart="@dimen/launcher_tbt_position_left"
             android:outlineSpotShadowColor="@color/common_bg_shadow_color"
             android:visibility="gone"
             app:cardBackgroundColor="@color/common_bg_color"

@@ -1036,6 +1036,7 @@ public class SceneCommonStruct {
         ManeuverIconLeaveRing8(86),
         ManeuverIconLeaveRing9(87),
         ManeuverIconLeaveRing10(88),
+        ManeuverIconCharge(64),
         ManeuverIconMergeLeft(65),
         ManeuverIconMergeRight(66);
 

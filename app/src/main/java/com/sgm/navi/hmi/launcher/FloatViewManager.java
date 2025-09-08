@@ -33,6 +33,7 @@ import com.android.utils.ScreenTypeUtils;
 import com.sgm.navi.service.logicpaket.layer.LayerPackage;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
+import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 import com.sgm.navi.ui.base.StackManager;
 import com.sgm.navi.vrbridge.MapStateManager;
 
@@ -286,6 +287,13 @@ public class FloatViewManager implements ScreenTypeUtils.SplitScreenChangeListen
             Logger.d(TAG, "showAllCardWidgets", "当前桌面背景不是导航桌面背景,不需要显示！");
             return;
         }
+
+        if (SignalPackage.getInstance().getChargeSystemStatus() == 1
+                || SignalPackage.getInstance().getChargeSystemStatus() == 3){
+            Logger.d(TAG, "showAllCardWidgets", "充电中（快充，慢充）卡片不展示");
+            return;
+        }
+
         if (!ScreenTypeUtils.getInstance().isFullScreen()) {
             Logger.d(TAG, "showAllCardWidgets", "非全屏无需显示");
             return;

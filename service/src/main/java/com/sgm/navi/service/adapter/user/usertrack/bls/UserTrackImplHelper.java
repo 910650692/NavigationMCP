@@ -429,7 +429,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return;
         }
         if (Logger.openLog) {
-            Logger.i(TAG, "behaviorDataIds -> " + behaviorDataIds);
+            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds.length);
         }
 
         // 通过id获取行为数据
@@ -530,7 +530,7 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
             return null;
         }
         if (Logger.openLog) {
-            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds);
+            Logger.i(TAG, "behaviorDataIds -> ", behaviorDataIds.length);
         }
         final ArrayList<DrivingRecordDataBean> drivingRecordDataBeans = new ArrayList<>();
         // 通过id获取行为数据
@@ -555,7 +555,16 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         mGuideDataBeans.clear();
         final List<History> list = mHistoryManager.getValueByType(2);
         if (list != null && !list.isEmpty()) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "getDrivingRecordDataList: list size -> ",
+                        list.size());
+            }
             for (History history : list) {
+                if (Logger.openLog) {
+                    Logger.i(TAG, "getDrivingRecordDataList: history info -> ",
+                            history.getMId(),history.getMKeyWord(),history.getMKeyWord()==null
+                            ,history.getMType(), history.getMRideRunType(), history.getMAddress());
+                }
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
                 dataBean.setId(history.getMPoiId());// 数据ID
                 dataBean.setStartPoiName(history.getMStartPoiName()); // 设置起点
@@ -575,7 +584,8 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
             }
             if (Logger.openLog) {
-                Logger.i(TAG, "guideDataBeans -> ", mGuideDataBeans.size());
+                Logger.i(TAG, "getDrivingRecordDataList: mGuideDataBeans -> ",
+                        mGuideDataBeans.size());
             }
         }
         return mGuideDataBeans;
@@ -590,7 +600,16 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
         mCruiseDataBeans.clear();
         final List<History> list = mHistoryManager.getValueByType(2);
         if (list != null && !list.isEmpty()) {
+            if (Logger.openLog) {
+                Logger.i(TAG, "getDrivingRecordCruiseDataList: list size -> ",
+                        list.size());
+            }
             for (History history : list) {
+                if (Logger.openLog) {
+                    Logger.i(TAG, "getDrivingRecordCruiseDataList: history info -> ",
+                            history.getMId(),history.getMKeyWord(),history.getMKeyWord()==null,
+                            history.getMType(), history.getMRideRunType(), history.getMAddress());
+                }
                 final DrivingRecordDataBean dataBean = new DrivingRecordDataBean();
                 dataBean.setId(history.getMPoiId());// 数据ID
                 dataBean.setStartPoiName(history.getMStartPoiName()); // 设置起点
@@ -608,7 +627,8 @@ public class UserTrackImplHelper implements IUserTrackObserver, IGpsInfoGetter {
                 }
             }
             if (Logger.openLog) {
-                Logger.i(TAG, "cruiseDataBeans -> ", mCruiseDataBeans.size());
+                Logger.i(TAG, "getDrivingRecordCruiseDataList: mCruiseDataBeans -> ",
+                        mCruiseDataBeans.size());
             }
         }
         return mCruiseDataBeans;

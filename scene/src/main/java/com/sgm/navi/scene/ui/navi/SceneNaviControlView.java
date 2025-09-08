@@ -1,5 +1,7 @@
 package com.sgm.navi.scene.ui.navi;
 
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -245,6 +247,12 @@ public class SceneNaviControlView extends NaviSceneBase<SceneNaviControlViewBind
     public void showMain() {
         if (mScreenViewModel != null) {
             mScreenViewModel.showMain();
+        }
+    }
+
+    public void updatePreViewHmi(final int status) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.updatePreViewHmi(status);
         }
     }
 }

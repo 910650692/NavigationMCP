@@ -197,4 +197,10 @@ public class SceneNaviCrossImageView extends NaviSceneBase<SceneNaviCrossImageVi
             mScreenViewModel.onWindowSideChanged(isOpenFloat);
         }
     }
+
+    public void onSplitScreenChanged(boolean isShowMusicTab, boolean isFullScreen) {
+        if (mScreenViewModel != null) {
+            mScreenViewModel.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        }
+    }
 }

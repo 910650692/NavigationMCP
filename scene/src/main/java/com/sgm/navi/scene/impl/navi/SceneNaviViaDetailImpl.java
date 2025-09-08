@@ -1,21 +1,30 @@
 package com.sgm.navi.scene.impl.navi;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.databinding.ObservableField;
+import androidx.fragment.app.Fragment;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
 import com.android.utils.ResourceUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.scene.BaseSceneModel;
 import com.sgm.navi.scene.R;
+import com.sgm.navi.scene.RoutePath;
+import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
+import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
+import com.sgm.navi.scene.impl.search.SearchFragmentFactory;
 import com.sgm.navi.scene.ui.navi.SceneNaviViaDetailView;
 import com.sgm.navi.scene.ui.navi.manager.INaviSceneEvent;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.AutoMapConstant;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
+import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.GasStationInfo;
@@ -26,6 +35,7 @@ import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
+import com.sgm.navi.ui.base.BaseFragment;
 
 import java.util.List;
 import java.util.Objects;
@@ -314,6 +324,32 @@ public class SceneNaviViaDetailImpl extends BaseSceneModel<SceneNaviViaDetailVie
         mFastChargeTotal.set(fastSpaceTotal + "");
         mSlowChargeFree.set(slowSpaceFree + "");
         mFastChargeFree.set(fastSpaceFree + "");
+    }
+
+    public void skipToPoiFragment() {
+        Logger.d(TAG, "skipToPoiFragment");
+        if (mCurrentNaviViaEntity == null) {
+            return;
+        }
+        final Fragment fragment = (Fragment) ARouter.getInstance()
+                .build(RoutePath.Search.POI_DETAILS_FRAGMENT)
+                .navigation();
+        final PoiInfoEntity poiInfo = new PoiInfoEntity();
+        poiInfo.setPid(mCurrentNaviViaEntity.getPid());
+        poiInfo.setPoint(mCurrentNaviViaEntity.getRealPos());
+        Bundle bundle = SearchFragmentFactory.
+                createPoiDetailsFragment(
+                        AutoMapConstant.SourceFragment.MAIN_SEARCH_FRAGMENT,
+                        AutoMapConstant.PoiType.POI_DELETE_AROUND, poiInfo);
+        bundle.putInt(NaviConstant.NAVI_CONTROL, 1);
+        bundle.putInt(NaviConstant.VIA_POSITION, NumberUtils.NUM_0);
+        bundle.putBoolean(NaviConstant.VIA_IS_USER_ADD, mCurrentNaviViaEntity.isUserAdd());
+        addFragment((BaseFragment) fragment, bundle, false);
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(
+                MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
+        if (mCallBack != null) {
+            mCallBack.hideNaviContent();
+        }
     }
 
 }

@@ -25,4 +25,7 @@
     <dimen name="route_margin_screen_top">140dp</dimen>
     <dimen name="route_margin_screen_bottom">140dp</dimen>
 
+    <!--媒体悬浮框宽度-->
+    <dimen name="navi_main_float_window_width">571dp</dimen>
+
 </resources>

@@ -18,16 +18,16 @@
         <include
             android:id="@+id/scl_search_top_view"
             layout="@layout/search_edit_bar_view"
-            android:layout_width="@dimen/dp_545"
-            android:layout_height="@dimen/dp_95" />
+            android:layout_width="@dimen/dp_613"
+            android:layout_height="@dimen/dp_163" />
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
-            android:layout_width="@dimen/dp_545"
+            android:layout_width="@dimen/dp_613"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_17"
-            android:layout_marginBottom="@dimen/dp_130"
-            android:background="@drawable/bg_search_main_tab"
-            android:paddingVertical="@dimen/dp_17">
+            android:layout_marginTop="@dimen/dp_m_43"
+            android:background="@drawable/bg_shadow_navi_ndlc_8155"
+            android:paddingHorizontal="@dimen/dp_34"
+            android:paddingVertical="@dimen/dp_54">
 
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/il_sug_loading"
@@ -49,9 +49,13 @@
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_result"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:scrollbars="vertical"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_max="@dimen/scene_sug_recycler_search_result_max_height"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.sgm.navi.ui.view.SkinRecyclerView
                 android:id="@+id/recycler_search_history"
@@ -60,7 +64,7 @@
                 android:scrollbars="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight_default="wrap"
-                app:layout_constraintHeight_max="@dimen/dp_898"
+                app:layout_constraintHeight_max="@dimen/scene_sug_recycler_search_result_max_height"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="1dp" />
 

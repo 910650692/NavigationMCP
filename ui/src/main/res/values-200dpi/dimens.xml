@@ -4002,8 +4002,10 @@
     <dimen name="one_third_screen_cross_pic_height">349dp</dimen>
     <dimen name="one_third_screen_car_logo_bottom">827dp</dimen>
     <!--桌面悬浮窗的位置-->
-    <dimen name="launcher_position_top">-18dp</dimen>
-    <dimen name="launcher_position_left">30dp</dimen>
+    <dimen name="launcher_position_top">-14dp</dimen>
+    <dimen name="launcher_position_left">34dp</dimen>
+    <dimen name="launcher_tbt_position_top">16dp</dimen>
+    <dimen name="launcher_tbt_position_left">34dp</dimen>
     <!-- 后排屏CarLogo距离顶部高度 -->
     <dimen name="rear_screen_car_logo_top">838dp</dimen>
 
@@ -4027,11 +4029,10 @@
     <dimen name="bg_charge_number_item_corner">12dp</dimen>
     <dimen name="bg_search_main_tab_corner">20dp</dimen>
 
-    <dimen name="navi_main_tap_margin_start">30dp</dimen>
-    <dimen name="navi_main_tap_margin_top">80dp</dimen>
+    <dimen name="navi_main_tap_margin_start">34dp</dimen>
+    <dimen name="navi_main_tap_margin_top">50dp</dimen>
     <dimen name="navi_main_tap_margin_bottom">94dp</dimen>
     <dimen name="navi_main_tap_margin_end">64dp</dimen>
-    <dimen name="navi_main_tab_margin_top">46dp</dimen>
     <dimen name="navi_main_limit_margin_end">64dp</dimen>
     <dimen name="navi_main_tap_height">86dp</dimen>
     <dimen name="navi_main_parking_margin_end">132dp</dimen>
@@ -4039,18 +4040,15 @@
     <dimen name="navi_main_message_margin_start">30dp</dimen>
     <dimen name="navi_guide_widget_margin_start">688dp</dimen>
     <dimen name="navi_guide_line_views">-80dp</dimen>
-
-    <dimen name="navi_phone_address_dialog_width">462dp</dimen>
-    <dimen name="navi_phone_address_dialog_width_main_btn">640dp</dimen>
+    <dimen name="navi_main_message_center_top">80dp</dimen>
 
     <dimen name="navi_fragment_margin_botton">95dp</dimen>
 
-    <dimen name="navi_main_fragment_margin_start">29.5dp</dimen>
-    <dimen name="navi_main_fragment_margin_top">46.5dp</dimen>
+    <dimen name="navi_main_fragment_margin_start">34dp</dimen>
+    <dimen name="navi_main_fragment_margin_top">50dp</dimen>
     <dimen name="navi_setting_fragment_height">893dp</dimen>
     <dimen name="navi_we_chat_fragment_height">893dp</dimen>
 
-    <dimen name="navi_main_float_window_width">624dp</dimen>
     <dimen name="navi_guide_road_name_height">74dp</dimen>
     <dimen name="navi_guide_road_name_text_size">29dp</dimen>
     <dimen name="navi_guide_road_name_padding_horizontal">22dp</dimen>
@@ -4075,9 +4073,9 @@
     <dimen name="traffic_big_pic_margin_hor">670dp</dimen>
     <dimen name="traffic_big_pic_margin_vertical">115dp</dimen>
     <dimen name="bg_route_detail_corner">5dp</dimen>
-    <dimen name="phone_address_dialog_main_show_margin_start">417dp</dimen>
+    <dimen name="phone_address_dialog_main_show_margin_start">421dp</dimen>
     <dimen name="phone_address_dialog_main_not_show_margin_start">600dp</dimen>
-    <dimen name="phone_address_dialog_setting_show_margin_start">1062dp</dimen>
+    <dimen name="phone_address_dialog_setting_show_margin_start">1096dp</dimen>
     <dimen name="scene_rcv_collect_list_switch_visible_max_height">564dp</dimen>
     <dimen name="scene_rcv_collect_list_switch_gone_max_height">665dp</dimen>
     <dimen name="scene_rcv_collect_sll_no_favorite_switch_visible_height">440dp</dimen>
@@ -4088,4 +4086,5 @@
     <dimen name="route_search_service_page_max_height">518dp</dimen>
     <dimen name="item_favorite_empty_no_favorite_margin_top">55dp</dimen>
     <dimen name="item_favorite_empty_no_data_margin_top">40dp</dimen>
+    <dimen name="scene_sug_recycler_search_result_max_height">673dp</dimen>
 </resources>

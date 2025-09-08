@@ -729,7 +729,7 @@ public class NaviRouteLayerParser {
         textureInfo.y1 = y1;
         textureInfo.x2 = x2;
         textureInfo.y2 = y2;
-        textureInfo.textureLen = glTexLen;
+        textureInfo.textureLen = 32;
         return textureInfo;
     }
 

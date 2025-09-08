@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -47,6 +48,7 @@ import com.sgm.navi.hmi.route.RouteFragment;
 import com.sgm.navi.hmi.search.mainsearch.MainSearchFragment;
 import com.sgm.navi.hmi.search.searchresult.SearchResultFragment;
 import com.sgm.navi.hmi.setting.SettingFragment;
+import com.sgm.navi.hmi.traffic.BigPicDetailFragment;
 import com.sgm.navi.hmi.traffic.TrafficEventFragment;
 import com.sgm.navi.mapservice.bean.INaviConstant;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -135,7 +137,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     private RouteRestrictionParam routeRestrictionParam;
     public ObservableField<Boolean> limitDriverVisibility;
     public ObservableField<Boolean> limitEndNumVisibility;
-    public ObservableField<Boolean> tmcModeVisibility;
     public ObservableField<String> limitDriverTitle;
     public ObservableField<String> limitEndNumOne;
     public ObservableField<String> limitEndNumTwo;
@@ -144,8 +145,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     public ObservableField<Boolean> muteVisibility;
     public ObservableField<Boolean> mPopGuideLoginShow;
     public ObservableField<Boolean> mGoHomeVisible;
-
-    public ObservableField<Boolean> musicTabVisibility;
     public ObservableField<Boolean> sRVisible;
     public ObservableField<Drawable> mIsFullScreen;
     public ObservableField<Boolean> mIsChangingConfigurations;
@@ -167,7 +166,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         naviHomeVisibility = new ObservableField<>(false);
         limitDriverVisibility = new ObservableField<>(false);
         limitEndNumVisibility = new ObservableField<>(false);
-        tmcModeVisibility = new ObservableField<>(false);
         limitDriverTitle = new ObservableField<>("");
         limitEndNumOne = new ObservableField<>("");
         limitEndNumTwo = new ObservableField<>("");
@@ -193,7 +191,6 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         mGoHomeVisible = new ObservableField<>(false);
         sRVisible = new ObservableField<>(isSupportSplitScreen());
         mIsFullScreen = new ObservableField<>(ResourceUtils.Companion.getInstance().getDrawable(getSwitchId()));
-        musicTabVisibility = new ObservableField<>(false);
         mIsChangingConfigurations = new ObservableField<>(false);
         mIsContinueNaviNotified = new ObservableField<>(false);
         Logger.d(TAG, "BaseMapViewModel = " + bottomNaviVisibility.get());
@@ -380,8 +377,8 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void hideStartIcon() {
-        if (StartService.getInstance().checkSdkIsAvailable()) {
-            Logger.d(TAG, "startIcon", "hide startIcon");
+        if (StartService.getInstance().getSdkActivation() == 0) {
+            Logger.e(TAG, "startIcon", "hide startIcon");
             startIconVisibility.set(false);
         }
     }
@@ -390,7 +387,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.set557LogoPic();
         }
-        Logger.d(TAG, "startIcon", "show startIcon");
+        Logger.e(TAG, "startIcon", "show startIcon");
         startIconVisibility.set(true);
     }
 
@@ -608,6 +605,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
             bundle.putParcelable(AutoMapConstant.CommonBundleKey.BUNDLE_KEY_LIMIT_DRIVER, routeRestrictionParam);
             addPoiDetailsFragment(new LimitDriveFragment(), bundle);
             closeAllFragmentsUntilTargetFragment(LimitCitySelectionFragment.class.getName());
+            closeAllFragmentsUntilTargetFragment(BigPicDetailFragment.class.getName());
         }
     };
 
@@ -724,7 +722,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitDriveFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitCitySelectionFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())
-                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), PoiDetailsFragment.class.getSimpleName());
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), PoiDetailsFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), MapPointSearchFragment.class.getSimpleName())
+                || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), HomeCompanyFragment.class.getSimpleName());
         // 如果是导航页面的话比例尺继续正常显示，算路界面正常显示比例尺
         mScaleViewVisibility.set((NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state) ||
@@ -777,7 +777,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || searchKey == AutoMapConstant.SearchType.MAIN_SEARCH_ICON
                 || NaviStatus.NaviStatusType.SELECT_ROUTE.equals(state)
                 || NaviStatus.NaviStatusType.ROUTING.equals(state)
-                || NaviStatus.NaviStatusType.NAVING.equals(state))
+                || NaviStatus.NaviStatusType.NAVING.equals(state)
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitDriveFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), LimitCitySelectionFragment.class.getSimpleName())
                 || StackManager.getInstance().isExistFragment(MapType.MAIN_SCREEN_MAIN_MAP.name(), SettingFragment.class.getSimpleName())
@@ -786,7 +786,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 || AutoMapConstant.SourceFragment.FRAGMENT_AROUND.equals(fragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_SEARCH_AROUND.equals(aroundFragment)
                 || AutoMapConstant.SourceFragment.FRAGMENT_ROUTE.equals(routeFragment)
-                || AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY.equals(homeCompanyFragment)
+                || AutoMapConstant.SourceFragment.FRAGMENT_HOME_COMPANY.equals(homeCompanyFragment))
                 && (!ScreenTypeUtils.getInstance().isOneThirdScreen()) && !FloatViewManager.getInstance().judgedWidgetIsVisible());
         mainBTNVisibility.set(false);
         bottomNaviVisibility.set(false);
@@ -837,45 +837,14 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     private void checkHomeOfficeShow() {
-        tmcModeVisibility.set(mModel.getHomeCompanyDisplay());
         if (!mModel.getHomeCompanyDisplay()) {
             cancelTimer();
             return;
         }
-
-        //Nd 557车型需要先判断是否是节假日
-        if (mModel.showNdGoHomeView()) {
-            tmcModeVisibility.set(false);
-            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
-            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (!ConvertUtils.isEmpty(homePoi) || !ConvertUtils.isEmpty(companyPoi)) {
-                mModel.sendReqHolidayList();
-            }
-        } else {
-            PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
-            PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
-            if (ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(0, null);
-                    mView.setTMCView(1, null);
-                }
-            } else if (!ConvertUtils.isEmpty(homePoi) && !ConvertUtils.isEmpty(companyPoi)) {
-                mModel.refreshHomeOfficeTMC(true);
-            } else if (!ConvertUtils.isEmpty(homePoi) && ConvertUtils.isEmpty(companyPoi)) {
-                mModel.refreshHomeOfficeTMC(true);
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(1, null);
-                }
-            } else {
-                mModel.refreshHomeOfficeTMC(false);
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_go_setting));
-                if (mView != null) {
-                    mView.setTMCView(0, null);
-                }
-            }
+        PoiInfoEntity homePoi = getFavoritePoiInfo(PoiType.POI_HOME);
+        PoiInfoEntity companyPoi = getFavoritePoiInfo(PoiType.POI_COMPANY);
+        if (!ConvertUtils.isEmpty(homePoi) || !ConvertUtils.isEmpty(companyPoi)) {
+            mModel.sendReqHolidayList();
         }
     }
 
@@ -922,12 +891,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
 
     private void startGoHomeTimer() {
         cancelTimerGoHomeTimer();
-        goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(new Runnable() {
-            @Override
-            public void run() {
-                cancelTimerGoHomeTimer();
-                mGoHomeVisible.set(false);
-            }
+        goHomeTimer = ThreadManager.getInstance().asyncAtFixDelay(() -> {
+            cancelTimerGoHomeTimer();
+            mGoHomeVisible.set(false);
         }, NumberUtils.NUM_30, NumberUtils.NUM_30);
 
     }
@@ -1422,6 +1388,7 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE, poiInfoEntity);
                 bundle.putInt(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_OPEN_ROUTE_TYPE, RoutePoiType.ROUTE_POI_TYPE_END);
+                bundle.putString(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_ROUTE_FRAGMENT_TYPE,AutoMapConstant.SourceFragment.FRAGMENT_ROUTE);
                 addFragment(new RouteFragment(), bundle);
                 break;
             default:
@@ -1453,7 +1420,9 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         if (mView != null) {
             mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
         }
-        cruiseLanesVisibility.set(cruiseVisibility.get() && !ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
+        cruiseLanesVisibility.set(Boolean.TRUE.equals(cruiseVisibility.get()) &&
+                !ConvertUtils.isNull(laneInfoEntity) &&
+                !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
     public void showOrHiddenCruise(boolean isShow) {
@@ -1547,53 +1516,11 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
     }
 
     public void setTMCView(RouteTMCParam param) {
-        Logger.d("BaseMapViewModel", "DEBUG_TMC: setTMCView() 收到TMC参数: " + 
-            "key=" + param.getMKey() + ", isShort=" + param.isMIsShort() + ", time=" + param.getMTime());
-
-        //0代表家  1代表公司
-        if (Boolean.TRUE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
-            String inAroundText = ResourceUtils.Companion.getInstance().getString(R.string.map_in_around);
-            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址距离很近，设置为: " + inAroundText);
-            homeTime.set(inAroundText);
+        mGoHomeVisible.set(mainBTNVisibility.get());
+        if (mView != null) {
+            mView.setNdGoHomeView(param);
         }
-        if (Boolean.TRUE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
-            companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-        }
-
-        if (Boolean.FALSE.equals(param.isMIsShort()) && 0 == param.getMKey()) {
-            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址TMC更新 - 原时间: " + homeTime.get() + ", 新时间: " + param.getMTime());
-            homeTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
-                Logger.d("BaseMapViewModel", "DEBUG_TMC: 时间显示为计算中，设置为就在附近");
-                homeTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-            }
-            Logger.d("BaseMapViewModel", "DEBUG_TMC: 家地址最终时间设置为: " + homeTime.get());
-            if (mView != null) {
-                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
-            }
-        }
-        if (Boolean.FALSE.equals(param.isMIsShort()) && 1 == param.getMKey()) {
-            companyTime.set(param.getMTime());
-            if ("计算中...".equals(param.getMTime())) {
-                companyTime.set(ResourceUtils.Companion.getInstance().getString(R.string.map_in_around));
-            }
-            if (mView != null) {
-                mView.setTMCView(param.getMKey(), param.getMRouteLightBarItem());
-            }
-        }
-
-        if (mModel.showNdGoHomeView()) {
-            mGoHomeVisible.set(true);
-            if (mView != null) {
-                mView.setNdGoHomeView(param);
-            }
-            startGoHomeTimer();
-            return;
-        }
-
-        if (0 == param.getMKey() && !ConvertUtils.isEmpty(getFavoritePoiInfo(PoiType.POI_COMPANY))) {
-            mModel.refreshHomeOfficeTMC(false);
-        }
+        startGoHomeTimer();
     }
 
     public void checkPopGuideLogin() {
@@ -1926,6 +1853,10 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
         bottomNaviVisibility.set(judgedBottomNaviVisibility());
     }
 
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        mView.onWindowSideChanged(isOpenFloat);
+    }
+
     public void notifyStepOneThirdScreen() {
         checkViewState();
     }
@@ -1980,32 +1911,32 @@ public class BaseMapViewModel extends BaseViewModel<MapActivity, MapModel> {
      */
     public void showMCPSearchResult(int taskId, SearchResultEntity searchResultEntity, Bundle bundle) {
         Logger.d(TAG, "显示MCP搜索结果: taskId=" + taskId);
-        
+
         try {
             // 使用ARouter导航到搜索结果页面
             Fragment fragment = (Fragment) ARouter.getInstance()
                     .build(RoutePath.Search.SEARCH_RESULT_FRAGMENT)
                     .navigation();
-            
+
             if (fragment != null) {
                 // 设置Fragment的参数
                 fragment.setArguments(bundle);
-                
+
                 // 添加Fragment到当前Activity
                 if (mView != null) {
                     mView.addFragment((BaseFragment) fragment, bundle);
-                    
+
                     // MCP搜索结果会在Fragment的getBundleData中自动处理
                     Logger.d(TAG, "MCP搜索结果页面显示成功");
-                    
+
                 } else {
                     Logger.e(TAG, "mView为空，无法添加Fragment");
                 }
-                
+
             } else {
                 Logger.e(TAG, "MCP搜索结果Fragment创建失败");
             }
-            
+
         } catch (Exception e) {
             Logger.e(TAG, "显示MCP搜索结果失败", e);
         }

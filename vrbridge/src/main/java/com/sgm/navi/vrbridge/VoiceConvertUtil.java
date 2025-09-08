@@ -2,6 +2,7 @@ package com.sgm.navi.vrbridge;
 
 import android.text.TextUtils;
 
+import com.android.utils.log.Logger;
 import com.baidu.oneos.protocol.bean.PoiBean;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
@@ -33,18 +34,19 @@ public final class VoiceConvertUtil {
      * @param  poiInfoEntityList poiInfoEntityList
      * @return list of PoiBean
      */
-    public static List<PoiBean> convertSearchResult(final List<PoiInfoEntity> poiInfoEntityList) {
+    public static List<PoiBean> convertSearchResult(final List<PoiInfoEntity> poiInfoEntityList, final int naviPlanType) {
         final List<PoiBean> poiBeanList = new ArrayList<>();
         if (null == poiInfoEntityList || poiInfoEntityList.isEmpty()) {
             return poiBeanList;
         }
-
+        Logger.d("VrBridgeHandle", "naviPlanType : ", naviPlanType);
         for (PoiInfoEntity poiInfo : poiInfoEntityList) {
             if (null == poiInfo || null == poiInfo.getPoint()) {
                 continue;
             }
 
             final PoiBean poiBean = new PoiBean();
+            poiBean.setInNaviPlanType(naviPlanType);
             poiBean.setName(poiInfo.getName());
             poiBean.setAddress(poiInfo.getAddress());
             final GeoPoint geoPoint = poiInfo.getPoint();

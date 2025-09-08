@@ -24,14 +24,15 @@
             android:layout_height="match_parent"
             android:importantForAccessibility="yes"/>
 
-        <com.sgm.navi.ui.view.SkinConstraintLayout
+        <com.sgm.navi.ui.view.SkinView
             android:id="@+id/float_window"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_1"
-            android:visibility="@{ViewModel.musicTabVisibility ? View.VISIBLE : View.GONE}"
+            android:focusable="false"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-        </com.sgm.navi.ui.view.SkinConstraintLayout>
+        </com.sgm.navi.ui.view.SkinView>
 
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/search_main_tab"
@@ -51,7 +52,6 @@
                 android:paddingVertical="@dimen/dp_29"
                 android:paddingStart="@dimen/dp_29"
                 android:paddingEnd="@dimen/dp_65"
-                android:visibility="@{ViewModel.tmcModeVisibility ? View.GONE : View.VISIBLE}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -90,108 +90,6 @@
 
             </com.sgm.navi.ui.view.SkinConstraintLayout>
 
-            <com.sgm.navi.ui.view.SkinConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_150"
-                android:background="@drawable/bg_shadow_navi_buick"
-                android:paddingVertical="@dimen/dp_29"
-                android:paddingStart="@dimen/dp_29"
-                android:paddingEnd="@dimen/dp_65"
-                android:visibility="@{ViewModel.tmcModeVisibility ? View.VISIBLE : View.GONE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.sgm.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_home_tq"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
-                    android:layout_marginStart="@dimen/dp_36"
-                    android:src="@drawable/img_basic_ic_home"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.sgm.navi.ui.view.SkinTextView
-                    android:id="@+id/sk_iv_basic_home_text"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxWidth="@dimen/dp_120"
-                    android:maxLines="1"
-                    android:text="@{ViewModel.homeTime}"
-                    android:textColor="@color/main_route_home_text"
-                    android:textSize="@dimen/sp_26"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
-                    android:id="@+id/sk_iv_basic_home_progress"
-                    clickCommand="@{ViewModel.openHomeFragment}"
-                    android:layout_width="@dimen/dp_90"
-                    android:layout_height="@dimen/dp_6"
-                    android:layout_marginBottom="@dimen/dp_30"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_home_tq"
-                    app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_home_text" />
-
-                <com.sgm.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_bus_tq"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
-                    android:layout_marginStart="@dimen/dp_250"
-                    android:src="@drawable/img_basic_ic_bus"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.sgm.navi.ui.view.SkinTextView
-                    android:id="@+id/sk_iv_basic_bus_text"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxWidth="@dimen/dp_120"
-                    android:maxLines="1"
-                    android:text="@{ViewModel.companyTime}"
-                    android:textColor="@color/main_route_home_text"
-                    android:textSize="@dimen/sp_26"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.sgm.navi.scene.ui.map.component.MultiStageProgressBar
-                    android:id="@+id/sk_iv_basic_bus_progress"
-                    clickCommand="@{ViewModel.openCompanyFragment}"
-                    android:layout_width="@dimen/dp_90"
-                    android:layout_height="@dimen/dp_6"
-                    android:layout_marginBottom="@dimen/dp_30"
-                    app:layout_constraintStart_toEndOf="@+id/sk_iv_basic_bus_tq"
-                    app:layout_constraintTop_toBottomOf="@+id/sk_iv_basic_bus_text" />
-
-                <com.sgm.navi.ui.view.SkinTextView
-                    android:layout_width="@dimen/dp_1"
-                    android:layout_height="@dimen/dp_44"
-                    android:layout_marginStart="@dimen/dp_464"
-                    android:background="@color/route_line_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.sgm.navi.ui.view.SkinImageView
-                    android:id="@+id/sk_iv_basic_search_tq"
-                    clickCommand="@{ViewModel.openSearchFragment}"
-                    android:layout_width="@dimen/dp_92"
-                    android:layout_height="@dimen/dp_92"
-                    android:layout_marginStart="@dimen/dp_481"
-                    android:src="@drawable/img_basic_ic_search"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </com.sgm.navi.ui.view.SkinConstraintLayout>
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 
 
@@ -205,13 +103,13 @@
             app:layout_constraintStart_toStartOf="@id/search_main_tab"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab" />
 
-        <!--ND独有 回家，公司view-->
+        <!--通勤卡片-->
         <com.sgm.navi.scene.ui.map.SceneGoHomeView
             android:id="@+id/scene_go_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_17"
-            android:visibility="@{ViewModel.mGoHomeVisible &amp;&amp; ViewModel.mainBTNVisibility ? View.VISIBLE : View.GONE}"
+            android:visibility="@{ViewModel.mGoHomeVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintStart_toStartOf="@id/search_main_tab"
             app:layout_constraintTop_toBottomOf="@id/search_main_tab"
             tools:visibility="gone"/>

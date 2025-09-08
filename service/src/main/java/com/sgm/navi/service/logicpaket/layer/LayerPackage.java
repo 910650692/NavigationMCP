@@ -21,6 +21,7 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -32,7 +33,7 @@ public class LayerPackage implements ILayerAdapterCallBack {
     protected String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
     private LayerAdapter mLayerAdapter;
 
-    private final ConcurrentHashMap<MapType, List<ILayerPackageCallBack>> callbacks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<MapType, CopyOnWriteArrayList<ILayerPackageCallBack>> callbacks = new ConcurrentHashMap<>();
 
     public void clearRouteLine(MapType mapType) {
         mLayerAdapter.clearRouteLine(mapType);
@@ -69,7 +70,7 @@ public class LayerPackage implements ILayerAdapterCallBack {
 
     public void registerCallBack(MapType mapTypeId, ILayerPackageCallBack callback) {
         if (!callbacks.containsKey(mapTypeId)) {
-            callbacks.put(mapTypeId, new ArrayList<>());
+            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
             mLayerAdapter.registerLayerClickObserver(mapTypeId, this);
         }
         if (!callbacks.get(mapTypeId).contains(callback)) {

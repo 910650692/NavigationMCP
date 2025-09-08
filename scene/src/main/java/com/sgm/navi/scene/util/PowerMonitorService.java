@@ -101,7 +101,7 @@ public class PowerMonitorService implements SignalCallback {
             gasCarDistanceChange(gasRemainCanRunDis);
         }
         final double costTime = (System.currentTimeMillis() - startTime) / 1000f;
-        Logger.d(TAG, "checkRemainBattery", "costTime", costTime, "秒", "gasRemainCanRunDis:", gasRemainCanRunDis,
+        Logger.e(TAG, "checkRemainBattery", "costTime", costTime, "秒", "gasRemainCanRunDis:", gasRemainCanRunDis,
                 "electRemainCanRunDis:", electRemainCanRunDis, "totalCanRunDis:", totalCanRunDis);
     }
 

@@ -137,6 +137,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
     private ValueAnimator mAnimator;
     private float mAngelTemp = 0;
     private int mTabIndex = -1;
+    private int mSelectIndex = -1;
 
     private Runnable mOfflineRunnable = new Runnable() {
         @Override
@@ -277,33 +278,51 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final int position, final PoiInfoEntity poiInfoEntity) {
-                sendBuryPointForListSelect(position+1, poiInfoEntity.getName());
-                final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
-                if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
-                    mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
-                    final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
-                    if (!ConvertUtils.isEmpty(poiInfoEntities)) {
-                        // 遍历所有可见的item
-                        for (int i = 0; i < poiInfoEntities.size(); i++) {
-                            if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                sendBuryPointForListSelect(position + 1, poiInfoEntity.getName());
+                if (SearchPackage.getInstance().isAlongWaySearch() && !mIsEnd
+                        && (mSearchType == AutoMapConstant.SearchType.ALONG_WAY_SEARCH
+                        || mSearchType == AutoMapConstant.SearchType.EN_ROUTE_KEYWORD_SEARCH)
+                        && mRouteAround && mSearchResultEntity.getKeyword().equals("充电站")
+                        && position != mSelectIndex) {
+                    //沿途搜充电站,且目标item不在focus态，对应扎标变为Focus态，列表项变为Focus态
+                    mSelectIndex = position;
+                    mAdapter.setSelectIndex(position);
+                    ThreadManager.getInstance().runAsync(() -> {
+                        mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
+                        mScreenViewModel.resetTickCount();
+                    });
+                } else {
+                    final Fragment fragment = (Fragment) ARouter.getInstance().build(RoutePath.Search.POI_DETAILS_FRAGMENT).navigation();
+                    if (!ConvertUtils.isEmpty(mScreenViewModel) && !ConvertUtils.isEmpty(mResultEntity)) {
+                        ThreadManager.getInstance().runAsync(() -> {
+                            mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
+                            mScreenViewModel.resetTickCount();
+                        });
+                        final List<PoiInfoEntity> poiInfoEntities = mResultEntity.getPoiList();
+                        if (!ConvertUtils.isEmpty(poiInfoEntities)) {
+                            // 遍历所有可见的item
+                            for (int i = 0; i < poiInfoEntities.size(); i++) {
+                                if (!ConvertUtils.isEmpty(poiInfoEntities)) {
 //                                if (ConvertUtils.equals(poiInfoEntities.get(i).getPid(), poiInfoEntity.getPid())) {
-                                poiInfoEntities.get(i).setMIsVisible(false);
+                                    poiInfoEntities.get(i).setMIsVisible(false);
 //                                }
+                                }
                             }
+                            mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
                         }
-                        mScreenViewModel.updatePoiMarker(poiInfoEntities, 0, true);
                     }
+                    final int poiType = getPoiType(mAdapter.getHomeCompanyType());
+                    Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: ", poiType, " homeCompany: ", mAdapter.getHomeCompanyType());
+                    final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
+                            AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
+                    bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
+                    bundle.putBoolean("IS_END", mIsEnd);
+                    if (!ConvertUtils.isEmpty(mChildQuickList) && mCurrentSelectedQuick > 0
+                            && mCurrentSelectedQuick < mChildQuickList.size()) {
+                        bundle.putString("LABEL", mChildQuickList.get(mCurrentSelectedQuick).getName());
+                    }
+                    addPoiDetailsFragment((BaseFragment) fragment, bundle);
                 }
-                final int poiType = getPoiType(mAdapter.getHomeCompanyType());
-                Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "onClick poiType: " , poiType , " homeCompany: " , mAdapter.getHomeCompanyType());
-                final Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
-                        AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, poiInfoEntity);
-                bundle.putParcelable(AutoMapConstant.SearchBundleKey.BUNDLE_KEY_SEARCH_SOURCE_DATA, mResultEntity);
-                bundle.putBoolean("IS_END", mIsEnd);
-                if(!ConvertUtils.isEmpty(mChildQuickList) && mCurrentSelectedQuick > 0){
-                    bundle.putString("LABEL",mChildQuickList.get(mCurrentSelectedQuick).getName());
-                }
-                addPoiDetailsFragment((BaseFragment) fragment, bundle);
             }
 
             @Override
@@ -1372,6 +1391,7 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
             Bundle bundle = SearchFragmentFactory.createPoiDetailsFragment(
                     AutoMapConstant.SourceFragment.SEARCH_RESULT_FRAGMENT, poiType, searchResultEntity.getPoiList().get(0));
             bundle.putBoolean("IS_END", mIsEnd);
+            bundle.putBoolean("IS_FROM_LIST_ONLY",true);
             addFragment((BaseFragment) fragment, bundle,false);
             return;
         }
@@ -1966,6 +1986,11 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
         }
         if (mAdapter != null) {
             mAdapter.updateAlongList(mGasChargeAlongList, position);
+            mAdapter.setSelectIndex(position);
+            mSelectIndex = position;
+        }
+        if (mScreenViewModel != null) {
+            mScreenViewModel.setSelectIndex(poiInfoEntity, position, mSearchType);
         }
     }
 
@@ -2337,6 +2362,10 @@ public class SceneSearchPoiList extends BaseSceneView<PoiSearchResultViewBinding
                 @Override
                 public void run() {
                     addRemoveClick(index, poiInfoEntities.get(index));
+                    if (mAdapter != null) {
+                        mAdapter.setSelectIndex(index);
+                        mSelectIndex = index;
+                    }
                     LinearLayoutManager layoutManager = (LinearLayoutManager) mViewBinding.recyclerSearchResult.getLayoutManager();
                     if(!ConvertUtils.isNull(layoutManager)){
                         layoutManager.scrollToPositionWithOffset(index,0);

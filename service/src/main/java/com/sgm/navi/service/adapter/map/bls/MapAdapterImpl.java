@@ -81,8 +81,10 @@ public class MapAdapterImpl implements IMapApi {
                 mapViewWidth, mapViewHeight, screenWidth, screenHeight,
                 mapView.getScreenDensityDpi(), mapView.isOpenScreen());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
-        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
-        mapView.bindMapView(mapSurfaceViewImp);
+        if (mapSurfaceViewImp != null) {
+            mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+            mapView.bindMapView(mapSurfaceViewImp);
+        }
     }
 
     @Override
@@ -111,13 +113,17 @@ public class MapAdapterImpl implements IMapApi {
         MapViewParams mapViewParams = new MapViewParams(mapView.getMapViewX(), mapView.getMapViewY(),mapViewWidth
                 , mapViewHeight, screenWidth, screenHeight, mapView.getScreenDensityDpi(), mapView.isOpenScreen());
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
-        mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+        if (mapSurfaceViewImp != null) {
+            mapSurfaceViewImp.changeMapViewParams(mapViewParams);
+        }
     }
 
     @Override
     public void unBindMapView(IBaseScreenMapView mapView) {
         MapViewImpl mapSurfaceViewImp = mapViewPoolManager.getMapViewImpl(mapView.provideMapTypeId());
-        mapView.unBindMapView(mapSurfaceViewImp);
+        if (mapSurfaceViewImp != null) {
+            mapView.unBindMapView(mapSurfaceViewImp);
+        }
     }
 
     @Override
@@ -137,7 +143,11 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public float getCurrentZoomLevel(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getCurrentZoomLevel();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getCurrentZoomLevel();
+        }
+        return 0;
     }
 
     /* 判断当前mapview是否存在 */
@@ -148,7 +158,11 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public int getCurrentScale(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getCurrentScale();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getCurrentScale();
+        }
+        return 0;
     }
 
     @Override
@@ -156,13 +170,19 @@ public class MapAdapterImpl implements IMapApi {
         float level = (float) Math.floor(levelValue);
         if (AutoMapConstant.MAP_ZOOM_LEVEL_MIN > level || level > AutoMapConstant.MAP_ZOOM_LEVEL_MAX)
             return;
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setZoomLevel(level);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setZoomLevel(level);
+        }
     }
 
     @Override
     public void setMapCenterInScreen(MapType mapTypeId, int x, int y) {
-        Logger.d(TAG, "map left: " + x, "map top: " + y);
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setMapCenterInScreen(x, y);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            Logger.d(TAG, "map left: " + x, "map top: " + y);
+            mapViewImpl.setMapCenterInScreen(x, y);
+        }
     }
 
     /**
@@ -170,137 +190,227 @@ public class MapAdapterImpl implements IMapApi {
      */
     @Override
     public void setHudMapCenterInScreen(MapType mapTypeId, int x, int y) {
-        Logger.d(TAG, "map left: ", x, " map top: ", y);
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setHudMapCenterInScreen(x, y);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            Logger.d(TAG, "map left: ", x, " map top: ", y);
+            mapViewImpl.setHudMapCenterInScreen(x, y);
+        }
     }
 
     @Override
     public void setMapCenter(MapType mapTypeId, GeoPoint geoPoint) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setMapCenter(geoPoint);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setMapCenter(geoPoint);
+        }
     }
 
     @Override
     public GeoPoint getMapCenter(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getMapCenter();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getMapCenter();
+        }
+        return new GeoPoint();
     }
 
     @Override
     public boolean setTrafficStates(MapType mapTypeId, boolean isOpen) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).setTrafficStates(isOpen);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.setTrafficStates(isOpen);
+        }
+        return false;
     }
 
     @Override
     public void setCustomLabelTypeVisible(MapType mapTypeId, ArrayList<Integer> typeList, boolean visible) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setCustomLabelTypeVisable(typeList, visible);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setCustomLabelTypeVisable(typeList, visible);
+        }
     }
 
     @Override
     public void setMapViewTextSize(MapType mapTypeId, float f) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setMapViewTextSize(f);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setMapViewTextSize(f);
+        }
     }
 
     public void isSplitScreen(MapType mapTypeId, boolean isSplit) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).isSplitScreen(isSplit);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.isSplitScreen(isSplit);
+        }
     }
 
     @Override
     public void setLockMapPinchZoom(MapType mapTypeId, boolean isLock) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setLockMapPinchZoom(isLock);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setLockMapPinchZoom(isLock);
+        }
     }
 
     @Override
     public void setLockMapMove(MapType mapTypeId, boolean isLock) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setLockMapMove(isLock);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setLockMapMove(isLock);
+        }
     }
 
     @Override
     public MapMode getCurrentMapMode(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getMapMode();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getMapMode();
+        }
+        return MapMode.UP_2D;
     }
 
     @Override
     public boolean setMapMode(MapType mapTypeId, MapMode mapMode) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).setMapMode(mapMode);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.setMapMode(mapMode);
+        }
+        return false;
     }
 
     @Override
     public boolean setMapModeWithLevel(MapType mapTypeId, MapMode mapMode, float level) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).setMapMode(mapMode, level);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.setMapMode(mapMode, level);
+        }
+        return false;
     }
 
     @Override
     public void setMapHudMode(MapType mapTypeId, MapMode mapMode) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setHUDMapMode(mapMode);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setHUDMapMode(mapMode);
+        }
     }
 
     @Override
     public void setMapStateStyle(MapType mapTypeId, MapStateStyle mapStateStyle) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setMapStyle(mapStateStyle);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setMapStyle(mapStateStyle);
+        }
     }
 
     @Override
     public void goToCarPosition(MapType mapTypeId, boolean bAnimation, boolean changeLevel) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).goToCarPosition(bAnimation, changeLevel);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.goToCarPosition(bAnimation, changeLevel);
+        }
     }
 
     @Override
     public void mfcMoveMap(MapType mapTypeId, MfcController mfcController, int moveDistance) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).mfcMoveMap(mfcController, moveDistance);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.mfcMoveMap(mfcController, moveDistance);
+        }
     }
 
     @Override
     public GeoPoint mapToLonLat(MapType mapTypeId, double mapX, double mapY) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).mapToLonLat(mapX, mapY);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.mapToLonLat(mapX, mapY);
+        }
+        return new GeoPoint();
     }
 
     @Override
     public PointDataInfo lonLatToScreen(MapType mapTypeId, double lon, double lat, double z) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).lonLatToScreen(lon, lat, z);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.lonLatToScreen(lon, lat, z);
+        }
+        return new PointDataInfo();
     }
 
     @Override
     public MapViewParams getMapSurfaceParam(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getMapViewParams();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getMapViewParams();
+        }
+        return new MapViewParams();
     }
 
     @Override
     public void showPreview(MapType mapTypeId, PreviewParams previewParams) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).showPreview(previewParams);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.showPreview(previewParams);
+        }
     }
 
     @Override
     public void exitPreview(MapType mapTypeId) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).exitPreview();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.exitPreview();
+        }
     }
 
     @Override
     public void exitPreview(MapType mapTypeId, boolean bCenter) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).exitPreview(bCenter);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.exitPreview(bCenter);
+        }
     }
 
     @Override
     public void updateUiStyle(MapType mapTypeId, ThemeType uiMode) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).updateUiStyle(uiMode);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.updateUiStyle(uiMode);
+        }
     }
 
     @Override
     public String getMapBound(MapType mapTypeId) {
-        return mapViewPoolManager.getMapViewImpl(mapTypeId).getMapBound();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getMapBound();
+        }
+        return "";
     }
 
     @Override
     public void set3DBuilding(MapType mapTypeId, boolean isVisible) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).update3DBuildingSwitch(isVisible);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.update3DBuildingSwitch(isVisible);
+        }
     }
 
     @Override
     public void setMapLabelClickable(MapType mapTypeId, boolean enable) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setMapLabelClickable(enable);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setMapLabelClickable(enable);
+        }
     }
 
     @Override
     public void resetTickCount(MapType mapTypeId, int tickCount) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).resetTickCount(tickCount);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.resetTickCount(tickCount);
+        }
     }
 
     @Override
@@ -311,26 +421,42 @@ public class MapAdapterImpl implements IMapApi {
 
     @Override
     public void openOrCloseScreenshot(MapType mapTypeId, boolean isOpen) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).openOrCloseScreenshot(isOpen);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.openOrCloseScreenshot(isOpen);
+        }
     }
 
     @Override
     public void updateScreenshotRect(MapType mapTypeId, Rect rect) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).updateScreenshotRect(rect);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.updateScreenshotRect(rect);
+        }
     }
 
     @Override
     public void setPitchAngle(MapType mapTypeId,float pitchAngle) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).setPitchAngle(pitchAngle);
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.setPitchAngle(pitchAngle);
+        }
     }
 
     @Override
     public int getScaleLineLength(MapType mapType) {
-        return mapViewPoolManager.getMapViewImpl(mapType).getScaleLineLength();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapType);
+        if (mapViewImpl != null) {
+            return mapViewImpl.getScaleLineLength();
+        }
+        return 0;
     }
 
     @Override
     public void updateLayerStyle(MapType mapTypeId) {
-        mapViewPoolManager.getMapViewImpl(mapTypeId).updateLayerStyle();
+        MapViewImpl mapViewImpl = mapViewPoolManager.getMapViewImpl(mapTypeId);
+        if (mapViewImpl != null) {
+            mapViewImpl.updateLayerStyle();
+        }
     }
 }

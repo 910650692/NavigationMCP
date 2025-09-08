@@ -569,4 +569,8 @@ public class SceneSearchPoiListImpl extends BaseSceneModel<SceneSearchPoiList> i
             mScreenView.showLoading(false);
         }
     }
+
+    public void resetTickCount() {
+        mMapPackage.resetTickCount(MapType.MAIN_SCREEN_MAIN_MAP,2);
+    }
 }

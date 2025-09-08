@@ -1,6 +1,8 @@
 package com.android.utils.log;
 
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.LogPrinter;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.SpUtils;
@@ -32,6 +34,17 @@ public class LogUtils {
     private static int LOG_LEVEL = Log.DEBUG;
 
     private static final int LOG_MAX_LENGTH = 1024 * 2;
+
+    /**
+     * 输出Fatal级别日志，使用LogPrinter输出
+     */
+    public static void fatal(String tag, Object... args) {
+        if (args != null && args.length > 0) {
+            String fullMessage = convertJson(args);
+            LogPrinter logPrinter = new LogPrinter(Log.ASSERT, tag);
+            logPrinter.println(fullMessage);
+        }
+    }
 
     private static final Gson gson = new GsonBuilder()
             .disableHtmlEscaping()

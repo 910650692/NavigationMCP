@@ -1,6 +1,7 @@
 package com.sgm.navi.hmi.map;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -55,7 +57,6 @@ import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.map.ThemeType;
 import com.sgm.navi.service.define.message.MessageCenterType;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
-import com.sgm.navi.service.define.route.RouteLightBarItem;
 import com.sgm.navi.service.define.route.RouteTMCParam;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
@@ -77,7 +78,6 @@ import com.sgm.navi.ui.dialog.IBaseDialogClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -106,6 +106,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
     private int mCurrentUiMode;
     private ActivateFailedDialog mFailedDialog;
     private int mSavePageCode = -1;
+    private ValueAnimator widthAnimator;
 
     @Override
     public void onCreateBefore() {
@@ -139,6 +140,9 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             }
         };
         ThreadManager.getInstance().postDelay(mOpenGuideRunnable, NumberUtils.NUM_500);
+        Logger.d(TAG, "onCreate isShowMusicTab = " + FloatWindowReceiver.isShowMusicTab);
+        mViewModel.onWindowSideChanged(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
+        mViewModel.reSetSwitchIcon();
         mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
 
         // 注册导航广播接收器
@@ -366,6 +370,38 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         }
     }
 
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        if (mBinding == null) {
+            return;
+        }
+
+        final int startWidth = 1;
+        final int endWidth = (int) getResources().getDimension(com.sgm.navi.service.R.dimen.navi_main_float_window_width); // 目标宽度
+
+        if (widthAnimator != null && widthAnimator.isRunning()) {
+            widthAnimator.cancel();
+        }
+        widthAnimator = isOpenFloat
+                ? ValueAnimator.ofInt(startWidth, endWidth)
+                : ValueAnimator.ofInt(endWidth, startWidth);
+
+        mBinding.floatWindow.setLayerType(View.LAYER_TYPE_HARDWARE, null); // 启用硬件加速
+
+        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int value = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = mBinding.floatWindow.getLayoutParams();
+                if (layoutParams.width != value) {
+                    layoutParams.width = value;
+                    mBinding.floatWindow.requestLayout();
+                }
+            }
+        });
+        widthAnimator.setDuration(200);
+        widthAnimator.start();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -537,9 +573,11 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             ThreadManager.getInstance().postDelay(() -> {
                 if (mViewModel != null) {
                     Logger.i(TAG, "startIcon", "splitScreen hide startIcon");
-                    mViewModel.hideStartIcon();
+                    if (mViewModel != null) {
+                        mViewModel.hideStartIcon();
+                    }
                 }
-            }, 200);
+            }, 600);
         }
         //模式更改不重新触发trips
         mViewModel.mIsChangingConfigurations.set(true);
@@ -579,16 +617,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         mBinding.cruiseLayout.tvTitle.setText(isOpen ? R.string.cruise_unmute : R.string.cruise_mute);
     }
 
-    public void setTMCView(int key, List<RouteLightBarItem> routeLightBarItems) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (key == 0) {
-                mBinding.skIvBasicHomeProgress.refreshTMC(routeLightBarItems);
-            } else {
-                mBinding.skIvBasicBusProgress.refreshTMC(routeLightBarItems);
-            }
-        });
-    }
-
     @Override
     protected void onFragmentSizeChanged(boolean isSpiltFragment) {
         super.onFragmentSizeChanged(isSpiltFragment);
@@ -618,11 +646,8 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
             mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.INVISIBLE);
             return;
         }
-        ThreadManager.getInstance().postUi(() -> {
-                    mBinding.cruiseLayout.tvCurrentRoadName.setText(cruiseInfoEntity.roadName);
-                    mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.VISIBLE);
-                }
-        );
+        mBinding.cruiseLayout.tvCurrentRoadName.setText(cruiseInfoEntity.roadName);
+        mBinding.cruiseLayout.tvCurrentRoadName.setVisibility(View.VISIBLE);
     }
 
     public void setNdGoHomeView(RouteTMCParam routeTMCParam) {

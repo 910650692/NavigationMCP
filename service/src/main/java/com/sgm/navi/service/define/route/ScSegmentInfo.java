@@ -1,6 +1,6 @@
 package com.sgm.navi.service.define.route;
 
-import com.sgm.navi.service.define.bean.GeoPoint;
+import com.sgm.navi.service.adapter.l2.ScPoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class ScSegmentInfo {
         private long index; // Segment的index
         private int roadClass;
         private List<ScSpeedLimit> scSpeedLimits = new ArrayList<>();
-        private List<GeoPoint> scPoints = new ArrayList<>();
+        private List<ScPoint> scPoints = new ArrayList<>();
         private List<Double> scRealTimeSpds = new ArrayList<>();
         private long length; // Segment的length
 
@@ -57,11 +57,11 @@ public class ScSegmentInfo {
             this.scSpeedLimits.add(scSpeedLimit);
         }
 
-        public List<GeoPoint> getScPoints() {
+        public List<ScPoint> getScPoints() {
             return scPoints;
         }
 
-        public void addScPoints(GeoPoint scPoint) {
+        public void addScPoints(ScPoint scPoint) {
             this.scPoints.add(scPoint);
         }
 

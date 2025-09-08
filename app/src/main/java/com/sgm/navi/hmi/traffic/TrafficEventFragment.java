@@ -14,6 +14,7 @@ import androidx.databinding.Observable;
 import androidx.databinding.library.baseAdapters.BR;
 
 import com.android.utils.log.Logger;
+import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentTrafficDetailBinding;
 import com.sgm.navi.scene.impl.imersive.ImersiveStatus;
@@ -165,17 +166,21 @@ public class TrafficEventFragment extends BaseFragment<FragmentTrafficDetailBind
     }
 
     public void setIncreaseBtnColor(Boolean isIncrease) {
-        mBinding.tvIncrease.setSelected(isIncrease);
-        mBinding.tvIncrease.setTextColor(isIncrease ?
-                getResources().getColor(R.color.bg_route_big_window_select) :
-                getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.tvIncrease.setSelected(isIncrease);
+            mBinding.tvIncrease.setTextColor(isIncrease ?
+                    getResources().getColor(R.color.bg_route_big_window_select) :
+                    getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+        });
     }
 
     public void setDecreaseBtnColor(Boolean isDecrease) {
-        mBinding.tvDecrease.setSelected(isDecrease);
-        mBinding.tvDecrease.setTextColor(isDecrease ?
-                getResources().getColor(R.color.bg_route_big_window_select) :
-                getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+        ThreadManager.getInstance().postUi(() -> {
+            mBinding.tvDecrease.setSelected(isDecrease);
+            mBinding.tvDecrease.setTextColor(isDecrease ?
+                    getResources().getColor(R.color.bg_route_big_window_select) :
+                    getResources().getColor(com.sgm.navi.scene.R.color.search_quick_tab_view_color));
+        });
     }
 
     public void setIncreaseBtnAlpha(float alpha) {

@@ -68,7 +68,7 @@ public class NaviSceneManager implements INaviSceneEvent {
                     Logger.i(TAG, "没有任何卡片在显示，直接展示新卡片", "newSceneBase:", newSceneBase.getSceneName());
                     showScene(newSceneBase, info);
                 } else {
-                    if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState()) { // 正在展示中不进行任何操作
+                    if (NaviSceneBase.SCENE_STATE_SHOW == newSceneBase.getSceneState() && newSceneBase.getSceneId() != NaviSceneId.NAVI_CONTINUE) { // 正在展示中不进行任何操作
                         Logger.i(TAG, "current ", newSceneBase.getSceneName(), " is show");
                     } else { // 没在展示，则根据碰撞规则展示Scene
                         ArrayList<NaviSceneBase> temporaryList = new ArrayList<>(showSceneList);
@@ -184,7 +184,7 @@ public class NaviSceneManager implements INaviSceneEvent {
             Logger.e(TAG, "sceneView==null");
             return;
         }
-        if (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()) {
+        if (NaviSceneBase.SCENE_STATE_SHOW == sceneView.getSceneState()  && sceneView.getSceneId() != NaviSceneId.NAVI_CONTINUE) {
             /*if (Logger.openLog) {
                 Logger.d(TAG, "current sceneView is show 不做处理: ", sceneView.getSceneName());
             }*/

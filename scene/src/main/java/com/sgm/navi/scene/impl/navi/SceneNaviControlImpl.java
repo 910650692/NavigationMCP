@@ -1,6 +1,8 @@
 package com.sgm.navi.scene.impl.navi;
 
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.PREVIEW;
 
 import android.annotation.SuppressLint;
 
@@ -260,6 +262,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mMapPackage.setLockMapRollAngle(mMapTypeId, true);
         mNaviPackage.setFixedOverViewStatus(true);
         mImmersiveStatusScene.setImmersiveStatus(mMapTypeId, ImersiveStatus.IMERSIVE);
+        NaviPackage.getInstance().updatePreViewStatus();
     }
 
     /**
@@ -281,6 +284,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
         updateVariationVoice();
         OpenApiHelper.exitPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
         if (mCallBack != null) {
             mCallBack.cancelClusterOverViewTimer();
         }
@@ -295,6 +299,7 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
         }
         mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
         OpenApiHelper.enterPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
     }
 
     @Override
@@ -385,8 +390,14 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             boolean isFixedOverview = mNaviPackage.getFixedOverViewStatus();
             //如果当前不是引导页面不去更改其他页面的全览状态
             boolean isCurrentNavi = mCallBack == null || mCallBack.getCurrentFragmentIsNavi();
-            if (!isFixedOverview && isPreview && isCurrentNavi) {
+            if (!isCurrentNavi) {
+                Logger.i(TAG, "showMain not current navi");
+                initTimer();
+                return;
+            }
+            if (!isFixedOverview && isPreview) {
                 OpenApiHelper.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+                NaviPackage.getInstance().updatePreViewStatus();
             }
             mScreenView.updateOverview(mNaviPackage.getPreviewStatus() ?
                     NaviConstant.OverviewType.OVERVIEW_FIXED :
@@ -468,13 +479,13 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
 
     private void updateSystemNaviVolume(boolean isMute) {
         int currentSystemVolume = getNaviVolume();
-        int lastSystemVolume = mNaviPackage.getCurrentNaviVolume();
+        int lastSystemVolume = mNaviPackage.getLastNaviVolume();
         Logger.i(TAG, "updateSystemNaviVolume isMute:", isMute, " currentSystemVolume:",
                 currentSystemVolume, " lastSystemNaviVolume:", lastSystemVolume);
         // 当前静音并且系统不是静音状态，进行静音操作
         if (isMute && currentSystemVolume > NumberUtils.NUM_0) {
             setNaviVolume(NumberUtils.NUM_0);
-            mNaviPackage.setCurrentNaviVolume(currentSystemVolume);
+            mNaviPackage.setLastNaviVolume(currentSystemVolume);
             // 不是静音，但是目前系统音量是静音状态，主动给音量设值
         } else if (!isMute && currentSystemVolume <= NumberUtils.NUM_0) {
             // 如果最后一次音量设置是有效值，就设置给系统。不然默认设置为最小激活值，这是系统的行为，导航不需要处理
@@ -488,11 +499,11 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
     public void onNaviVolumeChanged(int volume) {
         mIsMute = mNaviPackage.isMute();
         Logger.i(TAG, "onNaviVolumeChanged volume:", volume, " mIsMute:", mIsMute,
-                " mLastSystemNaviVolume:", mNaviPackage.getCurrentNaviVolume());
+                " mLastSystemNaviVolume:", mNaviPackage.getLastNaviVolume());
         // 导航音量为0时，导航音量静音
         if (volume == NumberUtils.NUM_0) {
             if (!mIsMute) {
-                mNaviPackage.setCurrentNaviVolume(NumberUtils.NUM_0);
+                mNaviPackage.setLastNaviVolume(NumberUtils.NUM_0);
                 changeMuteStatus();
                 return;
             }
@@ -504,5 +515,21 @@ public class SceneNaviControlImpl extends BaseSceneModel<SceneNaviControlView> i
             }
         }
         updateVariationVoice();
+    }
+
+    public void updatePreViewHmi(int status) {
+        if (status == NO_PREVIEW) {
+            isShowMoreSetup(true);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_DEFAULT);
+            updateVariationVoice();
+        } else if (status == PREVIEW) {
+            isShowMoreSetup(false);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
+            mScreenView.updateVariation(NaviConstant.VariationType.VARIATION_SELECT);
+        } else {
+            isShowMoreSetup(true);
+            mScreenView.updateOverview(NaviConstant.OverviewType.OVERVIEW_SELECT);
+            updateVariationVoice();
+        }
     }
 }

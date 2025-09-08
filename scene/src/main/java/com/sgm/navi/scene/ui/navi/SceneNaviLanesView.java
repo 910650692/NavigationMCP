@@ -16,8 +16,11 @@ import com.sgm.navi.scene.impl.navi.common.SceneCommonStruct;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.define.navi.LaneInfoEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
+import com.sgm.navi.service.define.navi.TBTLaneInfo;
+import com.sgm.navi.service.define.utils.NumberUtils;
 
 /**
  * 车道线
@@ -137,33 +140,43 @@ public class SceneNaviLanesView extends NaviSceneBase<SceneNaviLanesViewBinding,
         }
     }
 
-    public void setLaneExtenBackground(final int index, final int extenType) {
+    public void setLaneExtenBackground(final int index, final TBTLaneInfo itemData) {
         Logger.d(TAG, "setLaneExtenBackground index：", index,
-                ",extenType：", extenType);
+                ",extenType：", itemData.getExtenLaneType());
+        int extenType = itemData.getExtenLaneType();
+        int frontLane = itemData.getMFrontLane();
         switch (index) {
             case 0:
-                mViewBinding.tlrResources161.setExtenBackground(extenType);
+                mViewBinding.tlrResources161.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 1:
-                mViewBinding.tlrResources16.setExtenBackground(extenType);
+                mViewBinding.tlrResources16.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 2:
-                mViewBinding.tlrResources17.setExtenBackground(extenType);
+                mViewBinding.tlrResources17.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 3:
-                mViewBinding.tlrResources18.setExtenBackground(extenType);
+                mViewBinding.tlrResources18.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 4:
-                mViewBinding.tlrResources19.setExtenBackground(extenType);
+                mViewBinding.tlrResources19.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 5:
-                mViewBinding.tlrResources110.setExtenBackground(extenType);
+                mViewBinding.tlrResources110.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 6:
-                mViewBinding.tlrResources111.setExtenBackground(extenType);
+                mViewBinding.tlrResources111.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             case 7:
-                mViewBinding.tlrResources1.setExtenBackground(extenType);
+                mViewBinding.tlrResources1.setExtenBackground(
+                        frontLane == NaviConstant.LaneAction.LANE_ACTION_NULL ? -extenType : extenType);
                 break;
             default:
                 break;

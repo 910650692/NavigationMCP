@@ -12,6 +12,7 @@ import com.android.utils.TimeUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
+import com.sgm.navi.broadcast.FloatWindowReceiver;
 import com.sgm.navi.burypoint.anno.HookMethod;
 import com.sgm.navi.burypoint.bean.BuryProperty;
 import com.sgm.navi.burypoint.constant.BuryConstant;
@@ -85,7 +86,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResultObserver, ILayerPackageCallBack
-        , ImmersiveStatusScene.IImmersiveStatusCallBack, SearchResultCallback , NetWorkUtils.NetworkObserver{
+        , ImmersiveStatusScene.IImmersiveStatusCallBack, SearchResultCallback , NetWorkUtils.NetworkObserver , FloatWindowReceiver.FloatWindowCallback{
     private static final String TAG = RouteModel.class.getSimpleName();
     private static final long NETWORK_STABLE_DELAY = 3000; // 3秒，延时路线刷新时间，防止网络波动
     private final SearchPackage mSearchPackage;
@@ -159,6 +160,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mSearchPackage.registerCallBack(TAG, this);
         mRoutePackage.registerRouteObserver(TAG, this);
         mNetWorkUtils.registerNetworkObserver(this);
+        FloatWindowReceiver.registerCallback(TAG, this);
         MapPackage.getInstance().setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP, MapStateStyle.MAP_ROUTING);
     }
 
@@ -176,6 +178,7 @@ public class RouteModel extends BaseModel<RouteViewModel> implements IRouteResul
         mRoutePackage.unRegisterRouteObserver(TAG);
         mLayerPackage.unRegisterCallBack(MapType.MAIN_SCREEN_MAIN_MAP, this);
         mSearchPackage.unRegisterCallBack(TAG);
+        FloatWindowReceiver.unregisterCallback(TAG);
         mNetWorkUtils.unRegisterNetworkObserver(this);
     }
 
@@ -1651,5 +1654,11 @@ public void setPoint() {
     @Override
     public void onNetValidated() {
 
+    }
+
+    @Override
+    public void onWindowSideChanged(boolean isOpenFloat) {
+        //媒体悬浮窗发生变更重新设置全览
+        showPreview();
     }
 }

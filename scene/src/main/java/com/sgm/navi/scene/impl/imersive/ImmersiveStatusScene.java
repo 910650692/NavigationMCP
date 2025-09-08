@@ -33,7 +33,7 @@ public class ImmersiveStatusScene {
         synchronized (ImmersiveStatusScene.class) {
             imersiveStatusMap.put(mapTypeId, imersiveStatus);
             ThreadManager.getInstance().postDelay(()->{
-                if (ConvertUtils.isEmpty(immersiveStatusCallBacks)) return;;
+                if (ConvertUtils.isEmpty(immersiveStatusCallBacks)) return;
                 for (IImmersiveStatusCallBack callback : immersiveStatusCallBacks.values()) {
                     if (!ConvertUtils.isEmpty(callback)) {
                         callback.onImmersiveStatusChange(mapTypeId, imersiveStatus);

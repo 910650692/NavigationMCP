@@ -71,6 +71,7 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
     }
 
     private void refreshDrivingRecordView(String selectedText) {
+        Logger.d("refreshDrivingRecordView: selectedText = " + selectedText);
         if (!mGetDrivingRecordDataSuccess) {
             mGetDrivingRecordDataSuccess = mViewModel.getDrivingRecordData(); // 从云端同步数据到本地
         }
@@ -253,6 +254,8 @@ public class DrivingRecordFragment extends BaseFragment<FragmentDrivingRecordBin
 
     private void updateDrivingRecordData() {
         ItemDrivingRecordHeaderBinding itemHeaderBinding = mDrivingRecordAdapter.getItemHeaderBinding();
+        Logger.d("updateDrivingRecordData: radioButtonId = "
+                + itemHeaderBinding.drivingRecordTabGroup.getCheckedRadioButtonId());
         if (itemHeaderBinding == null) {
             return;
         }

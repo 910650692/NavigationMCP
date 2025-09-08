@@ -435,8 +435,6 @@ public final class FsaNaviScene {
      */
     private int amapLane2fsa(final int type) {
         switch (type) {
-            case 0: // 普通车道
-                return FsaConstant.FsaLaneType.NORMAL;
             case 1: // 公交专用
                 return FsaConstant.FsaLaneType.BUS_LANE;
             case 2: // 其他专用
@@ -446,7 +444,7 @@ public final class FsaNaviScene {
             case 4: // 可变车道
                 return FsaConstant.FsaLaneType.VARIABLE_LANE;
             default:
-                return FsaConstant.FsaLaneType.INVALID_VALUE;
+                return FsaConstant.FsaLaneType.NORMAL;
         }
     }
 

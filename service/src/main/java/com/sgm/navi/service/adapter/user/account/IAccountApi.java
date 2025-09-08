@@ -13,6 +13,74 @@ public interface IAccountApi {
     void initAccountService();
 
     /**
+     * 获取绑定状态请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    int carCheckBindRequest(String sourceInput,String authInput);
+
+    /**
+     * 车企账号绑定
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceInput   唯一设备ID
+     * @return 接口调用结果
+     */
+    int carBindRequest(String sourceInput,String authInput,String deviceInput);
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param userId        高德账号ID，必传
+     * @return 接口调用结果
+     */
+    int carLoginRequest(String sourceInput,String authInput,String userId);
+
+    /**
+     * 车企账号token检查
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param token         访问车企服务token
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    int carCheckTokenRequest(String sourceInput, String token, String authInput, String deviceCode);
+
+    /**
+     * 车企账号快速登录
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @return 接口调用结果
+     */
+    int carQLoginRequest(String sourceInput, String authInput);
+
+    /**
+     * 车企帐号解绑请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param authInput     车企账号ID，必传
+     * @param deviceCode    车机设备唯一标识
+     * @return 接口调用结果
+     */
+    int carUnBindRequest(String sourceInput,String authInput,String deviceCode);
+
+    /**
+     * 车企账号信息请求
+     *
+     * @param sourceInput   高德分配网络请求源ID
+     * @param uid
+     * @return 接口调用结果
+     */
+    int carAuthInfoRequest(String sourceInput,String uid);
+
+    /**
      * 从SDK获取用户信息到本地
      */
     void refreshUserInfo();

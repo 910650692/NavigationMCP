@@ -30,9 +30,4 @@ public class MapViewModel extends BaseMapViewModel {
         mModel.loadVisibleAreaJson(jsonPath);
     }
 
-    public boolean showNdGoHomeView(){
-        return false;
-    }
-
-
 }

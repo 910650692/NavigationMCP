@@ -1,6 +1,10 @@
 package com.sgm.navi.hmi.navi;
 
 
+import static com.sgm.navi.service.adapter.navi.NaviConstant.FIXED_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.NO_PREVIEW;
+import static com.sgm.navi.service.adapter.navi.NaviConstant.PREVIEW;
+
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -70,6 +74,7 @@ import com.sgm.navi.service.define.navi.SoundInfoEntity;
 import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.SuggestChangePathReasonEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.FyRouteOption;
 import com.sgm.navi.service.define.route.RequestRouteResult;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
@@ -120,7 +125,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack, ISceneCallback,
         IRouteResultObserver, NetWorkUtils.NetworkObserver, ILayerPackageCallBack,
         SearchResultCallback, ClusterMapOpenCloseListener, SettingPackage.SettingChangeCallback,
-        IMapPackageCallback, ScreenTypeUtils.SplitScreenChangeListener {
+        IMapPackageCallback, ScreenTypeUtils.SplitScreenChangeListener, NaviPackage.OnPreViewStatusChangeListener {
     private static final String TAG = MapDefaultFinalTag.NAVI_HMI_MODEL;
     private final NaviPackage mNaviPackage;
     private final RoutePackage mRoutePackage;
@@ -140,6 +145,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private Runnable mUpdateViaList;
     private Runnable mShowPreView;
     private Runnable mReRouteByNetChange;
+    private Runnable mShowCrossDealy;
     private volatile boolean mIsClusterOpen;
     private int mEndSearchId;
 
@@ -190,6 +196,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private RouteWayID mRouteWayID;
     private MapVisibleAreaDataManager mapVisibleAreaDataManager;
     private int mGeoSearchId;
+    private boolean mNeedDeleteVia;
 
     public NaviGuidanceModel() {
         mMapPackage = MapPackage.getInstance();
@@ -241,6 +248,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         NaviSceneManager.getInstance().onCreateSceneView();
         ImmersiveStatusScene.getInstance().registerCallback("NaviGuidanceModel", this);
         mNaviPackage.registerObserver(NaviConstant.KEY_NAVI_MODEL, this);
+        mNaviPackage.addOnPreviewStatusChangeListener(this);
         mNaviPackage.setMIsNaviViewActive(true);
         mRoutePackage.registerRouteObserver(NaviConstant.KEY_NAVI_MODEL, this);
         mNetWorkUtils.registerNetworkObserver(this);
@@ -285,6 +293,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     if (!overViewFix) {
                         if (mViewModel != null) {
                             mViewModel.naviPreviewSwitch(NumberUtils.NUM_0);
+                            NaviPackage.getInstance().updatePreViewStatus();
                         }
                     }
                 } catch (Exception e) {
@@ -350,6 +359,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ThreadManager.getInstance().removeHandleTask(mInitLazyView);
         ThreadManager.getInstance().removeHandleTask(mUpdateViaList);
         ThreadManager.getInstance().removeHandleTask(mShowPreView);
+        ThreadManager.getInstance().removeHandleTask(mShowCrossDealy);
     }
 
     @Override
@@ -387,7 +397,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             ThreadManager.getInstance().postUi(mEndPoiSearchRunnable);
             mIsShowAutoAdd = true;
             final MapType mapTypeId = MapTypeManager.getInstance().
-                    getMapTypeIdByName(mViewModel.mScreenId);
+                    getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name());
             mNaviPackage.addNaviRecord(false);
             mLayerPackage.setStartPointVisible(mapTypeId, false);
             mMapPackage.setMapStateStyle(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -397,6 +407,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                 mMapPackage.exitPreview(MapType.MAIN_SCREEN_MAIN_MAP,
                         DynamicLevelMode.DYNAMIC_LEVEL_GUIDE, true);
                 mNaviPackage.setClusterFixOverViewStatus(false);
+                NaviPackage.getInstance().updatePreViewStatus();
                 mMapPackage.goToCarPosition(mapTypeId);
                 mLayerPackage.setFollowMode(mapTypeId, true);
                 mNaviPackage.setRouteEnergyEmptyPointVisible(MapType.MAIN_SCREEN_MAIN_MAP,
@@ -426,11 +437,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         boolean isClusterMapOpen = mClusterMapOpenCloseManager.isClusterOpen();
         Logger.i(TAG, "openClusterOverView isClusterMapOpen = ", isClusterMapOpen);
         if (isClusterMapOpen) {
+            mNaviPackage.setClusterFixOverViewStatus(true);
             cancelClusterOverViewTimer();
             if (mViewModel != null) {
                 mViewModel.naviPreviewSwitch(NumberUtils.NUM_1);
             }
-            mNaviPackage.setClusterFixOverViewStatus(true);
         }
     }
 
@@ -473,6 +484,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void setEndPoint(PoiInfoEntity endPoint) {
         Logger.i(TAG, "setEndPoint");
         drawEndPoint(endPoint);
+    }
+
+    @Override
+    public void setLocParallelInfoEntity(LocParallelInfoEntity entity) {
+        if (mViewModel != null) {
+            mViewModel.setLocParallelInfoEntity(entity);
+        }
     }
 
     /**
@@ -574,6 +592,9 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     }
 
     private void updateViaList(int viaCount) {
+        if (!mNeedDeleteVia) {
+            return;
+        }
         List<RouteParam> allPoiParamList = OpenApiHelper.getAllPoiParamList(
                 MapType.MAIN_SCREEN_MAIN_MAP);
         if (ConvertUtils.isEmpty(allPoiParamList)) {
@@ -591,6 +612,10 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
                     PoiInfoEntity poiInfo = currentAllPoiParamList.get(1).getMPoiInfoEntity();
                     boolean isDeleteSuccess = mRoutePackage.removeVia(MapType.MAIN_SCREEN_MAIN_MAP,
                             poiInfo, false);
+                    mNeedDeleteVia = false;
+                    if (mViaListManager != null) {
+                        mViaListManager.updateViaList(getViaList());
+                    }
                     Logger.i(TAG, "onUpdateViaPass isDeleteSuccess = ", isDeleteSuccess);
                 }
                 // 删除后更新途经点列表信息
@@ -663,15 +688,19 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         if (!isShowImage) {
             mViewModel.onCrossProgress(NumberUtils.NUM_ERROR);
             // 为了显示进度条铺满的过程，延迟200ms隐藏路口大图
-            ThreadManager.getInstance().postDelay(new Runnable() {
-                @Override
-                public void run() {
-                    mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+            mShowCrossDealy = () -> {
+                try {
+                    if (mViewModel != null) {
+                        mViewModel.onCrossImageInfo(false, naviImageInfo);
+                    }
+                } catch (Exception e) {
+                    Logger.e(TAG, e.getMessage());
                 }
-            }, NumberUtils.NUM_200);
+            };
+            ThreadManager.getInstance().postDelay(mShowCrossDealy, NumberUtils.NUM_200);
             return;
         }
-        mViewModel.onCrossImageInfo(isShowImage, naviImageInfo);
+        mViewModel.onCrossImageInfo(true, naviImageInfo);
     }
 
     @Override
@@ -698,7 +727,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             mViewModel.onUpdateViaPass(viaIndex);
         }
         mCurrentViaIndex = viaIndex + 1;
-//        mNaviPackage.removeViaPoint(MapType.MAIN_SCREEN_MAIN_MAP, viaIndex + "");
+        mNeedDeleteVia = true;
     }
 
     @Override
@@ -750,6 +779,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         ScreenTypeUtils.getInstance().removeSplitScreenChangeListener(TAG);
         if (mNaviPackage != null) {
             mNaviPackage.unregisterObserver(NaviConstant.KEY_NAVI_MODEL);
+            mNaviPackage.removeOnPreviewStatusChangeListener(this);
             mNaviPackage.setMIsNaviViewActive(false);
         }
         if (mTipManager != null) {
@@ -877,7 +907,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             poiInfo.setPid(entity.getPid());
             poiInfo.setName(entity.getName());
             poiInfo.setAddress(entity.getAddress());
-            final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId), poiInfo, true);
+            final boolean result = mRoutePackage.removeVia(MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()), poiInfo, true);
             mViewModel.notifyDeleteViaPointResult(result, entity);
         }
     }
@@ -949,7 +979,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         final List<NaviViaEntity> tmpList = new ArrayList<>();
         //[0]代表起点 [size-1]代表终点
         final List<RouteParam> allPoiParamList = mRoutePackage.getAllPoiParamList(
-                MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+                MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()));
         final int allPoiParamSize = allPoiParamList.size();
         Logger.i(TAG, "allPoiParamList allPoiParamList:", allPoiParamSize);
         final ArrayList<NaviEtaInfo.NaviTimeAndDist> viaRemain = mNaviEtaInfo.viaRemain;
@@ -1004,7 +1034,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     public void onRoutePreferenceChange() {
         ThreadManager.getInstance().execute(() -> {
             final RouteRequestParam param = new RouteRequestParam();
-            param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(mViewModel.mScreenId));
+            param.setMMapTypeId(MapTypeManager.getInstance().getMapTypeIdByName(MapType.MAIN_SCREEN_MAIN_MAP.name()));
             param.setMRouteWay(RouteWayID.ROUTE_WAY_CHANGE_PREFERENCE);
             param.setMRoutePriorityType(RoutePriorityType.ROUTE_TYPE_CHANGE_STRATEGE);
             mRoutePackage.requestRoute(param);
@@ -1142,7 +1172,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
 
     @Override
     public void onClusterMapOpenOrClose(boolean isOpen) {
-        Logger.i(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
+        Logger.e(TAG, "onClusterMapOpenOrClose isOpen:", isOpen);
         mIsClusterOpen = isOpen;
         ThreadManager.getInstance().postUi(mOnClusterMapOpenOrClose);
     }
@@ -1157,7 +1187,12 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             Logger.e(TAG, "mViewModel is null");
             return;
         }
-        mViewModel.musicTabVisibility.set(FloatWindowReceiver.isShowMusicTab && ScreenTypeUtils.getInstance().isFullScreen());
+        boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+        boolean isShowMusicTab = FloatWindowReceiver.isShowMusicTab;
+        Logger.e(TAG, "onSplitScreenChanged isFullScreen:", isFullScreen,
+                " isShowMusicTab:", isShowMusicTab);
+        mViewModel.onSplitScreenChanged(isShowMusicTab, isFullScreen);
+        mViewModel.musicTabVisibility.set(isShowMusicTab && isFullScreen);
     }
 
     @Override
@@ -1407,6 +1442,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         // 如果是预览状态，还是进入预览
         if (mNaviPackage.getPreviewStatus()) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            NaviPackage.getInstance().updatePreViewStatus();
         }
     }
 
@@ -1457,11 +1493,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     private void onRouteClick(long pathId) {
         int currentNaviType = mNaviPackage.getCurrentNaviType();
         if (currentNaviType != 0) {
-            Logger.i(TAG, "非GPS 导航，不支持手动切换路线");
+            Logger.e(TAG, "非GPS 导航，不支持手动切换路线");
             return;
         }
         if (Boolean.FALSE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
-            Logger.i(TAG, "离线状态，不支持手动切换路线");
+            Logger.e(TAG, "离线状态，不支持手动切换路线");
             if (pathId != OpenApiHelper.getCurrentPathId(MapType.MAIN_SCREEN_MAIN_MAP)) {
                 ThreadManager.getInstance().postUi(() ->
                         ToastUtils.Companion.getInstance().showCustomToastView(
@@ -1597,6 +1633,13 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onMapTouchEvent(MapType mapTypeId, MotionEvent touchEvent) {
         if (Objects.equals(mapTypeId, MapType.MAIN_SCREEN_MAIN_MAP)) {
+            if (touchEvent == null) {
+                //MFC移动地图
+                if (mViewModel != null) {
+                    mViewModel.onMapSwipe();
+                }
+                return;
+            }
             switch (touchEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     mDownX = touchEvent.getX();
@@ -1693,6 +1736,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
         }
         if (!mIsAutoReRoute) {
             OpenApiHelper.enterPreview(MapType.MAIN_SCREEN_MAIN_MAP);
+            NaviPackage.getInstance().updatePreViewStatus();
             ImmersiveStatusScene.getInstance().setImmersiveStatus(
                     MapType.MAIN_SCREEN_MAIN_MAP, ImersiveStatus.TOUCH);
         }
@@ -1867,9 +1911,11 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onResetSettingConfig() {
         if (mViewModel != null) {
-            mViewModel.closeNavi();
+            mViewModel.setChargeTipEntity(chargeTipEntity);
         }
     }
+
+
 
     public MapVisibleAreaInfo getVisibleArea(MapVisibleAreaType mapVisibleAreaType) {
         MapVisibleAreaInfo mapVisibleAreaInfo = mapVisibleAreaDataManager.getDataByKey(mapVisibleAreaType);
@@ -1911,5 +1957,48 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
             return;
         }
         mMapPackage.setMapCenterInScreen(MapType.MAIN_SCREEN_MAIN_MAP, mapVisibleAreaInfo.getMleftscreenoffer(), mapVisibleAreaInfo.getMtopscreenoffer());
+    }
+
+    @Override
+    public void onPreViewStatusChange(int status) {
+        boolean preViewStatus = NaviPackage.getInstance().getPreviewStatus();
+        boolean isFixedOverView = NaviPackage.getInstance().getFixedOverViewStatus();
+        boolean isClusterFixOverView = NaviPackage.getInstance().getClusterFixOverViewStatus();
+        Logger.e(TAG, "status: ", status, "preViewStatus: ", preViewStatus,
+                "isFixedOverView: ", isFixedOverView, "isClusterFixOverView: ", isClusterFixOverView);
+        switch (status) {
+            case NO_PREVIEW:
+                if(preViewStatus) {
+                    NaviPackage.getInstance().setMIsPreview(false);
+                    NaviPackage.getInstance().setFixedOverViewStatus(false);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            case PREVIEW:
+                if (!preViewStatus) {
+                    NaviPackage.getInstance().setMIsPreview(true);
+                    NaviPackage.getInstance().setFixedOverViewStatus(false);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            case FIXED_PREVIEW:
+                if (!preViewStatus || !isFixedOverView) {
+                    NaviPackage.getInstance().setMIsPreview(true);
+                    NaviPackage.getInstance().setFixedOverViewStatus(true);
+                    NaviPackage.getInstance().setClusterFixOverViewStatus(false);
+                    updatePreViewHmi(status);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void updatePreViewHmi(final int status) {
+        if (mViewModel != null) {
+            mViewModel.updatePreViewHmi(status);
+        }
     }
 }

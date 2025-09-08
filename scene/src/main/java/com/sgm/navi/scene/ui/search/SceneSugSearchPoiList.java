@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.android.utils.ConvertUtils;
+import com.android.utils.DebounceClickHelper;
 import com.android.utils.ResourceUtils;
 import com.android.utils.ToastUtils;
 import com.android.utils.log.Logger;
@@ -333,7 +334,12 @@ public class SceneSugSearchPoiList extends BaseSceneView<SugSearchResultViewBind
      * 搜索相关事件
      */
     private void setupSearchActions() {
-        mViewBinding.sclSearchTopView.ivClose.setOnClickListener(v -> mScreenViewModel.closeSearch());
+        mViewBinding.sclSearchTopView.ivClose.setOnClickListener(v -> {
+            if (DebounceClickHelper.getInstance().canClick()) {
+                mScreenViewModel.closeSearch();
+                DebounceClickHelper.getInstance().reset();
+            }
+        });
         mViewBinding.sclSearchTopView.searchBarEditView.setHint(ResourceUtils.Companion.getInstance().getString(R.string.main_search_hint));
         mViewBinding.sclSearchTopView.searchBarEditView.addTextChangedListener(new TextWatcher() {
             private boolean wasEmpty = true;

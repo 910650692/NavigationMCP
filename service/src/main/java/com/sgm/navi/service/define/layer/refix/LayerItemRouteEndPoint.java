@@ -21,6 +21,7 @@ public class LayerItemRouteEndPoint extends LayerItemData {
                 "endPointType=" + endPointType +
                 ", restNum=" + restNum +
                 ", businessHours='" + businessHours + '\'' +
+                ", isShowParkView=" + isShowParkView +
                 '}';
     }
 

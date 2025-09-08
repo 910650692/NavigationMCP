@@ -4158,16 +4158,12 @@
     <dimen name="navi_guide_widget_margin_start">1dp</dimen>
     <dimen name="navi_guide_line_views">608dp</dimen>
 
-    <dimen name="navi_phone_address_dialog_width">417dp</dimen>
-    <dimen name="navi_phone_address_dialog_width_main_btn">600dp</dimen>
-
     <dimen name="navi_main_fragment_margin_start">5dp</dimen>
     <dimen name="navi_main_fragment_margin_top">51dp</dimen>
     <dimen name="navi_btn_add_via_corner">12dp</dimen>
     <dimen name="navi_setting_fragment_height">1078dp</dimen>
     <dimen name="navi_we_chat_fragment_height">1010dp</dimen>
 
-    <dimen name="navi_main_float_window_width">571dp</dimen>
     <dimen name="navi_guide_road_name_height">92dp</dimen>
     <dimen name="navi_guide_road_name_text_size">34sp</dimen>
     <dimen name="navi_guide_road_name_padding_horizontal">29dp</dimen>

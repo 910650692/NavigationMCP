@@ -3,9 +3,9 @@ package com.sgm.navi.hmi.splitscreen;
 import android.app.Activity;
 import android.graphics.Rect;
 
-import androidx.databinding.library.baseAdapters.BR;
 
 import com.android.utils.log.Logger;
+import com.sgm.navi.hmi.BR;
 import com.sgm.navi.hmi.R;
 import com.sgm.navi.hmi.databinding.FragmentSplitBinding;
 import com.sgm.navi.hmi.map.MapActivity;
@@ -96,6 +96,7 @@ public class SplitFragment extends BaseFragment<FragmentSplitBinding, SplitViewM
     public void onUpdateTMCLightBar(final NaviTmcInfo naviTmcInfo, boolean isShowAutoAdd) {
         mBinding.sceneNaviTmc.setIsShowAutoAdd(isShowAutoAdd);
         mBinding.sceneNaviTmc.onUpdateTMCLightBar(naviTmcInfo);
+        mViewModel.mSceneNaviTmc.set(true);
     }
 
     public void calculatePreviewRect() {

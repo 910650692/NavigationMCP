@@ -91,6 +91,9 @@ public class SignalAdapterImpl implements SignalApi {
                     public void onHighVoltageBatteryPropulsionRangeChanged(final float value) {
                         Logger.d(TAG, "onHighVoltageBatteryPropulsionRangeChanged: " + value);
                         mHighVoltageBatteryPropulsionRange = value;
+                        for (SignalAdapterCallback callback : mCallbacks) {
+                            callback.onHighVoltageBatteryPropulsionRangeChanged(value);
+                        }
                     }
                 });
         PowerModeManager.getInstance().registerSystemStateListener((newMode, oldMode) -> {
@@ -706,13 +709,13 @@ public class SignalAdapterImpl implements SignalApi {
 
     @Override
     public float getRangeRemaining() {
-        Logger.d(TAG, "getRangeRemaining: " + mRangeRemaining);
+        Logger.e(TAG, "getRangeRemaining: " + mRangeRemaining);
         return mRangeRemaining;
     }
 
     @Override
     public float getHighVoltageBatteryPropulsionRange() {
-        Logger.d(TAG, "getHighVoltageBatteryPropulsionRange: " + mHighVoltageBatteryPropulsionRange);
+        Logger.e(TAG, "getHighVoltageBatteryPropulsionRange: " + mHighVoltageBatteryPropulsionRange);
         return mHighVoltageBatteryPropulsionRange;
     }
 
@@ -736,12 +739,23 @@ public class SignalAdapterImpl implements SignalApi {
             Logger.w(TAG, "setNextChargingDestination: mPropertyManager is null");
             return;
         }
-        Logger.d(TAG, "setNextChargingDestination: " + powerLevel + ", " + status + ", " + timeToArrival + ", " + distToArrival);
-        final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
-        try {
-            mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, VehicleArea.GLOBAL, nextChargingDestination);
-        } catch (Exception e) {
-            Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+        if (VehicleController.isGBArch()) {
+            Logger.d(TAG, "gb setNextChargingDestination: ", powerLevel, status, timeToArrival, distToArrival);
+            final Integer[] nextChargingDestination = new Integer[]{distToArrival, status, timeToArrival, powerLevel};
+            try {
+                mPropertyManager.setProperty(Integer[].class, VendorProperty.NEXT_CHARGING_DESTINATION_INFORMATION_1, VehicleArea.GLOBAL, nextChargingDestination);
+            } catch (Exception e) {
+                Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+            }
+        } else if (VehicleController.isCleaArch()) {
+            Logger.d(TAG, "clea setNextChargingDestination: ", powerLevel, status, timeToArrival);
+            try {
+                mPropertyManager.setProperty(Float.class, 559964513, VehicleArea.GLOBAL, (float) powerLevel);
+                mPropertyManager.setProperty(Integer.class, 557867362, VehicleArea.GLOBAL, status);
+                mPropertyManager.setProperty(Integer.class, 557867363, VehicleArea.GLOBAL, timeToArrival);
+            } catch (Exception e) {
+                Logger.e(TAG, "setNextChargingDestination: " + e.getMessage());
+            }
         }
     }
 

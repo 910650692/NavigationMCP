@@ -26,7 +26,7 @@ import com.sgm.navi.ui.action.Action;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView> {
+public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView> implements IPositionPackageCallback{
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_PARALLEL_IMPL;
     private final PositionPackage mPositionPackage;
     private LocParallelInfoEntity mCurrentParallelRoadInfo;
@@ -51,7 +51,7 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
     public SceneNaviParallelImpl(final SceneNaviParallelView screenView) {
         super(screenView);
         mPositionPackage = PositionPackage.getInstance();
-        mPositionPackage.registerCallBack(mIPositionPackageCallback);
+        mPositionPackage.registerCallBack(this);
         mBridgeUpDownVisible = new ObservableField<>(false);
         mRoadMainAuxiliaryVisible = new ObservableField<>(false);
     }
@@ -70,30 +70,8 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
 
     @Override
     protected void onDestroy() {
-        mPositionPackage.unregisterCallBack(mIPositionPackageCallback);
+        mPositionPackage.unregisterCallBack(this);
         super.onDestroy();
-    }
-
-    /**
-     * @param routeSuccess routeSuccess
-     */
-    // TODO:理解直接触发算路就行了后续应该不用处理
-    public void notifySwitchParallelRouteResult(final boolean routeSuccess) {
-        Logger.i("notifySwitchParallelRouteResult " + routeSuccess);
-        // 收到平行算路结果，表示切换动作全部完成
-        mIsSwitchParallelEnabled = true;
-        if (mSwitchActionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE) {
-            mScreenView.showToastRoadMainToSide();
-        } else if (mSwitchActionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN) {
-            mScreenView.showToastRoadSideToMain();
-        } else if (mSwitchActionType ==
-                NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE) {
-            mScreenView.showToastBridgeUpToDown();
-        } else if (mSwitchActionType ==
-                NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE) {
-            mScreenView.showToastBridgeDownToUp();
-        }
-        mSwitchActionType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
     }
 
     /**
@@ -177,97 +155,71 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
         return BigInteger.ZERO;
     }
 
-    /**
-     * @param actionType actionType
-     * @return int
-     */
-    public int switchPxarallelRoadAndBridge(final int actionType) {
-        if (actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_MAIN_TO_SIDE ||
-                actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_SIDE_TO_MAIN) {
-            if (mSwitchRoadType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL) {
-                return NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
+    @Override
+    public void onSwitchParallelRoadFinished() {
+        Logger.i(TAG, " 平行路切换结束 需要重算路  mCurrentParallelRoadInfo:", (mCurrentParallelRoadInfo != null));
+        if (mCurrentParallelRoadInfo != null) {
+            LocInfoBean locInfoBean = mPositionPackage.getLastCarLocation();
+            final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.getLocalParallelRoadArrayList();
+            BigInteger roadID = BigInteger.ZERO;
+            if(list != null && !list.isEmpty()){
+                LocalParallelRoadEntity entity = list.get(0);
+                if(entity != null){
+                    roadID = entity.getRoadID();
+                }
             }
-            if (mSwitchRoadType != actionType) {
-                return NaviConstant.LocSwitchRoadType.AUTO_UNKNOWN_ERROR;
-            }
-        } else if (actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE ||
-                actionType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE) {
-            if (mSwitchBridgeType == NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL) {
-                return NaviConstant.LocSwitchRoadType.LOC_SWITCH_NULL;
-            }
-            if (mSwitchBridgeType != actionType) {
-                return NaviConstant.LocSwitchRoadType.AUTO_UNKNOWN_ERROR;
-            }
+            int flag = mCurrentParallelRoadInfo.getFlag();
+            int hwFlag = mCurrentParallelRoadInfo.getHwFlag();
+            RoutePackage.getInstance().clearRestrictPolyline(MapType.MAIN_SCREEN_MAIN_MAP);
+            RoutePackage.getInstance().requestSwitchParallelRoute(mSwitchRoadType,locInfoBean, roadID, (short) flag, (short) hwFlag);
         }
-        mSwitchActionType = mSwitchBridgeType;
-        requestSwitchParallelRoad();
-        return mSwitchBridgeType;
+        mIsSwitchParallelEnabled = true;
     }
 
-    private IPositionPackageCallback mIPositionPackageCallback = new IPositionPackageCallback() {
-        @Override
-        public void onSwitchParallelRoadFinished() {
-            Logger.i(TAG, " 平行路切换结束 需要重算路  mCurrentParallelRoadInfo:", (mCurrentParallelRoadInfo != null));
-            if (mCurrentParallelRoadInfo != null) {
-                LocInfoBean locInfoBean = mPositionPackage.getLastCarLocation();
-                final ArrayList<LocalParallelRoadEntity> list = mCurrentParallelRoadInfo.getLocalParallelRoadArrayList();
-                BigInteger roadID = BigInteger.ZERO;
-                if(list != null && !list.isEmpty()){
-                    LocalParallelRoadEntity entity = list.get(0);
-                    if(entity != null){
-                        roadID = entity.getRoadID();
-                    }
-                }
-                int flag = mCurrentParallelRoadInfo.getFlag();
-                int hwFlag = mCurrentParallelRoadInfo.getHwFlag();
-                RoutePackage.getInstance().clearRestrictPolyline(MapType.MAIN_SCREEN_MAIN_MAP);
-                RoutePackage.getInstance().requestSwitchParallelRoute(mSwitchRoadType,locInfoBean, roadID, (short) flag, (short) hwFlag);
-            }
+    /**
+     * status 主辅路切换状态:0 非平行路切换期间 1 平行路切换期间
+     *
+     * flag 主辅路标识（默认0，离线数据计算/在线算路下发）
+     * 0：无主辅路（车标所在道路旁无主辅路）
+     * 1：车标在主路（车标所在道路旁有辅路）
+     * 2：车标在辅路（车标所在道路旁有主路）
+     *
+     * hwFlag < 高架上下标识（默认0，在线算路下发）
+     *  0：无高架
+     *  1：车标在高架上（车标所在道路有对应高架下）
+     *  2：车标在高架下（车标所在道路有对应高架上）
+     */
+    @Override
+    public void onParallelRoadUpdate(LocParallelInfoEntity entity) {
+        if (mCallBack != null) {
+            mCallBack.setLocParallelInfoEntity(entity);
+        }
+        // 如果是模拟导航的话不显示平行路切换按钮
+        if (ConvertUtils.isNull(entity) || NaviPackage.getInstance().getCurrentNaviType() == NumberUtils.NUM_1) {
+            return;
+        }
+        Logger.e(TAG, "平行路切换 算路结果 ", entity.toString());
+        // 如果在非平行路切换期间，可以切换主辅路
+        if (entity.getStatus() == NumberUtils.NUM_0) {
             mIsSwitchParallelEnabled = true;
         }
-
-        /**
-         * status 主辅路切换状态:0 非平行路切换期间 1 平行路切换期间
-         *
-         * flag 主辅路标识（默认0，离线数据计算/在线算路下发）
-         * 0：无主辅路（车标所在道路旁无主辅路）
-         * 1：车标在主路（车标所在道路旁有辅路）
-         * 2：车标在辅路（车标所在道路旁有主路）
-         *
-         * hwFlag < 高架上下标识（默认0，在线算路下发）
-         *  0：无高架
-         *  1：车标在高架上（车标所在道路有对应高架下）
-         *  2：车标在高架下（车标所在道路有对应高架上）
-         */
-        @Override
-        public void onParallelRoadUpdate(final LocParallelInfoEntity entity) {
-            // 如果是模拟导航的话不显示平行路切换按钮
-            if (ConvertUtils.isNull(entity) || NaviPackage.getInstance().getCurrentNaviType() == NumberUtils.NUM_1) {
-                return;
-            }
-            Logger.e(TAG, "平行路切换 算路结果 ", entity.toString());
-            // 如果在非平行路切换期间，可以切换主辅路
-            if (entity.getStatus() == NumberUtils.NUM_0) {
-                mIsSwitchParallelEnabled = true;
-            }
-            ThreadManager.getInstance().postUi(new Runnable() {
-                @Override
-                public void run() {
-                    if (mCallBack == null) {
-                        Logger.i(TAG, "平行路切换  mCallBack is null");
-                        return;
-                    }
-                    if (ConvertUtils.isEmpty(entity)) {
-                        Logger.i(TAG, "平行路切换 entity is null");
-                        hideSwitchParallelRoadUi();
-                        return;
-                    }
-                    mCurrentParallelRoadInfo = entity;
-                    refreshRoadBridgeUi();
+        ThreadManager.getInstance().postUi(new Runnable() {
+            @Override
+            public void run() {
+                if (mCallBack == null) {
+                    Logger.i(TAG, "平行路切换  mCallBack is null");
+                    return;
                 }
-            });
-        }
-    };
+                if (ConvertUtils.isEmpty(entity)) {
+                    Logger.i(TAG, "平行路切换 entity is null");
+                    hideSwitchParallelRoadUi();
+                    return;
+                }
+                mCurrentParallelRoadInfo = entity;
+                refreshRoadBridgeUi();
+            }
+        });
+    }
 
     /**
      * 隐藏平行路切换UI
@@ -341,24 +293,24 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
             Logger.i(TAG, "当前在桥上，显示切换到桥下的按钮");
             mScreenView.sceneBridgeDown();
             mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_UP_BRIDGE_TO_DOWN_BRIDGE;
-            updateSceneVisible(true);
             // 如果网络正常，才显示桥上下按钮
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
                 mBridgeUpDownVisible.set(true);
             } else {
                 Logger.i(TAG, "网络异常，不显示桥上下按钮");
             }
+            updateSceneVisible(true);
             // 显示切换到桥上的按钮
         } else if (mCurrentParallelRoadInfo.getHwFlag() == HW_FLAG_DOWN) {
             Logger.i(TAG, "当前在桥下，显示切换到桥上的按钮");
             mScreenView.sceneBridgeUp();
             mSwitchBridgeType = NaviConstant.LocSwitchRoadType.LOC_SWITCH_DOWN_BRIDGE_TO_UP_BRIDGE;
-            updateSceneVisible(true);
             if (Boolean.TRUE.equals(NetWorkUtils.Companion.getInstance().checkNetwork())) {
                 mBridgeUpDownVisible.set(true);
             } else {
                 Logger.i(TAG, "网络异常，不显示桥上下按钮");
             }
+            updateSceneVisible(true);
         }
     }
 
@@ -366,6 +318,10 @@ public class SceneNaviParallelImpl extends BaseSceneModel<SceneNaviParallelView>
      * @param isVisible isVisible
      */
     private void updateSceneVisible(final boolean isVisible) {
+        if (mScreenView == null) {
+            return;
+        }
+        mScreenView.updateButtonVisible(mRoadMainAuxiliaryVisible.get(), mBridgeUpDownVisible.get());
         if(mScreenView.isVisible() == isVisible) return;
         Logger.i(MapDefaultFinalTag.NAVI_SCENE_TAG, "SceneNaviParallelImpl", isVisible);
         mScreenView.getNaviSceneEvent().notifySceneStateChange((isVisible ?

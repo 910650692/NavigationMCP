@@ -69,7 +69,9 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     private void init() {
         Logger.i(TAG, "init");
         boolean isFloatWindowShow = NaviPackage.getInstance().isMIsFloatWindowShow();
-        if (isFloatWindowShow && ScreenTypeUtils.getInstance().isFullScreen()) {
+        boolean isFullScreen = ScreenTypeUtils.getInstance().isFullScreen();
+        Logger.e(TAG, "isFloatWindowShow= ", isFloatWindowShow, ", isFullScreen= ", isFullScreen);
+        if (isFloatWindowShow && isFullScreen) {
             setRightPoint();
         } else {
             setLeftPoint();
@@ -143,6 +145,14 @@ public class SceneNaviCrossImageImpl extends BaseSceneModel<SceneNaviCrossImageV
     public void onWindowSideChanged(boolean isOpenFloat) {
         Logger.i(TAG, "onWindowSideChanged isOpenFloat:", isOpenFloat);
         if (isOpenFloat && ScreenTypeUtils.getInstance().isFullScreen()) {
+            setRightPoint();
+        } else {
+            setLeftPoint();
+        }
+    }
+
+    public void onSplitScreenChanged(boolean isShowMusicTab, boolean isFullScreen) {
+        if (isShowMusicTab && isFullScreen) {
             setRightPoint();
         } else {
             setLeftPoint();

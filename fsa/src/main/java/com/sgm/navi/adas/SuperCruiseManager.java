@@ -89,9 +89,10 @@ public final class SuperCruiseManager {
 
     //region 初始化
     public void init(final AdasManager adasManager) {
-        int type = CalibrationPackage.getInstance().adasConfigurationType();
-        if (type != 6 && type != 7) {
-            Logger.i(TAG, "not GB Arch ACP3.1 configuration");
+        int brand = CalibrationPackage.getInstance().brand();
+        int architecture = CalibrationPackage.getInstance().architecture();
+        if (brand != 2 || architecture != 1) {
+            Logger.i(TAG, "not GB Cadi");
             return;
         }
         if (mInitialized) {
@@ -837,6 +838,7 @@ public final class SuperCruiseManager {
                 RouteInfo.Point.Builder pointBuilder = RouteInfo.Point.newBuilder();
                 pointBuilder.setLat(scPoint.getLat());
                 pointBuilder.setLon(scPoint.getLon());
+                pointBuilder.setDist(scPoint.getDist());
                 pointList.add(pointBuilder.build());
             });
             builder.addAllPoints(pointList);

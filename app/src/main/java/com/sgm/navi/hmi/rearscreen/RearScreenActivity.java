@@ -4,8 +4,11 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.res.Configuration;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.WindowCompat;
 
 import com.android.utils.ScreenUtils;
 import com.android.utils.ThemeUtils;
@@ -39,6 +42,12 @@ public class RearScreenActivity extends BaseActivity<ActivityRearScreenBinding, 
     @Override
     public void onCreateBefore() {
         mScreenId = MapType.REAR_SCREEN_MAP.name();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @Override

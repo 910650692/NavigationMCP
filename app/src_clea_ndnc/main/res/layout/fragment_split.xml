@@ -317,7 +317,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_shadow_navi_ndlc_8155_transparent"
             android:orientation="vertical"
-            android:padding="@dimen/dp_34"
+            android:padding="@dimen/dp_30"
             android:visibility="@{ViewModel.mNaviActionBarVisibility ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -400,6 +400,7 @@
                 android:background="@drawable/bg_navi_tbt_middle"
                 android:paddingStart="@dimen/dp_31"
                 android:paddingEnd="@dimen/dp_30"
+                android:visibility="@{ViewModel.mSceneNaviTmc ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toStartOf="@id/scene_navi_tbt"
                 app:layout_constraintTop_toBottomOf="@id/scene_navi_eta" />
 
@@ -437,7 +438,7 @@
         <!--巡航播报-->
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:id="@+id/cruise_bg"
-            clickCommand="@{ViewModel.muteOrUnMute}"
+            clickCommand="@{ViewModel.muteCruiseUnMute}"
             android:visibility="@{ViewModel.mCruisebg ? View.VISIBLE : View.GONE}"
             android:layout_width="@dimen/dp_162"
             android:layout_height="@dimen/dp_192"

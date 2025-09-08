@@ -13,6 +13,7 @@ import com.android.utils.log.Logger;
 import com.android.utils.thread.ThreadManager;
 import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.utils.ExportIntentParam;
 import com.sgm.navi.hmi.launcher.FloatViewManager;
 import com.sgm.navi.mapservice.bean.INaviConstant;
@@ -36,6 +37,7 @@ import java.util.concurrent.ScheduledFuture;
  */
 public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel> {
     private static final String TAG = "BaseSplitViewModel";
+    private String currentNaviStatus;
 
     public BaseSplitViewModel(@NonNull Application application) {
         super(application);
@@ -58,21 +60,21 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public ObservableField<Boolean> mLanesVisibility = new ObservableField<>(false);
     public ObservableField<Boolean> mNextManeuverVisible = new ObservableField<>(false);
     public ObservableField<Boolean> mCruiseLanesVisibility = new ObservableField<>(false);
+    public ObservableField<Boolean> mSceneNaviTmc = new ObservableField<>(false);
     public ObservableField<Boolean> mCruisebg = new ObservableField<>(false);
     public ObservableField<Boolean> mSlStationVisibility = new ObservableField<>(true);
     public ObservableField<Boolean> muteVisibility = new ObservableField<>(true);
-    public ObservableField<Boolean> cruiseUiVisibility = new ObservableField<>(true);
+    public ObservableField<Boolean> cruiseUiVisibility = new ObservableField<>(false);
 
     // 触摸态后开启倒计时，8秒后进入沉浸态
     private final long TOTAL_TIME = 8;
     private ScheduledFuture immersiveScheduledFuture;
     // 全览后开启倒计时，8秒退出全览
-    private ScheduledFuture previewScheduledFuture;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        cruiseUiVisibility.set(TextUtils.equals(mModel.getCurrentNaviStatus(), NaviStatus.NaviStatusType.CRUISE));
+        NaviPackage.getInstance().restoreNavigationByRebuild();
     }
 
     public void initView() {
@@ -82,14 +84,11 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         mNaviBroadIsMute.set(mModel.isMute());
         mNaviVoicePic.set(mModel.isMute() ? R.drawable.img_mute_broadcast_black_58 : R.drawable.img_navi_broadcast);
         mIsGasCar.set(mModel.getPowerType() == PowerType.E_VEHICLE_ENERGY_FUEL);
-        mIsOnTouch.set(mModel.isOnTouch() && mModel.isOnNavigating());
         if (mModel.isOnNavigating()) {
             onNaviInfo(mModel.getCurrentNaviEtaInfo());
         }
-        if (mModel.isOnTouch() && mModel.isOnNavigating()) {
-            startImmersiveSchedule();
-        }
-        mIsOnShowPreview.set(mModel.getPreviewStatus());
+        mModel.setNoTouch();
+        mModel.updatePreViewStatus();
     }
 
     /***
@@ -154,34 +153,34 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
         mModel.showOrClosePreview();
     };
 
-    public void startPreviewSchedule() {
-        try {
-            stopPreviewSchedule();
-            mIsOnShowPreview.set(true);
-            previewScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
-                mModel.closePreview();
-                mIsOnShowPreview.set(false);
-            }, TOTAL_TIME);
-        } catch (Exception e) {
-            Logger.e(TAG, "startPreviewSchedule failed:" + e.getMessage());
-        }
-    }
+//    public void startPreviewSchedule() {
+//        try {
+//            stopPreviewSchedule();
+//            mIsOnShowPreview.set(true);
+//            previewScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
+//                mModel.closePreview();
+//                mIsOnShowPreview.set(false);
+//            }, TOTAL_TIME);
+//        } catch (Exception e) {
+//            Logger.e(TAG, "startPreviewSchedule failed:" + e.getMessage());
+//        }
+//    }
 
-    public void stopPreviewSchedule() {
-        try {
-            if (!ConvertUtils.isNull(previewScheduledFuture) && !previewScheduledFuture.isDone()) {
-                boolean cancelResult = previewScheduledFuture.cancel(true);
-                Logger.i(TAG, "stopPreviewSchedule:" + cancelResult);
-            } else {
-                Logger.i(TAG, "stopPreviewSchedule not need do, preiveScheduledFuture is null or has completed!");
-            }
-        } catch (Exception e) {
-            Logger.e(TAG, "stopPreviewSchedule failed:" + e.getMessage());
-        } finally {
-            previewScheduledFuture = null;
-            mIsOnShowPreview.set(false);
-        }
-    }
+//    public void stopPreviewSchedule() {
+//        try {
+//            if (!ConvertUtils.isNull(previewScheduledFuture) && !previewScheduledFuture.isDone()) {
+//                boolean cancelResult = previewScheduledFuture.cancel(true);
+//                Logger.i(TAG, "stopPreviewSchedule:" + cancelResult);
+//            } else {
+//                Logger.i(TAG, "stopPreviewSchedule not need do, preiveScheduledFuture is null or has completed!");
+//            }
+//        } catch (Exception e) {
+//            Logger.e(TAG, "stopPreviewSchedule failed:" + e.getMessage());
+//        } finally {
+//            previewScheduledFuture = null;
+//            mIsOnShowPreview.set(false);
+//        }
+//    }
 
     /***
      * 静音或者取消静音
@@ -189,7 +188,14 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action muteOrUnMute = () -> {
         Logger.i(TAG, "muteOrUnMute");
-        mNaviBroadIsMute.set(!mNaviBroadIsMute.get());
+        mModel.muteOrUnMute();
+        mNaviBroadIsMute.set(mModel.isMute());
+        mNaviVoicePic.set(mModel.isMute() ? com.sgm.navi.scene.R.drawable.img_mute_broadcast_black_58 : com.sgm.navi.scene.R.drawable.img_navi_broadcast);
+    };
+
+    // 巡航下设置静音/播报
+    public Action muteCruiseUnMute = () -> {
+        Logger.i(TAG, "muteOrUnMute");
         mModel.setCruiseVoice(Boolean.FALSE.equals(muteVisibility.get()));
     };
 
@@ -202,15 +208,12 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void updateCruiseLanInfo(boolean isShowLane, LaneInfoEntity laneInfoEntity) {
         Logger.d(TAG,"updateCruiseLanInfo");
         mView.updateCruiseLanInfo(isShowLane, laneInfoEntity);
-        mCruiseLanesVisibility.set(!ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
-    }
-
-    /***
-     * 判断巡航UI是否正在显示
-     * @return
-     */
-    public boolean isCruiseUiVisible() {
-        return mCruiseLanesVisibility.get();
+        if (currentNaviStatus == null) {
+            mCruiseLanesVisibility.set(false);
+            return;
+        }
+        mCruiseLanesVisibility.set(NaviStatus.NaviStatusType.CRUISE.equals(currentNaviStatus)
+                && !ConvertUtils.isNull(laneInfoEntity) && !ConvertUtils.isEmpty(laneInfoEntity.getBackLane()));
     }
 
     /***
@@ -219,9 +222,7 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public Action naviContinue = () -> {
         Logger.i(TAG, "naviContinue");
-        mModel.openOrCloseImmersive(true);
-        // 如果处于全览要退出全览
-        mModel.exitPreviewIfNeeded();
+        mModel.setNoTouch();
     };
 
     public void onNaviInfo(NaviEtaInfo naviETAInfo) {
@@ -261,10 +262,9 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
 
     private void startImmersiveSchedule() {
         try {
-            stopImmersiveSchedule();
             immersiveScheduledFuture = ThreadManager.getInstance().asyncDelayWithResult(() -> {
                 if (mModel.isOnTouch()) {
-                    mModel.openOrCloseImmersive(true);
+                    mModel.setNoTouch();
                 }
             }, TOTAL_TIME);
         } catch (Exception e) {
@@ -290,7 +290,6 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopPreviewSchedule();
         stopImmersiveSchedule();
     }
 
@@ -304,9 +303,11 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
     public void updateUiStateAfterImmersiveChanged(ImersiveStatus currentImersiveStatus) {
         mIsOnTouch.set(currentImersiveStatus == ImersiveStatus.TOUCH && mModel.isOnNavigating());
         if (currentImersiveStatus == ImersiveStatus.TOUCH) {
+            stopImmersiveSchedule();
             startImmersiveSchedule();
         } else {
-            stopImmersiveSchedule();
+            // 回自车位/全览
+            mModel.updateCarPosition();
         }
     }
 
@@ -315,12 +316,12 @@ public class BaseSplitViewModel extends BaseViewModel<SplitFragment, SplitModel>
      */
     public void updateUiStateAfterNaviStatusChanged(String naviStatus) {
         Logger.d(TAG, "updateUiStateAfterNaviStatusChanged:" + naviStatus);
+        currentNaviStatus = naviStatus;
         mNaviActionBarVisibility.set(naviStatus.equals(NaviStatus.NaviStatusType.NAVING));
-        mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
-
         mCruisebg.set(naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
-        mSlStationVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+
         mTopNaviBarVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
+        mSlStationVisibility.set(!naviStatus.equals(NaviStatus.NaviStatusType.CRUISE));
     }
 
     public void updateCruiseCameraInfo(CruiseInfoEntity cruiseInfoEntity) {

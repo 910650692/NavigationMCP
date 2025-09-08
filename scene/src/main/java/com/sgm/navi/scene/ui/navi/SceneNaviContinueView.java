@@ -15,6 +15,7 @@ import com.sgm.navi.scene.impl.navi.SceneNaviContinueImpl;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneBase;
 import com.sgm.navi.scene.ui.navi.manager.NaviSceneId;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.utils.NumberUtils;
 
 public class SceneNaviContinueView extends NaviSceneBase<SceneNaviContinueViewBinding,
         SceneNaviContinueImpl> {
@@ -50,7 +51,8 @@ public class SceneNaviContinueView extends NaviSceneBase<SceneNaviContinueViewBi
 
     @Override
     protected void initObserver() {
-
+        setCategory(NumberUtils.NUM_1);
+        addNaviScene();
     }
 
     @Override

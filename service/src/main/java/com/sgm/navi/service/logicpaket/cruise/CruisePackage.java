@@ -149,13 +149,11 @@ public class CruisePackage implements CruiseObserver {
 
     @Override
     public void onCruiseLaneInfo(boolean isShowLane, LaneInfoEntity laneInfo) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(mCruiseObserver)) {
-                for (ICruiseObserver cruiseObserver : mCruiseObserver.values()) {
-                    cruiseObserver.onUpdateCruiseInfo(isShowLane, laneInfo);
-                }
+        if (!ConvertUtils.isEmpty(mCruiseObserver)) {
+            for (ICruiseObserver cruiseObserver : mCruiseObserver.values()) {
+                cruiseObserver.onUpdateCruiseInfo(isShowLane, laneInfo);
             }
-        });
+        }
     }
 
     @Override
@@ -171,13 +169,11 @@ public class CruisePackage implements CruiseObserver {
 
     @Override
     public void onUpdateCruiseInfo(CruiseInfoEntity cruiseInfoEntity) {
-        ThreadManager.getInstance().postUi(() -> {
-            if (!ConvertUtils.isEmpty(mCruiseObserver)) {
-                for (ICruiseObserver cruiseObserver : mCruiseObserver.values()) {
-                    cruiseObserver.onUpdateCruiseInfo(cruiseInfoEntity);
-                }
+        if (!ConvertUtils.isEmpty(mCruiseObserver)) {
+            for (ICruiseObserver cruiseObserver : mCruiseObserver.values()) {
+                cruiseObserver.onUpdateCruiseInfo(cruiseInfoEntity);
             }
-        });
+        }
     }
 
     @Override

@@ -87,6 +87,8 @@ public interface SettingController {
     String VALUE_VOICE_MUTE_ON = "setting_voice_mute_on";
     //声音关闭
     String VALUE_VOICE_MUTE_OFF = "setting_voice_mute_off";
+    // 是否是油车
+    String KEY_SETTING_IS_GAS_CAR = "setting_is_gas_car";
     // 是否是电车
     String KEY_SETTING_IS_EV_CAR = "setting_is_ev_car";
     // 是否是混动

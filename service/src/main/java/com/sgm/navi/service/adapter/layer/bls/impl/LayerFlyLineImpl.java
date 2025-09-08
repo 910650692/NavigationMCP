@@ -1,7 +1,6 @@
 package com.sgm.navi.service.adapter.layer.bls.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.common.model.Coord3DDouble;
@@ -55,7 +54,7 @@ public class LayerFlyLineImpl extends BaseLayerImpl<LayerFlyLineStyleAdapter> im
     @Override
     public boolean onMapMoveEnd() {
         mDebounceHandler.handle(() -> {
-            Log.e("zhaoshun", "onMapMoveEnd: ");
+            Logger.e(TAG, getMapType(), " onMapMoveEnd: ");
             OperatorPosture operatorPosture = getMapView().getOperatorPosture();
             if (null != operatorPosture && getCallBack() != null) {
                 Coord3DDouble coord3DDouble = operatorPosture.getMapCenter();

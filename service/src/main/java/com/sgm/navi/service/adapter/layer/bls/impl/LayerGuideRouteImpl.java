@@ -68,6 +68,7 @@ import com.sgm.navi.service.define.search.ChargeInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.utils.NumberUtils;
 import com.sgm.navi.service.logicpaket.navistatus.NaviStatusPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,9 +196,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 type = LayerPointItemType.ROUTE_GUIDE_LABEL;
             }
         }
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " dispatchItemClick type = ", type, " ; result = ", result);
-        }
+        Logger.d(TAG, getMapType(), " dispatchItemClick type = ", type, " ; result = ", result);
         if (getCallBack() != null) {
             getCallBack().onRouteItemClick(getMapType(), type, result);
         }
@@ -223,17 +222,13 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         boolean isNaving = currentNaviStatus.equals(NaviStatus.NaviStatusType.NAVING);
         boolean isRoute = currentNaviStatus.equals(NaviStatus.NaviStatusType.ROUTING) || currentNaviStatus.contains(NaviStatus.NaviStatusType.SELECT_ROUTE);
         if (!isRoute && !isNaving) {
-            if (Logger.openLog) {
-                Logger.d(TAG, getMapType(), "have no path");
-            }
+            Logger.d(TAG, getMapType(), "have no path");
             return;
         }
         mPreviewParam = new PreviewParam();
         mPreviewParam.mapBound = getPathResultBound();
         mPreviewParam.bUseRect = true;
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), "mPreviewParam init");
-        }
+        Logger.d(TAG, getMapType(), "mPreviewParam init");
         int left;
         int right;
         int top;
@@ -256,7 +251,12 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 top = instance.getDimensionPixelSize(R.dimen.margin_screen_top);
                 bottom = instance.getDimensionPixelSize(R.dimen.margin_screen_bottom);
             } else {
-                left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                if (RoutePackage.getInstance().isFloatWindowShow()) {
+                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left) + instance.getDimensionPixelSize(R.dimen.navi_main_float_window_width);
+                } else {
+                    left = instance.getDimensionPixelSize(R.dimen.route_margin_screen_left);
+                }
+
                 right = instance.getDimensionPixelSize(R.dimen.route_margin_screen_right);
                 top = instance.getDimensionPixelSize(R.dimen.route_margin_screen_top);
                 bottom = instance.getDimensionPixelSize(R.dimen.route_margin_screen_bottom);
@@ -431,9 +431,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 扎标设置是否选中 */
     public void setSelect(LayerPointItemType type, boolean isSelect, int index) {
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " type ", type, "isSelect ", isSelect, " index ", index);
-        }
+        Logger.d(TAG, getMapType(), " type ", type, "isSelect ", isSelect, " index ", index);
         if (null != getLayerGuideRouteControl()) {
             switch (type) {
                 case ROUTE_POINT_VIA -> {
@@ -474,9 +472,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
 
     /* 清除路线图层扎标focus */
     public void clearFocus(LayerPointItemType type) {
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " clearFocus ", type);
-        }
+        Logger.d(TAG, getMapType(), " clearFocus ", type);
         if (null != getLayerGuideRouteControl()) {
             long bizType = switch (type) {
                 case ROUTE_POINT_VIA -> BizRouteType.BizRouteTypeViaPoint;
@@ -524,9 +520,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         getStyleAdapter().updateViaPointList(viaPointList);
         getLayerGuideRouteControl().setPathPoints(mPathPoints);
         updatePaths();
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " viaPointList ", viaPointList.size(), " mViaList ", mViaList.size(), " mPathPoints ", mPathPoints.mViaPoints.size());
-        }
+        Logger.d(TAG, getMapType(), " viaPointList ", viaPointList.size(), " mViaList ", mViaList.size(), " mPathPoints ", mPathPoints.mViaPoints.size());
     }
 
     /**
@@ -794,9 +788,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
         if (!ConvertUtils.isEmpty(updateViaList)) {
             getStyleAdapter().updateViaPointList(updateViaList);
         }
-        if (Logger.openLog) {
-            Logger.d(TAG, getMapType(), " 途经点个数 ", mViaList.size(), " 更新途经点个数 ", updateViaList.size());
-        }
+        Logger.d(TAG, getMapType(), " 途经点个数 ", mViaList.size(), " 更新途经点个数 ", updateViaList.size());
         return infos;
     }
 
@@ -1080,6 +1072,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 }
             }
         }
+        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeGuideLabel).setVisible(true);
         int result = getLayerGuideRouteControl().setPathInfos(bizPathInfoAttrs, selectIndex);
         Logger.d(TAG, getMapType(), "设置路线 result : ", result, " 默认选中路线 -> ", selectIndex);
     }
@@ -1121,6 +1114,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
                 }
             }
         }
+        getLayerGuideRouteControl().getRouteLayer(BizRouteType.BizRouteTypeGuideLabel).setVisible(false);
         int result = getLayerGuideRouteControl().setPathInfos(bizPathInfoAttrs, selectIndex);
         Logger.d(TAG, getMapType(), "设置路线 result : ", result, " 默认选中路线 -> ", selectIndex);
     }
@@ -1281,6 +1275,7 @@ public class LayerGuideRouteImpl extends BaseLayerImpl<LayerGuideRouteStyleAdapt
     }
 
     public void setCrossImageInfo(CrossImageInfo info) {
+        Logger.d(TAG, getMapType(), " setCrossImageInfo info is empty: ", ConvertUtils.isEmpty(info));
         if (!ConvertUtils.isEmpty(info)) {
             getLayerRoadCrossControl().setCrossImageInfo(info);
             if (Logger.openLog) {

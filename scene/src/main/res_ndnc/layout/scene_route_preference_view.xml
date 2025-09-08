@@ -14,7 +14,8 @@
 
     <com.sgm.navi.ui.view.SkinScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_25">
         <!--算路偏好-->
         <com.sgm.navi.ui.view.SkinConstraintLayout
             android:layout_width="@dimen/dp_545"
@@ -25,7 +26,6 @@
                 clickCommand="@{() -> Scene.preferenceRecommend(1)}"
                 android:layout_width="@dimen/dp_477"
                 android:layout_height="@dimen/dp_77"
-                android:layout_marginTop="@dimen/dp_34"
                 android:background="@drawable/navi_selector_preference_nol"
                 android:gravity="center"
                 android:text="@string/route_preference_recommend"

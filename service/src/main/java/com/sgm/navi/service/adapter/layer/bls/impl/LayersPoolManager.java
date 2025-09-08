@@ -1,7 +1,6 @@
 package com.sgm.navi.service.adapter.layer.bls.impl;
 
 
-import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
 import com.autonavi.gbl.layer.BizControlService;
 import com.autonavi.gbl.map.MapView;
@@ -17,9 +16,8 @@ import com.sgm.navi.service.define.layer.refix.LayerPointItemType;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -27,9 +25,9 @@ public final class LayersPoolManager implements ILayerAdapterCallBack {
 
     private String TAG = MapDefaultFinalTag.LAYER_SERVICE_TAG;
 
-    private final HashMap<MapType, LayersPool> layersPools = new HashMap<>();
+    private final ConcurrentHashMap<MapType, LayersPool> layersPools = new ConcurrentHashMap<>();
 
-    private final HashMap<MapType, List<ILayerAdapterCallBack>> callbacks = new HashMap<>();
+    private final ConcurrentHashMap<MapType, CopyOnWriteArrayList<ILayerAdapterCallBack>> callbacks = new ConcurrentHashMap<>();
 
     private AtomicReference<BizControlService> bizControlService = new AtomicReference<>();
 
@@ -82,7 +80,7 @@ public final class LayersPoolManager implements ILayerAdapterCallBack {
 
     public void addLayerClickCallback(MapType mapTypeId, ILayerAdapterCallBack observer) {
         if (!callbacks.containsKey(mapTypeId)) {
-            callbacks.put(mapTypeId, new ArrayList<>());
+            callbacks.put(mapTypeId, new CopyOnWriteArrayList<>());
         }
         if (!callbacks.get(mapTypeId).contains(observer)) {
             Logger.d(MapDefaultFinalTag.INIT_SERVICE_TAG, mapTypeId + " 注册回调 ：" + observer.getClass().getSimpleName() + ";size =" + callbacks.get(mapTypeId).size());

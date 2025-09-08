@@ -85,7 +85,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
      * @param type
      */
     public void clearFocus(LayerPointItemType type) {
-        Logger.v(TAG, "clearFocus type " + type);
+        Logger.d(TAG, getMapType(), " clearFocus type " + type);
         if (getLayerSearchControl() != null) {
             long bizType = switch (type) {
                 case SEARCH_PARENT_POINT -> BizSearchType.BizSearchTypePoiParentPoint;
@@ -100,44 +100,42 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     public void setSelect(LayerPointItemType type, int index) {
-        if (Logger.openLog) {
-            Logger.d(TAG, "setSelect type " + type + " index " + index);
-        }
+        Logger.d(TAG, getMapType(), " setSelect type " + type + " index " + index);
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_PARENT_POINT -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiParentPoint, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-BizSearchTypePoiParentPoint:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-BizSearchTypePoiParentPoint:" + result);
                 }
                 case SEARCH_CHILD_POINT -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiChildPoint, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-BizSearchTypePoiChildPoint:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-BizSearchTypePoiChildPoint:" + result);
                     getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiChildPoint);
                 }
                 case SEARCH_PARENT_PARK -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiParkRoute, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-BizSearchTypePoiParkRoute:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-BizSearchTypePoiParkRoute:" + result);
                 }
                 case SEARCH_PARENT_CHARGE_STATION -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypeChargeStation, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-BizSearchTypeChargeStation:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-BizSearchTypeChargeStation:" + result);
                 }
                 case SEARCH_POI_ALONG_ROUTE -> {
                     LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
                     if (item != null) {
                         int result = getLayerSearchControl().setFocus(
                                 BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
-                        Logger.d(TAG, "setSelect-BizSearchTypePoiAlongRoute:" + result);
+                        Logger.d(TAG, getMapType(), " setSelect-BizSearchTypePoiAlongRoute:" + result);
                     }
                 }
                 case SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiParentPoint, String.valueOf(index), true);
-                    Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-SEARCH_POI_ALONG_ROUTE_LIST_SINGLE_POINT:" + result);
                 }
                 case SEARCH_POI_ALONG_ROUTE_ADD -> {
                     clearFocus(LayerPointItemType.SEARCH_POI_ALONG_ROUTE);
@@ -145,7 +143,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     if (item != null) {
                         int result = getLayerSearchControl().setFocus(
                                 BizSearchType.BizSearchTypePoiAlongRoute, String.valueOf(index), true);
-                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD:" + result);
+                        Logger.d(TAG, getMapType(), " setSelect-SEARCH_POI_ALONG_ROUTE_ADD:" + result);
                     }
                     getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
                 }
@@ -154,15 +152,13 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     public void setSelect(LayerPointItemType type, int index, boolean select) {
-        if (Logger.openLog) {
-            Logger.d(TAG, "setSelect type ", type, " index ", index, " select ", select);
-        }
+        Logger.d(TAG, getMapType(), " setSelect type ", type, " index ", index, " select ", select);
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_PARENT_PARK -> {
                     int result = getLayerSearchControl().setFocus(
                             BizSearchType.BizSearchTypePoiParkRoute, String.valueOf(index), select);
-                    Logger.d(TAG, "setSelect-BizSearchTypePoiParkRoute:" + result);
+                    Logger.d(TAG, getMapType(), " setSelect-BizSearchTypePoiParkRoute:" + result);
                 }
                 default -> {
                 }
@@ -171,16 +167,14 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     }
 
     public void setSelect(LayerPointItemType type, int index, List<PoiInfoEntity> poiInfoEntities) {
-        if (Logger.openLog) {
-            Logger.d(TAG, "setSelect type ", type, " index ", index, " poiInfoEntities is null -> ", ConvertUtils.isEmpty(poiInfoEntities));
-        }
+        Logger.d(TAG, getMapType(), " setSelect type ", type, " index ", index, " poiInfoEntities is null -> ", ConvertUtils.isEmpty(poiInfoEntities));
         if (getLayerSearchControl() != null) {
             switch (type) {
                 case SEARCH_POI_ALONG_ROUTE_ADD -> {
                     getStyleAdapter().updateSearchResult(poiInfoEntities);
                     LayerItem item = getLayerSearchControl().getSearchLayer(BizSearchType.BizSearchTypePoiAlongRoute).getItem(String.valueOf(index));
                     if (item != null) {
-                        Logger.d(TAG, "setSelect-SEARCH_POI_ALONG_ROUTE_ADD index ", index);
+                        Logger.d(TAG, getMapType(), " setSelect-SEARCH_POI_ALONG_ROUTE_ADD index ", index);
                         item.updateStyle();
                     }
                     getLayerSearchControl().updateStyle(BizSearchType.BizSearchTypePoiAlongRoute);
@@ -194,7 +188,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     @Override
     protected void dispatchItemClickEvent(LayerItem item, ClickViewIdInfo clickViewIds) {
         if (ConvertUtils.isEmpty(item)) {
-            Logger.e(TAG, "dispatchItemClickEvent item is null");
+            Logger.e(TAG, getMapType(), " dispatchItemClickEvent item is null");
             return;
         }
         int index = 0;
@@ -235,7 +229,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
                     // TODO 扩展新的需求
                 }
             }
-        Logger.d(TAG, "dispatchItemClickEvent type = " + type + " ; index = " + index);
+        Logger.d(TAG, getMapType(), " dispatchItemClickEvent type = " + type + " ; index = " + index);
         if (getCallBack() != null) {
             getCallBack().onSearchItemClick(getMapType(), type, index);
         }
@@ -244,12 +238,10 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     /* 搜索图层扎标接口 */
     public boolean updateSearchMarker(LayerPointItemType type, LayerItemSearchResult searchResult) {
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchMarker searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchMarker searchResult == null");
             return false;
         }
-        if (Logger.openLog) {
-            Logger.d(TAG, "updateSearchMarker type " + type);
-        }
+        Logger.d(TAG, getMapType(), " updateSearchMarker type " + type);
         boolean result = false;
         switch (type) {
             case SEARCH_PARENT_Line_Road -> {
@@ -311,10 +303,10 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     public boolean updateSearchLine(ArrayList<ArrayList<GeoPoint>> roadPolygonBounds, String typeId) {
         boolean result = false;
         if (ConvertUtils.isEmpty(roadPolygonBounds)) {
-            Logger.e(TAG, "updateSearchLine poiAoiBounds == null");
+            Logger.e(TAG, getMapType(), " updateSearchLine poiAoiBounds == null");
             return result;
         }
-        Logger.v(TAG, "updateSearchLine roadPolygonBounds size =  " + roadPolygonBounds.size());
+        Logger.d(TAG, getMapType(), " updateSearchLine roadPolygonBounds size =  " + roadPolygonBounds.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeLine, true);
         ArrayList<BizLineBusinessInfo> pointListBl = new ArrayList<>();
         for (ArrayList<GeoPoint> line : roadPolygonBounds) {
@@ -332,7 +324,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             getLayerSearchControl().updateSearchLine(pointListBl);
             result = true;
         }
-        Logger.d(TAG, "updateSearchLine pointListBl size = " + pointListBl.size());
+        Logger.d(TAG, getMapType(), " updateSearchLine pointListBl size = " + pointListBl.size());
         return result;
     }
 
@@ -340,7 +332,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     public boolean updateSearchPolygon(ArrayList<ArrayList<GeoPoint>> poiAoiBounds) {
         boolean result = false;
         if (ConvertUtils.isEmpty(poiAoiBounds)) {
-            Logger.e(TAG, "updateSearchPolygon poiAoiBounds == null");
+            Logger.e(TAG, getMapType(), " updateSearchPolygon poiAoiBounds == null");
             return result;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiEndAreaPolygon, true);
@@ -361,7 +353,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             getLayerSearchControl().updateSearchPolygon(polygonBusinessInfos);
         }
-        Logger.d(TAG, "updateSearchPolygon pointListBl size = " + polygonBusinessInfos.size());
+        Logger.d(TAG, getMapType(), " updateSearchPolygon pointListBl size = " + polygonBusinessInfos.size());
         return result;
     }
 
@@ -369,16 +361,16 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchParentPoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchParentPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchParentPoi searchResult == null");
             return result;
         }
         //画父点
         ArrayList<PoiInfoEntity> parentList = new ArrayList<>(searchResult.getSearchResultPoints());
         if (ConvertUtils.isEmpty(parentList)) {
-            Logger.e(TAG, "updateSearchParentPoi parentList == null");
+            Logger.e(TAG, getMapType(), " updateSearchParentPoi parentList == null");
             return result;
         }
-        Logger.d(TAG, "updateSearchParentPoi parentList size = " + parentList.size());
+        Logger.d(TAG, getMapType(), " updateSearchParentPoi parentList size = " + parentList.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParentPoint, true);
         ArrayList<BizSearchParentPoint> parentPoints = new ArrayList<>();
         for (PoiInfoEntity poiInfoEntity : parentList) {
@@ -389,7 +381,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             parent.mPos3D.lon = poiInfoEntity.getPoint().getLon();
             parentPoints.add(parent);
             if (Logger.openLog) {
-                Logger.i(TAG, "添加搜索结果点 是否可见 ", poiInfoEntity.isMIsVisible(), " 详情 =", parent);
+                Logger.i(TAG, getMapType(), " 添加搜索结果点 是否可见 ", poiInfoEntity.isMIsVisible(), " 详情 =", parent);
             }
         }
         getStyleAdapter().updateSearchResult(searchResult.getSearchResultPoints());
@@ -399,7 +391,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             result = getLayerSearchControl().updateSearchParentPoi(parentPoints);
         }
-        Logger.e(TAG, "updateSearchParentPoi result = " + result + " parentPoints " + parentPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchParentPoi result = " + result + " parentPoints " + parentPoints.size());
         return result;
     }
 
@@ -407,16 +399,16 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchAlongRouteListSinglePoint(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchParentPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchAlongRouteListSinglePoint searchResult == null");
             return result;
         }
         //画父点
         ArrayList<PoiInfoEntity> parentList = new ArrayList<>(searchResult.getSearchResultPoints());
         if (ConvertUtils.isEmpty(parentList)) {
-            Logger.e(TAG, "updateSearchParentPoi parentList == null");
+            Logger.e(TAG, getMapType(), " updateSearchAlongRouteListSinglePoint parentList == null");
             return result;
         }
-        Logger.d(TAG, "updateSearchParentPoi parentList size = " + parentList.size());
+        Logger.d(TAG, getMapType(), " updateSearchAlongRouteListSinglePoint parentList size = " + parentList.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParentPoint, true);
         ArrayList<BizSearchParentPoint> parentPoints = new ArrayList<>();
         for (PoiInfoEntity poiInfoEntity : parentList) {
@@ -429,7 +421,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         }
         getStyleAdapter().updateSearchResult(searchResult.getSearchResultPoints());
         result = getLayerSearchControl().updateSearchParentPoi(parentPoints);
-        Logger.e(TAG, "updateSearchParentPoi result = " + result + " parentPoints " + parentPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchAlongRouteListSinglePoint result = " + result + " parentPoints " + parentPoints.size());
         return result;
     }
 
@@ -437,18 +429,18 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchChildPoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchChildPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchChildPoi searchResult == null");
             return result;
         }
         //画父点
         ArrayList<PoiInfoEntity> parentList = searchResult.getSearchResultPoints();
         if (ConvertUtils.isEmpty(parentList)) {
-            Logger.e(TAG, "updateSearchParentPoi parentList == null");
+            Logger.e(TAG, getMapType(), " updateSearchParentPoi parentList == null");
             return result;
         }
         //画子点
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiChildPoint, true);
-        Logger.d(TAG, "updateSearchChildPoi parentList size =  " + parentList.size());
+        Logger.d(TAG, getMapType(), " updateSearchChildPoi parentList size =  " + parentList.size());
         ArrayList<BizSearchChildPoint> childPoints = new ArrayList<>();
         int index;
         for (PoiInfoEntity poiInfoEntity : parentList) {
@@ -456,7 +448,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             if (ConvertUtils.isEmpty(childInfos)) {
                 continue;
             }
-            Logger.d(TAG, "updateSearchChildPoi childInfos each size =" + childInfos.size());
+            Logger.d(TAG, getMapType(), " updateSearchChildPoi childInfos each size =" + childInfos.size());
             index = 0;
             for (ChildInfo childInfo : childInfos) {
                 BizSearchChildPoint childPoint = new BizSearchChildPoint();
@@ -474,7 +466,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             result = getLayerSearchControl().updateSearchChildPoi(childPoints);
         }
-        Logger.e(TAG, "updateSearchChildPoi " + result + " childPoints size =  " + childPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchChildPoi " + result + " childPoints size =  " + childPoints.size());
         return result;
     }
 
@@ -482,13 +474,13 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchCentralPoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchCentralPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchCentralPoi searchResult == null");
             return result;
         }
         //画中心点
         ArrayList<PoiInfoEntity> parentPoints = new ArrayList<>(searchResult.getSearchResultPoints());
         if (ConvertUtils.isEmpty(parentPoints)) {
-            Logger.e(TAG, "updateSearchCentralPoi parentPoints == null");
+            Logger.e(TAG, getMapType(), " updateSearchCentralPoi parentPoints == null");
             return result;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiCentralPos, true);
@@ -508,7 +500,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             result = getLayerSearchControl().updateSearchCentralPoi(centerPoints);
         }
-        Logger.e(TAG, "updateSearchCentralPoi " + result + " centerPoints size =  " + centerPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchCentralPoi " + result + " centerPoints size =  " + centerPoints.size());
         return result;
     }
 
@@ -516,12 +508,12 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchBeginEndPoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchBeginEndPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchBeginEndPoi searchResult == null");
             return result;
         }
         ArrayList<PoiInfoEntity> searchResultPoints = new ArrayList<>(searchResult.getSearchResultPoints());
         if (ConvertUtils.isEmpty(searchResultPoints)) {
-            Logger.e(TAG, "updateSearchBeginEndPoi searchResultPoints == null");
+            Logger.e(TAG, getMapType(), " updateSearchBeginEndPoi searchResultPoints == null");
             return result;
         }
         ArrayList<BizSearchBeginEndPoint> bizSearchBeginEndPoints = new ArrayList<>();
@@ -539,7 +531,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             result = getLayerSearchControl().updateSearchBeginEndPoi(bizSearchBeginEndPoints);
         }
-        Logger.e(TAG, "updateSearchBeginEndPoi result " + result +
+        Logger.d(TAG, getMapType(), " updateSearchBeginEndPoi result " + result +
                 " bizSearchBeginEndPoints " + bizSearchBeginEndPoints.size());
         return result;
     }
@@ -548,18 +540,18 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchAlongRoutePoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchAlongRoutePoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchAlongRoutePoi searchResult == null");
             return result;
         }
         //画沿途搜扎点
         ArrayList<PoiInfoEntity> parentPoints = searchResult.getSearchResultPoints();
         if (ConvertUtils.isEmpty(parentPoints)) {
-            Logger.e(TAG, "updateSearchAlongRoutePoi parentPoints == null");
+            Logger.e(TAG, getMapType(), " updateSearchAlongRoutePoi parentPoints == null");
             return result;
         }
 
         getStyleAdapter().updateSearchResult(parentPoints);
-        Logger.d(TAG, "updateSearchAlongRoutePoi  parentPoints size " + parentPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchAlongRoutePoi  parentPoints size " + parentPoints.size());
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiAlongRoute, true);
 
         ArrayList<BizSearchAlongWayPoint> alongWayPoints = new ArrayList<>();
@@ -569,7 +561,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             index++;
         }
         getLayerSearchControl().updateSearchAlongRoutePoi(alongWayPoints);
-        Logger.d(TAG, "updateSearchAlongRoutePoi  alongWayPoints size " + alongWayPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchAlongRoutePoi  alongWayPoints size " + alongWayPoints.size());
         return true;
     }
 
@@ -698,12 +690,12 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchParkPoi(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchParkPoi searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchParkPoi searchResult == null");
             return result;
         }
         List<PoiInfoEntity> parkingInfoList = searchResult.getSearchResultPoints();
         if (ConvertUtils.isEmpty(parkingInfoList)) {
-            Logger.e(TAG, "updateSearchParkPoi parkingInfoList == null");
+            Logger.e(TAG, getMapType(), " updateSearchParkPoi parkingInfoList == null");
             return result;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiParkRoute, true);
@@ -727,24 +719,24 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         } else {
             result = getLayerSearchControl().updateSearchParkPoi(parkPoints);
         }
-        Logger.d(TAG, "updateSearchParkPoi result " + result + " parkPoints " + parkPoints.size());
+        Logger.d(TAG, getMapType(), " updateSearchParkPoi result " + result + " parkPoints " + parkPoints.size());
         return result;
     }
 
     /* POI扎标图层业务 */
     private boolean updateSearchPoiLabel(LayerItemSearchResult searchResult) {
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchPoiLabel searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchPoiLabel searchResult == null");
             return false;
         }
         ArrayList<PoiInfoEntity> searchResultPoints = searchResult.getSearchResultPoints();
         if (ConvertUtils.isEmpty(searchResultPoints)) {
-            Logger.e(TAG, "updateSearchPoiLabel searchResultPoints == null");
+            Logger.e(TAG, getMapType(), " updateSearchPoiLabel searchResultPoints == null");
             return false;
         }
         PoiInfoEntity poiInfoEntity = searchResultPoints.get(NumberUtils.NUM_0);
         if (poiInfoEntity == null) {
-            Logger.e(TAG, "updateSearchPoiLabel poiInfoEntity == null");
+            Logger.e(TAG, getMapType(), " updateSearchPoiLabel poiInfoEntity == null");
             return false;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypePoiLabel, true);
@@ -754,7 +746,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
         bizBusinessInfos.mTypeCode = poiInfoEntity.getTypeCode();
 
         boolean result = getLayerSearchControl().updateSearchPoiLabel(bizBusinessInfos);
-        Logger.d(TAG, "updateSearchPoiLabel result " + result);
+        Logger.d(TAG, getMapType(), " updateSearchPoiLabel result " + result);
         return result;
     }
 
@@ -762,12 +754,12 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
     private synchronized boolean updateSearchChargeStation(LayerItemSearchResult searchResult) {
         boolean result = false;
         if (ConvertUtils.isEmpty(searchResult)) {
-            Logger.e(TAG, "updateSearchChargeStation searchResult == null");
+            Logger.e(TAG, getMapType(), " updateSearchChargeStation searchResult == null");
             return result;
         }
         List<PoiInfoEntity> chargeList = searchResult.getSearchResultPoints();
         if (ConvertUtils.isEmpty(chargeList)) {
-            Logger.e(TAG, "updateSearchChargeStation parkingInfoList == null");
+            Logger.e(TAG, getMapType(), " updateSearchChargeStation parkingInfoList == null");
             return result;
         }
         getLayerSearchControl().setVisible(BizSearchType.BizSearchTypeChargeStation, true);
@@ -788,29 +780,28 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
             chargeStationInfos.add(chargeStation);
         }
         getStyleAdapter().updateSearchResult(searchResult.getSearchResultPoints());
-        Logger.e(TAG, "updateSearchChargeStation chargeStationInfos " + chargeStationInfos.size());
         if (chargeStationInfos.size() > 20) {
 
         } else {
             result = getLayerSearchControl().updateSearchChargeStation(chargeStationInfos);
         }
-
+        Logger.d(TAG, getMapType(), " updateSearchChargeStation result: ", result, " chargeStationInfos " + chargeStationInfos.size());
         return result;
     }
 
     /* 更新列表可视扎标数据 */
     public void updateSearchResult(LayerPointItemType type, LayerItemSearchResult result) {
         if (ConvertUtils.isEmpty(result)) {
-            Logger.e(TAG, "updateSearchResult result == null");
+            Logger.e(TAG, getMapType(), " updateSearchResult result == null");
             return;
         }
-        Logger.d(TAG, "updateSearchResult type " + type + " searchResultPoints " + result.getSearchResultPoints().size());
+        Logger.d(TAG, getMapType(), " updateSearchResult type " + type + " searchResultPoints " + result.getSearchResultPoints().size());
         getStyleAdapter().updateSearchResult(type, result.getSearchResultPoints());
     }
 
     /* 清除所有搜索扎标*/
     public void clearAllItems() {
-        Logger.d(TAG, "LayerSearch -> clearAllItems");
+        Logger.d(TAG, getMapType(), " LayerSearch -> clearAllItems");
         getLayerSearchControl().clearAllItems();
         getLayerSearchControl().setVisible(false);
         isShowParkPoint = false;
@@ -820,7 +811,7 @@ public class LayerSearchImpl extends BaseLayerImpl<LayerSearchStyleAdapter> {
      * 清除指定搜索类型扎标
      */
     public void clearSearchItemByType(LayerPointItemType searchItemType) {
-        Logger.d(TAG, "clearSearchItemByType searchItemType " + searchItemType);
+        Logger.d(TAG, getMapType(), " clearSearchItemByType searchItemType " + searchItemType);
         switch (searchItemType) {
             case SEARCH_PARENT_Line_Road -> {
                 getLayerSearchControl().clearAllItems(BizSearchType.BizSearchTypeLine);

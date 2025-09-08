@@ -10,71 +10,6 @@ public final class SceneEnumRes {
 
     /**
      * @param value value
-     * @return AutoUIDrawable
-     */
-    /*public static AutoUIDrawable getDrawableEnumName(final SceneCommonStruct.TbtIconAction value) {
-        return switch (value) {
-            case ManeuverIconTurnLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou2_day);
-            case ManeuverIconTurnRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou3_day);
-            case ManeuverIconSlightLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou4_day);
-            case ManeuverIconSlightRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou5_day);
-            case ManeuverIconTurnHardLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou6_day);
-            case ManeuverIconTurnHardRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou7_day);
-            case ManeuverIconUTurn -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou8_day);
-            case ManeuverIconContinue -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou9_day);
-            case ManeuverIconWay -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou10_day);
-            case ManeuverIconEntryRing -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou11_day);
-            case ManeuverIconLeaveRing -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou12_day);
-            case ManeuverIconSAPA -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou13_day);
-            case ManeuverIconTollGate -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou14_day);
-            case ManeuverIconDestination -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou15_day);
-            case ManeuverIconTunnel -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou16_day);
-            case ManeuverIconEntryLeftRing -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou17_day);
-            case ManeuverIconLeaveLeftRing -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou18_day);
-            case ManeuverIconUTurnRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou19_day);
-            case ManeuverIconSpecialContinue ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou20_day);
-            case ManeuverIconEntryRingLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou21_day);
-            case ManeuverIconEntryRingRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou22_day);
-            case ManeuverIconEntryRingContinue ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou23_day);
-            case ManeuverIconEntryRingUTurn -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou24_day);
-            case ManeuverIconEntryLeftRingLeft ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou25_day);
-            case ManeuverIconEntryLeftRingRight ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou26_day);
-            case ManeuverIconEntryLeftRingContinue ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou27_day);
-            case ManeuverIconEntryLeftRingUTurn ->
-                    new AutoUIDrawable(R.drawable.img_tbt_hud_sou28_day);
-            case ManeuverIconEntryRing1 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou50_day);
-            case ManeuverIconEntryRing2 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou51_day);
-            case ManeuverIconEntryRing3 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou52_day);
-            case ManeuverIconEntryRing4 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou53_day);
-            case ManeuverIconEntryRing5 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou54_day);
-            case ManeuverIconEntryRing6 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou55_day);
-            case ManeuverIconEntryRing7 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou56_day);
-            case ManeuverIconEntryRing8 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou57_day);
-            case ManeuverIconEntryRing9 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou58_day);
-            case ManeuverIconEntryRing10 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou59_day);
-            case ManeuverIconLeaveRing1 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou60_day);
-            case ManeuverIconLeaveRing2 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou61_day);
-            case ManeuverIconLeaveRing3 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou62_day);
-            case ManeuverIconLeaveRing4 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou63_day);
-            case ManeuverIconLeaveRing5 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou64_day);
-            case ManeuverIconLeaveRing6 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou65_day);
-            case ManeuverIconLeaveRing7 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou66_day);
-            case ManeuverIconLeaveRing8 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou67_day);
-            case ManeuverIconLeaveRing9 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou68_day);
-            case ManeuverIconLeaveRing10 -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou69_day);
-            case ManeuverIconMergeLeft -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou71_day);
-            case ManeuverIconMergeRight -> new AutoUIDrawable(R.drawable.img_tbt_hud_sou70_day);
-            default -> new AutoUIDrawable(0, 0, 0, 0);
-        };
-    }*/
-
-    /**
-     * @param value value
      * @return drawable
      */
     public static AutoUIDrawable getDrawableEnumName(
@@ -173,6 +108,8 @@ public final class SceneEnumRes {
                     R.drawable.img_tbt_exit_hud_sou68);
             case ManeuverIconLeaveRing10 -> new AutoUIDrawable(
                     R.drawable.img_tbt_exit_hud_sou69);
+            case ManeuverIconCharge -> new AutoUIDrawable(
+                    R.drawable.img_tbt_exit_hud_sou64_charge);
             case ManeuverIconMergeLeft -> new AutoUIDrawable(
                     R.drawable.img_tbt_exit_hud_sou71);
             case ManeuverIconMergeRight -> new AutoUIDrawable(
@@ -606,117 +543,6 @@ public final class SceneEnumRes {
      * @param value value
      * @return drawable
      */
-    // 巡航车道图标
-    public static AutoUIDrawable getDrawableCruiseLane(final SceneCommonStruct.LaneAction value) {
-        switch (value) {
-            case LaneActionAheadAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_0_day);
-            case LaneActionAheadAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_0_day);
-            case LaneActionLeftAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_1_day);
-            case LaneActionLeftAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_1_day);
-            case LaneActionAheadLeftNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_2_day);
-            case LaneActionRightAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_3_day);
-            case LaneActionRightAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_3_day);
-            case LaneActionAheadRightNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_4_day);
-            case LaneActionLUTurnAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_5_day);
-            case LaneActionLUTurnAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_5_day);
-            case LaneActionLeftRightNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_6_day);
-            case LaneActionAheadLeftRightNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_7_day);
-            case LaneActionRUTurnAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_8_day);
-            case LaneActionRUTurnAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_8_day);
-            case LaneActionAheadLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_9_day);
-            case LaneActionAheadRUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_10_day);
-            case LaneActionLeftLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_11_day);
-            case LaneActionRightRUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_12_day);
-            case LaneActionLeftInAheadAndNUll:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_13_day);
-            case LaneActionLeftInAheadAndNUllNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_13_day);
-            case fLaneActionAheadLeftLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_16_day);
-            case LaneActionRightLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_17_day);
-            case LaneActionLeftRightLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_18_day);
-            case LaneActionAheadRightLUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_19_day);
-            case LaneActionLeftRUTurnNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_20_day);
-            case LaneActionBusAndBus:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_21_day);
-            case LaneActionBusNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_disable_lane_21_day);
-            case LaneActionVariableAndVariable:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_23_day);
-            case LaneActionVariableNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_disable_lane_23_day);
-            case LaneActionDedicated:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_24_day);
-            case LaneActionTidal:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_25_day);
-            case LaneActionEmptyNoAction:
-                return new AutoUIDrawable(
-                        R.drawable.img_disable_lane_22_day);
-            case LaneActionEmpty:
-                return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_22_day);
-            default:
-                return new AutoUIDrawable(0, 0, 0, 0);
-        }
-    }
-
-    /**
-     * @param value value
-     * @return drawable
-     */
     // 默认车道图标
     public static AutoUIDrawable getDrawableDefaultLane(final SceneCommonStruct.LaneAction value) {
         switch (value) {
@@ -828,7 +654,7 @@ public final class SceneEnumRes {
             case LaneActionLeftInAheadAndNUll:
                 return new AutoUIDrawable(
                         R.drawable.img_optimal_lane_13_13_day);
-            case LaneActionLeftInAheadAndNUllNoAction:
+            case LaneActionLeftInAheadAndNUllNoAction: // 750无效
                 return new AutoUIDrawable(
                         R.drawable.img_disable_lane_13_day);
             case LaneActionAheadLeftLUTurnAndAhead:
@@ -899,7 +725,7 @@ public final class SceneEnumRes {
                         R.drawable.img_disable_lane_23_day);
             case LaneActionDedicated:
                 return new AutoUIDrawable(
-                        R.drawable.img_cruise_lane_24_day);
+                        R.drawable.img_optimal_lane_24_day);
             case LaneActionTidal:
                 return new AutoUIDrawable(
                         R.drawable.img_optimal_lane_25_day);
@@ -945,12 +771,20 @@ public final class SceneEnumRes {
         switch (type) {
             case 1:// 左拓展
                 return new AutoUIDrawable(R.drawable.ic_lane_expansion_left);
+            case -1:// 左拓展非高亮
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_left_disable);
             case 2:// 右拓展
                 return new AutoUIDrawable(R.drawable.ic_lane_expansion_right);
+            case -2:// 右拓展非高亮
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_right_disable);
             case 26:// 左车道变窄
                 return new AutoUIDrawable(R.drawable.ic_lane_expansion_leftup);
+            case -26:// 左车道变窄非高亮
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_leftup_disable);
             case 27:// 右车道变窄
                 return new AutoUIDrawable(R.drawable.ic_lane_expansion_rightup);
+            case -27:// 右车道变窄非高亮
+                return new AutoUIDrawable(R.drawable.ic_lane_expansion_rightup_disable);
             default:
                 return new AutoUIDrawable(R.drawable.img_disable_lane_empty);
         }

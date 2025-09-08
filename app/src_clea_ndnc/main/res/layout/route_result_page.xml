@@ -304,7 +304,7 @@
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/route_line_info_bg_prefer"
                 android:layout_width="@dimen/dp_553"
-                android:layout_height="@dimen/dp_77"
+                android:layout_height="@dimen/dp_78"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="19dp" />
 
@@ -433,7 +433,7 @@
             <com.sgm.navi.ui.view.SkinView
                 android:id="@+id/skinView3"
                 android:layout_width="@dimen/dp_553"
-                android:layout_height="@dimen/dp_128"
+                android:layout_height="@dimen/dp_130"
                 android:background="@drawable/bg_route_result_left_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -444,7 +444,7 @@
                 android:layout_width="@dimen/dp_293"
                 android:layout_height="@dimen/dp_77"
                 android:layout_marginStart="@dimen/dp_26"
-                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_25"
                 android:background="@drawable/bg_route_start_navigation_button"
                 app:layout_constraintEnd_toStartOf="@id/route_line_info_bg_route_refresh"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -472,7 +472,7 @@
                 android:layout_height="@dimen/dp_77"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_26"
-                android:layout_marginBottom="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_25"
                 android:background="@drawable/bg_route_refresh_route_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -501,7 +501,7 @@
                 android:visibility="@{ViewModel.getRoutePreferenceVisibility() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/skinView3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/route_line_info_scene_route_restriction" />
+                app:layout_constraintTop_toTopOf="@+id/route_line_info_scene_route_restriction" />
 
         </com.sgm.navi.ui.view.SkinConstraintLayout>
 

@@ -10,13 +10,13 @@ import com.sgm.navi.service.define.navi.NaviParkingEntity;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.navi.NextManeuverEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
+import com.sgm.navi.service.define.position.LocParallelInfoEntity;
 import com.sgm.navi.service.define.route.RouteAlterChargeStationInfo;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public interface ISceneCallback {
 
@@ -265,4 +265,5 @@ public interface ISceneCallback {
     default void setChargeTipEntity(Object chargeTipEntity) {}
 
     default void setEndPoint(PoiInfoEntity endPoint) {}
+    default void setLocParallelInfoEntity(LocParallelInfoEntity entity) {}
 }

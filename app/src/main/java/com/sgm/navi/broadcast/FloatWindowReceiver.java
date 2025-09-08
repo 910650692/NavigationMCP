@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.android.utils.log.Logger;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.route.RoutePackage;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,7 +61,8 @@ public class FloatWindowReceiver extends BroadcastReceiver {
             lastWindowSide = windowSide;
             isShowMusicTab = windowSide == 1 || windowSide == 2;
             Logger.d(TAG, "收到悬浮窗广播: windowSide=" + windowSide);
-
+            NaviPackage.getInstance().setMIsFloatWindowShow(isShowMusicTab);
+            RoutePackage.getInstance().setFloatWindowShow(isShowMusicTab);
             // 遍历所有回调并通知
             for (FloatWindowCallback callback : callbacks.values()) {
                 if (callback != null) {

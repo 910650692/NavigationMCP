@@ -815,6 +815,9 @@ public final class UserTrackPackage implements UserTrackAdapterCallBack, SearchR
                     mJson.put("endPoiName", DEFAULT_NAME);
                     mHistory.setMEndPoiName(DEFAULT_NAME);
                 }
+                if (TextUtils.isEmpty(mHistory.getMKeyWord())){
+                    mHistory.setMKeyWord(mHistory.getMStartTime()+"_"+mHistory.getMTimeInterval()); // 添加一个约束字段数据，防止覆盖
+                }
                 geoSearch(REVERSE_FASTEST, new GeoPoint(mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Longitude(),
                         mDepInfo.getTrackPoints().get(mDepInfo.getFastestIndex()).getF64Latitude()));
                 Logger.i(TAG, "逆地理编码完成，开始保存轨迹数据");

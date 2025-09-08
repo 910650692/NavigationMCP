@@ -121,6 +121,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     private Integer mViaType = -1;
     private Boolean mViaUserAdd = true;
+    private Boolean mIsFromListOnly = false;
     private SearchPhoneDialog mSearchDialogBuild;
     private SearchConfirmDialog mSearchConfirmBuild;
     private IOnLoadingStatusChangedListener mLoadingStatusChangedListener;
@@ -433,12 +434,6 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * @noinspection checkstyle:LeftCurly
      */
     public void onSearchResult(final int taskId, final SearchResultEntity searchResultEntity) {
-        if (mScreenViewModel != null &&
-                (mPoiType == AutoMapConstant.PoiType.POI_KEYWORD ||
-                mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK)) {
-            //搜索结果列表/自车位点击进入详情页，不用扎PoiLabel标。隐藏扎标
-            mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
-        }
         if (mScreenViewModel != null && mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
             //1064667，地图点击详情页完全展示后，再通知地图显示“回车位”按钮
             mScreenViewModel.NotifyMapTimer();
@@ -453,6 +448,15 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
                 , " currentId: " , mScreenViewModel.getMTaskId());
         if (!ConvertUtils.equals(taskId, mScreenViewModel.getMTaskId()) && mScreenViewModel.getMTaskId() != 0) {
             return;
+        }
+        if (mScreenViewModel != null &&
+                (mPoiType == AutoMapConstant.PoiType.POI_KEYWORD ||
+                        mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK)) {
+            //搜索结果列表/自车位点击进入详情页，不用扎PoiLabel标。隐藏扎标(除列表单个数据主动跳转的poi需要扎标)
+            Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"mIsFromListOnly: ", mIsFromListOnly);
+            if(!mIsFromListOnly){
+                mScreenViewModel.clearTypeMark(LayerPointItemType.SEARCH_POI_LABEL);
+            }
         }
         showLoading(false);
         Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG, "poiType: " , searchResultEntity.getPoiType());
@@ -1177,7 +1181,7 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
         if (ConvertUtils.isEmpty(mPoiInfoEntity.getBusinessTime())) {
             mViewBinding.scenePoiDetailsWashCarView.poiWashCarHours.setVisibility(View.GONE);
         } else {
-            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");;
+            final String[] businessTimes = mPoiInfoEntity.getBusinessTime().split("[;；,，]");
             final String text = getContext().getString(R.string.business_hour, businessTimes[0]);
 
             initPoiBusinessTimeIconObserver(mViewBinding.scenePoiDetailsWashCarView.poiBusinessIcon,
@@ -1971,7 +1975,11 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
      * 退回到详情页面时，重新按照POI详情页数据进行扎标
      */
     public void reloadPoiLabelMarker() {
-        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK || mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK) {
+        if (mPoiType == AutoMapConstant.PoiType.POI_MAP_CAR_CLICK
+                || mPoiType == AutoMapConstant.PoiType.POI_MAP_CLICK
+                || mPoiType == AutoMapConstant.PoiType.POI_HISTORY_LIST_CLICK
+                || mPoiType == AutoMapConstant.PoiType.POI_SUGGESTION
+                || mPoiType == AutoMapConstant.PoiType.POI_AROUND) {
             mScreenViewModel.createLabelMarker(mSearchResultEntity);
         } else {
             if (mSearchResultEntity != null) {
@@ -2386,6 +2394,10 @@ public class ScenePoiDetailContentView extends BaseSceneView<ScenePoiDetailsCont
 
     public void setJumpPoiInfo(PoiInfoEntity poiInfo) {
         mJumpPoiInfo = poiInfo;
+    }
+
+    public void setIsFromListOnly(boolean isFromListOnly){
+        mIsFromListOnly = isFromListOnly;
     }
 
     public void closeAllDialog(){

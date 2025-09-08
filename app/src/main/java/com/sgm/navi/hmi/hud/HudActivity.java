@@ -60,6 +60,8 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
         Logger.d(TAG, "isShowHud:", MyFsaService.getInstance().isShowHud);
         if (MyFsaService.getInstance().isShowHud) {
             mBinding.hudMapview.setVisibility(View.VISIBLE);
+        } else {
+            mBinding.hudMapview.setVisibility(View.GONE);
         }
     }
 
@@ -107,7 +109,7 @@ public class HudActivity extends BaseActivity<ActivityHudBinding, HudViewModel> 
         if (hudMapView instanceof View) {
             View mapView = (View) hudMapView;
             int widthDp = HudMapConfigUtil.getInstance().getHudMapWidth();
-            int heightDp = HudMapConfigUtil.getInstance().getHudMapHeight();;
+            int heightDp = HudMapConfigUtil.getInstance().getHudMapHeight();
             ViewGroup.LayoutParams params = mapView.getLayoutParams();
             params.width = widthDp;
             params.height = heightDp;

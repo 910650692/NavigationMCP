@@ -15,6 +15,7 @@ import com.sgm.navi.scene.ui.navi.manager.NaviSceneManager;
 import com.sgm.navi.scene.util.PowerMonitorService;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
+import com.sgm.navi.service.define.calibration.PowerType;
 import com.sgm.navi.service.define.navi.HandCardType;
 import com.sgm.navi.service.define.navi.NaviEtaInfo;
 import com.sgm.navi.service.define.route.RouteParam;
@@ -22,9 +23,11 @@ import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.search.SearchResultEntity;
 import com.sgm.navi.service.logicpaket.navi.IGuidanceObserver;
 import com.sgm.navi.service.logicpaket.navi.NaviPackage;
+import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.route.RoutePackage;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.service.logicpaket.search.SearchResultCallback;
+import com.sgm.navi.service.logicpaket.signal.SignalCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +39,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Date: 2025/4/14
  * Description: [在这里描述文件功能]
  */
-public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCard> implements OnPowerChangeListener, IGuidanceObserver, SearchResultCallback, OnCardChangeListener {
+public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCard> implements
+        OnPowerChangeListener, IGuidanceObserver,
+        SearchResultCallback, OnCardChangeListener, SignalCallback {
     private static final String TAG = MapDefaultFinalTag.NAVI_SCENE_HANDING_CARD_IMPL;
     private final String KEY_NAME = TAG + "_KEY";
     public final String KEY_WORD_CHARGE_STATION = "充电桩";
     public final String KEY_WORD_GAS_STATION = "加油站";
+    private static final float EDGE_DISTANCE = 48f; // 续航里程小于48KM提醒
     private final int DEFAULT_PAGE = 1;
     private final SearchPackage mSearchPackage;
     private final RoutePackage mRoutePackage;
@@ -65,6 +71,10 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     protected CopyOnWriteArrayList<HandCardType> uiList = new CopyOnWriteArrayList<>();
     private CardStatus mChargeStatus = CardStatus.IDLE, mGasStatus = CardStatus.IDLE, mParkStatus = CardStatus.IDLE;
 
+    boolean mIsLowGas;
+    boolean mIsLowPower;
+    private final int powerType;
+
     public SceneNaviHangingCardImpl(NaviSceneHangingCard screenView) {
         super(screenView);
         mNaviPackage = NaviPackage.getInstance();
@@ -74,6 +84,7 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
         mGasList = new ArrayList<>();
         mParkList = new ArrayList<>();
         mMonitorService = new PowerMonitorService();
+        powerType = OpenApiHelper.powerType();
     }
 
     @Override
@@ -374,5 +385,45 @@ public class SceneNaviHangingCardImpl extends BaseSceneModel<NaviSceneHangingCar
     @Override
     public void expandAll() {
         mScreenView.notifyDataChanged();
+    }
+
+    @Override
+    public void onRangeRemainingSignalChanged(float value) {
+        if (powerType == PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
+            return;
+        }
+        if (value <= EDGE_DISTANCE) {
+            mIsLowGas = true;
+        } else {
+            if (mIsLowGas) {
+                if (ConvertUtils.isEmpty(uiList)) {
+                    uiList.remove(HandCardType.GAS);
+                }
+                if (mScreenView != null) {
+                    mScreenView.notifyDataChanged();
+                }
+                mIsLowGas = false;
+            }
+        }
+    }
+
+    @Override
+    public void onHighVoltageBatteryPropulsionRangeChanged(float value) {
+        if (powerType != PowerType.E_VEHICLE_ENERGY_ELECTRIC) {
+            return;
+        }
+        if (value <= EDGE_DISTANCE) {
+            mIsLowPower = true;
+        } else {
+            if (mIsLowPower) {
+                if (ConvertUtils.isEmpty(uiList)) {
+                    uiList.remove(HandCardType.CHARGE);
+                }
+                if (mScreenView != null) {
+                    mScreenView.notifyDataChanged();
+                }
+                mIsLowPower = false;
+            }
+        }
     }
 }

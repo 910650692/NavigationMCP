@@ -3,8 +3,6 @@ package com.sgm.navi.hmi.splitscreen;
 import static com.sgm.navi.service.MapDefaultFinalTag.MAP_TOUCH;
 
 import android.os.Looper;
-import android.text.TextUtils;
-import android.view.MotionEvent;
 
 import androidx.annotation.StringRes;
 
@@ -22,6 +20,7 @@ import com.sgm.navi.scene.impl.imersive.ImmersiveStatusScene;
 import com.sgm.navi.scene.impl.navi.inter.ISceneCallback;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.StartService;
+import com.sgm.navi.service.adapter.navi.NaviConstant;
 import com.sgm.navi.service.adapter.navistatus.INaviStatusCallback;
 import com.sgm.navi.service.adapter.navistatus.NavistatusAdapter;
 import com.sgm.navi.service.define.cruise.CruiseInfoEntity;
@@ -54,7 +53,7 @@ import com.sgm.navi.ui.base.StackManager;
  */
 public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPackageCallback, IGuidanceObserver, ImmersiveStatusScene.IImmersiveStatusCallBack,
         ISceneCallback, INaviStatusCallback, IDeskBackgroundChangeListener, StartService.ISdkInitCallback, SpeedMonitor.CallBack, ICruiseObserver,
-        SettingPackage.SettingChangeCallback {
+        SettingPackage.SettingChangeCallback, NaviPackage.OnPreViewStatusChangeListener {
     private static final String TAG = "SplitModel";
     private MapPackage mMapPackage;
     private NaviPackage mNaviPackage;
@@ -129,7 +128,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             mCruisePackage.registerObserver(TAG, this);
             mMapPackage.registerCallback(MAP_TYPE, this);
             mSettingPackage.setSettingChangeCallback(CALLBACK_KEY, this);
-
+            mNaviPackage.addOnPreviewStatusChangeListener(this);
         }
     }
 
@@ -151,6 +150,7 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
             }
         }
         StartService.getInstance().unregisterSdkCallback(CALLBACK_KEY, this);
+        mNaviPackage.removeOnPreviewStatusChangeListener(this);
     }
 
     @Override
@@ -189,16 +189,16 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
     }
 
     public void showPreview() {
-        Logger.i(TAG, "showPreview");
+        Logger.e(TAG, "showPreview");
+        mNaviPackage.updatePreViewStatusOneThree(NaviConstant.FIXED_PREVIEW);
         OpenApiHelper.enterPreview(MAP_TYPE);
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.TOUCH);
-        mViewModel.startPreviewSchedule();
     }
 
     public void closePreview() {
+        Logger.e(TAG, "closePreview");
+        mNaviPackage.setFixedOverViewStatus(false);
+        mNaviPackage.updatePreViewStatusOneThree(NaviConstant.NO_PREVIEW);
         OpenApiHelper.exitPreview(MAP_TYPE);
-        ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.IMERSIVE);
-        mViewModel.stopPreviewSchedule();
     }
 
     public void muteOrUnMute() {
@@ -224,20 +224,12 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         }
     }
 
-    public void openOrCloseImmersive(boolean isOpenImmersive) {
-        Logger.d(TAG, MAP_TOUCH, "openOrCloseImmersive:" , isOpenImmersive);
-        final ImersiveStatus status = isOpenImmersive ? ImersiveStatus.IMERSIVE : ImersiveStatus.TOUCH;
-        if (ImmersiveStatusScene.getInstance().getCurrentImersiveStatus(MAP_TYPE) != status) {
-            ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, status);
-        }
+    public void setNoTouch() {
+        ImmersiveStatusScene.getInstance().setImmersiveStatus(MAP_TYPE, ImersiveStatus.IMERSIVE);
     }
 
     public NaviEtaInfo getCurrentNaviEtaInfo() {
         return mNaviPackage.getCurrentNaviEtaInfo();
-    }
-
-    public boolean isOnImmersive() {
-        return mImmersiveStatus == ImersiveStatus.IMERSIVE;
     }
 
     public boolean isOnTouch() {
@@ -254,17 +246,15 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         }
         if (getPreviewStatus()) {
             closePreview();
-            mNaviPackage.setPreviewStatus(false);
         } else {
             showPreview();
-            mNaviPackage.setPreviewStatus(true);
         }
     }
 
     public boolean getPreviewStatus(){
-        boolean previewStatus = mNaviPackage.getPreviewStatus();
+        int previewStatus = mNaviPackage.getMPreViewStatus();
         Logger.d(TAG, "getPreviewStatus = " + previewStatus);
-        return previewStatus;
+        return previewStatus != 0;
     }
 
     /***
@@ -297,9 +287,11 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         }
     }
 
-    public void exitPreviewIfNeeded() {
+    public void updateCarPosition() {
         if (mNaviPackage.getPreviewStatus()) {
-            closePreview();
+            showPreview();
+        } else {
+            mMapPackage.goToCarPosition(MapType.MAIN_SCREEN_MAIN_MAP);
         }
     }
 
@@ -363,7 +355,13 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
         ICruiseObserver.super.onUpdateCruiseInfo(isShowLane, laneInfoEntity);
         Logger.w(TAG, "onUpdateCruiseInfo:" + isShowLane);
         // 巡航-车道信息
-        mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+        ThreadManager.getInstance().runOnUiThread(() -> {
+            try {
+                mViewModel.updateCruiseLanInfo(isShowLane, laneInfoEntity);
+            } catch (Exception e) {
+                Logger.e(TAG, e.getMessage());
+            }
+        });
     }
 
     public String getCurrentNaviStatus() {
@@ -386,5 +384,21 @@ public class SplitModel extends BaseModel<BaseSplitViewModel> implements IMapPac
 
     @Override
     public void onNaviStop() {
+    }
+
+    @Override
+    public void onPreViewStatusChange(int status) {
+        if (mViewModel != null) {
+            mViewModel.mIsOnShowPreview.set(status != NaviConstant.NO_PREVIEW);
+        }
+    }
+
+    public void updatePreViewStatus() {
+        int status = NaviConstant.NO_PREVIEW;
+        if (mNaviPackage.getMPreViewStatus() != NaviConstant.NO_PREVIEW) {
+            status = NaviConstant.FIXED_PREVIEW;
+        }
+        mNaviPackage.updatePreViewStatusOneThree(status);
+        updateCarPosition();
     }
 }

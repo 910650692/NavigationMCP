@@ -39,6 +39,7 @@ import com.sgm.navi.service.define.navi.FyChargingStation;
 import com.sgm.navi.service.define.navi.FyElecVehicleETAInfo;
 import com.sgm.navi.service.define.navi.NaviViaEntity;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
+import com.sgm.navi.service.logicpaket.navi.NaviPackage;
 import com.sgm.navi.service.logicpaket.navi.OpenApiHelper;
 import com.sgm.navi.service.logicpaket.signal.SignalPackage;
 import com.sgm.navi.ui.base.BaseFragment;
@@ -94,6 +95,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
             mScreenViewModel.initTimer();
         }
         OpenApiHelper.enterPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
         Logger.d(TAG, MAP_TOUCH);
         ImmersiveStatusScene.getInstance().setImmersiveStatus(mMapTypeId, ImersiveStatus.TOUCH);
     }
@@ -102,6 +104,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
     public void hide() {
         super.hide();
         OpenApiHelper.exitPreview(mMapTypeId);
+        NaviPackage.getInstance().updatePreViewStatus();
         // taskId：1015285 途经点收起后需要关闭继续导航按钮
         NaviSceneManager.getInstance().notifySceneStateChange(INaviSceneEvent.SceneStateChangeType.
                 SceneCloseState, NaviSceneId.NAVI_CONTINUE);
@@ -114,6 +117,7 @@ public class SceneNaviViaListView extends NaviSceneBase<SceneNaviViaListViewBind
         ThreadManager.getInstance().postUi(() -> {
             super.close();
             OpenApiHelper.exitPreview(mMapTypeId);
+            NaviPackage.getInstance().updatePreViewStatus();
             if (mScreenViewModel != null) {
                 mScreenViewModel.updateSceneVisible(false, false);
             }

@@ -44,6 +44,7 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
     }
 
     public void clearFavoriteMain() {
+        Logger.d(TAG, getMapType(), " clearFavoriteMain");
         getLayerUserControl().clearAllItems();
     }
 
@@ -62,7 +63,7 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         getLayerUserControl().updateGpsTrack(info);
         getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrack, true);
         getLayerUserControl().setVisible(BizUserType.BizUserTypeGpsTrackLine, true);
-        Logger.d(TAG, "updateGpsTrack");
+        Logger.d(TAG, getMapType(), " updateGpsTrack");
     }
 
 //    /* 删除绘制用户历史行程轨迹(包括轨迹点和线) */
@@ -121,32 +122,32 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
         }
 
         if (ConvertUtils.isEmpty(favoriteList)) {
-            Logger.e(TAG, "updateFavoriteMain null");
+            Logger.e(TAG, getMapType(), " updateFavoriteMain null");
             return;
         }
 
         getLayerUserControl().updateFavoriteMain(favoriteList);
-        Logger.d(TAG, "updateFavoriteMain size" + favoriteList.size());
+        Logger.d(TAG, getMapType(), " updateFavoriteMain size" + favoriteList.size());
     }
 
     public void removeFavoriteMain(PoiInfoEntity poiInfoEntity) {
         if (!ConvertUtils.isEmpty(poiInfoEntity)){
             FavoriteInfo favoriteInfo = poiInfoEntity.getFavoriteInfo();
             if (!ConvertUtils.isEmpty(favoriteInfo)) {
-                Logger.d(TAG, "removeFavoriteMain remove id " + favoriteInfo.getItemId());
+                Logger.d(TAG, getMapType(), " removeFavoriteMain remove id " + favoriteInfo.getItemId());
                 getLayerUserControl().getUserLayer(BizUserType.BizUserTypeFavoriteMain).removeItem(favoriteInfo.getItemId());
             } else {
-                Logger.e(TAG, "favoriteInfo is null");
+                Logger.e(TAG, getMapType(), " favoriteInfo is null");
             }
         } else {
-            Logger.e(TAG, "poiInfoEntity is null");
+            Logger.e(TAG, getMapType(), " poiInfoEntity is null");
         }
     }
 
     public void hideOrShowFavoriteMain(boolean isShow){
         getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain, isShow);
         getLayerUserControl().updateStyle(BizUserType.BizUserTypeFavoriteMain);
-        Logger.d(TAG,"hideOrShowFavoriteMain ", isShow);
+        Logger.d(TAG,getMapType(), " hideOrShowFavoriteMain ", isShow);
     }
 
 //    public void cleanFavoriteToMain(){
@@ -157,12 +158,14 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
 
     /* 清除*/
     public void clearAllItems() {
+        Logger.d(TAG, getMapType(), " clearAllItems");
         getLayerUserControl().clearAllItems();
         getLayerUserControl().setVisible(false);
     }
 
     /* 设置是否显示*/
     public void setFavoriteVisible(boolean visible) {
+        Logger.d(TAG, getMapType(), " setFavoriteVisible visible ", visible);
         getLayerUserControl().setVisible(BizUserType.BizUserTypeFavoriteMain, visible);
     }
 
@@ -232,6 +235,7 @@ public class LayerUserImpl extends BaseLayerImpl<LayerUserStyleAdapter> {
                     poiInfo.setPoiType(AutoMapConstant.SearchType.GEO_SEARCH);
                     poiInfo.setPoint(geoPoint);
                     poiInfo.setPid(favoritePointLayerItem.getID());
+                    Logger.d(TAG, getMapType(), " dispatchItemClickEvent-BizUserTypeFavoriteMain");
                     getCallBack().onFavoriteClick(getMapType(), poiInfo);
                 }
                 break;

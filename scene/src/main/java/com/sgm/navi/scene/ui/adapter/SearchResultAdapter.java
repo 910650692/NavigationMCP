@@ -83,9 +83,27 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     private ArrayList<String> mLabelNameList;
     private List<RouteParam> mGasChargeAlongList = new ArrayList<>();
     private SearchResultFilterLabelAdapter mSearchResultFilterLabelAdapter;
+    private int mSelectIndex = -1;
     public void setOnItemClickListener(final OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
+
+    public int getSelectIndex() {
+        return mSelectIndex;
+    }
+
+    public void setSelectIndex(int selectIndex) {
+        int lastIndex = mSelectIndex;
+        this.mSelectIndex = selectIndex;
+        Logger.d(MapDefaultFinalTag.SEARCH_HMI_TAG,"setSelectIndex: " + selectIndex + " ,lastIndex: " + lastIndex);
+        if (lastIndex >= 0 && lastIndex < mPoiEntities.size()) {
+            notifyItemChanged(lastIndex);
+        }
+        if (selectIndex >= 0 && selectIndex < mPoiEntities.size()) {
+            notifyItemChanged(selectIndex);
+        }
+    }
+
 
     public int getHomeCompanyType() {
         return mHomeCompanyType;
@@ -198,6 +216,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             holder.mResultItemBinding.poiNum.setVisibility(GONE);
             holder.mResultItemBinding.poiIcon.setVisibility(VISIBLE);
         }
+        holder.mResultItemBinding.crlPoiRoot.setSelected(mSelectIndex == position);
         if (mPoiInfoEntity != null) {
             if(ConvertUtils.isEmpty(mPoiInfoEntity.getAddress())){
                 holder.mResultItemBinding.subLineView.setVisibility(GONE);

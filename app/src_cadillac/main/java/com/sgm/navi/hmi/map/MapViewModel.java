@@ -75,10 +75,6 @@ public class MapViewModel extends BaseMapViewModel {
         mModel.loadVisibleAreaJson(jsonPath);
     }
 
-    public boolean showNdGoHomeView(){
-        return true;
-    }
-
     private void initMFC() {
         if (!ConvertUtils.isEmpty(mView) && !ConvertUtils.isEmpty(mView.getMainMapView())) {
             mapView = mView.getMainMapView();

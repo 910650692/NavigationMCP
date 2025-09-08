@@ -18,6 +18,7 @@ import com.autonavi.gbl.common.path.option.SegmentInfo;
 import com.autonavi.gbl.guide.model.NaviFacilityType;
 import com.sgm.navi.service.adapter.cruise.CruiseAdapter;
 import com.sgm.navi.service.adapter.cruise.CruiseObserver;
+import com.sgm.navi.service.adapter.map.MapAdapter;
 import com.sgm.navi.service.adapter.navi.GuidanceObserver;
 import com.sgm.navi.service.adapter.navi.NaviAdapter;
 import com.sgm.navi.service.adapter.navi.NaviConstant;
@@ -38,7 +39,6 @@ import com.sgm.navi.service.define.navi.NaviMixForkInfo;
 import com.sgm.navi.service.define.navi.NaviRoadFacilityEntity;
 import com.sgm.navi.service.define.navi.SapaInfoEntity;
 import com.sgm.navi.service.define.navi.SoundInfoEntity;
-import com.sgm.navi.service.define.navi.SpeedOverallEntity;
 import com.sgm.navi.service.define.navi.TrafficLightCountdownEntity;
 import com.sgm.navi.service.define.navistatus.NaviStatus;
 import com.sgm.navi.service.define.position.LocInfoBean;
@@ -1067,6 +1067,7 @@ public class L2Adapter {
         int allLength = 0;
         long segmentCount = pathInfo.getSegmentCount();
         int index = 0;
+        GeoPoint geoPoint = null;
         END:
         for (long i = curSegIdx; i < segmentCount; i++) {
             SegmentInfo segmentInfo = pathInfo.getSegmentInfo(i);
@@ -1087,7 +1088,7 @@ public class L2Adapter {
                 scSegment.setLength(linkInfo.getLength());
 
                 ArrayList<Coord2DInt32> points = linkInfo.getPoints();
-                if (points != null) {
+                if (points != null && !points.isEmpty()) {
                     for (int k = 0; k < points.size(); k++) {
                         Coord2DInt32 coord2DInt32 = points.get(k);
                         if (coord2DInt32 == null) {
@@ -1096,9 +1097,19 @@ public class L2Adapter {
                         if ((curSegIdx != i || curLinkIdx != j) && k == 0) {
                             continue;
                         }
-                        GeoPoint geoPoint = new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
-                        scSegment.addScPoints(geoPoint);
+                        double lon = coord2DInt32.lon / 3600000.0;
+                        double lat = coord2DInt32.lat / 3600000.0;
+                        ScPoint scPoint = new ScPoint(lon, lat, 0);
+                        if (geoPoint != null) {
+                            double dist = MapAdapter.getInstance().calcStraightDistance(new GeoPoint(lon, lat), geoPoint);
+                            scPoint.setDist(Double.isNaN(dist) ? 0 : dist);
+                        } else {
+                            geoPoint = new GeoPoint(lon, lat);
+                        }
+                        scSegment.addScPoints(scPoint);
                     }
+                    Coord2DInt32 coord2DInt32 = points.get(points.size() - 1);
+                    geoPoint = new GeoPoint(coord2DInt32.lon / 3600000.0, coord2DInt32.lat / 3600000.0);
                 }
 
                 scSegment.addScRealTimeSpds((double) linkInfo.getSpeed());
