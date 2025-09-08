@@ -2,10 +2,11 @@ package com.sgm.navi.mcp.tools;
 
 import android.util.Log;
 import com.google.gson.JsonObject;
-// 原始MCP注解
-import com.sgm.navi.mcp.core.MCPDataType;
-import com.sgm.navi.mcp.core.MCPParam;
-import com.sgm.navi.mcp.core.MCPTool;
+// 新MCP SDK注解
+import com.sgm.mcp.protocol.annotations.McpTool;
+import com.sgm.mcp.protocol.annotations.McpParam;
+import com.sgm.mcp.protocol.McpSpec;
+import com.sgm.mcp.protocol.Prompt;
 import com.sgm.navi.service.logicpaket.setting.SettingPackage;
 import com.sgm.navi.service.define.route.RoutePreferenceID;
 
@@ -20,31 +21,31 @@ public class SettingTools {
     /**
      * 设置车牌号码
      */
-    @MCPTool(
+    @McpTool(
         name = "set_plate_number",
         title = "车牌号码设置工具",
         description = "设置车牌号码，用于限行判断。格式示例：沪A12345、京B88888。设置车牌后会自动开启避开限行功能。",
         returnDescription = "返回车牌号码设置结果",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         openWorldHint = true
     )
     public String setPlateNumber(
-            @MCPParam(name = "plate_number",
-                      description = "车牌号码，如：沪A12345、京B88888", 
-                      required = true)
+            @McpParam(name = "plate_number",
+                      description = "车牌号码，如：沪A12345、京B88888")
             String plateNumber) {
         
         Log.d(TAG, "设置车牌号码: " + plateNumber);
         
         if (plateNumber == null || plateNumber.trim().isEmpty()) {
             JsonObject error = baseHelper.createErrorResponse("参数错误", "车牌号码不能为空");
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
         
         // 简单的车牌格式验证
         String trimmedPlate = plateNumber.trim();
         if (trimmedPlate.length() < 7 || trimmedPlate.length() > 8) {
             JsonObject error = baseHelper.createErrorResponse("格式错误", "请输入有效的车牌号码，如：沪A12345");
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
         
         try {
@@ -59,23 +60,24 @@ public class SettingTools {
             result.addProperty("avoid_limit_enabled", true);
             
             Log.d(TAG, "车牌设置成功: " + trimmedPlate);
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "设置车牌失败", e);
             JsonObject error = baseHelper.createErrorResponse("设置失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 获取当前车牌号码
      */
-    @MCPTool(
+    @McpTool(
         name = "get_plate_number",
         title = "车牌号码查询工具",
         description = "获取当前设置的车牌号码和限行功能状态",
         returnDescription = "返回当前车牌号码和限行设置信息",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true
     )
     public String getPlateNumber() {
@@ -94,29 +96,29 @@ public class SettingTools {
                 result.addProperty("message", "当前车牌: " + plateNumber + ", 避开限行: " + (avoidLimit ? "已开启" : "已关闭"));
             }
             
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "获取车牌失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 设置是否避开限行
      */
-    @MCPTool(
+    @McpTool(
         name = "set_avoid_limit",
         title = "限行设置工具",
         description = "设置是否避开限行。注意：需要先设置车牌号码才能使用限行功能。",
         returnDescription = "返回限行设置结果",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         openWorldHint = true
     )
     public String setAvoidLimit(
-            @MCPParam(name = "avoid_limit",
-                      description = "true - 开启避开限行，false - 关闭避开限行", 
-                      required = true)
+            @McpParam(name = "avoid_limit",
+                      description = "true - 开启避开限行，false - 关闭避开限行")
             boolean avoidLimit) {
         
         Log.d(TAG, "设置避开限行: " + avoidLimit);
@@ -131,7 +133,7 @@ public class SettingTools {
                         "请先设置车牌号码才能开启避开限行功能"
                     );
                     error.addProperty("suggestion", "请先调用set_plate_number设置车牌");
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
             }
             
@@ -142,23 +144,24 @@ public class SettingTools {
             result.addProperty("avoid_limit_enabled", avoidLimit);
             
             Log.d(TAG, "避开限行设置成功: " + avoidLimit);
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "设置避开限行失败", e);
             JsonObject error = baseHelper.createErrorResponse("设置失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 获取是否避开限行设置
      */
-    @MCPTool(
+    @McpTool(
         name = "get_avoid_limit",
         title = "限行设置查询工具",
         description = "获取当前的避开限行设置状态",
         returnDescription = "返回当前限行设置状态",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true
     )
     public String getAvoidLimit() {
@@ -180,23 +183,24 @@ public class SettingTools {
                 result.addProperty("message", "避开限行" + status);
             }
             
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "获取避开限行设置失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 获取所有导航相关设置的综合信息
      */
-    @MCPTool(
+    @McpTool(
         name = "get_navigation_settings",
         title = "导航设置综合查询工具",
         description = "获取所有导航相关设置的综合信息，包括车牌、限行、路线偏好等",
         returnDescription = "返回完整的导航设置信息",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true
     )
     public String getNavigationSettings() {
@@ -225,12 +229,12 @@ public class SettingTools {
                 result.addProperty("warning", "已开启避开限行但未设置车牌，限行功能可能无效");
             }
             
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "获取导航设置失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 

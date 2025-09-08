@@ -6,10 +6,11 @@ import android.util.Log;
 
 import com.android.utils.ConvertUtils;
 import com.android.utils.log.Logger;
-// 原始MCP注解
-import com.sgm.navi.mcp.core.MCPDataType;
-import com.sgm.navi.mcp.core.MCPParam;
-import com.sgm.navi.mcp.core.MCPTool;
+// 新MCP SDK注解
+import com.sgm.mcp.protocol.annotations.McpTool;
+import com.sgm.mcp.protocol.annotations.McpParam;
+import com.sgm.mcp.protocol.McpSpec;
+import com.sgm.mcp.protocol.Prompt;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.map.MapType;
 import com.sgm.navi.service.define.route.RouteSpeechRequestParam;
@@ -42,7 +43,7 @@ public class FavoriteTools {
      * @param address 地址描述(可选)
      * @return 设置结果
      */
-    @MCPTool(
+    @McpTool(
         name = "set_home_address",
         title = "家地址设置工具", 
         description = "设置家的地址。调用示例：{\"latitude\":\"31.230390\",\"longitude\":\"121.473700\",\"poi_name\":\"上海迪士尼\",\"address\":\"上海市浦东新区\"}",
@@ -50,19 +51,19 @@ public class FavoriteTools {
         openWorldHint = true
     )
     public String setHomeAddress(
-            @MCPParam(name = "latitude",
+            @McpParam(name = "latitude",
                       description = "纬度。格式：数字字符串。示例：\"31.230390\"、\"39.904200\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String latitude,
-            @MCPParam(name = "longitude",
+            @McpParam(name = "longitude",
                       description = "经度。格式：数字字符串。示例：\"121.473700\"、\"116.407400\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String longitude,
-            @MCPParam(name = "poi_name",
+            @McpParam(name = "poi_name",
                       description = "地点名称。格式：字符串类型。示例：\"上海迪士尼\"、\"北京天安门\"。可选参数", 
                       required = false)
             String poiName,
-            @MCPParam(name = "address",
+            @McpParam(name = "address",
                       description = "地址描述。格式：字符串类型。示例：\"上海市浦东新区川沙镇\"、\"北京市东城区\"。可选参数", 
                       required = false)
             String address) {
@@ -192,7 +193,7 @@ public class FavoriteTools {
      * 一键回家 - 导航到家的地址
      * @return 导航结果
      */
-    @MCPTool(
+    @McpTool(
         name = "go_home",
         title = "一键回家工具", 
         description = "当用户提及回家关键词时，一键导航回家。调用示例：{} (无需参数)",
@@ -313,7 +314,7 @@ public class FavoriteTools {
      * @param address 地址描述(可选)
      * @return 设置结果
      */
-    @MCPTool(
+    @McpTool(
         name = "set_company_address",
         title = "公司地址设置工具", 
         description = "设置公司的地址。调用示例：{\"latitude\":\"31.230390\",\"longitude\":\"121.473700\",\"poi_name\":\"陆家嘴金融中心\",\"address\":\"上海市浦东新区陆家嘴\"}",
@@ -321,19 +322,19 @@ public class FavoriteTools {
         openWorldHint = true
     )
     public String setCompanyAddress(
-            @MCPParam(name = "latitude",
+            @McpParam(name = "latitude",
                       description = "纬度。格式：数字字符串。示例：\"31.230390\"、\"39.904200\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String latitude,
-            @MCPParam(name = "longitude",
+            @McpParam(name = "longitude",
                       description = "经度。格式：数字字符串。示例：\"121.473700\"、\"116.407400\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String longitude,
-            @MCPParam(name = "poi_name",
+            @McpParam(name = "poi_name",
                       description = "地点名称。格式：字符串类型。示例：\"陆家嘴金融中心\"、\"中关村软件园\"。可选参数", 
                       required = false)
             String poiName,
-            @MCPParam(name = "address",
+            @McpParam(name = "address",
                       description = "地址描述。格式：字符串类型。示例：\"上海市浦东新区陆家嘴\"、\"北京市海淀区中关村\"。可选参数", 
                       required = false)
             String address) {
@@ -463,7 +464,7 @@ public class FavoriteTools {
      * 一键去公司 - 导航到公司的地址
      * @return 导航结果
      */
-    @MCPTool(
+    @McpTool(
         name = "go_to_company",
         title = "一键去公司工具", 
         description = "当用户提及去公司关键词时，一键导航去公司。调用示例：{} (无需参数)",

@@ -1,0 +1,57 @@
+# MCP SDK Consumer ProGuard Rules
+# 这些规则会自动应用到使用SDK的应用中，确保SDK代码不被混淆
+
+# 保持MCP SDK的所有公共API不被混淆
+-keep public class com.sgm.mcp.** { *; }
+
+# 保持MCP SDK内部使用的接口和回调
+-keep interface com.sgm.mcp.** { *; }
+
+# 保持AIDL接口
+-keep interface com.sgm.mcp.aidl.** { *; }
+
+# 保持枚举类
+-keepclassmembers enum com.sgm.mcp.** {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# 保持序列化相关类
+-keep class com.sgm.mcp.** implements java.io.Serializable { *; }
+-keep class com.sgm.mcp.** implements android.os.Parcelable { *; }
+
+# 保持JSON相关类（如果使用Gson）
+-keep class com.sgm.mcp.** {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# 保持反射调用的方法
+-keepclassmembers class com.sgm.mcp.** {
+    public <init>(...);
+    public void set*(***);
+    public *** get*();
+    public *** is*();
+}
+
+# 保持异常类的构造函数
+-keepclassmembers class * extends java.lang.Exception {
+    <init>(...);
+}
+
+# 保持Builder模式的类
+-keep class com.sgm.mcp.**$Builder {
+    public <methods>;
+}
+
+# 保持配置类
+-keep class com.sgm.mcp.**Config** { *; }
+-keep class com.sgm.mcp.**Configuration** { *; }
+
+# 保持回调接口
+-keep interface com.sgm.mcp.**Listener** { *; }
+-keep interface com.sgm.mcp.**Callback** { *; }
+
+# 避免混淆导致的调试问题
+-keepattributes SourceFile,LineNumberTable
+-keepattributes Signature
+-keepattributes *Annotation*

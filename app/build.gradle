@@ -234,9 +234,8 @@ dependencies {
     implementation project(":burypoint")
     implementation libs.arouter.api
     annotationProcessor libs.arouter.compiler
-    implementation project(':mcp-coordinator')
-    // 新MCP SDK支持
-    implementation files('libs/mcpservice-manager-0.5.0.aar')
+    // 新MCP SDK支持 - 替代旧的mcp-coordinator模块
+    implementation files('libs/mcpservice-manager-0.7.1-alpha.aar')
     implementation 'com.google.code.gson:gson:2.10.1'  // 新SDK所需版本
 //    implementation libs.sgmsystem.extendservice
 }

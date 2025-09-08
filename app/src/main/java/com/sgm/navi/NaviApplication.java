@@ -18,6 +18,15 @@ import com.sgm.navi.hmi.map.MapActivity;
 import com.sgm.navi.patacnetlib.PatacNetClient;
 import com.sgm.navi.service.AppCache;
 import com.sgm.navi.service.MapDefaultFinalTag;
+
+// 新MCP SDK
+import com.sgm.mcp.core.Mcp;
+import com.sgm.navi.mcp.tools.LocationTools;
+import com.sgm.navi.mcp.tools.SearchTools;
+import com.sgm.navi.mcp.tools.NavigationTools;
+import com.sgm.navi.mcp.tools.FavoriteTools;
+import com.sgm.navi.mcp.tools.SettingTools;
+import java.util.Arrays;
 import com.sgm.navi.service.StartService;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
 import com.sgm.navi.mcp.tools.BaseToolHelper;
@@ -55,7 +64,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
         Logger.setDefaultTag(MapDefaultFinalTag.DEFAULT_TAG);
         initARouter();
         initComponent();
-        startSGMNavigationService();
+        initMcpSdk();
     }
 
     @Override
@@ -120,51 +129,38 @@ public class NaviApplication extends BaseApplication implements Application.Acti
     }
 
     /**
-     * 启动SGM导航服务
-     * 让SGMNavigationService自己负责连接MCP协调中心和注册工具
+     * 初始化MCP SDK
+     * 使用新SDK替代原有的MCP协调中心和导航服务
      */
-    private void startSGMNavigationService() {
+    private void initMcpSdk() {
         try {
-            // 注册MCP回调，需要在启动服务前进行，使用BaseToolHelper单例
-            // 这样SearchPackage就能在搜索回调中调用我们的方法
+            // 注册MCP回调（保留给搜索功能）
             BaseToolHelper mcpCallback = BaseToolHelper.getInstance();
             SearchPackage.setMCPSearchCallback(mcpCallback);
             Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "已注册MCP搜索回调");
 
-            // 1. 先启动MCP协调中心服务
-            startMCPCoordinatorService();
+            // 创建工具实例
+            LocationTools locationTools = new LocationTools();
+            SearchTools searchTools = new SearchTools();
+            NavigationTools navigationTools = new NavigationTools();
+            FavoriteTools favoriteTools = new FavoriteTools();
+            SettingTools settingTools = new SettingTools();
 
-            // 2. 延迟启动SGM导航服务，确保协调中心先启动
-            ThreadManager.getInstance().postDelay(() -> {
-                Intent intent = new Intent(this, com.sgm.navi.mcp.SGMNavigationService.class);
-                // 使用startForegroundService避免后台启动限制
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    startForegroundService(intent);
-                } else {
-                    startService(intent);
-                }
-                Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务");
-            }, 1000); // 延迟1秒启动
+            // 使用新MCP SDK的Builder模式初始化
+            Mcp.newBuilder(this)
+                    .setTools(Arrays.asList(
+                            locationTools,
+                            searchTools,
+                            navigationTools,
+                            favoriteTools,
+                            settingTools
+                    ))
+                    .build();
+
+            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "MCP SDK初始化完成");
 
         } catch (Exception e) {
-            Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "启动SGM导航服务失败: " + e.getMessage());
-        }
-    }
-
-    /**
-     * 启动MCP协调中心服务
-     */
-    private void startMCPCoordinatorService() {
-        try {
-            Intent intent = new Intent(this, com.sgm.navi.mcp.coordinator.MCPCoordinatorService.class);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            } else {
-                startService(intent);
-            }
-            Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "启动MCP协调中心服务");
-        } catch (Exception e) {
-            Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "启动MCP协调中心服务失败: " + e.getMessage());
+            Logger.e(MapDefaultFinalTag.DEFAULT_TAG, "MCP SDK初始化失败: " + e.getMessage(), e);
         }
     }
 }

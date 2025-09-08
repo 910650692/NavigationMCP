@@ -2,9 +2,10 @@ package com.sgm.navi.mcp.tools;
 
 import android.util.Log;
 import com.google.gson.JsonObject;
-// 原始MCP注解
-import com.sgm.navi.mcp.core.MCPDataType;
-import com.sgm.navi.mcp.core.MCPTool;
+// 新MCP SDK注解
+import com.sgm.mcp.protocol.annotations.McpTool;
+import com.sgm.mcp.protocol.McpSpec;
+import com.sgm.mcp.protocol.Prompt;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -24,12 +25,12 @@ public class LocationTools {
     /**
      * 获取当前位置
      */
-    @MCPTool(
+    @McpTool(
         name = "get_current_location",
         title = "当前位置获取工具",
         description = "获取车辆当前完整位置信息，包括GPS坐标(经纬度)、定位精度、详细地址、行驶速度和方向等。",
         returnDescription = "返回JSON格式的位置信息，包含经纬度、精度、地址等字段",
-        returnType = MCPDataType.STRING,
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true
     )
     public String getCurrentLocation() {
@@ -72,20 +73,20 @@ public class LocationTools {
                 
                 String result = baseHelper.gson.toJson(locationInfo);
                 Log.d(TAG, "真实位置: " + result);
-                return result;
+                return Prompt.text(result);
             } else {
                 // Fallback: 如果真实API返回null，提供错误信息
                 JsonObject error = baseHelper.createErrorResponse("无法获取位置信息", "定位服务可能未就绪");
                 
                 String result = baseHelper.gson.toJson(error);
                 Log.w(TAG, "位置获取失败: " + result);
-                return result;
+                return Prompt.text(result);
             }
             
         } catch (Exception e) {
             Log.e(TAG, "获取位置失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取位置失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 

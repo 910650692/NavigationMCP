@@ -3,10 +3,11 @@ package com.sgm.navi.mcp.tools;
 import android.util.Log;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
-// 原始MCP注解
-import com.sgm.navi.mcp.core.MCPDataType;
-import com.sgm.navi.mcp.core.MCPParam;
-import com.sgm.navi.mcp.core.MCPTool;
+// 新MCP SDK注解
+import com.sgm.mcp.protocol.annotations.McpTool;
+import com.sgm.mcp.protocol.annotations.McpParam;
+import com.sgm.mcp.protocol.McpSpec;
+import com.sgm.mcp.protocol.Prompt;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.position.LocInfoBean;
 import com.sgm.navi.service.logicpaket.search.SearchPackage;
@@ -27,20 +28,20 @@ public class SearchTools {
     /**
      * 搜索地点(POI)
      */
-    @MCPTool(
+    @McpTool(
         name = "search_poi",
         title = "地点搜索工具",
         description = "搜索任意地点(POI)，不限于用户当前位置附近。适用场景：1)搜索特定地点名称(如'上海迪士尼') 2)跨城市搜索 3)不需要基于当前位置的通用搜索。注意：此工具仅返回搜索结果数据，不会显示UI界面。",
         returnDescription = "返回包含POI信息的JSON数组，包括名称、地址、坐标等详细信息",
-        returnType = MCPDataType.STRING,
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true
     )
     public String searchPoi(
-            @MCPParam(name = "keyword", 
+            @McpParam(name = "keyword", 
                       description = "搜索关键词。格式：字符串类型。示例：\"星巴克\"、\"上海迪士尼\"、\"加油站\"。注意：必须是字符串，不要传入对象或数组",
                       required = true)
             String keyword,
-            @MCPParam(name = "max_results", 
+            @McpParam(name = "max_results", 
                       description = "最大返回结果数。格式：整数类型。示例：5、10。范围：1-10，默认5。注意：必须是数字，不要传入字符串",
                       required = false,
                       defaultValue = "5")
@@ -72,7 +73,7 @@ public class SearchTools {
                 Log.e(TAG, "关键词搜索taskId无效: " + taskId);
                 JsonObject error = baseHelper.createErrorResponse("搜索启动失败", "搜索引擎返回无效的任务ID");
                 error.addProperty("keyword", keyword);
-                return baseHelper.gson.toJson(error);
+                return Prompt.text(baseHelper.gson.toJson(error));
             }
             
             // 将taskId和future关联
@@ -86,7 +87,7 @@ public class SearchTools {
             
             if (result != null) {
                 Log.d(TAG, "关键词搜索成功: " + result);
-                return result;
+                return Prompt.text(result);
             } else {
                 // 搜索超时或无结果
                 JsonObject noResult = new JsonObject();
@@ -104,53 +105,53 @@ public class SearchTools {
             Log.w(TAG, "关键词搜索超时");
             JsonObject error = baseHelper.createErrorResponse("搜索超时，请重试", null);
             error.addProperty("keyword", keyword);
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Log.e(TAG, "关键词搜索失败", e);
             JsonObject error = baseHelper.createErrorResponse("搜索失败", e.getMessage());
             error.addProperty("keyword", keyword);
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 搜索附近的兴趣点 - 使用真实的周边搜索功能
      */
-    @MCPTool(
+    @McpTool(
         name = "search_nearby_poi",
         title = "周边POI搜索工具",
         description = "搜索用户当前位置附近的POI。使用指南：【何时设置show_ui=true】仅当用户明确要求'显示'、'展示'、'打开地图'、'在地图上标记'时。【何时设置show_ui=false(默认)】用户询问'附近有什么'、'查询周边'、'搜索附近'等仅需要信息时。注意：大多数情况下应该使用false，只返回数据供分析。支持按距离、评分、价格排序。",
         returnDescription = "返回周边POI列表，包含名称、距离、评分、地址等信息，可选择是否显示UI界面",
-        returnType = MCPDataType.STRING,
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         readOnlyHint = true,
         openWorldHint = true
     )
     public String searchNearbyPoi(
-            @MCPParam(name = "radius", 
+            @McpParam(name = "radius", 
                       description = "搜索半径(米)。格式：整数类型。示例：1000、2000。范围：500-10000，默认2000。注意：必须是数字，不要传入字符串",
                       required = false,
                       defaultValue = "2000")
             Integer searchRadius,
-            @MCPParam(name = "sort_type", 
+            @McpParam(name = "sort_type", 
                       description = "排序方式。格式：字符串类型。示例：\"DISTANCE_ASC\"、\"RATING_DESC\"、\"PRICE_LOW\"、\"PRICE_HIGH\"。默认DISTANCE_ASC。注意：必须使用引号包围",
                       required = false,
                       defaultValue = "DISTANCE_ASC")
             String sortType,
-            @MCPParam(name = "page_size", 
+            @McpParam(name = "page_size", 
                       description = "每页大小。格式：整数类型。示例：10、15、20。范围：1-20，默认10。注意：必须是数字，不要传入字符串",
                       required = false,
                       defaultValue = "10")
             Integer pageSize,
-            @MCPParam(name = "page_num", 
+            @McpParam(name = "page_num", 
                       description = "页码。格式：整数类型。示例：1、2、3。从1开始，默认1。注意：必须是数字，不要传入字符串",
                       required = false,
                       defaultValue = "1")
             Integer pageNum,
-            @MCPParam(name = "keyword", 
+            @McpParam(name = "keyword", 
                       description = "搜索关键词。格式：字符串类型。示例：\"加油站\"、\"餐厅\"、\"停车场\"。注意：必须是字符串，不要传入对象或数组",
                       required = true)
             String keyword,
-            @MCPParam(name = "show_ui", 
+            @McpParam(name = "show_ui", 
                       description = "是否显示UI界面。【重要】默认false，仅返回数据。只有当用户明确使用'显示'、'展示'、'打开'等动词时才设为true。示例：'附近有哪些餐厅'=false(查询)，'显示附近餐厅'=true(展示)。格式：布尔值，不要传入字符串",
                       required = false,
                       defaultValue = "false")
@@ -187,7 +188,7 @@ public class SearchTools {
             error.addProperty("hint", "请使用keyword参数指定搜索内容，例如: {\"keyword\": \"餐厅\", \"radius\": 1000}");
             error.addProperty("note", "如果需要使用经纬度坐标搜索，请考虑使用其他工具或联系开发者");
             
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
         
         Log.d(TAG, "搜索附近POI: " + keyword + ", 半径: " + searchRadius + "米, 排序: " + sortType);
@@ -209,7 +210,7 @@ public class SearchTools {
             LocInfoBean currentLocation = baseHelper.getCurrentPosition();
             if (currentLocation == null) {
                 JsonObject error = baseHelper.createErrorResponse("获取当前位置失败", "无法确定搜索中心点");
-                return baseHelper.gson.toJson(error);
+                return Prompt.text(baseHelper.gson.toJson(error));
             }
             
             // 创建搜索中心点
@@ -319,12 +320,12 @@ public class SearchTools {
             Log.w(TAG, "周边搜索超时");
             JsonObject error = baseHelper.createErrorResponse("周边搜索超时，请重试", null);
             error.addProperty("keyword", keyword);
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Log.e(TAG, "周边搜索失败", e);
             JsonObject error = baseHelper.createErrorResponse("周边搜索失败", e.getMessage());
             error.addProperty("keyword", keyword);
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
     

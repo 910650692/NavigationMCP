@@ -6,10 +6,11 @@ import android.util.Log;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.JsonObject;
-// 原始MCP注解
-import com.sgm.navi.mcp.core.MCPDataType;
-import com.sgm.navi.mcp.core.MCPParam;
-import com.sgm.navi.mcp.core.MCPTool;
+// 新MCP SDK注解
+import com.sgm.mcp.protocol.annotations.McpTool;
+import com.sgm.mcp.protocol.annotations.McpParam;
+import com.sgm.mcp.protocol.McpSpec;
+import com.sgm.mcp.protocol.Prompt;
 import com.sgm.navi.service.define.bean.GeoPoint;
 import com.sgm.navi.service.define.search.PoiInfoEntity;
 import com.sgm.navi.service.define.route.RouteRequestParam;
@@ -37,39 +38,40 @@ public class NavigationTools {
     /**
      * 启动导航到指定坐标点
      */
-    @MCPTool(
+    @McpTool(
         name = "start_navigation",
         title = "导航启动工具",
         description = "规划路线到指定坐标点，路线规划完成后会显示路线供用户查看，然后按正常导航流程开始导航。需要先使用search_poi获取POI的坐标,然后将位置名称和坐标作为参数再传进来。调用示例：{\"latitude\":\"31.230390\",\"longitude\":\"121.473700\",\"poi_name\":\"上海迪士尼\",\"address\":\"上海市浦东新区川沙镇\",\"route_preference\":\"avoid_congestion\",\"avoid_limit\":\"true\",\"simulate\":\"false\"}",
         returnDescription = "返回导航启动结果，包含路线规划状态和导航信息",
+        promptMessageContent = McpSpec.PromptMessageContent.Text,
         openWorldHint = true
     )
     public String startNavigation(
-            @MCPParam(name = "latitude",
+            @McpParam(name = "latitude",
                       description = "目的地纬度。格式：数字字符串。示例：\"31.230390\"、\"39.904200\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String latitude,
-            @MCPParam(name = "longitude",
+            @McpParam(name = "longitude",
                       description = "目的地经度。格式：数字字符串。示例：\"121.473700\"、\"116.407400\"。注意：必须是字符串格式的数字，带引号", 
                       required = true)
             String longitude,
-            @MCPParam(name = "poi_name",
+            @McpParam(name = "poi_name",
                       description = "目的地POI名称。格式：字符串类型。示例：\"上海迪士尼\"、\"北京天安门\"。可选参数，有助于导航识别", 
                       required = false)
             String poiName,
-            @MCPParam(name = "address",
+            @McpParam(name = "address",
                       description = "目的地地址。格式：字符串类型。示例：\"上海市浦东新区川沙镇\"、\"北京市东城区\"。可选参数，提供详细地址信息", 
                       required = false)
             String address,
-            @MCPParam(name = "route_preference",
+            @McpParam(name = "route_preference",
                       description = "路线偏好设置。可选值：\"recommend\"(推荐)、\"avoid_congestion\"(躲避拥堵)、\"less_charge\"(少收费)、\"no_highway\"(不走高速)、\"highway_first\"(高速优先)、\"fastest_speed\"(速度最快)。默认使用系统设置", 
                       required = false)
             String routePreference,
-            @MCPParam(name = "avoid_limit",
+            @McpParam(name = "avoid_limit",
                       description = "是否避开限行。格式：字符串类型。示例：\"true\"、\"false\"。默认使用系统设置。需要用户已设置车牌号", 
                       required = false)
             String avoidLimit,
-            @MCPParam(name = "simulate",
+            @McpParam(name = "simulate",
                       description = "是否模拟导航。格式：字符串类型。示例：\"true\"、\"false\"。默认\"false\"。注意：必须是字符串，不要传入布尔值", 
                       required = false)
             String simulate) {
@@ -95,7 +97,7 @@ public class NavigationTools {
                     error.addProperty("error_code", "NO_PLATE_NUMBER");
                     error.addProperty("suggestion", "请先调用set_plate_number设置车牌");
                     
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
                 Log.d(TAG, "已检测到车牌号码: " + plateNumber + "，将应用避开限行");
             }
@@ -126,7 +128,7 @@ public class NavigationTools {
             error.addProperty("hint", "请使用扁平化的参数结构，例如: {\"latitude\": \"31.215725\", \"longitude\": \"121.552563\"}");
             error.addProperty("invalid_format_example", "错误格式: {\"destination\": {\"latitude\": ..., \"longitude\": ...}}");
             
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
         
         try {
@@ -277,7 +279,7 @@ public class NavigationTools {
             } else {
                 Log.e(TAG, "路线规划请求失败");
                 JsonObject error = baseHelper.createErrorResponse("路线规划请求失败", "无法发起路线规划，请检查网络连接");
-                return baseHelper.gson.toJson(error);
+                return Prompt.text(baseHelper.gson.toJson(error));
             }
             
             // 创建返回结果
@@ -309,11 +311,11 @@ public class NavigationTools {
         } catch (NumberFormatException e) {
             Log.e(TAG, "坐标数值格式错误", e);
             JsonObject error = baseHelper.createErrorResponse("坐标数值格式错误", "请提供有效的数字格式的经纬度坐标");
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Log.e(TAG, "导航启动失败", e);
             JsonObject error = baseHelper.createErrorResponse("导航启动失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
@@ -337,7 +339,7 @@ public class NavigationTools {
     /**
      * 获取当前导航状态概览
      */
-    @MCPTool(
+    @McpTool(
         name = "get_navigation_status",
         title = "导航状态查询工具",
         description = "获取当前导航状态，包括是否正在导航、导航模式、当前位置等信息",
@@ -388,19 +390,19 @@ public class NavigationTools {
             result.addProperty("message", statusMessage);
             
             Log.d(TAG, "导航状态获取成功: " + statusMessage);
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "获取导航状态失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
     /**
      * 获取详细的导航信息
      */
-    @MCPTool(
+    @McpTool(
         name = "get_navigation_details",
         title = "导航详细信息工具",
         description = "获取详细的导航信息，包括剩余时间、距离、当前道路等。仅在导航中有效",
@@ -420,7 +422,7 @@ public class NavigationTools {
                     "请先开始导航后再查询详细导航信息"
                 );
                 result.addProperty("suggestion", "可以先调用get_navigation_status查看导航状态");
-                return baseHelper.gson.toJson(result);
+                return Prompt.text(baseHelper.gson.toJson(result));
             }
             
             // 获取详细导航信息
@@ -436,7 +438,7 @@ public class NavigationTools {
                     "导航信息不可用", 
                     "无法获取当前导航的详细信息"
                 );
-                return baseHelper.gson.toJson(result);
+                return Prompt.text(baseHelper.gson.toJson(result));
             }
             
             // 创建结果对象
@@ -492,12 +494,12 @@ public class NavigationTools {
             result.addProperty("message", messageBuilder.toString());
             
             Log.d(TAG, "导航详细信息获取成功");
-            return baseHelper.gson.toJson(result);
+            return Prompt.text(baseHelper.gson.toJson(result));
             
         } catch (Exception e) {
             Log.e(TAG, "获取导航详细信息失败", e);
             JsonObject error = baseHelper.createErrorResponse("获取失败", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
     

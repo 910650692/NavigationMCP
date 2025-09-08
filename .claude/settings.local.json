@@ -38,7 +38,9 @@
       "Read(D:\\下载/**)",
       "Read(D:\\下载/**)",
       "Read(D:\\下载/**)",
-      "Read(D:\\下载/**)"
+      "Read(D:\\下载/**)",
+      "Bash(jar tf:*)",
+      "Bash(jar:*)"
     ],
     "deny": [],
     "ask": [],
