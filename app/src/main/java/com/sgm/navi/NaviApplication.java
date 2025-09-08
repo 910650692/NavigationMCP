@@ -21,6 +21,9 @@ import com.sgm.navi.service.MapDefaultFinalTag;
 
 // 新MCP SDK
 import com.sgm.mcp.core.Mcp;
+import com.sgm.mcp.service.IServerLifecycle;
+import com.sgm.mcp.connection.ConnectionState;
+import com.sgm.mcp.client.McpClient;
 import com.sgm.navi.mcp.tools.LocationTools;
 import com.sgm.navi.mcp.tools.SearchTools;
 import com.sgm.navi.mcp.tools.NavigationTools;
@@ -146,6 +149,19 @@ public class NaviApplication extends BaseApplication implements Application.Acti
             FavoriteTools favoriteTools = new FavoriteTools();
             SettingTools settingTools = new SettingTools();
 
+            // 创建ServerLifecycle实现
+            IServerLifecycle serverLifecycle = new IServerLifecycle() {
+                @Override
+                public void onStateChanged(ConnectionState state) {
+                    Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "MCP连接状态变化: " + state);
+                }
+
+                @Override
+                public void onClientReady(McpClient client) {
+                    Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "MCP客户端准备就绪");
+                }
+            };
+
             // 使用新MCP SDK的Builder模式初始化
             Mcp.newBuilder(this)
                     .setTools(Arrays.asList(
@@ -155,6 +171,7 @@ public class NaviApplication extends BaseApplication implements Application.Acti
                             favoriteTools,
                             settingTools
                     ))
+                    .serverLifecycle(serverLifecycle)
                     .build();
 
             Logger.d(MapDefaultFinalTag.DEFAULT_TAG, "MCP SDK初始化完成");

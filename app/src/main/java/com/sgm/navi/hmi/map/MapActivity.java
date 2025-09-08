@@ -143,7 +143,7 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.d(TAG, "onCreate isShowMusicTab = " + FloatWindowReceiver.isShowMusicTab);
         mViewModel.onWindowSideChanged(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
         mViewModel.reSetSwitchIcon();
-        mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
+        // mViewModel.musicTabVisibility.set(ScreenTypeUtils.getInstance().isFullScreen() && FloatWindowReceiver.isShowMusicTab);
 
         // 注册导航广播接收器
         initNavigationReceiver();
@@ -824,6 +824,10 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         if (windowFlag) {
             mViewModel.mainBTNVisibility.set(false);
         }
+        
+        // 处理MCP导航请求
+        Logger.d(TAG, "收到新的Intent");
+        handleNavigationRequest(intent);
     }
 
     /**
@@ -842,15 +846,6 @@ public class MapActivity extends BaseActivity<ActivityMapBinding, MapViewModel> 
         Logger.d(TAG, "导航广播接收器已注册");
     }
 
-    /**
-     * 添加onNewIntent方法处理新的Intent
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Logger.d(TAG, "收到新的Intent");
-        handleNavigationRequest(intent);
-    }
 
     /**
      * 处理导航请求

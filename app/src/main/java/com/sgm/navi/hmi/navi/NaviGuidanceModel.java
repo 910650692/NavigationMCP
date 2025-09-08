@@ -1911,7 +1911,7 @@ public class NaviGuidanceModel extends BaseModel<NaviGuidanceViewModel> implemen
     @Override
     public void onResetSettingConfig() {
         if (mViewModel != null) {
-            mViewModel.setChargeTipEntity(chargeTipEntity);
+            mViewModel.setChargeTipEntity(null);
         }
     }
 

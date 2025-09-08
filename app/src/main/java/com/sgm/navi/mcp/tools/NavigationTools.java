@@ -306,7 +306,7 @@ public class NavigationTools {
             
             String result = baseHelper.gson.toJson(navResult);
             Log.d(TAG, "导航启动结果: " + result);
-            return result;
+            return Prompt.text(result);
             
         } catch (NumberFormatException e) {
             Log.e(TAG, "坐标数值格式错误", e);

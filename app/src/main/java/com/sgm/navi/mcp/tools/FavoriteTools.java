@@ -74,7 +74,7 @@ public class FavoriteTools {
                 longitude == null || longitude.trim().isEmpty()) {
                 Logger.e(TAG, "缺少必要的坐标参数 - latitude: " + latitude + ", longitude: " + longitude);
                 JsonObject error = baseHelper.createErrorResponse("参数格式错误", "请提供有效的latitude和longitude参数");
-                return baseHelper.gson.toJson(error);
+                return Prompt.text(baseHelper.gson.toJson(error));
             }
             
             // 解析坐标参数
@@ -171,21 +171,21 @@ public class FavoriteTools {
                     coordinates.addProperty("longitude", lng);
                     successResponse.add("coordinates", coordinates);
                     
-                    return baseHelper.gson.toJson(successResponse);
+                    return Prompt.text(baseHelper.gson.toJson(successResponse));
                 } else {
                     Logger.e(TAG, "家地址设置失败");
                     JsonObject error = baseHelper.createErrorResponse("家地址设置失败", "无法保存家地址信息");
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
                 
         } catch (NumberFormatException e) {
             Logger.e(TAG, "坐标数值格式错误", e);
             JsonObject error = baseHelper.createErrorResponse("坐标数值格式错误", "请提供有效的数字格式的经纬度坐标");
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Logger.e(TAG, "设置家地址异常: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("设置家地址异常", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
@@ -237,7 +237,7 @@ public class FavoriteTools {
                     Logger.w(TAG, "未设置家地址");
                     
                     JsonObject error = baseHelper.createErrorResponse("未设置家地址", "请先使用set_home_address设置家的地址");
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
                 
                 // 构建路线请求参数
@@ -293,16 +293,16 @@ public class FavoriteTools {
         } catch (SecurityException e) {
             Logger.e(TAG, "导航权限被拒绝: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("导航权限被拒绝", "应用缺少导航相关权限：" + e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (IllegalStateException e) {
             Logger.e(TAG, "导航状态异常: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("导航状态异常", "系统导航状态不正确：" + e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Logger.e(TAG, "一键回家失败: " + e.getMessage(), e);
             JsonObject error = baseHelper.createErrorResponse("导航失败", "系统内部错误：" + e.getMessage());
             error.addProperty("error_type", e.getClass().getSimpleName());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
@@ -345,7 +345,7 @@ public class FavoriteTools {
                 longitude == null || longitude.trim().isEmpty()) {
                 Logger.e(TAG, "缺少必要的坐标参数 - latitude: " + latitude + ", longitude: " + longitude);
                 JsonObject error = baseHelper.createErrorResponse("参数格式错误", "请提供有效的latitude和longitude参数");
-                return baseHelper.gson.toJson(error);
+                return Prompt.text(baseHelper.gson.toJson(error));
             }
             
             // 解析坐标参数
@@ -442,21 +442,21 @@ public class FavoriteTools {
                     coordinates.addProperty("longitude", lng);
                     successResponse.add("coordinates", coordinates);
                     
-                    return baseHelper.gson.toJson(successResponse);
+                    return Prompt.text(baseHelper.gson.toJson(successResponse));
                 } else {
                     Logger.e(TAG, "公司地址设置失败");
                     JsonObject error = baseHelper.createErrorResponse("公司地址设置失败", "无法保存公司地址信息");
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
                 
         } catch (NumberFormatException e) {
             Logger.e(TAG, "坐标数值格式错误", e);
             JsonObject error = baseHelper.createErrorResponse("坐标数值格式错误", "请提供有效的数字格式的经纬度坐标");
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Logger.e(TAG, "设置公司地址异常: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("设置公司地址异常", e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 
@@ -508,7 +508,7 @@ public class FavoriteTools {
                     Logger.w(TAG, "未设置公司地址");
                     
                     JsonObject error = baseHelper.createErrorResponse("未设置公司地址", "请先使用set_company_address设置公司的地址");
-                    return baseHelper.gson.toJson(error);
+                    return Prompt.text(baseHelper.gson.toJson(error));
                 }
                 
                 // 构建路线请求参数
@@ -564,16 +564,16 @@ public class FavoriteTools {
         } catch (SecurityException e) {
             Logger.e(TAG, "导航权限被拒绝: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("导航权限被拒绝", "应用缺少导航相关权限：" + e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (IllegalStateException e) {
             Logger.e(TAG, "导航状态异常: " + e.getMessage());
             JsonObject error = baseHelper.createErrorResponse("导航状态异常", "系统导航状态不正确：" + e.getMessage());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         } catch (Exception e) {
             Logger.e(TAG, "一键去公司失败: " + e.getMessage(), e);
             JsonObject error = baseHelper.createErrorResponse("导航失败", "系统内部错误：" + e.getMessage());
             error.addProperty("error_type", e.getClass().getSimpleName());
-            return baseHelper.gson.toJson(error);
+            return Prompt.text(baseHelper.gson.toJson(error));
         }
     }
 }

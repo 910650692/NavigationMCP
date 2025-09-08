@@ -296,11 +296,11 @@ public class SearchTools {
                     
                     String uiResponseJson = baseHelper.gson.toJson(uiResponse);
                     Log.d(TAG, "UI显示成功响应: " + uiResponseJson);
-                    return uiResponseJson;
+                    return Prompt.text(uiResponseJson);
                 }
                 
                 Log.d(TAG, "周边搜索成功，返回数据结果");
-                return searchResult;
+                return Prompt.text(searchResult);
             } else {
                 // 搜索超时或无结果
                 JsonObject noResult = new JsonObject();
@@ -313,7 +313,7 @@ public class SearchTools {
                 
                 String noResultJson = baseHelper.gson.toJson(noResult);
                 Log.w(TAG, "周边搜索无结果: " + noResultJson);
-                return noResultJson;
+                return Prompt.text(noResultJson);
             }
             
         } catch (TimeoutException e) {
